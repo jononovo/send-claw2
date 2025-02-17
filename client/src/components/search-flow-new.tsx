@@ -60,43 +60,6 @@ function ApproachEditor({ approach }: { approach: SearchApproach }) {
     },
   };
 
-  // Add enrichment mutation
-  const enrichMutation = useMutation({
-    mutationFn: async () => {
-      // Get the current company ID from the query client cache
-      const searchResults = queryClient.getQueryData<{ companies: Array<{ id: number }> }>(["/api/companies/search"]);
-      if (!searchResults?.companies?.[0]?.id) {
-        throw new Error("Please perform a company search first");
-      }
-
-      const companyId = searchResults.companies[0].id;
-      const response = await apiRequest(
-        "POST",
-        `/api/companies/${companyId}/enrich-top-prospects`
-      );
-
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || "Failed to start enrichment");
-      }
-
-      return response.json();
-    },
-    onSuccess: (data) => {
-      toast({
-        title: "Enrichment Started",
-        description: "Top prospects have been queued for email enrichment. This may take a few minutes.",
-      });
-    },
-    onError: (error) => {
-      toast({
-        title: "Enrichment Failed",
-        description: error instanceof Error ? error.message : "Failed to start enrichment",
-        variant: "destructive",
-      });
-    },
-  });
-
   const toggleMutation = useMutation({
     mutationFn: async (active: boolean) => {
       const response = await apiRequest(
@@ -114,16 +77,11 @@ function ApproachEditor({ approach }: { approach: SearchApproach }) {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/search-approaches"] });
-
-      // If this is the email enrichment module and it was just activated,
-      // trigger the enrichment process
-      if (approach.moduleType === 'email_enrichment' && !approach.active) {
-        enrichMutation.mutate();
-      }
-
       toast({
         title: approach.active ? "Approach Disabled" : "Approach Enabled",
-        description: `Search approach has been ${approach.active ? "disabled" : "enabled"}.`,
+        description: approach.moduleType === 'email_enrichment' 
+          ? `Email enrichment ${approach.active ? 'disabled' : 'enabled'}. ${!approach.active ? 'Top prospects will be automatically enriched after search.' : ''}`
+          : `Search approach has been ${approach.active ? "disabled" : "enabled"}.`,
       });
     },
     onError: (error) => {
@@ -226,16 +184,22 @@ function ApproachEditor({ approach }: { approach: SearchApproach }) {
                     isCompleted && approach.active && "data-[state=checked]:bg-emerald-500 data-[state=checked]:text-emerald-50 dark:data-[state=checked]:bg-emerald-500"
                   )}
                 />
-                {isEmailEnrichment && (
-                  <Mail className={cn(
-                    "h-4 w-4 ml-2",
-                    enrichMutation.isPending && "animate-spin"
-                  )} />
+                {isEmailEnrichment && approach.active && (
+                  <Mail className="h-4 w-4 ml-2" />
                 )}
               </div>
             </TooltipTrigger>
             <TooltipContent>
-              {isCompleted ? "Search completed" : approach.active ? "Disable approach" : "Enable approach"}
+              {isCompleted 
+                ? "Search completed" 
+                : isEmailEnrichment
+                  ? approach.active 
+                    ? "Email enrichment enabled - will process top prospects after search" 
+                    : "Enable email enrichment for top prospects"
+                  : approach.active 
+                    ? "Disable approach" 
+                    : "Enable approach"
+              }
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>

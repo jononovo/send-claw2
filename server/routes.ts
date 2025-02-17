@@ -111,6 +111,10 @@ export function registerRoutes(app: Express) {
         a.name === "Decision-maker Analysis" && a.active
       );
 
+      const emailEnrichmentModule = approaches.find(a =>
+        a.moduleType === 'email_enrichment' && a.active
+      );
+
       if (!companyOverview) {
         res.status(400).json({
           message: "Company Overview approach is not active. Please activate it to proceed."
@@ -157,8 +161,8 @@ export function registerRoutes(app: Express) {
             minimumScore: 20
           });
 
-          // Filter valid contacts after awaiting the contacts array
-          const validContacts = contacts.filter(contact => contact.name && contact.name !== "Unknown");
+          // Filter valid contacts
+          const validContacts = contacts.filter((contact: Contact) => contact.name && contact.name !== "Unknown");
 
           // Create contact records with basic information
           const createdContacts = await Promise.all(
@@ -181,6 +185,19 @@ export function registerRoutes(app: Express) {
               })
             )
           );
+
+          // If email enrichment is active, queue top prospects for enrichment
+          if (emailEnrichmentModule?.active) {
+            const topProspects = createdContacts.filter(contact => 
+              contact.probability && contact.probability >= 50
+            );
+
+            if (topProspects.length > 0) {
+              // Start enrichment process
+              const searchId = `search_${Date.now()}`;
+              await postSearchEnrichmentService.startEnrichment(createdCompany.id, searchId);
+            }
+          }
 
           return { ...createdCompany, contacts: createdContacts };
         })
