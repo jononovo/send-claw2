@@ -203,9 +203,9 @@ export function registerRoutes(app: Express) {
     res.status(200).json({ status: "ok", timestamp: new Date().toISOString() });
   });
   
-  // Endpoint to trigger a search via N8N workflow
+  // Endpoint to trigger a search via workflow
   app.post("/api/workflow-search", requireAuth, async (req, res) => {
-    const { query, strategyId, provider } = req.body;
+    const { query, strategyId, provider, targetUrl, resultsUrl } = req.body;
     
     if (!query || typeof query !== 'string') {
       return res.status(400).json({
@@ -235,12 +235,23 @@ export function registerRoutes(app: Express) {
       
       console.log(`Using workflow provider: ${workflowProvider || 'default'}`);
       
-      // Prepare additional parameters based on the strategy
+      // Prepare additional parameters based on the strategy and custom URLs
       const additionalParams: Record<string, any> = {
         userId: req.user!.id,
         strategyId: strategyId || null,
         provider: workflowProvider
       };
+
+      // Add custom URLs if provided
+      if (targetUrl) {
+        additionalParams.targetUrl = targetUrl;
+        console.log(`Using custom target URL: ${targetUrl}`);
+      }
+
+      if (resultsUrl) {
+        additionalParams.resultsUrl = resultsUrl;
+        console.log(`Using custom results URL: ${resultsUrl}`);
+      }
       
       if (selectedStrategy) {
         additionalParams.strategyName = selectedStrategy.name;
@@ -248,7 +259,7 @@ export function registerRoutes(app: Express) {
         additionalParams.responseStructure = selectedStrategy.responseStructure;
       }
       
-      // Send the search request to N8N
+      // Send the search request to the workflow
       const searchResult = await sendSearchRequest(query, {
         additionalParams
       });

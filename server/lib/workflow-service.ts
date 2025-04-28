@@ -27,23 +27,39 @@ export async function sendSearchRequest(query: string, options: WorkflowRequestO
   // Generate a unique search ID
   const searchId = `search_${Date.now()}`;
   
-  // Get the workflow provider from additional params, if any
+  // Get the workflow provider and custom URLs from additional params, if any
   const provider = options.additionalParams?.provider?.toLowerCase() || null;
+  const targetUrl = options.additionalParams?.targetUrl;
+  const resultsUrl = options.additionalParams?.resultsUrl;
   
   // Get the webhook URL based on provider or use custom URL or default
   let webhookUrl = options.customWebhookUrl || DEFAULT_N8N_WEBHOOK_URL;
   
-  // If we have a valid provider, use its specific URL
-  if (provider && PROVIDER_WEBHOOK_URLS[provider]) {
+  // If we have a custom target URL, use it
+  if (targetUrl) {
+    webhookUrl = targetUrl;
+    console.log(`Using custom target URL: ${webhookUrl}`);
+  }
+  // Otherwise, if we have a valid provider, use its specific URL
+  else if (provider && PROVIDER_WEBHOOK_URLS[provider]) {
     webhookUrl = PROVIDER_WEBHOOK_URLS[provider];
     console.log(`Using ${provider} webhook URL: ${webhookUrl}`);
+  }
+  
+  // Determine the callback URL
+  let callbackUrl = `${process.env.API_BASE_URL || ""}/api/webhooks/workflow/results/unknown/node/webhook_trigger-${Date.now()}`;
+  
+  // If a resultsUrl was specified, use that instead
+  if (resultsUrl) {
+    callbackUrl = resultsUrl;
+    console.log(`Using custom results URL: ${callbackUrl}`);
   }
   
   // Prepare the request payload
   const payload = {
     query, 
     searchId,
-    callbackUrl: `${process.env.API_BASE_URL || ""}/api/webhooks/workflow/results/unknown/node/webhook_trigger-${Date.now()}`,
+    callbackUrl,
     ...options.additionalParams
   };
   
