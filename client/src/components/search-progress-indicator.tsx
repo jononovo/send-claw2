@@ -111,7 +111,7 @@ export default function SearchProgressIndicator({ isSearching }: SearchProgressI
           setCompletionMessage("Click on a company to see the contacts. 👀");
           
           setTimeout(() => {
-            setCompletionMessage("Click \"Search Emails\" to find the emails of decision-makers.");
+            setCompletionMessage("Click \"Find Key Emails\" button to find emails of decision-makers.");
             
             // Keep showing the last message for 12 seconds
           }, 12000);
