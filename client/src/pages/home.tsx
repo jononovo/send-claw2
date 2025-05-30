@@ -564,7 +564,7 @@ export default function Home() {
 
   // Add Hunter.io mutation with Set-based state management
   const hunterMutation = useMutation({
-    mutationFn: async (contactId: number) => {
+    mutationFn: async ({ contactId, searchContext = 'manual' }: { contactId: number; searchContext?: 'manual' | 'automated' }) => {
       // Add this contact ID to the set of pending searches
       setPendingHunterIds(prev => {
         const newSet = new Set(prev);
@@ -572,10 +572,10 @@ export default function Home() {
         return newSet;
       });
       const response = await apiRequest("POST", `/api/contacts/${contactId}/hunter`);
-      return {data: await response.json(), contactId};
+      return {data: await response.json(), contactId, searchContext};
     },
     onSuccess: (result) => {
-      const {data, contactId} = result;
+      const {data, contactId, searchContext} = result;
       
       // Update the contact in the results
       setCurrentResults(prev => {
@@ -603,12 +603,22 @@ export default function Home() {
         return newSet;
       });
       
-      toast({
-        title: "Hunter.io Email Search Complete",
-        description: `${data.name}: ${data.email 
-          ? `Found email with ${data.nameConfidenceScore || 'unknown'} confidence.`
-          : "No email found for this contact."}`,
-      });
+      // Only show toast notifications based on context
+      if (searchContext === 'manual') {
+        // Manual searches: show all results (success and no email found)
+        toast({
+          title: "Hunter.io Email Search Complete",
+          description: `${data.name}: ${data.email 
+            ? `Found email with ${data.nameConfidenceScore || 'unknown'} confidence.`
+            : "No email found for this contact."}`,
+        });
+      } else if (searchContext === 'automated' && data.email) {
+        // Automated searches: only show when email is found
+        toast({
+          title: "Email Search Complete",
+          description: `${data.name}: Successfully found email address.`,
+        });
+      }
     },
     onError: (error, variables) => {
       const contactId = variables;
