@@ -1490,9 +1490,10 @@ Let me process your strategy and research your market right now!`;
       setTimeout(() => {
         this.messages.push({
           id: (Date.now() + 1).toString(),
-          content: "Oh, that's classy. 😉\nNow please give me **an example of a type of business you service** or sell to.\nLike this \"[type of business] in [city/niche]\"\n\nExamples:\n\n**Popular cafes** in Lower East Side, NYC\n\n**Real-estate insurance brokers** in Salt Lake City",
+          content: this.renderMarkdown("Oh, that's classy. 😉\nNow please give me **an example of a type of business you service** or sell to.\nLike this \"[type of business] in [city/niche]\"\n\nExamples:\n\n**Popular cafes** in Lower East Side, NYC\n\n**Real-estate insurance brokers** in Salt Lake City"),
           sender: 'ai',
-          timestamp: new Date()
+          timestamp: new Date(),
+          isHTML: true
         });
         this.render();
       }, 1000);
