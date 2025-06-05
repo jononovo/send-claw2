@@ -345,86 +345,62 @@ export function RegistrationModal() {
                 </motion.div>
               )}
             </AnimatePresence>
-          </div>
-        </div>
-      )}
-
-      {currentPage === "email" && (
-        <div className="w-full max-w-md mx-auto relative">
-          {/* Back button in upper left corner */}
-          <div className="absolute top-0 left-0 mt-6 ml-6 z-10">
-            <button 
-              onClick={handleReturnToMain}
-              className="text-sm text-white hover:text-blue-300 transition-colors flex items-center gap-1"
-            >
-              <ArrowLeft className="h-4 w-4" />
-              Back
-            </button>
-          </div>
-          
-          {/* Login link in upper right corner */}
-          <div className="absolute top-0 right-0 mt-6 mr-6 z-10">
-            <button 
-              onClick={handleLoginClick}
-              className="text-sm text-white hover:text-blue-300 transition-colors"
-            >
-              Login
-            </button>
-          </div>
-          
-          {/* Main content */}
-          <div className="text-center text-white mb-8 mt-16">
-            <h2 className="text-3xl font-bold mb-3">Create Your Account</h2>
-            <p className="text-gray-200 text-lg">Register with your email address</p>
-          </div>
-
-          {/* Registration form */}
-          <div className="space-y-4 max-w-sm mx-auto px-4">
-            <div className="space-y-4">
-              <input
-                ref={nameInputRef}
-                type="text"
-                placeholder="Your Name"
-                className="w-full p-4 bg-white/10 border border-white/20 rounded-md text-white placeholder-gray-400 focus:outline-none focus:border-blue-300"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-              />
-              
-              <input
-                ref={emailInputRef}
-                type="email"
-                placeholder="Email Address"
-                className={`w-full p-4 bg-white/10 border ${
-                  email.length > 0 ? (emailValid ? 'border-green-400' : 'border-red-400') : 'border-white/20'
-                } rounded-md text-white placeholder-gray-400 focus:outline-none focus:border-blue-300`}
-                value={email}
-                onChange={handleEmailChange}
-              />
-              
-              {/* Password field only appears after @ is typed in email */}
-              {email.includes('@') && (
-                <div>
-                  <input
-                    type="password"
-                    placeholder="Password"
-                    className="w-full p-4 bg-white/10 border border-white/20 rounded-md text-white placeholder-gray-400 focus:outline-none focus:border-blue-300"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                  />
-                  <p className="text-xs text-gray-400 mt-1">Minimum 8 characters</p>
-                </div>
-              )}
-            </div>
             
-            <Button 
-              variant="outline" 
-              className="w-full justify-center relative bg-white/10 text-white border-white/20 hover:bg-white/20"
-              onClick={handleSubmit}
-              disabled={!emailValid || (email.includes('@') && password.length < 8)}
-            >
-              Go
-              <ChevronRight className="h-4 w-4 ml-2" />
-            </Button>
+            {/* Email registration form - appears when Email & Password is clicked */}
+            {showEmailForm && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                className="mt-6 space-y-4"
+              >
+                <div className="space-y-4">
+                  <input
+                    ref={nameInputRef}
+                    type="text"
+                    placeholder="Your Name"
+                    className="w-full p-4 bg-white/10 border border-white/20 rounded-md text-white placeholder-gray-400 focus:outline-none focus:border-blue-300"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                  />
+                  
+                  <input
+                    ref={emailInputRef}
+                    type="email"
+                    placeholder="Email Address"
+                    className={`w-full p-4 bg-white/10 border ${
+                      email.length > 0 ? (emailValid ? 'border-green-400' : 'border-red-400') : 'border-white/20'
+                    } rounded-md text-white placeholder-gray-400 focus:outline-none focus:border-blue-300`}
+                    value={email}
+                    onChange={handleEmailChange}
+                  />
+                  
+                  {/* Password field only appears after @ is typed in email */}
+                  {email.includes('@') && (
+                    <div>
+                      <input
+                        type="password"
+                        placeholder="Password"
+                        className="w-full p-4 bg-white/10 border border-white/20 rounded-md text-white placeholder-gray-400 focus:outline-none focus:border-blue-300"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                      />
+                      <p className="text-xs text-gray-400 mt-1">Minimum 8 characters</p>
+                    </div>
+                  )}
+                </div>
+                
+                <Button 
+                  variant="outline" 
+                  className="w-full justify-center relative bg-white/10 text-white border-white/20 hover:bg-white/20"
+                  onClick={handleSubmit}
+                  disabled={!emailValid || (email.includes('@') && password.length < 8)}
+                >
+                  Create Account
+                  <ChevronRight className="h-4 w-4 ml-2" />
+                </Button>
+              </motion.div>
+            )}
           </div>
         </div>
       )}
