@@ -87,10 +87,11 @@ export default function Outreach() {
   // Copy feedback state tracking
   const [copiedContactIds, setCopiedContactIds] = useState<Set<number>>(new Set());
   
-  // Textarea ref for auto-resizing
+  // Textarea refs for auto-resizing
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const promptTextareaRef = useRef<HTMLTextAreaElement>(null);
 
-  // Auto-resize function
+  // Auto-resize functions
   const handleTextareaResize = () => {
     const textarea = textareaRef.current;
     if (textarea) {
@@ -100,10 +101,24 @@ export default function Outreach() {
     }
   };
 
-  // Auto-resize on emailContent changes
+  const handlePromptTextareaResize = () => {
+    const textarea = promptTextareaRef.current;
+    if (textarea) {
+      textarea.style.height = 'auto';
+      // Current 4-line height is roughly 100px, so half would be ~50px, but let's use 60px for 2 lines
+      const newHeight = Math.min(textarea.scrollHeight, 100); // 100px max (current 4-line height)
+      textarea.style.height = `${newHeight}px`;
+    }
+  };
+
+  // Auto-resize on content changes
   useEffect(() => {
     handleTextareaResize();
   }, [emailContent]);
+
+  useEffect(() => {
+    handlePromptTextareaResize();
+  }, [emailPrompt]);
 
   // Load state from localStorage on component mount
   useEffect(() => {
@@ -835,11 +850,15 @@ export default function Outreach() {
               {/* Email Prompt Field */}
               <div>
                 <Textarea
+                  ref={promptTextareaRef}
                   placeholder="Enter your prompt for email generation..."
                   value={emailPrompt}
-                  onChange={(e) => setEmailPrompt(e.target.value)}
-                  className="resize-none"
-                  rows={4}
+                  onChange={(e) => {
+                    setEmailPrompt(e.target.value);
+                    handlePromptTextareaResize();
+                  }}
+                  className="resize-none transition-all duration-200"
+                  style={{ minHeight: '60px', maxHeight: '100px' }}
                 />
               </div>
 
