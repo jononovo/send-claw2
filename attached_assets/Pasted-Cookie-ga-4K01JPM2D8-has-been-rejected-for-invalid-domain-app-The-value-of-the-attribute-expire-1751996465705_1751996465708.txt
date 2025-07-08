@@ -1,0 +1,79 @@
+Cookie “_ga_4K01JPM2D8” has been rejected for invalid domain. app
+The value of the attribute “expires” for the cookie “_ga_4K01JPM2D8” has been overwritten. app
+Cookie “_ga_4K01JPM2D8” has been rejected for invalid domain. app
+Cookie “_ga” has been rejected for invalid domain. app
+Starting Firebase initialization... 
+Object { timestamp: "2025-07-08T17:39:04.624Z", domain: "5duck.replit.app" }
+index-BkjhacfA.js:1744:2276
+Raw environment variables: 
+Object { apiKey: "....aDbuzU", projectId: "fire-5-ducks", appId: "....b133e8", mode: "production", dev: false, prod: true, domain: "5duck.replit.app" }
+index-BkjhacfA.js:1744:1472
+Firebase Configuration: 
+Object { hasApiKey: true, hasProjectId: true, hasAppId: true, authDomain: "fire-5-ducks.firebaseapp.com", environment: "production", domain: "5duck.replit.app" }
+index-BkjhacfA.js:1744:2021
+Firebase initialized successfully: 
+Object { domain: "5duck.replit.app", isAuth: true, isProvider: true, authDomain: "fire-5-ducks.firebaseapp.com", timestamp: "2025-07-08T17:39:04.625Z" }
+index-BkjhacfA.js:1746:1069
+Setting up Firebase auth state listener index-BkjhacfA.js:1746:6952
+Firebase auth state changed: undefined index-BkjhacfA.js:1746:7121
+Firebase persistence set to LOCAL index-BkjhacfA.js:1746:54
+User signed out, removed auth token index-BkjhacfA.js:1746:1015
+PromptEditor received config update: 
+Object { enableCoreLeadership: true, enableDepartmentHeads: false, enableMiddleManagement: false, enableCustomSearch: false, customSearchTarget: "", enableCustomSearch2: false, customSearchTarget2: "" }
+prompt-editor-D6jQmkFw.js:57:8536
+PromptEditor received config update: 
+Object { enableCoreLeadership: true, enableDepartmentHeads: false, enableMiddleManagement: false, enableCustomSearch: false, customSearchTarget: "", enableCustomSearch2: false, customSearchTarget2: "" }
+prompt-editor-D6jQmkFw.js:57:8536
+Found pending search query: Recently exited startups in Miami home-BKtEtmwK.js:29:18440
+PromptEditor received config update: 
+Object { enableCoreLeadership: true, enableDepartmentHeads: false, enableMiddleManagement: false, enableCustomSearch: false, customSearchTarget: "", enableCustomSearch2: false, customSearchTarget2: "" }
+prompt-editor-D6jQmkFw.js:57:8536
+Saving search state: 
+Object { query: "Recently exited startups in Miami", resultsCount: undefined, listId: null, companies: undefined }
+home-BKtEtmwK.js:29:21548
+Starting Google sign-in process 
+Object { environment: "production", domain: "5duck.replit.app", origin: "https://5duck.replit.app" }
+index-BkjhacfA.js:1746:3985
+Calling signInWithPopup... index-BkjhacfA.js:1746:4409
+Storage access automatically granted for origin “https://fire-5-ducks.firebaseapp.com” on “https://5duck.replit.app”.
+Partitioned cookie or storage access was provided to “https://fire-5-ducks.firebaseapp.com/__/auth/iframe?apiKey=AIzaSyAbDndoG_9yPbRRTL0poQo3wuq0RaDbuzU&appName=%5BDEFAULT%5D&v=11.3.1&eid=p&usegapi=1&jsh=m%3B%2F_%2Fscs%2Fabc-static%2F_%2Fjs%2Fk%3Dgapi.lb.en.iFs_Bhrqdio.O%2Fd%3D1%2Frs%3DAHpOoo-IvlQWaLHZdUKQFbafXd_3OEvU9Q%2Fm%3D__features__#id=I0_1751996350375&_gfid=I0_1751996350375&parent=https%3A%2F%2F5duck.replit.app&pfname=&rpctoken=27474996” because it is loaded in the third-party context and dynamic state partitioning is enabled. iframe.js:306:226
+Storage access automatically granted for origin “https://accounts.google.com” on “https://5duck.replit.app”. 2
+Firebase auth state changed: novotny.jonathan@gmail.com index-BkjhacfA.js:1746:7121
+SignInWithPopup completed 
+Object { success: true, hasUser: true, hasEmail: true, hasCredential: true, hasAccessToken: true, credentialType: "google.com", scopes: undefined, timestamp: "2025-07-08T17:39:34.643Z" }
+index-BkjhacfA.js:1746:4541
+Google sign-in successful, syncing with backend 
+Object { email: "novotny.jonathan@...", displayName: "Jonathan Novotny" }
+index-BkjhacfA.js:1746:4908
+Auth token set successfully: 
+Object { uid: "pQ2xSlp1IEULrMG3MVok0eJ2IYz2", email: "novotny.jonathan@...", timestamp: "2025-07-08T17:39:34.725Z" }
+index-BkjhacfA.js:1746:491
+Making backend sync request 
+Object { endpoint: "/api/google-auth", domain: "5duck.replit.app" }
+index-BkjhacfA.js:1746:5955
+Making backend sync request 
+Object { endpoint: "/api/google-auth", domain: "5duck.replit.app" }
+index-BkjhacfA.js:1746:5955
+Successfully synced with backend 2 index-BkjhacfA.js:1746:6550
+Registration success detected, triggering welcome notification home-BKtEtmwK.js:29:20427
+Extracted guest data: 
+Object { originalQuery: "Recently exited startups in Miami" }
+home-BKtEtmwK.js:29:20578
+Guest data cleared successfully home-BKtEtmwK.js:29:20932
+Restored guest query to input: Recently exited startups in Miami home-BKtEtmwK.js:29:21016
+API Request: POST /api/notifications/trigger 
+Object { hasData: true, timestamp: "2025-07-08T17:39:37.635Z" }
+index-BkjhacfA.js:49:43308
+API Request: POST /api/notifications/mark-shown 
+Object { hasData: true, timestamp: "2025-07-08T17:39:39.292Z" }
+index-BkjhacfA.js:49:43308
+QuickTemplates - Loaded templates: 
+Array []
+outreach-b72xwumx.js:55:5251
+QuickTemplates - Loaded templates: 
+Array [ {…} ]
+outreach-b72xwumx.js:55:5251
+QuickTemplates - Loaded templates: 
+Array [ {…} ]
+outreach-b72xwumx.js:55:5251
+Page focused - invalidating contact caches for fresh data 2 outreach-b72xwumx.js:55:13435
