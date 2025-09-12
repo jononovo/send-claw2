@@ -10,7 +10,7 @@ import {
   companies,
   communicationHistory
 } from '@shared/schema';
-import { eq, and, lte, sql, not } from 'drizzle-orm';
+import { eq, and, lte, sql, not, desc } from 'drizzle-orm';
 import { persistentScheduler as outreachScheduler } from './services/persistent-scheduler';
 import { batchGenerator } from './services/batch-generator';
 import { sendGridService } from './services/sendgrid-service';
@@ -259,6 +259,86 @@ router.post('/trigger', requireAuth, async (req: Request, res: Response) => {
   } catch (error) {
     console.error('Error triggering manual outreach:', error);
     res.status(500).json({ error: 'Failed to trigger outreach' });
+  }
+});
+
+// Send test email endpoint
+router.post('/send-test-email', requireAuth, async (req: Request, res: Response) => {
+  try {
+    const userId = (req as any).user?.id;
+    if (!userId) {
+      return res.status(401).json({ error: 'Not authenticated' });
+    }
+    
+    // Get user details
+    const [user] = await db
+      .select()
+      .from(users)
+      .where(eq(users.id, userId));
+    
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    
+    // Check if SendGrid is configured
+    if (!process.env.SENDGRID_API_KEY) {
+      return res.json({ 
+        success: false, 
+        message: 'SendGrid is not configured. Please add SENDGRID_API_KEY to environment variables.' 
+      });
+    }
+    
+    // Try to get the most recent batch for the user (for testing with real data)
+    const [recentBatch] = await db
+      .select()
+      .from(dailyOutreachBatches)
+      .where(eq(dailyOutreachBatches.userId, userId))
+      .orderBy(desc(dailyOutreachBatches.createdAt))
+      .limit(1);
+    
+    // Create a sample batch if no real batch exists
+    let testBatch: any = recentBatch;
+    
+    if (!testBatch) {
+      // Create a minimal test batch structure for the email
+      testBatch = {
+        id: 0,
+        userId,
+        batchDate: new Date(),
+        secureToken: 'test-email-token',
+        status: 'test',
+        expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
+        createdAt: new Date(),
+        items: [],
+        hasContacts: true,
+        companiesByType: [{ type: 'Test prospects', count: 5 }]
+      };
+    } else {
+      // Add required properties for existing batch
+      testBatch = {
+        ...testBatch,
+        items: [],
+        hasContacts: true,
+        companiesByType: [{ type: 'B2B prospects', count: 5 }]
+      };
+    }
+    
+    // Send test email
+    const sent = await sendGridService.sendDailyNudgeEmail(user, testBatch);
+    
+    res.json({ 
+      success: sent, 
+      message: sent 
+        ? `Test email sent successfully to ${user.email}` 
+        : 'Failed to send test email. Please check SendGrid configuration.'
+    });
+  } catch (error) {
+    console.error('Error sending test email:', error);
+    res.status(500).json({ 
+      success: false,
+      error: 'Failed to send test email',
+      message: error instanceof Error ? error.message : 'Unknown error'
+    });
   }
 });
 

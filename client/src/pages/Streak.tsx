@@ -204,6 +204,35 @@ export default function StreakPage() {
     }
   });
 
+  // Send test email mutation
+  const sendTestEmail = useMutation({
+    mutationFn: async () => {
+      const res = await apiRequest('POST', '/api/daily-outreach/send-test-email');
+      return res.json();
+    },
+    onSuccess: (data: any) => {
+      if (data.success) {
+        toast({
+          title: 'Test email sent!',
+          description: 'Check your inbox for the test notification email'
+        });
+      } else {
+        toast({
+          title: 'Failed to send test email',
+          description: data.message || 'Please check your SendGrid configuration',
+          variant: 'destructive'
+        });
+      }
+    },
+    onError: () => {
+      toast({
+        title: 'Error sending test email',
+        description: 'Please verify your SendGrid settings are configured correctly',
+        variant: 'destructive'
+      });
+    }
+  });
+
   // Set active product mutation
   const setActiveProduct = useMutation({
     mutationFn: async (productId: number) => {
@@ -491,6 +520,16 @@ export default function StreakPage() {
                   <RefreshCw className={cn("h-4 w-4 mr-2", triggerEmail.isPending && "animate-spin")} />
                   Re-generate
                 </Button>
+                <Button 
+                  onClick={() => sendTestEmail.mutate()} 
+                  size="sm" 
+                  className="w-full text-xs h-7 mt-4"
+                  variant="ghost"
+                  disabled={sendTestEmail.isPending}
+                >
+                  <Mail className={cn("h-3 w-3 mr-1", sendTestEmail.isPending && "animate-pulse")} />
+                  Send Test Email
+                </Button>
               </div>
             ) : (
               <div className="space-y-3">
@@ -504,6 +543,16 @@ export default function StreakPage() {
                 >
                   <RefreshCw className={cn("h-4 w-4 mr-2", triggerEmail.isPending && "animate-spin")} />
                   Generate Now
+                </Button>
+                <Button 
+                  onClick={() => sendTestEmail.mutate()} 
+                  size="sm" 
+                  className="w-full text-xs h-7 mt-4"
+                  variant="ghost"
+                  disabled={sendTestEmail.isPending}
+                >
+                  <Mail className={cn("h-3 w-3 mr-1", sendTestEmail.isPending && "animate-pulse")} />
+                  Send Test Email
                 </Button>
               </div>
             )}
