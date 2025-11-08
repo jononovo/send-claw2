@@ -42,6 +42,7 @@ import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import type { Campaign } from "@shared/schema";
 import { CampaignProgressSection } from "@/components/campaign/CampaignProgressSection";
+import { AutopilotModal, type AutopilotSettings } from "@/components/autopilot-modal";
 
 interface RecipientInfo {
   id: number;
@@ -244,6 +245,7 @@ export default function CampaignDetail() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
   const [isEditMode, setIsEditMode] = useState(false);
+  const [autopilotModalOpen, setAutopilotModalOpen] = useState(false);
 
   const { data: campaign, isLoading, error } = useQuery<CampaignWithMetrics>({
     queryKey: ['/api/campaigns', campaignId],
@@ -802,38 +804,14 @@ export default function CampaignDetail() {
                 {campaign.autopilotEnabled && campaign.autopilotSettings && (
                   <div className="flex justify-between items-start">
                     <span className="text-sm text-muted-foreground">Sending schedule</span>
-                    <div className="text-sm font-medium text-right">
-                      {(() => {
-                        try {
-                          const settings = typeof campaign.autopilotSettings === 'string' 
-                            ? JSON.parse(campaign.autopilotSettings) 
-                            : campaign.autopilotSettings;
-                          
-                          // Check if autopilot is enabled and has days configured
-                          if (!settings.days) {
-                            return 'No schedule set';
-                          }
-                          
-                          // Iterate over the days object, not the root settings object
-                          const activeDays = Object.entries(settings.days)
-                            .filter(([_, config]: [string, any]) => config && config.enabled)
-                            .map(([day, config]: [string, any]) => {
-                              const dayAbbr = day.slice(0, 3).charAt(0).toUpperCase() + day.slice(1, 3);
-                              return `${dayAbbr} ${config.startTime || '09:00'}-${config.endTime || '17:00'}`;
-                            });
-                          
-                          // If there are many days, just show a summary
-                          if (activeDays.length > 3) {
-                            return `${activeDays.length} days scheduled`;
-                          }
-                          
-                          return activeDays.length > 0 ? activeDays.join(', ') : 'No schedule set';
-                        } catch (e) {
-                          console.error('Error parsing autopilot settings:', e);
-                          return 'No schedule set';
-                        }
-                      })()}
-                    </div>
+                    <Button
+                      variant="link"
+                      size="sm"
+                      className="h-auto p-0 text-sm font-medium"
+                      onClick={() => setAutopilotModalOpen(true)}
+                    >
+                      View Schedule
+                    </Button>
                   </div>
                 )}
                 
@@ -1204,6 +1182,29 @@ export default function CampaignDetail() {
           </Card>
         </TabsContent>
       </Tabs>
+      
+      {/* Autopilot Modal for viewing/editing schedule */}
+      {campaign && campaign.autopilotSettings && (
+        <AutopilotModal
+          open={autopilotModalOpen}
+          onOpenChange={setAutopilotModalOpen}
+          settings={typeof campaign.autopilotSettings === 'string' 
+            ? JSON.parse(campaign.autopilotSettings) 
+            : campaign.autopilotSettings}
+          onApply={async (newSettings: AutopilotSettings) => {
+            // Update the campaign with new autopilot settings
+            await updateCampaignMutation.mutateAsync({
+              autopilotSettings: newSettings
+            });
+            setAutopilotModalOpen(false);
+            toast({
+              title: "Schedule Updated",
+              description: "Campaign autopilot schedule has been updated successfully.",
+            });
+          }}
+          totalEmails={campaign.totalRecipients || 100}
+        />
+      )}
     </div>
   );
 }
