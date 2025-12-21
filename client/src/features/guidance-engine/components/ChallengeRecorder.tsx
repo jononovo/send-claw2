@@ -2,11 +2,14 @@ import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLocation } from "wouter";
-import { Circle, Square, Loader2, Check, Copy, X, ChevronDown, Upload, Play } from "lucide-react";
+import { Circle, Square, Loader2, Check, Copy, X, ChevronDown, Upload, Play, Pencil, ArrowUp, ArrowDown, Trash2, Save } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { QUESTS } from "../quests";
 import { useGuidance } from "../context/GuidanceContext";
-import type { GeneratedChallenge, Challenge } from "../types";
+import type { GeneratedChallenge, Challenge, GuidanceStep } from "../types";
 
 interface ChallengeRecorderProps {
   isOpen: boolean;
@@ -26,6 +29,8 @@ export function ChallengeRecorder({ isOpen, onClose }: ChallengeRecorderProps) {
   const [isInserting, setIsInserting] = useState(false);
   const [insertResult, setInsertResult] = useState<{ success: boolean; message: string } | null>(null);
   const [isTesting, setIsTesting] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedChallenge, setEditedChallenge] = useState<GeneratedChallenge | null>(null);
   
   const guidance = useGuidance();
   const { recording, startRecording, stopRecording, clearRecording } = guidance;
@@ -141,6 +146,60 @@ export function ChallengeRecorder({ isOpen, onClose }: ChallengeRecorderProps) {
     setGeneratedChallenge(null);
     setError(null);
     setInsertResult(null);
+    setIsEditing(false);
+    setEditedChallenge(null);
+  };
+
+  const startEditing = () => {
+    if (generatedChallenge) {
+      setEditedChallenge(JSON.parse(JSON.stringify(generatedChallenge)));
+      setIsEditing(true);
+    }
+  };
+
+  const saveEdits = () => {
+    if (editedChallenge) {
+      setGeneratedChallenge(editedChallenge);
+      setIsEditing(false);
+      setInsertResult(null);
+    }
+  };
+
+  const cancelEdits = () => {
+    setIsEditing(false);
+    setEditedChallenge(null);
+  };
+
+  const updateChallengeMeta = (field: keyof GeneratedChallenge, value: string) => {
+    if (!editedChallenge) return;
+    setEditedChallenge({ ...editedChallenge, [field]: value });
+  };
+
+  const updateStep = (index: number, field: keyof GuidanceStep, value: string) => {
+    if (!editedChallenge) return;
+    const newSteps = [...editedChallenge.steps];
+    newSteps[index] = { ...newSteps[index], [field]: value };
+    setEditedChallenge({ ...editedChallenge, steps: newSteps });
+  };
+
+  const moveStepUp = (index: number) => {
+    if (!editedChallenge || index === 0) return;
+    const newSteps = [...editedChallenge.steps];
+    [newSteps[index - 1], newSteps[index]] = [newSteps[index], newSteps[index - 1]];
+    setEditedChallenge({ ...editedChallenge, steps: newSteps });
+  };
+
+  const moveStepDown = (index: number) => {
+    if (!editedChallenge || index === editedChallenge.steps.length - 1) return;
+    const newSteps = [...editedChallenge.steps];
+    [newSteps[index], newSteps[index + 1]] = [newSteps[index + 1], newSteps[index]];
+    setEditedChallenge({ ...editedChallenge, steps: newSteps });
+  };
+
+  const deleteStep = (index: number) => {
+    if (!editedChallenge) return;
+    const newSteps = editedChallenge.steps.filter((_, i) => i !== index);
+    setEditedChallenge({ ...editedChallenge, steps: newSteps });
   };
 
   const handleClose = () => {
@@ -301,12 +360,21 @@ export function ChallengeRecorder({ isOpen, onClose }: ChallengeRecorderProps) {
               </div>
             )}
 
-            {uiState === "complete" && generatedChallenge && (
+            {uiState === "complete" && generatedChallenge && !isEditing && (
               <>
                 <div className="space-y-2">
-                  <div className="flex items-center gap-2">
-                    <Check className="h-4 w-4 text-green-400" />
-                    <span className="text-sm font-medium text-white">Challenge Generated!</span>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Check className="h-4 w-4 text-green-400" />
+                      <span className="text-sm font-medium text-white">Challenge Generated!</span>
+                    </div>
+                    <button
+                      onClick={startEditing}
+                      className="text-gray-400 hover:text-amber-400 transition-colors"
+                      data-testid="edit-challenge"
+                    >
+                      <Pencil className="h-4 w-4" />
+                    </button>
                   </div>
                   
                   <button
@@ -372,6 +440,163 @@ export function ChallengeRecorder({ isOpen, onClose }: ChallengeRecorderProps) {
                   </div>
                 </div>
               </>
+            )}
+
+            {uiState === "complete" && isEditing && editedChallenge && (
+              <div className="space-y-3 max-h-[60vh] overflow-y-auto">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium text-white">Edit Challenge</span>
+                  <div className="flex gap-1">
+                    <button
+                      onClick={cancelEdits}
+                      className="text-gray-400 hover:text-white transition-colors p-1"
+                      data-testid="cancel-edit"
+                    >
+                      <X className="h-4 w-4" />
+                    </button>
+                    <button
+                      onClick={saveEdits}
+                      className="text-green-400 hover:text-green-300 transition-colors p-1"
+                      data-testid="save-edit"
+                    >
+                      <Save className="h-4 w-4" />
+                    </button>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <div className="flex gap-2">
+                    <div className="w-12">
+                      <label className="text-xs text-gray-500">Emoji</label>
+                      <Input
+                        value={editedChallenge.emoji}
+                        onChange={(e) => updateChallengeMeta("emoji", e.target.value)}
+                        className="bg-gray-800 border-gray-600 text-white text-center px-1"
+                        data-testid="edit-emoji"
+                      />
+                    </div>
+                    <div className="flex-1">
+                      <label className="text-xs text-gray-500">Name</label>
+                      <Input
+                        value={editedChallenge.name}
+                        onChange={(e) => updateChallengeMeta("name", e.target.value)}
+                        className="bg-gray-800 border-gray-600 text-white"
+                        data-testid="edit-name"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="text-xs text-gray-500">Description</label>
+                    <Textarea
+                      value={editedChallenge.description}
+                      onChange={(e) => updateChallengeMeta("description", e.target.value)}
+                      className="bg-gray-800 border-gray-600 text-white text-sm resize-none"
+                      rows={2}
+                      data-testid="edit-description"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-xs text-gray-500">Completion Message</label>
+                    <Textarea
+                      value={editedChallenge.completionMessage}
+                      onChange={(e) => updateChallengeMeta("completionMessage", e.target.value)}
+                      className="bg-gray-800 border-gray-600 text-white text-sm resize-none"
+                      rows={2}
+                      data-testid="edit-completion-message"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-xs text-gray-500 uppercase tracking-wide">Steps ({editedChallenge.steps.length})</label>
+                  
+                  {editedChallenge.steps.map((step, idx) => (
+                    <div key={step.id || idx} className="bg-gray-800 rounded-lg p-2 space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs text-amber-400 font-medium">Step {idx + 1}</span>
+                        <div className="flex items-center gap-1">
+                          <button
+                            onClick={() => moveStepUp(idx)}
+                            disabled={idx === 0}
+                            className="text-gray-400 hover:text-white disabled:opacity-30 p-0.5"
+                            data-testid={`step-up-${idx}`}
+                          >
+                            <ArrowUp className="h-3 w-3" />
+                          </button>
+                          <button
+                            onClick={() => moveStepDown(idx)}
+                            disabled={idx === editedChallenge.steps.length - 1}
+                            className="text-gray-400 hover:text-white disabled:opacity-30 p-0.5"
+                            data-testid={`step-down-${idx}`}
+                          >
+                            <ArrowDown className="h-3 w-3" />
+                          </button>
+                          <button
+                            onClick={() => deleteStep(idx)}
+                            className="text-red-400 hover:text-red-300 p-0.5"
+                            data-testid={`step-delete-${idx}`}
+                          >
+                            <Trash2 className="h-3 w-3" />
+                          </button>
+                        </div>
+                      </div>
+
+                      <Textarea
+                        value={step.instruction}
+                        onChange={(e) => updateStep(idx, "instruction", e.target.value)}
+                        className="bg-gray-700 border-gray-600 text-white text-xs resize-none"
+                        rows={2}
+                        placeholder="Instruction..."
+                        data-testid={`step-instruction-${idx}`}
+                      />
+
+                      <div className="flex gap-2">
+                        <div className="flex-1">
+                          <Select
+                            value={step.tooltipPosition || "auto"}
+                            onValueChange={(value) => updateStep(idx, "tooltipPosition", value)}
+                          >
+                            <SelectTrigger className="bg-gray-700 border-gray-600 text-white text-xs h-7" data-testid={`step-position-${idx}`}>
+                              <SelectValue placeholder="Position" />
+                            </SelectTrigger>
+                            <SelectContent className="bg-gray-800 border-gray-600">
+                              <SelectItem value="auto" className="text-white text-xs">Auto</SelectItem>
+                              <SelectItem value="top" className="text-white text-xs">Top</SelectItem>
+                              <SelectItem value="bottom" className="text-white text-xs">Bottom</SelectItem>
+                              <SelectItem value="left" className="text-white text-xs">Left</SelectItem>
+                              <SelectItem value="right" className="text-white text-xs">Right</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div className="flex-1">
+                          <span className="text-[10px] text-gray-500 truncate block">{step.selector}</span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="flex gap-2 pt-2">
+                  <Button
+                    onClick={cancelEdits}
+                    variant="outline"
+                    className="flex-1 border-gray-600 text-white hover:bg-gray-800"
+                    data-testid="cancel-edit-btn"
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    onClick={saveEdits}
+                    className="flex-1 bg-green-600 hover:bg-green-700 text-white"
+                    data-testid="save-edit-btn"
+                  >
+                    <Save className="h-4 w-4 mr-2" />
+                    Save Changes
+                  </Button>
+                </div>
+              </div>
             )}
           </div>
         </motion.div>
