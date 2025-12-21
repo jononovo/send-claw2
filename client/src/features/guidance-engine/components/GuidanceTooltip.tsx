@@ -185,6 +185,7 @@ export function GuidanceTooltip({
           className="fixed z-[9999] w-[260px] bg-gray-800 text-white rounded-lg shadow-2xl border border-yellow-500/30"
           style={{ top: coords.top, left: coords.left }}
           data-testid="guidance-tooltip"
+          data-recorder-ui="true"
         >
           <div style={arrowStyles[coords.arrowPosition]} />
           
