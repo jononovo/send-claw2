@@ -460,7 +460,10 @@ export function useGuidanceEngine(options: UseGuidanceEngineOptions): GuidanceCo
       return `#${element.id}`;
     }
     if (element.className && typeof element.className === 'string') {
-      const classes = element.className.split(' ').filter(c => c && !c.startsWith('hover:') && !c.startsWith('focus:'));
+      const classes = element.className
+        .split(' ')
+        .filter(c => c && !c.startsWith('hover:') && !c.startsWith('focus:'))
+        .map(c => c.replace(/\[/g, '\\[').replace(/\]/g, '\\]')); // Escape brackets in Tailwind arbitrary value classes
       if (classes.length > 0) {
         const uniqueClasses = classes.slice(0, 3).join('.');
         return `${element.tagName.toLowerCase()}.${uniqueClasses}`;
