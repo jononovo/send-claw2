@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLocation } from "wouter";
-import { Circle, Square, Loader2, Check, Copy, X, ChevronDown, Upload, Play, Pencil, ArrowUp, ArrowDown, Trash2, Save } from "lucide-react";
+import { Circle, Square, Loader2, Check, Copy, X, ChevronDown, Upload, Play, Pencil, ArrowUp, ArrowDown, Trash2, Save, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -31,15 +31,18 @@ export function ChallengeRecorder({ isOpen, onClose }: ChallengeRecorderProps) {
   const [isTesting, setIsTesting] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editedChallenge, setEditedChallenge] = useState<GeneratedChallenge | null>(null);
+  const [isAddingStep, setIsAddingStep] = useState(false);
+  const [stepCountBeforeAdd, setStepCountBeforeAdd] = useState(0);
   
   const guidance = useGuidance();
   const { recording, startRecording, stopRecording, clearRecording } = guidance;
 
   useEffect(() => {
-    if (recording.isRecording && uiState !== "recording") {
+    // Don't switch to recording UI if we're just adding a single step
+    if (recording.isRecording && uiState !== "recording" && !isAddingStep) {
       setUIState("recording");
     }
-  }, [recording.isRecording, uiState]);
+  }, [recording.isRecording, uiState, isAddingStep]);
 
   useEffect(() => {
     if (recording.selectedQuestId && recording.selectedQuestId !== selectedQuestId) {
@@ -148,6 +151,7 @@ export function ChallengeRecorder({ isOpen, onClose }: ChallengeRecorderProps) {
     setInsertResult(null);
     setIsEditing(false);
     setEditedChallenge(null);
+    setIsAddingStep(false);
   };
 
   const startEditing = () => {
@@ -166,8 +170,12 @@ export function ChallengeRecorder({ isOpen, onClose }: ChallengeRecorderProps) {
   };
 
   const cancelEdits = () => {
+    if (isAddingStep) {
+      stopRecording();
+    }
     setIsEditing(false);
     setEditedChallenge(null);
+    setIsAddingStep(false);
   };
 
   const updateChallengeMeta = (field: keyof GeneratedChallenge, value: string) => {
@@ -202,6 +210,37 @@ export function ChallengeRecorder({ isOpen, onClose }: ChallengeRecorderProps) {
     setEditedChallenge({ ...editedChallenge, steps: newSteps });
   };
 
+  const startAddingStep = () => {
+    setStepCountBeforeAdd(recording.steps.length);
+    setIsAddingStep(true);
+    startRecording(selectedQuestId, location);
+  };
+
+  // Effect to capture single step when in "add step" mode
+  useEffect(() => {
+    if (isAddingStep && recording.steps.length > stepCountBeforeAdd) {
+      const lastStep = recording.steps[recording.steps.length - 1];
+      const newStep: GuidanceStep = {
+        id: `step-${Date.now()}`,
+        selector: lastStep.selector,
+        action: lastStep.action,
+        instruction: lastStep.textContent || "Click here",
+        tooltipPosition: "auto",
+        route: lastStep.route,
+      };
+      
+      if (editedChallenge) {
+        setEditedChallenge({
+          ...editedChallenge,
+          steps: [...editedChallenge.steps, newStep],
+        });
+      }
+      
+      stopRecording();
+      setIsAddingStep(false);
+    }
+  }, [isAddingStep, recording.steps.length, stepCountBeforeAdd, editedChallenge, stopRecording]);
+
   const handleClose = () => {
     clearRecording();
     setUIState("idle");
@@ -209,6 +248,7 @@ export function ChallengeRecorder({ isOpen, onClose }: ChallengeRecorderProps) {
     setError(null);
     setDropdownOpen(false);
     setInsertResult(null);
+    setIsAddingStep(false);
     onClose();
   };
 
@@ -510,7 +550,34 @@ export function ChallengeRecorder({ isOpen, onClose }: ChallengeRecorderProps) {
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-xs text-gray-500 uppercase tracking-wide">Steps ({editedChallenge.steps.length})</label>
+                  <div className="flex items-center justify-between">
+                    <label className="text-xs text-gray-500 uppercase tracking-wide">Steps ({editedChallenge.steps.length})</label>
+                    <button
+                      onClick={startAddingStep}
+                      disabled={isAddingStep}
+                      className="flex items-center gap-1 text-xs text-amber-400 hover:text-amber-300 disabled:opacity-50 transition-colors"
+                      data-testid="add-step-btn"
+                    >
+                      <Plus className="h-3 w-3" />
+                      <span>Add Step</span>
+                    </button>
+                  </div>
+                  
+                  {isAddingStep && (
+                    <div className="bg-amber-900/30 border border-amber-500/50 rounded-lg p-3 text-center">
+                      <div className="flex items-center justify-center gap-2 text-amber-400">
+                        <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+                        <span className="text-xs font-medium">Click an element to add as a step...</span>
+                      </div>
+                      <button
+                        onClick={() => { stopRecording(); setIsAddingStep(false); }}
+                        className="mt-2 text-xs text-gray-400 hover:text-white"
+                        data-testid="cancel-add-step"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  )}
                   
                   {editedChallenge.steps.map((step, idx) => (
                     <div key={step.id || idx} className="bg-gray-800 rounded-lg p-2 space-y-2">
