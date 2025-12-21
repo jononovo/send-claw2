@@ -20,7 +20,14 @@ export function GuidanceTooltip({
   const animationRef = useRef<number>();
 
   const calculatePosition = useCallback(() => {
-    const element = document.querySelector(targetSelector);
+    let element: Element | null = null;
+    try {
+      element = document.querySelector(targetSelector);
+    } catch (e) {
+      // Invalid selector (e.g., Tailwind classes with brackets like min-h-[80px])
+      setCoords(null);
+      return;
+    }
     if (!element) {
       setCoords(null);
       return;
