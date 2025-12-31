@@ -64,6 +64,7 @@ export function QuestProgressHeader({
           transition={{ type: "spring", stiffness: 300, damping: 30 }}
           className="fixed top-0 left-0 right-0 z-50 flex justify-center pointer-events-none"
           data-testid="quest-progress-header"
+          data-recorder-ui="true"
         >
           <motion.div
             onMouseEnter={handleMouseEnter}

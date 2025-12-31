@@ -20,7 +20,14 @@ export function GuidanceTooltip({
   const animationRef = useRef<number>();
 
   const calculatePosition = useCallback(() => {
-    const element = document.querySelector(targetSelector);
+    let element: Element | null = null;
+    try {
+      element = document.querySelector(targetSelector);
+    } catch (e) {
+      // Invalid selector (e.g., Tailwind classes with brackets like min-h-[80px])
+      setCoords(null);
+      return;
+    }
     if (!element) {
       setCoords(null);
       return;
@@ -178,6 +185,7 @@ export function GuidanceTooltip({
           className="fixed z-[9999] w-[260px] bg-gray-800 text-white rounded-lg shadow-2xl border border-yellow-500/30"
           style={{ top: coords.top, left: coords.left }}
           data-testid="guidance-tooltip"
+          data-recorder-ui="true"
         >
           <div style={arrowStyles[coords.arrowPosition]} />
           

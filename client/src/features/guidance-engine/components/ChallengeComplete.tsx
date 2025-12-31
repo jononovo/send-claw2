@@ -47,6 +47,7 @@ export function ChallengeComplete({
           exit={{ opacity: 0 }}
           className="fixed inset-0 z-[10000] flex items-center justify-center bg-black/60 backdrop-blur-sm"
           onClick={onDismiss}
+          data-recorder-ui="true"
         >
           <motion.div
             initial={{ scale: 0.5, opacity: 0, y: 50 }}

@@ -13,11 +13,16 @@ export function ElementHighlight({ targetSelector, isVisible }: ElementHighlight
     }
 
     const updatePosition = () => {
-      const element = document.querySelector(targetSelector);
-      if (element) {
-        const newRect = element.getBoundingClientRect();
-        setRect(newRect);
-      } else {
+      try {
+        const element = document.querySelector(targetSelector);
+        if (element) {
+          const newRect = element.getBoundingClientRect();
+          setRect(newRect);
+        } else {
+          setRect(null);
+        }
+      } catch (e) {
+        // Invalid selector (e.g., Tailwind classes with brackets like min-h-[80px])
         setRect(null);
       }
       animationRef.current = requestAnimationFrame(updatePosition);

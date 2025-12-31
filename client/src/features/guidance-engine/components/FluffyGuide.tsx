@@ -56,7 +56,7 @@ export function FluffyGuide({ onClick, isActive, onCloseGuide }: ExtendedFluffyG
   };
 
   return createPortal(
-    <>
+    <div data-recorder-ui="true">
       {/* Only show Fluffy button and menu when guidance is not active */}
       {!isActive && (
         <>
@@ -170,7 +170,7 @@ export function FluffyGuide({ onClick, isActive, onCloseGuide }: ExtendedFluffyG
         isOpen={showRecorder} 
         onClose={() => setShowRecorder(false)} 
       />
-    </>,
+    </div>,
     document.body
   );
 }
