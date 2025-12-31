@@ -51,5 +51,3 @@ integrations = ["javascript_sendgrid:1.0.0", "javascript_database:1.0.0", "javas
 [userenv]
 
 [userenv.shared]
-TESTING_VITE_STRIPE_PUBLIC_KEY = "sk_test_51RdAeFGfTiCdmxystWbvlrpGp2KPvfT3eyK5XYnLAC1NKymaEEzdRjy6hBDHiEzx3WtziBSZzBshEAtlyl067tjB001sL9GP2U"
-TESTING_STRIPE_SECRET_KEY = "pk_test_51RdAeFGfTiCdmxyss7J2AlaXTW1Wx3Fmkh6aKWwRh0JQQLzretbSiqoxSpMyaqg7ZCstCzR6KCTMBsgAYa7dSP9400rlqd2eD6"
