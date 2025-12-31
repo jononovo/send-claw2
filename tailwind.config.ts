@@ -36,6 +36,9 @@ export default {
         accent: {
           DEFAULT: "hsl(var(--accent))",
           foreground: "hsl(var(--accent-foreground))",
+          hover: "hsl(var(--accent-hover))",
+          active: "hsl(var(--accent-active))",
+          "border-hover": "hsl(var(--accent-border-hover))",
         },
         destructive: {
           DEFAULT: "hsl(var(--destructive))",
