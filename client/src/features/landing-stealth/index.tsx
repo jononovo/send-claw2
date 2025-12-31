@@ -11,6 +11,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { fireUnlockConfetti } from "@/features/animations";
 import { StealthOnboardingModal } from "./StealthOnboardingModal";
 import { FooterStealth } from "@/components/footer-stealth";
+import { DemoSimulationPlayer } from "@/features/demo-simulations";
 
 interface ApplyFormData {
   name: string;
@@ -146,6 +147,21 @@ export default function LandingStealth() {
       containerClass: "!bg-transparent !border-none !shadow-none !backdrop-blur-none",
       imageClass: "mix-blend-screen scale-125 object-contain"
     },
+    { 
+      text: "Workflow", 
+      component: (
+        <DemoSimulationPlayer 
+          simulation="search-composer-demo" 
+          width={400}
+          height={400}
+          className="shadow-none"
+        />
+      ), 
+      label: "See it in Action",
+      rotation: 0,
+      duration: 45000,
+      containerClass: "!bg-transparent !border-none !shadow-none !backdrop-blur-none !p-0"
+    },
     { text: "Sales", label: "Enter Code", duration: 30000 },
   ];
 
@@ -172,7 +188,7 @@ export default function LandingStealth() {
 
   useEffect(() => {
     // Pause cycling during registration/onboarding flows
-    if (currentIndex === 5 && code.length > 0) return;
+    if (currentIndex === 6 && code.length > 0) return;
     if (showAccessGranted) return;
     if (showQuestionnaire) return;
     if (isRegistrationModalOpen) return;
@@ -503,7 +519,7 @@ export default function LandingStealth() {
             </motion.div>
           </div>
 
-          {currentIndex !== 5 && (
+          {currentIndex !== 6 && (
             <div className="flex flex-col gap-4 w-full max-w-md mt-4">
               <div className="relative flex-1 group/input flex items-center">
                 <Input 
@@ -513,7 +529,7 @@ export default function LandingStealth() {
                   value={code}
                   onChange={(e) => setCode(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && code.length >= 5 && handleQuack()}
-                  onFocus={() => setCurrentIndex(5)}
+                  onFocus={() => setCurrentIndex(6)}
                   data-testid="input-secret-code"
                 />
 
@@ -541,7 +557,7 @@ export default function LandingStealth() {
             </div>
           )}
 
-          {isMounted && currentIndex === 5 && !showQuestionnaire && createPortal(
+          {isMounted && currentIndex === 6 && !showQuestionnaire && createPortal(
             <>
               <motion.div
                 initial={{ opacity: 0 }}
@@ -823,7 +839,7 @@ export default function LandingStealth() {
               className="text-muted-foreground hover:text-gray-400 transition-colors font-heading cursor-pointer" 
               data-testid="link-apply"
               onClick={() => {
-                setCurrentIndex(5);
+                setCurrentIndex(6);
                 setShowApplyForm(true);
               }}
             >
@@ -834,7 +850,7 @@ export default function LandingStealth() {
 
         <div className="relative flex items-center justify-center w-full h-[500px]">
            <AnimatePresence mode="wait">
-             {currentIndex !== 0 && currentIndex !== 5 && (
+             {currentIndex !== 0 && currentIndex !== 6 && (
                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] max-w-md aspect-video z-10">
                  <motion.div
                    key="visual-context-right"
@@ -847,14 +863,22 @@ export default function LandingStealth() {
                  >
                     <div className="absolute inset-0 bg-gradient-to-tr from-primary/30 to-cyan-400/30 rounded-2xl blur-2xl transform scale-105 opacity-60" />
 
-                    <div className="relative w-full h-full rounded-2xl overflow-hidden border border-white/10 shadow-2xl bg-black/50 backdrop-blur-sm group">
-                      <div className="absolute inset-0 bg-gradient-to-tr from-primary/10 to-cyan-400/10 opacity-50" />
-                      <img 
-                        src={content[currentIndex].image} 
-                        alt={content[currentIndex].label}
-                        loading="lazy"
-                        className="w-full h-full object-cover opacity-90 transition-transform duration-700 group-hover:scale-105"
-                      />
+                    <div className={`relative w-full h-full rounded-2xl overflow-hidden border border-white/10 shadow-2xl bg-black/50 backdrop-blur-sm group ${(content[currentIndex] as any).containerClass || ''}`}>
+                      {!(content[currentIndex] as any).containerClass?.includes('!bg-transparent') && (
+                        <div className="absolute inset-0 bg-gradient-to-tr from-primary/10 to-cyan-400/10 opacity-50" />
+                      )}
+                      {(content[currentIndex] as any).component ? (
+                        <div className="w-full h-full flex items-center justify-center">
+                          {(content[currentIndex] as any).component}
+                        </div>
+                      ) : (
+                        <img 
+                          src={(content[currentIndex] as any).image} 
+                          alt={content[currentIndex].label}
+                          loading="lazy"
+                          className={`w-full h-full object-cover opacity-90 transition-transform duration-700 group-hover:scale-105 ${(content[currentIndex] as any).imageClass || ''}`}
+                        />
+                      )}
                     </div>
                  </motion.div>
                </div>
