@@ -150,11 +150,12 @@ export default function LandingStealth() {
     },
     { 
       text: "Workflow", 
+      type: "demo",
       component: (
         <DemoSimulationPlayer 
           simulation="search-composer-demo" 
-          width={400}
-          height={400}
+          width={520}
+          height={520}
           className="shadow-none"
         />
       ), 
@@ -852,7 +853,11 @@ export default function LandingStealth() {
         <div className="relative flex items-center justify-center w-full h-[500px]">
            <AnimatePresence mode="wait">
              {currentIndex !== 0 && currentIndex !== 6 && (
-               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] max-w-md aspect-video z-10">
+               <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 ${
+                 (content[currentIndex] as any).type === 'demo' 
+                   ? 'w-[520px] h-[520px] max-w-[90vw] max-h-[90vw]' 
+                   : 'w-[80%] max-w-md aspect-video'
+               }`}>
                  <motion.div
                    key="visual-context-right"
                    layoutId="visual-context"
@@ -862,7 +867,9 @@ export default function LandingStealth() {
                    transition={{ duration: 0.6, ease: "circOut" }}
                    className="w-full h-full"
                  >
-                    <div className="absolute inset-0 bg-gradient-to-tr from-primary/30 to-cyan-400/30 rounded-2xl blur-2xl transform scale-105 opacity-60" />
+                    {(content[currentIndex] as any).type !== 'demo' && (
+                      <div className="absolute inset-0 bg-gradient-to-tr from-primary/30 to-cyan-400/30 rounded-2xl blur-2xl transform scale-105 opacity-60" />
+                    )}
 
                     <div className={`relative w-full h-full rounded-2xl overflow-hidden border border-white/10 shadow-2xl bg-black/50 backdrop-blur-sm group ${(content[currentIndex] as any).containerClass || ''}`}>
                       {!(content[currentIndex] as any).containerClass?.includes('!bg-transparent') && (
