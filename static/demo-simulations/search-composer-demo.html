@@ -8,18 +8,36 @@
   <style>
     * { box-sizing: border-box; }
     
-    html, body {
-      margin: 0;
-      padding: 0;
-      width: 520px;
-      height: 520px;
-      overflow: hidden;
-      background-color: #f5f5f4;
-    }
-    
     @keyframes fadeInUp {
       from { opacity: 0; transform: translateY(12px); }
       to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes slideInFromLeft {
+      from { opacity: 0; transform: translateX(-30px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+    
+    @keyframes bounceIn {
+      0% { transform: translateX(100%); }
+      60% { transform: translateX(-10px); }
+      80% { transform: translateX(5px); }
+      100% { transform: translateX(0); }
+    }
+    
+    @keyframes buttonPulse {
+      0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.5); }
+      70% { box-shadow: 0 0 0 8px rgba(59, 130, 246, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
+    }
+    
+    .card-animate {
+      animation: slideInFromLeft 0.4s ease-out forwards;
+      opacity: 0;
+    }
+    
+    .btn-pulse {
+      animation: buttonPulse 1s ease-out infinite;
     }
     
     @keyframes slideDown {
@@ -151,7 +169,7 @@
     }
     
     #compose-slider.open {
-      animation: slideInRight 0.3s ease-out forwards;
+      animation: bounceIn 0.5s ease-out forwards;
     }
     
     @keyframes slideInRight {
@@ -171,7 +189,7 @@
     }
     
     .confetti {
-      position: fixed;
+      position: absolute;
       width: 10px;
       height: 10px;
       animation: confetti 1s ease-out forwards;
@@ -179,7 +197,7 @@
     
     #success-toast {
       position: absolute;
-      top: 60%;
+      top: 50%;
       left: 50%;
       transform: translate(-50%, -50%) scale(0);
       background: white;
@@ -200,7 +218,7 @@
     #demo-viewport {
       width: 520px;
       height: 520px;
-      margin: 0;
+      margin: 0 auto;
       overflow: hidden;
       background: #f5f5f4;
       position: relative;
@@ -450,7 +468,7 @@
                   <h5 class="font-medium text-slate-800">Richard Berke</h5>
                   <p class="text-sm text-slate-500">Managing Director: Global Head of HR</p>
                   <div class="flex items-center gap-2 mt-0.5">
-                    <span class="text-sm text-slate-500">rberke@quilvestcapital.com</span>
+                    <span class="text-sm text-slate-500">r.berke@quilvest.com</span>
                     <svg class="w-4 h-4 text-slate-400" viewBox="0 0 24 24" fill="currentColor">
                       <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
                     </svg>
@@ -470,7 +488,7 @@
                   <h5 class="font-medium text-slate-800">Carlos Heneine</h5>
                   <p class="text-sm text-slate-500">CEO Quilvest Dubai</p>
                   <div class="flex items-center gap-2 mt-0.5">
-                    <span class="text-sm text-slate-500">cheneine@quilvest.com</span>
+                    <span class="text-sm text-slate-500">c.heneine@quilvest.com</span>
                     <svg class="w-4 h-4 text-slate-400" viewBox="0 0 24 24" fill="currentColor">
                       <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
                     </svg>
@@ -490,7 +508,7 @@
                   <h5 class="font-medium text-slate-800">John Eggleston</h5>
                   <p class="text-sm text-slate-500">Partner, Chief Operating Officer</p>
                   <div class="flex items-center gap-2 mt-0.5">
-                    <span class="text-sm text-slate-500">jeggleston@quilvestcapital.com</span>
+                    <span class="text-sm text-slate-500">j.eggleston@quilvest.com</span>
                     <svg class="w-4 h-4 text-slate-400" viewBox="0 0 24 24" fill="currentColor">
                       <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
                     </svg>
@@ -561,7 +579,7 @@
                   <h5 class="font-medium text-slate-800">Steven Tananbaum</h5>
                   <p class="text-sm text-slate-500">Founder & Chief Investment Officer</p>
                   <div class="flex items-center gap-2 mt-0.5">
-                    <span class="text-sm text-slate-500">stananbaum@goldentree.com</span>
+                    <span class="text-sm text-slate-500">s.tananbaum@goldentree.com</span>
                     <svg class="w-4 h-4 text-slate-400" viewBox="0 0 24 24" fill="currentColor">
                       <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
                     </svg>
@@ -1109,7 +1127,7 @@
   </div><!-- end demo-content -->
   </div><!-- end demo-viewport -->
 
-  <script>
+  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
     // Demo configuration
     const DEMO_QUERY_1 = "Private credit asset managers in NYC";
     const DEMO_QUERY_2 = "biotech series A startups in austin";
@@ -1280,10 +1298,24 @@ Alex`;
       if (resultsNum === 1) {
         resultsArea1.classList.remove('hidden');
         resultsArea2.classList.add('hidden');
+        animateCards(resultsArea1);
       } else {
         resultsArea1.classList.add('hidden');
         resultsArea2.classList.remove('hidden');
+        animateCards(resultsArea2);
       }
+    }
+    
+    function animateCards(container) {
+      const cards = container.querySelectorAll('.company-card');
+      cards.forEach((card, index) => {
+        card.classList.remove('card-animate');
+        card.style.opacity = '0';
+        setTimeout(() => {
+          card.classList.add('card-animate');
+          card.style.animationDelay = `${index * 0.1}s`;
+        }, 50);
+      });
     }
     
     function showSearchState() {
@@ -1370,14 +1402,14 @@ Alex`;
     
     function showConfetti() {
       const colors = ['#fbbf24', '#34d399', '#60a5fa', '#f472b6', '#a78bfa'];
-      for (let i = 0; i < 30; i++) {
+      for (let i = 0; i < 60; i++) {
         const confetti = document.createElement('div');
         confetti.className = 'confetti';
         confetti.style.left = Math.random() * 520 + 'px';
-        confetti.style.top = Math.random() * 200 + 100 + 'px';
+        confetti.style.top = Math.random() * 400 + 100 + 'px';
         confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
         confetti.style.animationDelay = Math.random() * 0.5 + 's';
-        document.body.appendChild(confetti);
+        demoViewport.appendChild(confetti);
         setTimeout(() => confetti.remove(), 1500);
       }
     }
@@ -1468,10 +1500,12 @@ Alex`;
       
       await moveCursorTo(searchBtn, 0.5, 0.5);
       searchBtn.classList.add('cursor-hover');
-      await new Promise(r => setTimeout(r, CURSOR_HOVER_DELAY));
+      searchBtn.classList.add('btn-pulse');
+      await new Promise(r => setTimeout(r, CURSOR_HOVER_DELAY + 300));
       
       await simulateClick();
       searchBtn.classList.remove('cursor-hover');
+      searchBtn.classList.remove('btn-pulse');
       fakeCursor.classList.remove('visible');
       
       cursor.classList.add('hidden');
@@ -1553,9 +1587,11 @@ Alex`;
       // ===== PHASE 6: Click search again =====
       await moveCursorTo(searchBtn, 0.5, 0.5);
       searchBtn.classList.add('cursor-hover');
-      await new Promise(r => setTimeout(r, CURSOR_HOVER_DELAY));
+      searchBtn.classList.add('btn-pulse');
+      await new Promise(r => setTimeout(r, CURSOR_HOVER_DELAY + 300));
       await simulateClick();
       searchBtn.classList.remove('cursor-hover');
+      searchBtn.classList.remove('btn-pulse');
       fakeCursor.classList.remove('visible');
       
       cursor.classList.add('hidden');
@@ -1597,9 +1633,11 @@ Alex`;
       // ===== PHASE 9: Click Generate =====
       await moveCursorTo(generateBtn, 0.5, 0.5);
       generateBtn.classList.add('btn-hover');
-      await new Promise(r => setTimeout(r, CURSOR_HOVER_DELAY));
+      generateBtn.classList.add('btn-pulse');
+      await new Promise(r => setTimeout(r, CURSOR_HOVER_DELAY + 300));
       await simulateClick();
       generateBtn.classList.remove('btn-hover');
+      generateBtn.classList.remove('btn-pulse');
       
       // Generate content
       await new Promise(r => setTimeout(r, 600));
@@ -1632,9 +1670,11 @@ Alex`;
       
       await moveCursorTo(sendBtn, 0.5, 0.5);
       sendBtn.classList.add('btn-hover');
-      await new Promise(r => setTimeout(r, CURSOR_HOVER_DELAY));
+      sendBtn.classList.add('btn-pulse');
+      await new Promise(r => setTimeout(r, CURSOR_HOVER_DELAY + 300));
       await simulateClick();
       sendBtn.classList.remove('btn-hover');
+      sendBtn.classList.remove('btn-pulse');
       
       fakeCursor.classList.remove('visible');
       
