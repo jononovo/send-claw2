@@ -733,6 +733,8 @@ class ChatOverlay {
     const currentValue = this.formData[currentQuestion.field];
     const isValid = currentValue && currentValue.trim().length > 0;
 
+    // Security note: User input (currentValue) is escaped via escapeHtml(). Other variables are
+    // either from hardcoded questions array or internal state (this.currentStep, isValid).
     this.container.innerHTML = `
       <div class="form-modal">
         <div class="form-header">
