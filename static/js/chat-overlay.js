@@ -469,6 +469,8 @@ class ChatOverlay {
     }
 
     // Render full chat interface
+    // Security note: This innerHTML uses only internal state (this.state, this.isMobile, this.isLoading)
+    // and calls renderMessages() which escapes all user content via escapeHtml(). No user data is unescaped.
     this.container.innerHTML = `
       <div class="chat-header">
         <div class="chat-header-info">
@@ -752,14 +754,14 @@ class ChatOverlay {
               class="form-textarea" 
               placeholder="${currentQuestion.placeholder}"
               id="form-input"
-            >${currentValue || ''}</textarea>
+            >${this.escapeHtml(currentValue || '')}</textarea>
           ` : `
             <input 
               type="text" 
               class="form-input" 
               placeholder="${currentQuestion.placeholder}"
               id="form-input"
-              value="${currentValue || ''}"
+              value="${this.escapeHtml(currentValue || '')}"
             />
           `}
           
