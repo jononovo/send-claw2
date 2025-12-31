@@ -122,7 +122,7 @@ export function EmailPreferenceModal({
                   className={`cursor-pointer transition-all ${
                     selectedPreference === option.value 
                       ? 'ring-2 ring-primary' 
-                      : 'hover:bg-accent'
+                      : 'hover:bg-accent-hover'
                   }`}
                   onClick={() => setSelectedPreference(option.value as EmailPreference)}
                 >

@@ -58,7 +58,7 @@ export function StreakButton() {
             <Button
               variant="ghost"
               size="sm"
-              className="h-8 px-2 hover:bg-accent"
+              className="h-8 px-2 hover:bg-accent-hover"
               data-testid="button-streak"
             >
               <div className="flex items-center gap-1.5">

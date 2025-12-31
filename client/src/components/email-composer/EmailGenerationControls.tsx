@@ -144,8 +144,8 @@ export function EmailGenerationControls({
                 <button
                   key={tone.id}
                   className={cn(
-                    "w-full text-left p-3 rounded-md hover:bg-accent transition-colors",
-                    selectedTone === tone.id && "bg-accent"
+                    "w-full text-left p-3 rounded-md hover:bg-accent-hover transition-colors",
+                    selectedTone === tone.id && "bg-accent-active"
                   )}
                   onClick={() => {
                     onToneSelect(tone.id);
@@ -198,8 +198,8 @@ export function EmailGenerationControls({
                 <button
                   key={offer.id}
                   className={cn(
-                    "w-full text-left p-3 rounded-md hover:bg-accent transition-colors",
-                    selectedOfferStrategy === offer.id && "bg-accent"
+                    "w-full text-left p-3 rounded-md hover:bg-accent-hover transition-colors",
+                    selectedOfferStrategy === offer.id && "bg-accent-active"
                   )}
                   onClick={() => {
                     onOfferStrategySelect(offer.id);
@@ -245,7 +245,7 @@ export function EmailGenerationControls({
           <Tooltip open={tooltipOpen} onOpenChange={setTooltipOpen}>
             <TooltipTrigger asChild>
               <button 
-                className="p-1 rounded hover:bg-accent transition-colors"
+                className="p-1 rounded hover:bg-accent-hover transition-colors"
                 onClick={() => setTooltipOpen(!tooltipOpen)}
                 onBlur={() => setTooltipOpen(false)}
                 data-testid="button-info-tooltip"

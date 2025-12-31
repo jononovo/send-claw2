@@ -310,7 +310,7 @@ export default function CampaignsPage() {
                         <div className="flex items-center gap-2">
                           <Badge
                             variant="outline"
-                            className="text-xs cursor-pointer hover:bg-accent"
+                            className="text-xs cursor-pointer hover:bg-accent-hover"
                             onClick={(e) => {
                               e.stopPropagation();
                               toggleExpand(campaign.id);

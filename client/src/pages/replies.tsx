@@ -396,7 +396,7 @@ export default function Replies() {
                       key={contact.id}
                       className={cn(
                         "cursor-pointer p-3 rounded-lg transition-colors",
-                        "hover:bg-accent",
+                        "hover:bg-accent-hover",
                         "bg-card border border-border"
                       )}
                       onClick={() => handleSelectContact(contact.id)}
@@ -467,9 +467,9 @@ export default function Replies() {
                           key={contact.id}
                           className={cn(
                             "cursor-pointer p-3 rounded-lg transition-colors",
-                            "hover:bg-accent",
+                            "hover:bg-accent-hover",
                             selectedContactId === contact.id
-                              ? "bg-accent"
+                              ? "bg-accent-active"
                               : "bg-card border border-border"
                           )}
                           onClick={() => handleSelectContact(contact.id)}

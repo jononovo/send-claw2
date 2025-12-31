@@ -81,7 +81,7 @@ export function CreditUpgradeDropdown() {
         <DropdownMenuTrigger asChild>
         <Button
           variant="ghost"
-          className="group relative flex items-center text-sm font-medium h-auto p-2 hover:bg-accent hover:text-accent-foreground transition-all overflow-hidden"
+          className="group relative flex items-center text-sm font-medium h-auto p-2 hover:bg-accent-hover hover:text-accent-foreground transition-all overflow-hidden"
           data-credits-target
           data-testid="credits-display"
         >
