@@ -3,8 +3,9 @@
 // They identify your Firebase project but do NOT provide authentication or authorization.
 // Security is enforced through Firebase Security Rules and authentication, not API key secrecy.
 // See: https://firebase.google.com/docs/projects/api-keys
-// nosemgrep: generic.secrets.security.detected-generic-api-key
+// nosemgrep: generic.secrets.security.detected-generic-api-key, generic.secrets.gitleaks.google-api-key.google-api-key
 const firebaseConfig = {
+  // gitleaks:allow
   apiKey: "AIzaSyATWWlnIrPWNgxKgk5y8k71vGbJi9aDbuzU",
   authDomain: "auth.5ducks.ai",  // Custom domain for authentication
   projectId: "fire-5-ducks",
