@@ -58,7 +58,6 @@ function getAuthHeaders(): HeadersInit {
 async function fetchServerProgress(): Promise<Partial<GuidanceState> | null> {
   try {
     const authToken = localStorage.getItem('authToken');
-    console.log("[GuidanceEngine] Fetching server progress...", { hasAuthToken: !!authToken });
     
     const headers: HeadersInit = {};
     if (authToken) {
@@ -69,13 +68,10 @@ async function fetchServerProgress(): Promise<Partial<GuidanceState> | null> {
       credentials: "include",
       headers 
     });
-    console.log("[GuidanceEngine] Fetch response status:", res.status);
     if (!res.ok) {
-      console.warn("[GuidanceEngine] Fetch failed with status:", res.status);
       return null;
     }
     const data = await res.json();
-    console.log("[GuidanceEngine] Server progress received:", data);
     return data;
   } catch (e) {
     console.error("[GuidanceEngine] Failed to fetch server guidance progress:", e);
@@ -90,7 +86,6 @@ async function syncToServer(state: GuidanceState): Promise<void> {
     completedChallenges: state.completedChallenges,
     currentQuestId: state.currentQuestId,
   };
-  console.log("[GuidanceEngine] Syncing to server:", { ...payload, hasAuthToken: !!authToken });
   
   try {
     const headers: HeadersInit = { "Content-Type": "application/json" };
@@ -104,13 +99,9 @@ async function syncToServer(state: GuidanceState): Promise<void> {
       credentials: "include",
       body: JSON.stringify(payload),
     });
-    console.log("[GuidanceEngine] Sync response status:", res.status);
     if (!res.ok) {
       const errorText = await res.text();
       console.error("[GuidanceEngine] Sync failed:", res.status, errorText);
-    } else {
-      const responseData = await res.json();
-      console.log("[GuidanceEngine] Sync successful, server response:", responseData);
     }
   } catch (e) {
     console.error("[GuidanceEngine] Failed to sync guidance progress to server:", e);
@@ -140,15 +131,12 @@ export function useGuidanceEngine(options: UseGuidanceEngineOptions): GuidanceCo
   // Initialize from server once auth is ready
   useEffect(() => {
     if (!authReady) {
-      console.log("[GuidanceEngine] Waiting for auth to be ready before initializing...");
       return;
     }
 
     async function initFromServer() {
-      console.log("[GuidanceEngine] Initializing from server...", { userId, authReady });
       const serverProgress = await fetchServerProgress();
       if (serverProgress) {
-        console.log("[GuidanceEngine] Applying server progress to state (completions only)");
         setState((prev) => ({
           ...prev,
           completedQuests: serverProgress.completedQuests || prev.completedQuests,
@@ -158,7 +146,6 @@ export function useGuidanceEngine(options: UseGuidanceEngineOptions): GuidanceCo
       }
       setIsInitialized(true);
       lastUserIdRef.current = userId;
-      console.log("[GuidanceEngine] Initialization complete, isInitialized=true, userId=", userId);
     }
     initFromServer();
   }, [authReady, userId]);
@@ -168,7 +155,6 @@ export function useGuidanceEngine(options: UseGuidanceEngineOptions): GuidanceCo
     if (!authReady || !isInitialized) return;
     if (lastUserIdRef.current === userId) return;
     
-    console.log("[GuidanceEngine] User changed from", lastUserIdRef.current, "to", userId, "- re-fetching progress");
     lastUserIdRef.current = userId;
     
     async function refetchProgress() {
@@ -194,26 +180,17 @@ export function useGuidanceEngine(options: UseGuidanceEngineOptions): GuidanceCo
     saveProgress(state);
     
     if (!isInitialized) {
-      console.log("[GuidanceEngine] Skipping server sync - not yet initialized");
       return;
     }
     
     if (!authReady) {
-      console.log("[GuidanceEngine] Skipping server sync - auth not ready");
       return;
     }
-    
-    console.log("[GuidanceEngine] State changed, scheduling sync in 1s:", {
-      completedChallenges: state.completedChallenges,
-      completedQuests: state.completedQuests,
-      userId,
-    });
     
     if (syncTimeoutRef.current) {
       clearTimeout(syncTimeoutRef.current);
     }
     syncTimeoutRef.current = setTimeout(() => {
-      console.log("[GuidanceEngine] Debounce complete, triggering sync now");
       syncToServer(state);
     }, 1000);
 

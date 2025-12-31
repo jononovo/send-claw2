@@ -247,21 +247,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       // Get the OAuth credential from the result
       const credential = GoogleAuthProvider.credentialFromResult(result);
       
-      // Get the token result with detailed scope information
-      const tokenResult = await result.user.getIdTokenResult();
-
-      console.log('SignInWithPopup completed', {
-        success: !!result,
-        hasUser: !!result.user,
-        hasEmail: !!result.user?.email,
-        hasCredential: !!credential,
-        hasAccessToken: !!credential?.accessToken,
-        credentialType: credential?.providerId || 'none',
-        scopes: tokenResult.claims.scope,
-        isNewUser,
-        timestamp: new Date().toISOString()
-      });
-
       if (!result.user?.email) {
         throw new Error("No email provided from Google sign-in");
       }

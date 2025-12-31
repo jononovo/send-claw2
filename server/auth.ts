@@ -78,32 +78,15 @@ async function verifyFirebaseToken(req: Request): Promise<SelectUser | null> {
     token = req.headers['x-auth-token'] as string;
   }
 
-  console.log('Verifying Firebase token:', {
-    hasAuthHeader: !!authHeader,
-    headerFormat: authHeader?.startsWith('Bearer ') ? 'valid' : 'invalid',
-    hasToken: !!token,
-    tokenSource: token ? (authHeader ? 'header' : (req.cookies?.authToken ? 'cookie' : 'custom-header')) : 'none',
-    hasFirebaseAdmin: !!admin.apps.length,
-    timestamp: new Date().toISOString()
-  });
-
   if (!token || !admin.apps.length) {
-    console.warn('Token verification failed:', {
-      reason: !token ? 'no token found' : 'firebase admin not initialized',
-      timestamp: new Date().toISOString(),
+    console.warn('Auth verification failed:', {
+      reason: !token ? 'missing credentials' : 'firebase admin not initialized',
     });
     return null;
   }
 
   try {
-    console.log('Verifying ID token with Firebase Admin');
     const decodedToken = await admin.auth().verifyIdToken(token);
-
-    // Log the token scopes and claims
-    console.log('Token verified successfully:', {
-      email: decodedToken.email?.split('@')[0] + '@...',
-      timestamp: new Date().toISOString()
-    });
 
     if (!decodedToken.email) {
       console.warn('Token missing email claim');
@@ -271,21 +254,10 @@ export function setupAuth(app: Express) {
     const exemptedDomains = process.env.AUTH_EXEMPT_DOMAINS ? 
       process.env.AUTH_EXEMPT_DOMAINS.split(',').map(d => d.trim()) : [];
     
-    // Debug logging for domain matching
-    console.log('Domain bypass check:', {
-      host,
-      exemptedDomains,
-      envValue: process.env.AUTH_EXEMPT_DOMAINS,
-      timestamp: new Date().toISOString()
-    });
-    
     const isDevelopmentDomain = exemptedDomains.some(domain => {
       const matches = domain.startsWith('*') ? host.endsWith(domain.slice(1)) : host === domain;
-      console.log(`Checking domain pattern '${domain}' against host '${host}': ${matches}`);
       return matches;
     });
-    
-    console.log('Domain match result:', { isDevelopmentDomain, isAuthenticated: req.isAuthenticated() });
     
     if (isDevelopmentDomain && !req.isAuthenticated()) {
       // For development environments, automatically use demo user (ID 1)
@@ -299,29 +271,9 @@ export function setupAuth(app: Express) {
       // Override isAuthenticated to return true for this request
       req.isAuthenticated = function(this: any) { return true; } as any;
       
-      console.log('[DEV MODE] Auth bypassed for development domain:', {
-        host,
-        path: req.path,
-        method: req.method,
-        userId: 1,
-        timestamp: new Date().toISOString()
-      });
-      
       return next(); // Skip other auth checks
     }
     
-    // Enhanced session debugging
-    console.log('Session middleware check:', {
-      sessionID: req.sessionID || 'none',
-      isAuthenticated: req.isAuthenticated ? req.isAuthenticated() : false,
-      hasUser: !!req.user,
-      userId: req.user ? (req.user as any).id : 'none',
-      path: req.path,
-      method: req.method,
-      hasAuthHeader: !!req.headers.authorization,
-      timestamp: new Date().toISOString()
-    });
-
     if (!req.isAuthenticated()) {
       const firebaseUser = await verifyFirebaseToken(req);
       if (firebaseUser) {
@@ -339,12 +291,6 @@ export function setupAuth(app: Express) {
             return next(err);
           }
           
-          console.log('Firebase user session created successfully:', {
-            id: firebaseUser.id,
-            email: firebaseUser.email?.split('@')[0] + '@...',
-            sessionID: req.sessionID,
-            timestamp: new Date().toISOString()
-          });
           next(); // Only call next() after login completes
         });
         // Remove the return here - wait for req.login to complete
@@ -354,11 +300,6 @@ export function setupAuth(app: Express) {
       }
     } else {
       // Already authenticated via session
-      console.log('User already authenticated via session:', {
-        userId: (req.user as any)?.id,
-        sessionID: req.sessionID,
-        timestamp: new Date().toISOString()
-      });
       next();
     }
   });
@@ -366,12 +307,6 @@ export function setupAuth(app: Express) {
   app.post("/api/register", async (req, res, next) => {
     try {
       const { email, password } = req.body;
-
-      console.log('Registration request received:', {
-        hasEmail: !!email,
-        hasPassword: !!password,
-        timestamp: new Date().toISOString()
-      });
 
       if (!email || !password) {
         return res.status(400).json({ error: "Email and password are required" });

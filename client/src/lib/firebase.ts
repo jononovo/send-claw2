@@ -15,16 +15,6 @@ function validateFirebaseConfig() {
   const projectId = import.meta.env.VITE_FIREBASE_PROJECT_ID;
   const appId = import.meta.env.VITE_FIREBASE_APP_ID;
 
-  console.log('Raw environment variables:', {
-    apiKey: apiKey ? '....' + apiKey.slice(-6) : 'undefined',
-    projectId: projectId || 'undefined',
-    appId: appId ? '....' + appId.slice(-6) : 'undefined',
-    mode: import.meta.env.MODE,
-    dev: import.meta.env.DEV,
-    prod: import.meta.env.PROD,
-    domain: window.location.hostname
-  });
-
   const errors = [];
 
   if (!apiKey) {
@@ -52,15 +42,6 @@ function validateFirebaseConfig() {
     appId
   };
 
-  console.log('Firebase Configuration:', {
-    hasApiKey: !!config.apiKey,
-    hasProjectId: !!config.projectId,
-    hasAppId: !!config.appId,
-    authDomain: config.authDomain,
-    environment: import.meta.env.MODE,
-    domain: window.location.hostname,
-  });
-
   return {
     isValid: errors.length === 0,
     errors,
@@ -75,11 +56,6 @@ let googleProvider: GoogleAuthProvider | undefined;
 let currentAuthToken: string | null = null;
 
 try {
-  console.log('Starting Firebase initialization...', {
-    timestamp: new Date().toISOString(),
-    domain: window.location.hostname
-  });
-
   const { isValid, errors, config } = validateFirebaseConfig();
 
   if (!isValid) {
@@ -96,9 +72,6 @@ try {
   
   // Set persistence to LOCAL for long-term authentication
   setPersistence(auth, browserLocalPersistence)
-    .then(() => {
-      console.log('Firebase persistence set to LOCAL');
-    })
     .catch((error) => {
       console.error('Error setting persistence:', error);
     });
@@ -141,11 +114,6 @@ try {
           const axios = (await import('axios')).default;
           axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
-          console.log('Auth token set successfully:', {
-            uid: user.uid,
-            email: user.email?.split('@')[0] + '@...',
-            timestamp: new Date().toISOString()
-          });
         } catch (error) {
           console.error('Error getting auth token:', error);
           currentAuthToken = null;
@@ -153,29 +121,16 @@ try {
       } else {
         // Check if we're initializing with an existing token
         const existingToken = localStorage.getItem('authToken');
-        if (existingToken) {
-          console.log('Found existing auth token during initialization');
-          // We'll let Firebase validation determine if this token is still valid
-        } else {
+        if (!existingToken) {
           // Clear token on explicit logout
           currentAuthToken = null;
           localStorage.removeItem('authToken');
           const axios = (await import('axios')).default;
           delete axios.defaults.headers.common['Authorization'];
-          console.log('User signed out, removed auth token');
         }
       }
     });
   }
-
-  // Log successful initialization with domain info
-  console.log('Firebase initialized successfully:', {
-    domain: window.location.hostname,
-    isAuth: !!auth,
-    isProvider: !!googleProvider,
-    authDomain: config.authDomain,
-    timestamp: new Date().toISOString()
-  });
 
 } catch (error) {
   console.error('Firebase initialization error:', {
