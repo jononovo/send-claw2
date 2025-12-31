@@ -207,6 +207,9 @@ export function registerGuidanceRoutes(app: Express) {
 
       const stepsJson = JSON.stringify(stepsData, null, 2);
 
+      // Note: This is an AI prompt string, not a SQL query. The sanitizedStartRoute is already
+      // sanitized via sanitizeText() and is sent to Claude AI, not to a database.
+      // nosemgrep: javascript.lang.security.audit.sqli.node-postgres-sqli
       const prompt = `You are helping create a guided tutorial challenge for a web application. Based on the recorded user interactions below, generate a challenge definition.
 
 RECORDED STEPS (JSON format):
