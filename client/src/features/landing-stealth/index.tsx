@@ -70,9 +70,10 @@ export default function LandingStealth() {
   const [isDuckLoaded, setIsDuckLoaded] = useState(false);
   
   // Redirect to /app when user is authenticated (from login flow, not secret code flow)
-  // For secret code flow, the questionnaire handles the redirect after completion
+  // Only redirect on root path - direct links like /s or /landing-stealth should show the page
   useEffect(() => {
-    if (user && !showQuestionnaire && !showAccessGranted && !isUnlocking && !isSecretCodeFlow) {
+    const isRootPath = window.location.pathname === '/';
+    if (user && isRootPath && !showQuestionnaire && !showAccessGranted && !isUnlocking && !isSecretCodeFlow) {
       window.location.href = "/app";
     }
   }, [user, showQuestionnaire, showAccessGranted, isUnlocking, isSecretCodeFlow]);
