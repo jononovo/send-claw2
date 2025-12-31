@@ -122,6 +122,22 @@ export default function LandingStealth() {
       duration: 4000
     },
     { 
+      text: "Workflow", 
+      type: "demo",
+      component: (
+        <DemoSimulationPlayer 
+          simulation="search-composer-demo" 
+          width={520}
+          height={520}
+          className="shadow-none"
+        />
+      ), 
+      label: "See it in Action",
+      rotation: 0,
+      duration: 45000,
+      containerClass: "!bg-transparent !border-none !shadow-none !backdrop-blur-none !p-0"
+    },
+    { 
       text: "Deal-flow", 
       image: dealFlowImage, 
       label: "Demo Call", 
@@ -147,22 +163,6 @@ export default function LandingStealth() {
       duration: 4000,
       containerClass: "!bg-transparent !border-none !shadow-none !backdrop-blur-none",
       imageClass: "mix-blend-screen scale-125 object-contain"
-    },
-    { 
-      text: "Workflow", 
-      type: "demo",
-      component: (
-        <DemoSimulationPlayer 
-          simulation="search-composer-demo" 
-          width={520}
-          height={520}
-          className="shadow-none"
-        />
-      ), 
-      label: "See it in Action",
-      rotation: 0,
-      duration: 45000,
-      containerClass: "!bg-transparent !border-none !shadow-none !backdrop-blur-none !p-0"
     },
     { text: "Sales", label: "Enter Code", duration: 30000 },
   ];
