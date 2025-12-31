@@ -149,9 +149,6 @@ export function RegistrationModal() {
     
     if (currentPage === "main") {
       try {
-        // Register user with Firebase authentication
-        console.log("Attempting registration with:", { email, name });
-        
         // Mark as new user before auth completes
         setIsNewUser(true);
         await registerWithEmail(email, password, name);
@@ -164,7 +161,6 @@ export function RegistrationModal() {
         // Check if email already exists - attempt login
         if (error.code === 'auth/email-already-in-use') {
           try {
-            console.log("Email exists, attempting login with:", { email });
             // Mark as existing user (not new)
             setIsNewUser(false);
             await signInWithEmail(email, password);
@@ -199,9 +195,6 @@ export function RegistrationModal() {
       }
     } else if (currentPage === "login") {
       try {
-        // Sign in with Firebase authentication
-        console.log("Attempting login with:", { email });
-        
         // Mark as existing user (not new)
         setIsNewUser(false);
         await signInWithEmail(email, password);

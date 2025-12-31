@@ -141,11 +141,6 @@ try {
           const axios = (await import('axios')).default;
           axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
-          console.log('Auth token set successfully:', {
-            uid: user.uid,
-            email: user.email?.split('@')[0] + '@...',
-            timestamp: new Date().toISOString()
-          });
         } catch (error) {
           console.error('Error getting auth token:', error);
           currentAuthToken = null;
@@ -153,16 +148,12 @@ try {
       } else {
         // Check if we're initializing with an existing token
         const existingToken = localStorage.getItem('authToken');
-        if (existingToken) {
-          console.log('Found existing auth token during initialization');
-          // We'll let Firebase validation determine if this token is still valid
-        } else {
+        if (!existingToken) {
           // Clear token on explicit logout
           currentAuthToken = null;
           localStorage.removeItem('authToken');
           const axios = (await import('axios')).default;
           delete axios.defaults.headers.common['Authorization'];
-          console.log('User signed out, removed auth token');
         }
       }
     });
