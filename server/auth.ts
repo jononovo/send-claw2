@@ -367,12 +367,6 @@ export function setupAuth(app: Express) {
     try {
       const { email, password } = req.body;
 
-      console.log('Registration request received:', {
-        hasEmail: !!email,
-        hasPassword: !!password,
-        timestamp: new Date().toISOString()
-      });
-
       if (!email || !password) {
         return res.status(400).json({ error: "Email and password are required" });
       }
