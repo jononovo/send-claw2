@@ -79,9 +79,8 @@ async function verifyFirebaseToken(req: Request): Promise<SelectUser | null> {
   }
 
   if (!token || !admin.apps.length) {
-    console.warn('Token verification failed:', {
-      reason: !token ? 'no token found' : 'firebase admin not initialized',
-      timestamp: new Date().toISOString(),
+    console.warn('Auth verification failed:', {
+      reason: !token ? 'missing credentials' : 'firebase admin not initialized',
     });
     return null;
   }
