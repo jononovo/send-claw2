@@ -82,7 +82,7 @@ export function EmailFallbackModal({
           <TabsContent value="webmail" className="space-y-4">
             <div className="grid gap-3">
               <Card 
-                className="cursor-pointer hover:bg-accent transition-colors"
+                className="cursor-pointer hover:bg-accent-hover transition-colors"
                 onClick={() => onSelectMethod('gmail')}
               >
                 <CardHeader className="pb-3">
@@ -104,7 +104,7 @@ export function EmailFallbackModal({
               </Card>
 
               <Card 
-                className="cursor-pointer hover:bg-accent transition-colors"
+                className="cursor-pointer hover:bg-accent-hover transition-colors"
                 onClick={() => onSelectMethod('outlook')}
               >
                 <CardHeader className="pb-3">
@@ -126,7 +126,7 @@ export function EmailFallbackModal({
               </Card>
 
               <Card 
-                className="cursor-pointer hover:bg-accent transition-colors"
+                className="cursor-pointer hover:bg-accent-hover transition-colors"
                 onClick={() => onSelectMethod('yahoo')}
               >
                 <CardHeader className="pb-3">

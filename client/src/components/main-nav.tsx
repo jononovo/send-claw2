@@ -61,7 +61,7 @@ export function MainNav() {
               variant="ghost"
               size="icon"
               onClick={handleDrawerClick}
-              className="h-8 w-8 hover:bg-accent"
+              className="h-8 w-8 hover:bg-accent-hover"
               title="Historic Searches"
               data-testid="button-open-drawer"
             >

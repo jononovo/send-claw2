@@ -74,7 +74,7 @@ export function ContactListSelector({
                   key={list.id}
                   onClick={() => onSelect(list.id, list.name)}
                   disabled={disabled}
-                  className="w-full text-left px-3 py-1.5 hover:bg-accent hover:text-accent-foreground rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full text-left px-3 py-1.5 hover:bg-accent-hover hover:text-accent-foreground rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <div className="flex items-center justify-between">
                     <span className="text-sm">{list.name}</span>

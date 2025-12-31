@@ -125,8 +125,8 @@ export function ProfileDropdown<T extends ProfileDropdownItem>({
           {showNoneOption && (
             <button
               className={cn(
-                "w-full text-left p-3 rounded-md hover:bg-accent transition-colors",
-                selectedId === null && "bg-accent"
+                "w-full text-left p-3 rounded-md hover:bg-accent-hover transition-colors",
+                selectedId === null && "bg-accent-active"
               )}
               onClick={() => handleSelectItem(null)}
               data-testid={`button-${testIdPrefix}-none`}
@@ -148,8 +148,8 @@ export function ProfileDropdown<T extends ProfileDropdownItem>({
             <button
               key={item.id}
               className={cn(
-                "w-full text-left p-3 rounded-md hover:bg-accent transition-colors group relative",
-                selectedId === item.id && "bg-accent"
+                "w-full text-left p-3 rounded-md hover:bg-accent-hover transition-colors group relative",
+                selectedId === item.id && "bg-accent-active"
               )}
               onClick={() => handleSelectItem(item)}
               onMouseEnter={() => setHoveredItemId(item.id)}
@@ -211,7 +211,7 @@ export function ProfileDropdown<T extends ProfileDropdownItem>({
           {/* Add New button */}
           {onAddNew && (
             <button
-              className="w-full text-left p-3 rounded-md hover:bg-accent transition-colors border-2 border-dashed border-muted-foreground/20 hover:border-muted-foreground/40"
+              className="w-full text-left p-3 rounded-md hover:bg-accent-hover transition-colors border-2 border-dashed border-muted-foreground/20 hover:border-muted-foreground/40"
               onClick={() => {
                 onAddNew();
                 setIsOpen(false);

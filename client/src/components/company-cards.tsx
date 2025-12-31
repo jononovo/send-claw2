@@ -239,7 +239,7 @@ const CompanyCard: React.FC<CompanyCardProps> = ({
                 {company.contacts && company.contacts.length > 0 && viewMode === 'scroll' && (
                   <Badge 
                     variant="outline" 
-                    className="text-xs cursor-pointer hover:bg-accent"
+                    className="text-xs cursor-pointer hover:bg-accent-hover"
                   >
                     {isExpanded ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
                   </Badge>

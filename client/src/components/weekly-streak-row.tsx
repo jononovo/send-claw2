@@ -374,7 +374,7 @@ export function WeeklyStreakRow() {
                       className={cn(
                         "flex-1 flex items-center px-3 py-1.5 rounded-md border-2 transition-all duration-300 relative",
                         // Edit mode styles
-                        isEditMode && "cursor-pointer hover:bg-accent",
+                        isEditMode && "cursor-pointer hover:bg-accent-hover",
                         isEditMode && isChecked && "bg-primary/10 border-primary",
                         isEditMode && !isChecked && "border-border opacity-60",
                         // Normal mode styles

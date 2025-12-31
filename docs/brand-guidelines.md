@@ -553,6 +553,9 @@ Floating cards that appear around mascots showing real-time activity:
   --muted-foreground: 240 4% 46%;
   --accent: 45 93% 47%;
   --accent-foreground: 240 10% 4%;
+  --accent-hover: 45 93% 47% / 0.1;
+  --accent-active: 45 93% 47% / 0.15;
+  --accent-border-hover: 45 93% 47% / 0.3;
   --card: 0 0% 100%;
   --card-foreground: 240 10% 4%;
   --border: 240 6% 90%;
@@ -573,6 +576,9 @@ Floating cards that appear around mascots showing real-time activity:
   --muted-foreground: 240 5% 65%;
   --accent: 45 93% 47%;
   --accent-foreground: 240 10% 4%;
+  --accent-hover: 45 93% 52% / 0.1;
+  --accent-active: 45 93% 52% / 0.15;
+  --accent-border-hover: 45 93% 52% / 0.3;
   --card: 240 10% 4%;
   --card-foreground: 0 0% 98%;
   --border: 240 4% 16%;
