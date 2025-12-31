@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from "react";
+import DOMPurify from "dompurify";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -324,7 +325,7 @@ export function UniqueStrategyPage({ product, onClose }: UniqueStrategyPageProps
                   {productSummary ? (
                     <div className="space-y-4">
                       <div className="prose max-w-none">
-                        <div dangerouslySetInnerHTML={{ __html: productSummary.content.replace(/\n/g, '<br>') }} />
+                        <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(productSummary.content.replace(/\n/g, '<br>')) }} />
                       </div>
                       
                       <div className="flex items-center gap-2 pt-4 border-t">
@@ -435,7 +436,7 @@ export function UniqueStrategyPage({ product, onClose }: UniqueStrategyPageProps
                   {salesContext ? (
                     <div className="space-y-4">
                       <div className="prose max-w-none">
-                        <div dangerouslySetInnerHTML={{ __html: salesContext.content.replace(/\n/g, '<br>') }} />
+                        <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(salesContext.content.replace(/\n/g, '<br>')) }} />
                       </div>
                       
                       <div className="flex items-center gap-2 pt-4 border-t">
