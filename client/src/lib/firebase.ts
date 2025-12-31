@@ -15,16 +15,6 @@ function validateFirebaseConfig() {
   const projectId = import.meta.env.VITE_FIREBASE_PROJECT_ID;
   const appId = import.meta.env.VITE_FIREBASE_APP_ID;
 
-  console.log('Raw environment variables:', {
-    apiKey: apiKey ? '....' + apiKey.slice(-6) : 'undefined',
-    projectId: projectId || 'undefined',
-    appId: appId ? '....' + appId.slice(-6) : 'undefined',
-    mode: import.meta.env.MODE,
-    dev: import.meta.env.DEV,
-    prod: import.meta.env.PROD,
-    domain: window.location.hostname
-  });
-
   const errors = [];
 
   if (!apiKey) {
@@ -52,15 +42,6 @@ function validateFirebaseConfig() {
     appId
   };
 
-  console.log('Firebase Configuration:', {
-    hasApiKey: !!config.apiKey,
-    hasProjectId: !!config.projectId,
-    hasAppId: !!config.appId,
-    authDomain: config.authDomain,
-    environment: import.meta.env.MODE,
-    domain: window.location.hostname,
-  });
-
   return {
     isValid: errors.length === 0,
     errors,
@@ -75,11 +56,6 @@ let googleProvider: GoogleAuthProvider | undefined;
 let currentAuthToken: string | null = null;
 
 try {
-  console.log('Starting Firebase initialization...', {
-    timestamp: new Date().toISOString(),
-    domain: window.location.hostname
-  });
-
   const { isValid, errors, config } = validateFirebaseConfig();
 
   if (!isValid) {
@@ -96,9 +72,6 @@ try {
   
   // Set persistence to LOCAL for long-term authentication
   setPersistence(auth, browserLocalPersistence)
-    .then(() => {
-      console.log('Firebase persistence set to LOCAL');
-    })
     .catch((error) => {
       console.error('Error setting persistence:', error);
     });
@@ -158,15 +131,6 @@ try {
       }
     });
   }
-
-  // Log successful initialization with domain info
-  console.log('Firebase initialized successfully:', {
-    domain: window.location.hostname,
-    isAuth: !!auth,
-    isProvider: !!googleProvider,
-    authDomain: config.authDomain,
-    timestamp: new Date().toISOString()
-  });
 
 } catch (error) {
   console.error('Firebase initialization error:', {
