@@ -1530,15 +1530,12 @@ Alex`;
     
     function scrollComposerTo(element) {
       const slider = document.getElementById('compose-slider');
-      const sliderRect = slider.getBoundingClientRect();
-      const elementRect = element.getBoundingClientRect();
-      
-      // Calculate how far below the visible area the element is
-      const scrollNeeded = elementRect.bottom - sliderRect.bottom + 50;
-      
-      if (scrollNeeded > 0) {
-        slider.scrollBy({ top: scrollNeeded, behavior: 'smooth' });
-      }
+      // Scroll to element, then add a bit more to show padding below
+      element.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      // Add extra scroll after a short delay
+      setTimeout(() => {
+        slider.scrollTop += 40;
+      }, 300);
     }
     
     function typeInElement(element, text, index = 0) {
