@@ -1530,8 +1530,15 @@ Alex`;
     
     function scrollComposerTo(element) {
       const slider = document.getElementById('compose-slider');
-      // Directly scroll the compose-slider to show the element at the bottom
-      slider.scrollTo({ top: slider.scrollHeight, behavior: 'smooth' });
+      const sliderRect = slider.getBoundingClientRect();
+      const elementRect = element.getBoundingClientRect();
+      
+      // Calculate how far below the visible area the element is
+      const scrollNeeded = elementRect.bottom - sliderRect.bottom + 50;
+      
+      if (scrollNeeded > 0) {
+        slider.scrollBy({ top: scrollNeeded, behavior: 'smooth' });
+      }
     }
     
     function typeInElement(element, text, index = 0) {
