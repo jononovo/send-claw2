@@ -112,18 +112,18 @@ export function DemoSimulationPlayer({
       
       {showReplayOverlay && (
         <div 
-          className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-white/80 backdrop-blur-sm transition-opacity duration-300"
+          className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-black/70 backdrop-blur-sm transition-opacity duration-300"
           data-testid="demo-replay-overlay"
         >
           <button
             onClick={handleReplay}
-            className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white font-semibold rounded-full shadow-lg hover:scale-105 hover:shadow-xl transition-all"
+            className="flex items-center gap-2 px-5 py-2.5 bg-white/10 hover:bg-white/20 text-white/90 font-medium rounded-lg border border-white/20 hover:border-white/30 transition-all"
             data-testid="demo-replay-button"
           >
-            <RotateCcw size={18} />
+            <RotateCcw size={16} />
             Watch Again
           </button>
-          <p className="mt-3 text-slate-500 text-sm">See how easy sales can be</p>
+          <p className="mt-3 text-white/40 text-sm">See how easy sales can be</p>
         </div>
       )}
     </div>
