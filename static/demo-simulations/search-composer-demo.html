@@ -278,12 +278,8 @@
       width: 520px;
       min-height: 520px;
       transform-origin: center center;
-      transition: transform 0.6s ease-out, filter 0.4s ease;
+      transition: transform 0.6s ease-out;
       position: relative;
-    }
-    
-    #demo-content.blurred {
-      filter: blur(6px);
     }
   </style>
 </head>
@@ -1530,9 +1526,8 @@ Alex`;
       replayBtn.classList.add('hidden');
       replayBtn.classList.remove('flex');
       
-      // Hide replay overlay and remove blur
+      // Hide replay overlay (for standalone mode)
       replayOverlay.classList.remove('visible');
-      demoContent.classList.remove('blurred');
       
       // Reset compose slider
       composeSlider.classList.remove('open');
@@ -1753,24 +1748,35 @@ Alex`;
       await new Promise(r => setTimeout(r, 300));
       showSuccess();
       
-      // Wait for success toast to show, then show replay overlay after 1 second
+      // Wait for success toast to show, then notify parent
       await new Promise(r => setTimeout(r, 1000));
       
-      // Show blurred replay overlay
-      demoContent.classList.add('blurred');
-      replayOverlay.classList.add('visible');
+      // Notify parent that demo is complete (for overlay in React component)
+      try {
+        window.parent.postMessage({ type: 'demoComplete' }, '*');
+      } catch (e) {
+        // Standalone mode - show internal overlay as fallback
+        replayOverlay.classList.add('visible');
+      }
       
       isRunning = false;
     }
     
-    // Replay overlay button click handler
-    replayOverlayBtn.addEventListener('click', () => {
-      replayOverlay.classList.remove('visible');
-      runDemo();
+    // Listen for restart message from parent
+    window.addEventListener('message', (event) => {
+      if (event.data?.type === 'restartDemo') {
+        runDemo();
+      }
     });
     
     // Legacy replay button (hidden, but keep for compatibility)
     replayBtn.addEventListener('click', () => {
+      replayOverlay.classList.remove('visible');
+      runDemo();
+    });
+    
+    // Internal replay overlay button (fallback for standalone mode)
+    replayOverlayBtn.addEventListener('click', () => {
       replayOverlay.classList.remove('visible');
       runDemo();
     });
