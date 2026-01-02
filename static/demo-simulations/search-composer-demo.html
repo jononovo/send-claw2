@@ -221,9 +221,7 @@
       left: 0;
       right: 0;
       bottom: 0;
-      background: rgba(255, 255, 255, 0.6);
-      backdrop-filter: blur(6px);
-      -webkit-backdrop-filter: blur(6px);
+      background: rgba(255, 255, 255, 0.7);
       z-index: 350;
       display: flex;
       flex-direction: column;
@@ -280,8 +278,12 @@
       width: 520px;
       min-height: 520px;
       transform-origin: center center;
-      transition: transform 0.6s ease-out;
+      transition: transform 0.6s ease-out, filter 0.4s ease;
       position: relative;
+    }
+    
+    #demo-content.blurred {
+      filter: blur(6px);
     }
   </style>
 </head>
@@ -1528,8 +1530,9 @@ Alex`;
       replayBtn.classList.add('hidden');
       replayBtn.classList.remove('flex');
       
-      // Hide replay overlay
+      // Hide replay overlay and remove blur
       replayOverlay.classList.remove('visible');
+      demoContent.classList.remove('blurred');
       
       // Reset compose slider
       composeSlider.classList.remove('open');
@@ -1754,6 +1757,7 @@ Alex`;
       await new Promise(r => setTimeout(r, 1000));
       
       // Show blurred replay overlay
+      demoContent.classList.add('blurred');
       replayOverlay.classList.add('visible');
       
       isRunning = false;
