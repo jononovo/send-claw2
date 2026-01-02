@@ -123,7 +123,6 @@ export function DemoSimulationPlayer({
             <RotateCcw size={16} />
             Watch Again
           </button>
-          <p className="mt-3 text-white/40 text-sm">See how easy sales can be</p>
         </div>
       )}
     </div>
