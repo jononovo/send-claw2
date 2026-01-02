@@ -118,20 +118,6 @@
       display: none;
     }
     
-    /* Text selection overlay */
-    #text-selection-overlay {
-      position: absolute;
-      background-color: rgba(59, 130, 246, 0.3);
-      border-radius: 2px;
-      pointer-events: none;
-      opacity: 0;
-      z-index: 160;
-      transition: opacity 0.15s ease;
-    }
-    
-    #text-selection-overlay.visible {
-      opacity: 1;
-    }
     
     .company-header.cursor-hover {
       background-color: rgb(248 250 252) !important;
@@ -332,8 +318,6 @@
       </svg>
     </div>
     
-    <!-- Text selection overlay for edit visualization -->
-    <div id="text-selection-overlay"></div>
     
     <!-- Success Toast -->
     <div id="success-toast">
@@ -1347,7 +1331,6 @@
     const successToast = document.getElementById('success-toast');
     const replayOverlay = document.getElementById('replay-overlay');
     const replayOverlayBtn = document.getElementById('replay-overlay-btn');
-    const textSelectionOverlay = document.getElementById('text-selection-overlay');
     
     // Email content
     const PRODUCT_INPUT_TEXT = "crocs for business meetings";
@@ -1632,8 +1615,6 @@ Alex`;
       fakeCursor.classList.remove('text-mode');
       fakeCursor.style.transition = 'none';
       
-      // Hide text selection overlay
-      textSelectionOverlay.classList.remove('visible');
       
       replayBtn.classList.add('hidden');
       replayBtn.classList.remove('flex');
@@ -1797,39 +1778,46 @@ Alex`;
       
       await new Promise(r => setTimeout(r, 800));
       
-      // ===== PHASE 8: Edit email body with visual feedback =====
+      // ===== PHASE 8: Edit email body with backspace and retyping =====
       // Switch to I-beam text cursor
       fakeCursor.classList.add('text-mode');
       
-      await moveCursorTo(bodyText, 0.4, 0.18);
+      await moveCursorTo(bodyText, 0.5, 0.18);
       await new Promise(r => setTimeout(r, 300));
       
-      // Triple-click to select text (simulate)
+      // Click to place cursor in text
       await simulateClick();
-      await new Promise(r => setTimeout(r, 100));
-      await simulateClick();
-      await new Promise(r => setTimeout(r, 100));
-      await simulateClick();
+      await new Promise(r => setTimeout(r, 400));
       
-      // Position and show selection overlay over "innovative" word area
-      const bodyRect = bodyText.getBoundingClientRect();
-      const viewportRect = demoViewport.getBoundingClientRect();
-      textSelectionOverlay.style.left = (bodyRect.left - viewportRect.left + 285) + 'px';
-      textSelectionOverlay.style.top = (bodyRect.top - viewportRect.top + 28) + 'px';
-      textSelectionOverlay.style.width = '70px';
-      textSelectionOverlay.style.height = '18px';
-      textSelectionOverlay.classList.add('visible');
+      // Simulate deleting "innovative" and typing "groundbreaking"
+      const deleteWord = 'innovative';
+      const newWord = 'groundbreaking';
+      const wordIndex = GENERATED_BODY.indexOf(deleteWord);
+      const beforeWord = GENERATED_BODY.slice(0, wordIndex);
+      const afterWord = GENERATED_BODY.slice(wordIndex + deleteWord.length);
       
-      // Pause to show selection clearly
-      await new Promise(r => setTimeout(r, 1200));
+      // Delete character by character (backspace)
+      for (let i = deleteWord.length; i >= 0; i--) {
+        bodyText.textContent = beforeWord + deleteWord.slice(0, i) + afterWord;
+        await new Promise(r => setTimeout(r, 50));
+      }
       
-      // Hide selection and apply edit
-      textSelectionOverlay.classList.remove('visible');
+      await new Promise(r => setTimeout(r, 200));
+      
+      // Type new word character by character
+      for (let i = 1; i <= newWord.length; i++) {
+        bodyText.textContent = beforeWord + newWord.slice(0, i) + afterWord;
+        await new Promise(r => setTimeout(r, 60));
+      }
+      
+      await new Promise(r => setTimeout(r, 400));
+      
+      // Apply final edited text (includes the second word change: great → perfect)
       bodyText.textContent = EDITED_BODY;
       
       // Switch back to hand cursor
       fakeCursor.classList.remove('text-mode');
-      await new Promise(r => setTimeout(r, 600));
+      await new Promise(r => setTimeout(r, 500));
       
       // ===== PHASE 9: Send email =====
       // Scroll to show send button
