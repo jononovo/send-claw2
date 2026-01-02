@@ -100,6 +100,25 @@
       opacity: 1;
     }
     
+    /* I-beam text cursor - hidden by default */
+    #fake-cursor .ibeam-cursor {
+      display: none;
+    }
+    
+    #fake-cursor .hand-cursor {
+      display: block;
+    }
+    
+    /* Text mode: show I-beam, hide hand */
+    #fake-cursor.text-mode .ibeam-cursor {
+      display: block;
+    }
+    
+    #fake-cursor.text-mode .hand-cursor {
+      display: none;
+    }
+    
+    
     .company-header.cursor-hover {
       background-color: rgb(248 250 252) !important;
     }
@@ -289,10 +308,16 @@
   <div id="demo-viewport">
     <!-- Fake Pointer Hand Cursor -->
     <div id="fake-cursor">
-      <svg viewBox="0 0 24 24" fill="white" stroke="black" stroke-width="0.5">
+      <!-- Hand pointer cursor -->
+      <svg class="hand-cursor" viewBox="0 0 24 24" fill="white" stroke="black" stroke-width="0.5">
         <path d="M6.5 1.5 L6.5 10 L4.5 10 L4.5 14 C4.5 18 7.5 21 11.5 21 L14 21 C17 21 19.5 18.5 19.5 15.5 L19.5 8.5 C19.5 7.7 18.8 7 18 7 C17.2 7 16.5 7.7 16.5 8.5 L16.5 7.5 C16.5 6.7 15.8 6 15 6 C14.2 6 13.5 6.7 13.5 7.5 L13.5 7 C13.5 6.2 12.8 5.5 12 5.5 C11.2 5.5 10.5 6.2 10.5 7 L10.5 7.5 L10.5 2.5 C10.5 1.4 9.6 0.5 8.5 0.5 C7.4 0.5 6.5 1.4 6.5 2.5 Z" fill="white" stroke="black" stroke-width="1"/>
       </svg>
+      <!-- I-beam text cursor -->
+      <svg class="ibeam-cursor" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2">
+        <path d="M8 4h2a2 2 0 012 2v12a2 2 0 01-2 2H8M16 4h-2a2 2 0 00-2 2v12a2 2 0 002 2h2M12 4v16" stroke="black" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
     </div>
+    
     
     <!-- Success Toast -->
     <div id="success-toast">
@@ -1587,7 +1612,9 @@ Alex`;
       });
       
       fakeCursor.classList.remove('visible');
+      fakeCursor.classList.remove('text-mode');
       fakeCursor.style.transition = 'none';
+      
       
       replayBtn.classList.add('hidden');
       replayBtn.classList.remove('flex');
@@ -1751,15 +1778,46 @@ Alex`;
       
       await new Promise(r => setTimeout(r, 800));
       
-      // ===== PHASE 8: Quick edit =====
-      await moveCursorTo(bodyText, 0.4, 0.15);
-      await new Promise(r => setTimeout(r, 200));
-      await simulateClick();
+      // ===== PHASE 8: Edit email body with backspace and retyping =====
+      // Switch to I-beam text cursor
+      fakeCursor.classList.add('text-mode');
+      
+      await moveCursorTo(bodyText, 0.5, 0.18);
       await new Promise(r => setTimeout(r, 300));
       
-      // Simulate edit
+      // Click to place cursor in text
+      await simulateClick();
+      await new Promise(r => setTimeout(r, 400));
+      
+      // Simulate deleting "innovative" and typing "groundbreaking"
+      const deleteWord = 'innovative';
+      const newWord = 'groundbreaking';
+      const wordIndex = GENERATED_BODY.indexOf(deleteWord);
+      const beforeWord = GENERATED_BODY.slice(0, wordIndex);
+      const afterWord = GENERATED_BODY.slice(wordIndex + deleteWord.length);
+      
+      // Delete character by character (backspace)
+      for (let i = deleteWord.length; i >= 0; i--) {
+        bodyText.textContent = beforeWord + deleteWord.slice(0, i) + afterWord;
+        await new Promise(r => setTimeout(r, 50));
+      }
+      
+      await new Promise(r => setTimeout(r, 200));
+      
+      // Type new word character by character
+      for (let i = 1; i <= newWord.length; i++) {
+        bodyText.textContent = beforeWord + newWord.slice(0, i) + afterWord;
+        await new Promise(r => setTimeout(r, 60));
+      }
+      
+      await new Promise(r => setTimeout(r, 400));
+      
+      // Apply final edited text (includes the second word change: great → perfect)
       bodyText.textContent = EDITED_BODY;
-      await new Promise(r => setTimeout(r, 600));
+      
+      // Switch back to hand cursor
+      fakeCursor.classList.remove('text-mode');
+      await new Promise(r => setTimeout(r, 500));
       
       // ===== PHASE 9: Send email =====
       // Scroll to show send button
