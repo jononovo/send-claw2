@@ -100,6 +100,39 @@
       opacity: 1;
     }
     
+    /* I-beam text cursor - hidden by default */
+    #fake-cursor .ibeam-cursor {
+      display: none;
+    }
+    
+    #fake-cursor .hand-cursor {
+      display: block;
+    }
+    
+    /* Text mode: show I-beam, hide hand */
+    #fake-cursor.text-mode .ibeam-cursor {
+      display: block;
+    }
+    
+    #fake-cursor.text-mode .hand-cursor {
+      display: none;
+    }
+    
+    /* Text selection overlay */
+    #text-selection-overlay {
+      position: absolute;
+      background-color: rgba(59, 130, 246, 0.3);
+      border-radius: 2px;
+      pointer-events: none;
+      opacity: 0;
+      z-index: 160;
+      transition: opacity 0.15s ease;
+    }
+    
+    #text-selection-overlay.visible {
+      opacity: 1;
+    }
+    
     .company-header.cursor-hover {
       background-color: rgb(248 250 252) !important;
     }
@@ -289,10 +322,18 @@
   <div id="demo-viewport">
     <!-- Fake Pointer Hand Cursor -->
     <div id="fake-cursor">
-      <svg viewBox="0 0 24 24" fill="white" stroke="black" stroke-width="0.5">
+      <!-- Hand pointer cursor -->
+      <svg class="hand-cursor" viewBox="0 0 24 24" fill="white" stroke="black" stroke-width="0.5">
         <path d="M6.5 1.5 L6.5 10 L4.5 10 L4.5 14 C4.5 18 7.5 21 11.5 21 L14 21 C17 21 19.5 18.5 19.5 15.5 L19.5 8.5 C19.5 7.7 18.8 7 18 7 C17.2 7 16.5 7.7 16.5 8.5 L16.5 7.5 C16.5 6.7 15.8 6 15 6 C14.2 6 13.5 6.7 13.5 7.5 L13.5 7 C13.5 6.2 12.8 5.5 12 5.5 C11.2 5.5 10.5 6.2 10.5 7 L10.5 7.5 L10.5 2.5 C10.5 1.4 9.6 0.5 8.5 0.5 C7.4 0.5 6.5 1.4 6.5 2.5 Z" fill="white" stroke="black" stroke-width="1"/>
       </svg>
+      <!-- I-beam text cursor -->
+      <svg class="ibeam-cursor" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2">
+        <path d="M8 4h2a2 2 0 012 2v12a2 2 0 01-2 2H8M16 4h-2a2 2 0 00-2 2v12a2 2 0 002 2h2M12 4v16" stroke="black" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
     </div>
+    
+    <!-- Text selection overlay for edit visualization -->
+    <div id="text-selection-overlay"></div>
     
     <!-- Success Toast -->
     <div id="success-toast">
@@ -1306,6 +1347,7 @@
     const successToast = document.getElementById('success-toast');
     const replayOverlay = document.getElementById('replay-overlay');
     const replayOverlayBtn = document.getElementById('replay-overlay-btn');
+    const textSelectionOverlay = document.getElementById('text-selection-overlay');
     
     // Email content
     const PRODUCT_INPUT_TEXT = "crocs for business meetings";
@@ -1587,7 +1629,11 @@ Alex`;
       });
       
       fakeCursor.classList.remove('visible');
+      fakeCursor.classList.remove('text-mode');
       fakeCursor.style.transition = 'none';
+      
+      // Hide text selection overlay
+      textSelectionOverlay.classList.remove('visible');
       
       replayBtn.classList.add('hidden');
       replayBtn.classList.remove('flex');
@@ -1751,14 +1797,38 @@ Alex`;
       
       await new Promise(r => setTimeout(r, 800));
       
-      // ===== PHASE 8: Quick edit =====
-      await moveCursorTo(bodyText, 0.4, 0.15);
-      await new Promise(r => setTimeout(r, 200));
-      await simulateClick();
+      // ===== PHASE 8: Edit email body with visual feedback =====
+      // Switch to I-beam text cursor
+      fakeCursor.classList.add('text-mode');
+      
+      await moveCursorTo(bodyText, 0.4, 0.18);
       await new Promise(r => setTimeout(r, 300));
       
-      // Simulate edit
+      // Triple-click to select text (simulate)
+      await simulateClick();
+      await new Promise(r => setTimeout(r, 100));
+      await simulateClick();
+      await new Promise(r => setTimeout(r, 100));
+      await simulateClick();
+      
+      // Position and show selection overlay over "innovative" word area
+      const bodyRect = bodyText.getBoundingClientRect();
+      const viewportRect = demoViewport.getBoundingClientRect();
+      textSelectionOverlay.style.left = (bodyRect.left - viewportRect.left + 285) + 'px';
+      textSelectionOverlay.style.top = (bodyRect.top - viewportRect.top + 28) + 'px';
+      textSelectionOverlay.style.width = '70px';
+      textSelectionOverlay.style.height = '18px';
+      textSelectionOverlay.classList.add('visible');
+      
+      // Pause to show selection clearly
+      await new Promise(r => setTimeout(r, 1200));
+      
+      // Hide selection and apply edit
+      textSelectionOverlay.classList.remove('visible');
       bodyText.textContent = EDITED_BODY;
+      
+      // Switch back to hand cursor
+      fakeCursor.classList.remove('text-mode');
       await new Promise(r => setTimeout(r, 600));
       
       // ===== PHASE 9: Send email =====
