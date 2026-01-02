@@ -124,14 +124,6 @@ export default function LandingStealth() {
     { 
       text: "Workflow", 
       type: "demo",
-      component: (
-        <DemoSimulationPlayer 
-          simulation="search-composer-demo" 
-          width={520}
-          height={520}
-          className="shadow-none"
-        />
-      ), 
       label: "See it in Action",
       rotation: 0,
       duration: 45000,
@@ -875,7 +867,17 @@ export default function LandingStealth() {
                       {!(content[currentIndex] as any).containerClass?.includes('!bg-transparent') && (
                         <div className="absolute inset-0 bg-gradient-to-tr from-primary/10 to-cyan-400/10 opacity-50" />
                       )}
-                      {(content[currentIndex] as any).component ? (
+                      {(content[currentIndex] as any).type === 'demo' ? (
+                        <div className="w-full h-full flex items-center justify-center">
+                          <DemoSimulationPlayer 
+                            simulation="search-composer-demo" 
+                            width={520}
+                            height={520}
+                            className="shadow-none"
+                            onClose={() => setCurrentIndex((prev) => (prev + 1) % content.length)}
+                          />
+                        </div>
+                      ) : (content[currentIndex] as any).component ? (
                         <div className="w-full h-full flex items-center justify-center">
                           {(content[currentIndex] as any).component}
                         </div>
