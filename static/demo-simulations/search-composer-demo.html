@@ -802,10 +802,122 @@
       <!-- Results area 2 (Second search results - biotech) -->
       <div id="results-area-2" class="hidden space-y-2">
         
-        <!-- Company: Manifold Labs -->
-        <div class="company-card">
+        <!-- Company 1: Maxwell Biosciences (expanded initially, will be collapsed) -->
+        <div class="company-card" data-company="1">
           <div class="rounded-lg border border-slate-200 bg-white overflow-hidden shadow-sm">
-            <div class="company-header flex items-center justify-between p-4">
+            <div class="company-header flex items-center justify-between p-4 transition-colors cursor-pointer" data-company-header="1">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded bg-slate-100 flex items-center justify-center">
+                  <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                  </svg>
+                </div>
+                <div>
+                  <div class="flex items-center gap-2">
+                    <h4 class="font-semibold text-slate-800 text-lg">Maxwell Biosciences</h4>
+                    <svg class="w-4 h-4 text-slate-400 chevron-icon transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                  </div>
+                  <div class="flex items-center gap-3 text-sm text-slate-500">
+                    <div class="flex items-center gap-1">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/>
+                      </svg>
+                      <span>maxwellbio.com</span>
+                    </div>
+                    <div class="flex items-center gap-1">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+                      </svg>
+                      <span>10 contacts</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="flex items-center gap-2">
+                <button class="expand-btn w-9 h-9 rounded-lg border border-slate-200 flex items-center justify-center text-slate-400 hover:bg-slate-50 transition-transform duration-200">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/>
+                  </svg>
+                </button>
+                <button class="w-9 h-9 rounded-lg border border-slate-200 flex items-center justify-center text-slate-400 hover:bg-slate-50">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+            
+            <!-- Contacts List (visible initially) -->
+            <div class="contacts-list border-t border-slate-100" data-contacts="1">
+              <div class="flex items-center justify-between px-4 py-3 hover:bg-slate-50 border-b border-slate-100">
+                <div>
+                  <h5 class="font-medium text-slate-800">Dr. David Mancini</h5>
+                  <p class="text-sm text-slate-500">CEO & Co-Founder</p>
+                  <div class="flex items-center gap-2 mt-0.5">
+                    <span class="text-sm text-slate-500">d.mancini@maxwellbio.com</span>
+                    <svg class="w-4 h-4 text-slate-400" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                    </svg>
+                  </div>
+                </div>
+                <div class="flex items-center gap-3">
+                  <span class="text-sm font-medium text-slate-600">92%</span>
+                  <svg class="w-5 h-5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                  </svg>
+                </div>
+              </div>
+              
+              <div class="flex items-center justify-between px-4 py-3 hover:bg-slate-50 border-b border-slate-100">
+                <div>
+                  <h5 class="font-medium text-slate-800">Dr. Sarah Chen</h5>
+                  <p class="text-sm text-slate-500">Chief Scientific Officer</p>
+                  <div class="flex items-center gap-2 mt-0.5">
+                    <span class="text-sm text-slate-500">s.chen@maxwellbio.com</span>
+                    <svg class="w-4 h-4 text-slate-400" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                    </svg>
+                  </div>
+                </div>
+                <div class="flex items-center gap-3">
+                  <span class="text-sm font-medium text-slate-600">88%</span>
+                  <svg class="w-5 h-5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                  </svg>
+                </div>
+              </div>
+              
+              <div class="flex items-center justify-between px-4 py-3 hover:bg-slate-50">
+                <div>
+                  <h5 class="font-medium text-slate-800">Michael Torres</h5>
+                  <p class="text-sm text-slate-500">VP of Business Development</p>
+                  <div class="flex items-center gap-2 mt-0.5">
+                    <span class="text-sm text-slate-500">m.torres@maxwellbio.com</span>
+                    <svg class="w-4 h-4 text-slate-400" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                    </svg>
+                  </div>
+                </div>
+                <div class="flex items-center gap-3">
+                  <span class="text-sm font-medium text-slate-600">85%</span>
+                  <svg class="w-5 h-5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Company 2: Manifold Labs (collapsed initially, will be expanded) -->
+        <div class="company-card" data-company="2">
+          <div class="rounded-lg border border-slate-200 bg-white overflow-hidden shadow-sm">
+            <div class="company-header flex items-center justify-between p-4 transition-colors cursor-pointer" data-company-header="2">
               <div class="flex items-center gap-3">
                 <div class="w-9 h-9 rounded bg-slate-100 flex items-center justify-center">
                   <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -815,7 +927,7 @@
                 <div>
                   <div class="flex items-center gap-2">
                     <h4 class="font-semibold text-slate-800 text-lg">Manifold Labs</h4>
-                    <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-4 h-4 text-slate-400 chevron-icon transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                     </svg>
                   </div>
@@ -836,9 +948,9 @@
                 </div>
               </div>
               <div class="flex items-center gap-2">
-                <button class="w-9 h-9 rounded-lg border border-slate-200 flex items-center justify-center text-slate-400 hover:bg-slate-50">
+                <button class="expand-btn w-9 h-9 rounded-lg border border-slate-200 flex items-center justify-center text-slate-400 hover:bg-slate-50">
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                   </svg>
                 </button>
                 <button class="w-9 h-9 rounded-lg border border-slate-200 flex items-center justify-center text-slate-400 hover:bg-slate-50">
@@ -849,8 +961,8 @@
               </div>
             </div>
             
-            <!-- Contacts List -->
-            <div class="border-t border-slate-100">
+            <!-- Contacts List (hidden initially) -->
+            <div class="contacts-list border-t border-slate-100 hidden" data-contacts="2">
               <div id="contact-gleb" class="contact-row flex items-center justify-between px-4 py-3 hover:bg-slate-50 border-b border-slate-100 cursor-pointer transition-colors">
                 <div>
                   <h5 class="font-medium text-slate-800">Gleb Kuznetsov</h5>
@@ -914,55 +1026,6 @@
               <!-- More contacts available -->
               <div class="px-4 py-3 text-center text-sm text-slate-500">
                 +7 more contacts available
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        <!-- Company: Maxwell Biosciences (collapsed) -->
-        <div class="company-card">
-          <div class="rounded-lg border border-slate-200 bg-white overflow-hidden shadow-sm">
-            <div class="company-header flex items-center justify-between p-4">
-              <div class="flex items-center gap-3">
-                <div class="w-9 h-9 rounded bg-slate-100 flex items-center justify-center">
-                  <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
-                  </svg>
-                </div>
-                <div>
-                  <div class="flex items-center gap-2">
-                    <h4 class="font-semibold text-slate-800 text-lg">Maxwell Biosciences</h4>
-                    <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                    </svg>
-                  </div>
-                  <div class="flex items-center gap-3 text-sm text-slate-500">
-                    <div class="flex items-center gap-1">
-                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/>
-                      </svg>
-                      <span>maxwellbio.com</span>
-                    </div>
-                    <div class="flex items-center gap-1">
-                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
-                      </svg>
-                      <span>10 contacts</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="flex items-center gap-2">
-                <button class="w-9 h-9 rounded-lg border border-slate-200 flex items-center justify-center text-slate-400 hover:bg-slate-50">
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                  </svg>
-                </button>
-                <button class="w-9 h-9 rounded-lg border border-slate-200 flex items-center justify-center text-slate-400 hover:bg-slate-50">
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
-                  </svg>
-                </button>
               </div>
             </div>
           </div>
@@ -1494,7 +1557,7 @@ Alex`;
     }
     
     function resetDemo() {
-      currentQuery = DEMO_QUERY_1;
+      currentQuery = DEMO_QUERY_2;
       currentRole = 'leadership';
       
       searchState.classList.remove('hidden');
@@ -1513,8 +1576,11 @@ Alex`;
       
       resultsState.classList.add('hidden');
       
-      expandCompany(1);
-      collapseCompany(2);
+      // Reset companies in results-area-2: expand company 1, collapse company 2
+      const contacts1 = document.querySelector('#results-area-2 [data-contacts="1"]');
+      const contacts2 = document.querySelector('#results-area-2 [data-contacts="2"]');
+      if (contacts1) contacts1.classList.remove('hidden');
+      if (contacts2) contacts2.classList.add('hidden');
       
       document.querySelectorAll('.contacts-list').forEach(el => {
         el.classList.remove('slide-down');
@@ -1555,81 +1621,17 @@ Alex`;
       
       await new Promise(r => setTimeout(r, START_DELAY));
       
-      // ===== PHASE 1: First search =====
-      await typeText(DEMO_QUERY_1);
+      // ===== PHASE 1: Type biotech search query =====
+      currentQuery = DEMO_QUERY_2;
+      await typeText(DEMO_QUERY_2);
       await new Promise(r => setTimeout(r, 400));
       
+      // ===== PHASE 2: Open role selector and select CTO =====
       fakeCursor.style.left = '260px';
       fakeCursor.style.top = '150px';
       fakeCursor.classList.add('visible');
       await new Promise(r => setTimeout(r, 200));
       
-      await moveCursorTo(searchBtn, 0.5, 0.5);
-      searchBtn.classList.add('cursor-hover');
-      searchBtn.classList.add('btn-pulse');
-      await new Promise(r => setTimeout(r, CURSOR_HOVER_DELAY + 300));
-      
-      await simulateClick();
-      searchBtn.classList.remove('cursor-hover');
-      searchBtn.classList.remove('btn-pulse');
-      fakeCursor.classList.remove('visible');
-      
-      cursor.classList.add('hidden');
-      await animateProgress();
-      hideProgress();
-      
-      showResults(1);
-      await new Promise(r => setTimeout(r, 600));
-      
-      // ===== PHASE 2: Interact with results =====
-      fakeCursor.style.transition = 'none';
-      fakeCursor.style.left = '300px';
-      fakeCursor.style.top = '200px';
-      fakeCursor.classList.add('visible');
-      await new Promise(r => setTimeout(r, 200));
-      
-      const company1Header = document.querySelector('[data-company-header="1"]');
-      await moveCursorTo(company1Header, 0.3, 0.5);
-      company1Header.classList.add('cursor-hover');
-      await new Promise(r => setTimeout(r, CURSOR_HOVER_DELAY));
-      await simulateClick();
-      company1Header.classList.remove('cursor-hover');
-      collapseCompany(1);
-      await new Promise(r => setTimeout(r, 400));
-      
-      const company2Header = document.querySelector('[data-company-header="2"]');
-      await moveCursorTo(company2Header, 0.3, 0.5);
-      company2Header.classList.add('cursor-hover');
-      await new Promise(r => setTimeout(r, CURSOR_HOVER_DELAY));
-      await simulateClick();
-      company2Header.classList.remove('cursor-hover');
-      expandCompany(2);
-      await new Promise(r => setTimeout(r, 600));
-      
-      // ===== PHASE 3: Click compressed search bar to expand =====
-      await moveCursorTo(compressedSearchBar, 0.3, 0.5);
-      compressedSearchBar.classList.add('cursor-hover');
-      await new Promise(r => setTimeout(r, CURSOR_HOVER_DELAY));
-      await simulateClick();
-      compressedSearchBar.classList.remove('cursor-hover');
-      
-      showSearchState();
-      await new Promise(r => setTimeout(r, 400));
-      
-      // ===== PHASE 4: Clear and type new query =====
-      await moveCursorTo(document.getElementById('search-input'), 0.8, 0.5);
-      await new Promise(r => setTimeout(r, 200));
-      await simulateClick();
-      await new Promise(r => setTimeout(r, 300));
-      
-      await clearText();
-      await new Promise(r => setTimeout(r, 200));
-      
-      currentQuery = DEMO_QUERY_2;
-      await typeText(DEMO_QUERY_2);
-      await new Promise(r => setTimeout(r, 400));
-      
-      // ===== PHASE 5: Open role selector and select CTO =====
       await moveCursorTo(roleChip, 0.5, 0.5);
       roleChip.classList.add('cursor-hover');
       await new Promise(r => setTimeout(r, CURSOR_HOVER_DELAY));
@@ -1650,7 +1652,7 @@ Alex`;
       hideRoleDropdown();
       await new Promise(r => setTimeout(r, 400));
       
-      // ===== PHASE 6: Click search again =====
+      // ===== PHASE 3: Click search button =====
       await moveCursorTo(searchBtn, 0.5, 0.5);
       searchBtn.classList.add('cursor-hover');
       searchBtn.classList.add('btn-pulse');
@@ -1665,15 +1667,45 @@ Alex`;
       hideProgress();
       
       showResults(2);
-      await new Promise(r => setTimeout(r, 800));
+      await new Promise(r => setTimeout(r, 600));
       
-      // ===== PHASE 7: Click on contact to open composer =====
+      // ===== PHASE 4: Interact with results - collapse first, expand second =====
       fakeCursor.style.transition = 'none';
       fakeCursor.style.left = '300px';
-      fakeCursor.style.top = '250px';
+      fakeCursor.style.top = '200px';
       fakeCursor.classList.add('visible');
       await new Promise(r => setTimeout(r, 200));
       
+      // Click first company header to collapse it
+      const company1Header = document.querySelector('#results-area-2 [data-company-header="1"]');
+      await moveCursorTo(company1Header, 0.3, 0.5);
+      company1Header.classList.add('cursor-hover');
+      await new Promise(r => setTimeout(r, CURSOR_HOVER_DELAY));
+      await simulateClick();
+      company1Header.classList.remove('cursor-hover');
+      
+      // Collapse company 1 in results-area-2
+      const contacts1 = document.querySelector('#results-area-2 [data-contacts="1"]');
+      if (contacts1) contacts1.classList.add('hidden');
+      await new Promise(r => setTimeout(r, 400));
+      
+      // Click second company header to expand it
+      const company2Header = document.querySelector('#results-area-2 [data-company-header="2"]');
+      await moveCursorTo(company2Header, 0.3, 0.5);
+      company2Header.classList.add('cursor-hover');
+      await new Promise(r => setTimeout(r, CURSOR_HOVER_DELAY));
+      await simulateClick();
+      company2Header.classList.remove('cursor-hover');
+      
+      // Expand company 2 in results-area-2
+      const contacts2 = document.querySelector('#results-area-2 [data-contacts="2"]');
+      if (contacts2) {
+        contacts2.classList.remove('hidden');
+        contacts2.classList.add('slide-down');
+      }
+      await new Promise(r => setTimeout(r, 600));
+      
+      // ===== PHASE 5: Click on contact to open composer =====
       await moveCursorTo(contactGleb, 0.3, 0.5);
       contactGleb.classList.add('cursor-hover');
       await new Promise(r => setTimeout(r, CURSOR_HOVER_DELAY));
@@ -1683,7 +1715,7 @@ Alex`;
       openComposer();
       await new Promise(r => setTimeout(r, 500));
       
-      // ===== PHASE 8: Type product =====
+      // ===== PHASE 6: Type product =====
       await moveCursorTo(productInput, 0.3, 0.5);
       await new Promise(r => setTimeout(r, 200));
       await simulateClick();
@@ -1696,7 +1728,7 @@ Alex`;
       await new Promise(r => setTimeout(r, 400));
       productCursor.classList.add('hidden');
       
-      // ===== PHASE 9: Click Generate =====
+      // ===== PHASE 7: Click Generate =====
       await moveCursorTo(generateBtn, 0.5, 0.5);
       generateBtn.classList.add('btn-hover');
       generateBtn.classList.add('btn-pulse');
@@ -1719,7 +1751,7 @@ Alex`;
       
       await new Promise(r => setTimeout(r, 800));
       
-      // ===== PHASE 10: Quick edit =====
+      // ===== PHASE 8: Quick edit =====
       await moveCursorTo(bodyText, 0.4, 0.15);
       await new Promise(r => setTimeout(r, 200));
       await simulateClick();
@@ -1729,7 +1761,7 @@ Alex`;
       bodyText.textContent = EDITED_BODY;
       await new Promise(r => setTimeout(r, 600));
       
-      // ===== PHASE 11: Send email =====
+      // ===== PHASE 9: Send email =====
       // Scroll to show send button
       scrollComposerTo(sendBtn);
       await new Promise(r => setTimeout(r, 800));
@@ -1744,7 +1776,7 @@ Alex`;
       
       fakeCursor.classList.remove('visible');
       
-      // ===== PHASE 12: Success! =====
+      // ===== PHASE 10: Success! =====
       await new Promise(r => setTimeout(r, 300));
       showSuccess();
       
