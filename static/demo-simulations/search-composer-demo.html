@@ -1750,8 +1750,8 @@ Alex`;
       await new Promise(r => setTimeout(r, 300));
       showSuccess();
       
-      // Wait for success toast to show, then show replay overlay after 2 seconds
-      await new Promise(r => setTimeout(r, 5000));
+      // Wait for success toast to show, then show replay overlay after 1 second
+      await new Promise(r => setTimeout(r, 1000));
       
       // Show blurred replay overlay
       replayOverlay.classList.add('visible');
