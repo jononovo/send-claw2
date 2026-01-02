@@ -1530,12 +1530,8 @@ Alex`;
     
     function scrollComposerTo(element) {
       const slider = document.getElementById('compose-slider');
-      // Scroll to element, then add a bit more to show padding below
-      element.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-      // Add extra scroll after a short delay
-      setTimeout(() => {
-        slider.scrollTop += 40;
-      }, 300);
+      // Directly scroll the compose-slider to show the element at the bottom
+      slider.scrollTo({ top: slider.scrollHeight, behavior: 'smooth' });
     }
     
     function typeInElement(element, text, index = 0) {
