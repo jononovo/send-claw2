@@ -214,6 +214,58 @@
       animation: successPop 0.4s ease-out forwards;
     }
     
+    /* Replay overlay */
+    #replay-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(255, 255, 255, 0.6);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      z-index: 350;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+    }
+    
+    #replay-overlay.visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    
+    #replay-overlay button {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 24px;
+      background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    
+    #replay-overlay button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 20px rgba(59, 130, 246, 0.5);
+    }
+    
+    #replay-overlay p {
+      margin-top: 12px;
+      color: #64748b;
+      font-size: 13px;
+    }
+    
     /* Viewport container - like a video frame */
     #demo-viewport {
       width: 520px;
@@ -255,6 +307,17 @@
         <p class="font-semibold text-slate-800 text-sm">Email sent!</p>
         <p class="text-xs text-slate-500">Your message to Gleb was delivered</p>
       </div>
+    </div>
+    
+    <!-- Replay Overlay -->
+    <div id="replay-overlay">
+      <button id="replay-overlay-btn">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+        </svg>
+        Watch Again
+      </button>
+      <p>See how easy sales can be</p>
     </div>
     
     <!-- Demo content that can be zoomed/panned -->
@@ -1180,6 +1243,8 @@
     const bodyText = document.getElementById('body-text');
     const sendBtn = document.getElementById('send-btn');
     const successToast = document.getElementById('success-toast');
+    const replayOverlay = document.getElementById('replay-overlay');
+    const replayOverlayBtn = document.getElementById('replay-overlay-btn');
     
     // Email content
     const PRODUCT_INPUT_TEXT = "crocs for business meetings";
@@ -1463,6 +1528,9 @@ Alex`;
       replayBtn.classList.add('hidden');
       replayBtn.classList.remove('flex');
       
+      // Hide replay overlay
+      replayOverlay.classList.remove('visible');
+      
       // Reset compose slider
       composeSlider.classList.remove('open');
       composeSlider.style.transform = 'translateX(100%)';
@@ -1682,15 +1750,24 @@ Alex`;
       await new Promise(r => setTimeout(r, 300));
       showSuccess();
       
-      await new Promise(r => setTimeout(r, 2000));
+      // Wait for success toast to show, then show replay overlay after 2 seconds
+      await new Promise(r => setTimeout(r, 5000));
       
-      replayBtn.classList.remove('hidden');
-      replayBtn.classList.add('flex');
+      // Show blurred replay overlay
+      replayOverlay.classList.add('visible');
       
       isRunning = false;
     }
     
+    // Replay overlay button click handler
+    replayOverlayBtn.addEventListener('click', () => {
+      replayOverlay.classList.remove('visible');
+      runDemo();
+    });
+    
+    // Legacy replay button (hidden, but keep for compatibility)
     replayBtn.addEventListener('click', () => {
+      replayOverlay.classList.remove('visible');
       runDemo();
     });
     
