@@ -306,12 +306,14 @@
     
     .title-overlay h2 {
       color: white;
-      font-size: 24px;
+      font-size: 22px;
       font-weight: 600;
       text-align: center;
-      padding: 0 40px;
-      line-height: 1.4;
+      padding: 0 60px;
+      margin: 0 20px;
+      line-height: 1.5;
       text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+      max-width: 400px;
     }
     
     /* Viewport container - like a video frame */
@@ -364,7 +366,7 @@
     </div>
     
     <!-- Title Overlays -->
-    <div id="title-overlay-1" class="title-overlay">
+    <div id="title-overlay-1" class="title-overlay visible">
       <h2>Find any type of company in seconds...</h2>
     </div>
     <div id="title-overlay-2" class="title-overlay">
@@ -1679,7 +1681,7 @@ Alex`;
       successToast.classList.remove('show');
       successToast.style.transform = 'translate(-50%, -50%) scale(0)';
       successToast.style.opacity = '';
-      titleOverlay1.classList.remove('visible');
+      // Don't reset titleOverlay1 here - it's handled in runDemo for smooth initial load
       titleOverlay2.classList.remove('visible');
     }
     
@@ -1691,7 +1693,7 @@ Alex`;
       
       await new Promise(r => setTimeout(r, START_DELAY));
       
-      // Show first title overlay
+      // Show first title overlay (visible on initial load, re-add for replays)
       titleOverlay1.classList.add('visible');
       await new Promise(r => setTimeout(r, 1500));
       titleOverlay1.classList.remove('visible');
