@@ -1540,9 +1540,9 @@ Alex`;
       cards.forEach((card, index) => {
         card.classList.remove('card-animate');
         card.style.opacity = '0';
+        card.style.animationDelay = `${index * 0.12}s`;
         setTimeout(() => {
           card.classList.add('card-animate');
-          card.style.animationDelay = `${index * 0.1}s`;
         }, 50);
       });
     }
