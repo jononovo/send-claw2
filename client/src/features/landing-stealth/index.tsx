@@ -65,12 +65,16 @@ export default function LandingStealth() {
   });
   
   const buttonRef = useRef<HTMLButtonElement>(null);
+  const testimonialSectionRef = useRef<HTMLDivElement>(null);
   
   // Image loading state for sequential loading (duck first, then background)
   const [isDuckLoaded, setIsDuckLoaded] = useState(false);
   
   // Lazy load demo simulation - only render when slider reaches slide 3
   const [shouldRenderDemo, setShouldRenderDemo] = useState(false);
+  
+  // Testimonial carousel visibility state - only run when in viewport
+  const [isTestimonialVisible, setIsTestimonialVisible] = useState(false);
   
   // Redirect to /app when user is authenticated (from login flow, not secret code flow)
   // Only redirect on root path - direct links like /s or /landing-stealth should show the page
@@ -199,6 +203,7 @@ export default function LandingStealth() {
     }
   }, [currentIndex, shouldRenderDemo]);
 
+  // Main slideshow timer (above the fold)
   useEffect(() => {
     // Pause cycling during registration/onboarding flows
     if (currentIndex === 6 && code.length > 0) return;
@@ -211,7 +216,6 @@ export default function LandingStealth() {
     const duration = (item as any).duration || 6000;
     
     let slideTimeout: ReturnType<typeof setTimeout> | undefined;
-    let testimonialInterval: ReturnType<typeof setInterval> | undefined;
     
     // Defer timer start by 150ms to allow browser to complete initial paint
     // This improves Time to Interactive without noticeable delay to users
@@ -219,18 +223,51 @@ export default function LandingStealth() {
       slideTimeout = setTimeout(() => {
         setCurrentIndex((prev) => (prev + 1) % content.length);
       }, duration);
-
-      testimonialInterval = setInterval(() => {
-        setCurrentTestimonialIndex((prev) => (prev + 1) % testimonials.length);
-      }, 5000);
     }, 150);
 
     return () => {
       clearTimeout(deferralTimeout);
       if (slideTimeout) clearTimeout(slideTimeout);
-      if (testimonialInterval) clearInterval(testimonialInterval);
     };
   }, [currentIndex, code, showAccessGranted, showQuestionnaire, isRegistrationModalOpen, showApplyForm]);
+
+  // Intersection Observer for testimonial section visibility
+  useEffect(() => {
+    const section = testimonialSectionRef.current;
+    if (!section) return;
+
+    // Fallback for browsers without Intersection Observer - default to visible
+    if (!('IntersectionObserver' in window)) {
+      setIsTestimonialVisible(true);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          setIsTestimonialVisible(entry.isIntersecting);
+        });
+      },
+      { threshold: 0.2 }
+    );
+
+    observer.observe(section);
+    return () => observer.disconnect();
+  }, []);
+
+  // Testimonial carousel timer - only runs when section is visible
+  useEffect(() => {
+    if (!isTestimonialVisible) return;
+    
+    // Respect reduced motion preference
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    const testimonialInterval = setInterval(() => {
+      setCurrentTestimonialIndex((prev) => (prev + 1) % testimonials.length);
+    }, 5000);
+
+    return () => clearInterval(testimonialInterval);
+  }, [isTestimonialVisible]);
 
   const handleQuack = () => {
     const validCodes = ["quack", "charlie"];
@@ -1024,7 +1061,7 @@ export default function LandingStealth() {
 
       </div>
 
-      <div className="relative z-20 bg-[#0A0A10] border-t border-white/10 py-24">
+      <div ref={testimonialSectionRef} className="relative z-20 bg-[#0A0A10] border-t border-white/10 py-24">
         <div className="absolute inset-0 opacity-20" style={{ backgroundImage: "radial-gradient(#1e293b 1px, transparent 1px)", backgroundSize: "30px 30px" }} />
         
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[80%] max-w-5xl -z-0 pointer-events-none">
