@@ -834,14 +834,14 @@ export default function LandingStealth() {
                 <div className="w-8 h-8 rounded-full overflow-hidden border border-white/10 shadow-lg bg-gray-800">
                   <img src={danThumb} alt="Player" loading="lazy" className="w-full h-full object-cover" />
                 </div>
-                <div className="w-8 h-8 rounded-full border-2 border-white/20 shadow-lg bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center">
-                  <span className="text-xs font-semibold text-white">JK</span>
+                <div className="w-8 h-8 rounded-full border border-white/10 shadow-lg bg-gradient-to-br from-slate-500 to-slate-600 flex items-center justify-center">
+                  <span className="text-xs font-medium text-white/80">JK</span>
+                </div>
+                <div className="w-8 h-8 rounded-full border border-white/10 shadow-lg bg-gradient-to-br from-zinc-500 to-zinc-600 flex items-center justify-center">
+                  <span className="text-xs font-medium text-white/80">AL</span>
                 </div>
                 <div className="w-8 h-8 rounded-full overflow-hidden border border-white/10 shadow-lg bg-gray-800">
                   <img src={sarahThumb} alt="Player" loading="lazy" className="w-full h-full object-cover" />
-                </div>
-                <div className="w-8 h-8 rounded-full border-2 border-white/20 shadow-lg bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center">
-                  <span className="text-xs font-semibold text-white">AL</span>
                 </div>
                 <div className="w-8 h-8 rounded-full overflow-hidden border border-white/10 shadow-lg bg-gray-800">
                   <img src={mikeThumb} alt="Player" loading="lazy" className="w-full h-full object-cover" />
