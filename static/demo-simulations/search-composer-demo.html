@@ -1280,11 +1280,11 @@
     // Demo configuration
     const DEMO_QUERY_1 = "Private credit asset managers in NYC";
     const DEMO_QUERY_2 = "biotech series A startups in austin";
-    const TYPING_SPEED = 50;
-    const SEARCH_DELAY = 1500;
-    const START_DELAY = 800;
-    const CURSOR_MOVE_DURATION = 500;
-    const CURSOR_HOVER_DELAY = 300;
+    const TYPING_SPEED = 38;
+    const SEARCH_DELAY = 1125;
+    const START_DELAY = 600;
+    const CURSOR_MOVE_DURATION = 375;
+    const CURSOR_HOVER_DELAY = 225;
     
     // State
     let isRunning = false;
@@ -1561,7 +1561,7 @@ Alex`;
         confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
         confetti.style.animationDelay = Math.random() * 0.5 + 's';
         demoViewport.appendChild(confetti);
-        setTimeout(() => confetti.remove(), 1500);
+        setTimeout(() => confetti.remove(), 1125);
       }
     }
     
@@ -1651,13 +1651,13 @@ Alex`;
       // ===== PHASE 1: Type biotech search query =====
       currentQuery = DEMO_QUERY_2;
       await typeText(DEMO_QUERY_2);
-      await new Promise(r => setTimeout(r, 400));
+      await new Promise(r => setTimeout(r, 300));
       
       // ===== PHASE 2: Open role selector and select CTO =====
       fakeCursor.style.left = '260px';
       fakeCursor.style.top = '150px';
       fakeCursor.classList.add('visible');
-      await new Promise(r => setTimeout(r, 200));
+      await new Promise(r => setTimeout(r, 150));
       
       await moveCursorTo(roleChip, 0.5, 0.5);
       roleChip.classList.add('cursor-hover');
@@ -1666,7 +1666,7 @@ Alex`;
       roleChip.classList.remove('cursor-hover');
       
       showRoleDropdown();
-      await new Promise(r => setTimeout(r, 400));
+      await new Promise(r => setTimeout(r, 300));
       
       const ctoOption = document.getElementById('role-cto');
       await moveCursorTo(ctoOption, 0.5, 0.5);
@@ -1677,13 +1677,13 @@ Alex`;
       
       setRole('cto');
       hideRoleDropdown();
-      await new Promise(r => setTimeout(r, 400));
+      await new Promise(r => setTimeout(r, 300));
       
       // ===== PHASE 3: Click search button =====
       await moveCursorTo(searchBtn, 0.5, 0.5);
       searchBtn.classList.add('cursor-hover');
       searchBtn.classList.add('btn-pulse');
-      await new Promise(r => setTimeout(r, CURSOR_HOVER_DELAY + 300));
+      await new Promise(r => setTimeout(r, CURSOR_HOVER_DELAY + 225));
       await simulateClick();
       searchBtn.classList.remove('cursor-hover');
       searchBtn.classList.remove('btn-pulse');
@@ -1694,14 +1694,14 @@ Alex`;
       hideProgress();
       
       showResults(2);
-      await new Promise(r => setTimeout(r, 600));
+      await new Promise(r => setTimeout(r, 450));
       
       // ===== PHASE 4: Interact with results - collapse first, expand second =====
       fakeCursor.style.transition = 'none';
       fakeCursor.style.left = '300px';
       fakeCursor.style.top = '200px';
       fakeCursor.classList.add('visible');
-      await new Promise(r => setTimeout(r, 200));
+      await new Promise(r => setTimeout(r, 150));
       
       // Click first company header to collapse it
       const company1Header = document.querySelector('#results-area-2 [data-company-header="1"]');
@@ -1714,7 +1714,7 @@ Alex`;
       // Collapse company 1 in results-area-2
       const contacts1 = document.querySelector('#results-area-2 [data-contacts="1"]');
       if (contacts1) contacts1.classList.add('hidden');
-      await new Promise(r => setTimeout(r, 400));
+      await new Promise(r => setTimeout(r, 300));
       
       // Click second company header to expand it
       const company2Header = document.querySelector('#results-area-2 [data-company-header="2"]');
@@ -1730,7 +1730,7 @@ Alex`;
         contacts2.classList.remove('hidden');
         contacts2.classList.add('slide-down');
       }
-      await new Promise(r => setTimeout(r, 600));
+      await new Promise(r => setTimeout(r, 450));
       
       // ===== PHASE 5: Click on contact to open composer =====
       await moveCursorTo(contactGleb, 0.3, 0.5);
@@ -1740,54 +1740,54 @@ Alex`;
       contactGleb.classList.remove('cursor-hover');
       
       openComposer();
-      await new Promise(r => setTimeout(r, 500));
+      await new Promise(r => setTimeout(r, 375));
       
       // ===== PHASE 6: Type product =====
       await moveCursorTo(productInput, 0.3, 0.5);
-      await new Promise(r => setTimeout(r, 200));
+      await new Promise(r => setTimeout(r, 150));
       await simulateClick();
       
       productPlaceholder.classList.add('hidden');
       productCursor.classList.remove('hidden');
-      await new Promise(r => setTimeout(r, 200));
+      await new Promise(r => setTimeout(r, 150));
       
       await typeInElement(productText, PRODUCT_INPUT_TEXT);
-      await new Promise(r => setTimeout(r, 400));
+      await new Promise(r => setTimeout(r, 300));
       productCursor.classList.add('hidden');
       
       // ===== PHASE 7: Click Generate =====
       await moveCursorTo(generateBtn, 0.5, 0.5);
       generateBtn.classList.add('btn-hover');
       generateBtn.classList.add('btn-pulse');
-      await new Promise(r => setTimeout(r, CURSOR_HOVER_DELAY + 300));
+      await new Promise(r => setTimeout(r, CURSOR_HOVER_DELAY + 225));
       await simulateClick();
       generateBtn.classList.remove('btn-hover');
       generateBtn.classList.remove('btn-pulse');
       
       // Generate content
-      await new Promise(r => setTimeout(r, 600));
+      await new Promise(r => setTimeout(r, 450));
       subjectText.textContent = GENERATED_SUBJECT;
       subjectText.classList.remove('text-slate-400');
       subjectText.classList.add('text-slate-800');
       
-      await new Promise(r => setTimeout(r, 300));
+      await new Promise(r => setTimeout(r, 225));
       bodyText.textContent = GENERATED_BODY;
       bodyText.classList.remove('text-slate-400');
       bodyText.classList.add('text-slate-800');
       bodyText.style.whiteSpace = 'pre-wrap';
       
-      await new Promise(r => setTimeout(r, 800));
+      await new Promise(r => setTimeout(r, 600));
       
       // ===== PHASE 8: Edit email body with backspace and retyping =====
       // Switch to I-beam text cursor
       fakeCursor.classList.add('text-mode');
       
       await moveCursorTo(bodyText, 0.5, 0.18);
-      await new Promise(r => setTimeout(r, 300));
+      await new Promise(r => setTimeout(r, 225));
       
       // Click to place cursor in text
       await simulateClick();
-      await new Promise(r => setTimeout(r, 400));
+      await new Promise(r => setTimeout(r, 300));
       
       // Simulate deleting "innovative" and typing "groundbreaking"
       const deleteWord = 'innovative';
@@ -1799,35 +1799,35 @@ Alex`;
       // Delete character by character (backspace)
       for (let i = deleteWord.length; i >= 0; i--) {
         bodyText.textContent = beforeWord + deleteWord.slice(0, i) + afterWord;
-        await new Promise(r => setTimeout(r, 50));
+        await new Promise(r => setTimeout(r, 38));
       }
       
-      await new Promise(r => setTimeout(r, 200));
+      await new Promise(r => setTimeout(r, 150));
       
       // Type new word character by character
       for (let i = 1; i <= newWord.length; i++) {
         bodyText.textContent = beforeWord + newWord.slice(0, i) + afterWord;
-        await new Promise(r => setTimeout(r, 60));
+        await new Promise(r => setTimeout(r, 45));
       }
       
-      await new Promise(r => setTimeout(r, 400));
+      await new Promise(r => setTimeout(r, 300));
       
       // Apply final edited text (includes the second word change: great → perfect)
       bodyText.textContent = EDITED_BODY;
       
       // Switch back to hand cursor
       fakeCursor.classList.remove('text-mode');
-      await new Promise(r => setTimeout(r, 500));
+      await new Promise(r => setTimeout(r, 375));
       
       // ===== PHASE 9: Send email =====
       // Scroll to show send button
       scrollComposerTo(sendBtn);
-      await new Promise(r => setTimeout(r, 800));
+      await new Promise(r => setTimeout(r, 600));
       
       await moveCursorTo(sendBtn, 0.5, 0.5);
       sendBtn.classList.add('btn-hover');
       sendBtn.classList.add('btn-pulse');
-      await new Promise(r => setTimeout(r, CURSOR_HOVER_DELAY + 300));
+      await new Promise(r => setTimeout(r, CURSOR_HOVER_DELAY + 225));
       await simulateClick();
       sendBtn.classList.remove('btn-hover');
       sendBtn.classList.remove('btn-pulse');
@@ -1835,11 +1835,11 @@ Alex`;
       fakeCursor.classList.remove('visible');
       
       // ===== PHASE 10: Success! =====
-      await new Promise(r => setTimeout(r, 300));
+      await new Promise(r => setTimeout(r, 225));
       showSuccess();
       
       // Wait for success toast to show, then notify parent
-      await new Promise(r => setTimeout(r, 1000));
+      await new Promise(r => setTimeout(r, 750));
       
       // Notify parent that demo is complete (for overlay in React component)
       try {
