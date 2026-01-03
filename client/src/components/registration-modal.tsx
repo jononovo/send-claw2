@@ -3,8 +3,7 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
 import { Mail, ChevronRight, ArrowLeft, X } from "lucide-react";
 import { useRegistrationModal, type RegistrationPage } from "@/hooks/use-registration-modal";
-import { firebaseAuth } from "@/lib/firebase";
-import { sendPasswordResetEmail } from "firebase/auth";
+import { loadFirebase } from "@/lib/firebase";
 import { motion } from "framer-motion";
 import { useToast } from "@/hooks/use-toast";
 
@@ -114,11 +113,10 @@ export function RegistrationModal() {
   const handleForgotPasswordSubmit = async () => {
     if (validateEmail(email)) {
       try {
-        if (!firebaseAuth) {
-          throw new Error("Firebase not initialized");
-        }
+        const { auth } = await loadFirebase();
+        const { sendPasswordResetEmail } = await import("firebase/auth");
         
-        await sendPasswordResetEmail(firebaseAuth, email);
+        await sendPasswordResetEmail(auth, email);
         setResetEmailSent(true);
       } catch (error) {
         setCurrentPage("main");
