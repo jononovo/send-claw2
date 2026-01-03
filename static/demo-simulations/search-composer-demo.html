@@ -8,6 +8,20 @@
   <style>
     * { box-sizing: border-box; }
     
+    /* Warm color overrides - replace cold grays with warm tones */
+    .text-slate-400 { color: hsl(35, 12%, 55%) !important; }
+    .text-slate-500 { color: hsl(35, 12%, 48%) !important; }
+    .text-slate-600 { color: hsl(35, 14%, 40%) !important; }
+    .text-slate-700 { color: hsl(35, 16%, 32%) !important; }
+    .text-slate-800 { color: hsl(35, 18%, 22%) !important; }
+    .bg-slate-50 { background-color: hsl(40, 15%, 97%) !important; }
+    .bg-slate-100 { background-color: hsl(40, 14%, 94%) !important; }
+    .bg-slate-200 { background-color: hsl(40, 12%, 88%) !important; }
+    .border-slate-100 { border-color: hsl(40, 14%, 92%) !important; }
+    .border-slate-200 { border-color: hsl(40, 12%, 85%) !important; }
+    .border-slate-300 { border-color: hsl(40, 10%, 78%) !important; }
+    .hover\:bg-slate-50:hover { background-color: hsl(40, 15%, 96%) !important; }
+    
     @keyframes fadeInUp {
       from { opacity: 0; transform: translateY(12px); }
       to { opacity: 1; transform: translateY(0); }
@@ -26,9 +40,9 @@
     }
     
     @keyframes buttonPulse {
-      0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.5); }
-      70% { box-shadow: 0 0 0 8px rgba(59, 130, 246, 0); }
-      100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
+      0% { box-shadow: 0 0 0 0 rgba(140, 120, 100, 0.4); }
+      70% { box-shadow: 0 0 0 8px rgba(140, 120, 100, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(140, 120, 100, 0); }
     }
     
     .card-animate {
@@ -120,13 +134,13 @@
     
     
     .company-header.cursor-hover {
-      background-color: rgb(248 250 252) !important;
+      background-color: hsl(40, 15%, 95%) !important;
     }
     
     .search-card {
       background: white;
       border-radius: 0.75rem;
-      border: 1px solid #e5e5e5;
+      border: 1px solid hsl(40, 12%, 87%);
       box-shadow: 0 1px 3px rgba(0,0,0,0.05);
     }
     
@@ -147,7 +161,7 @@
     .search-bar-compressed {
       background: white;
       border-radius: 0.5rem;
-      border: 1px solid #e5e5e5;
+      border: 1px solid hsl(40, 12%, 87%);
       box-shadow: 0 1px 2px rgba(0,0,0,0.03);
     }
     
@@ -157,15 +171,15 @@
     }
     
     .role-chip.cursor-hover {
-      background-color: rgb(229 231 235) !important;
+      background-color: hsl(40, 12%, 88%) !important;
     }
     
     .role-option.cursor-hover {
-      background-color: rgb(243 244 246) !important;
+      background-color: hsl(40, 14%, 93%) !important;
     }
     
     .contact-row.cursor-hover {
-      background-color: rgb(248 250 252) !important;
+      background-color: hsl(40, 15%, 95%) !important;
     }
     
     .btn-hover {
@@ -180,7 +194,7 @@
       right: 0;
       width: 420px;
       height: 100%;
-      background: #f5f5f4;
+      background: hsl(40, 15%, 95%);
       border-left: 1px solid #e5e5e5;
       z-index: 150;
       transform: translateX(100%);
@@ -216,7 +230,7 @@
     
     #success-toast {
       position: absolute;
-      top: 50%;
+      top: 60%;
       left: 50%;
       transform: translate(-50%, -50%) scale(0);
       background: white;
@@ -279,8 +293,76 @@
     
     #replay-overlay p {
       margin-top: 12px;
-      color: #64748b;
+      color: hsl(35, 12%, 48%);
       font-size: 13px;
+    }
+    
+    /* Title overlays */
+    @keyframes overlaySequence {
+      0% {
+        opacity: 1;
+        background-color: rgba(0, 0, 0, 0.8);
+      }
+      70% {
+        opacity: 1;
+        background-color: rgba(0, 0, 0, 0.5);
+      }
+      100% {
+        opacity: 0;
+        background-color: rgba(0, 0, 0, 0.4);
+      }
+    }
+    
+    .title-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.8);
+      z-index: 300;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+    }
+    
+    .title-overlay.preload {
+      opacity: 1;
+    }
+    
+    .title-overlay::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: 
+        radial-gradient(ellipse at bottom right, rgba(251, 191, 36, 0.35) 0%, transparent 50%),
+        radial-gradient(ellipse at top left, rgba(245, 158, 11, 0.2) 0%, transparent 40%);
+      pointer-events: none;
+    }
+    
+    .title-overlay.visible {
+      animation: overlaySequence 2.5s ease-out forwards;
+    }
+    
+    .title-overlay h2 {
+      font-size: 28px;
+      font-weight: 600;
+      text-align: center;
+      padding: 0 60px;
+      margin: 0 20px;
+      margin-top: -80px;
+      line-height: 1.5;
+      max-width: 420px;
+      background: linear-gradient(135deg, #ffffff 0%, #ffffff 60%, #fef3c7 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      filter: drop-shadow(0 2px 10px rgba(0, 0, 0, 0.4));
     }
     
     /* Viewport container - like a video frame */
@@ -289,7 +371,7 @@
       height: 520px;
       margin: 0 auto;
       overflow: hidden;
-      background: #f5f5f4;
+      background: hsl(40, 15%, 95%);
       position: relative;
     }
     
@@ -330,6 +412,14 @@
         <p class="font-semibold text-slate-800 text-sm">Email sent!</p>
         <p class="text-xs text-slate-500">Your message to Gleb was delivered</p>
       </div>
+    </div>
+    
+    <!-- Title Overlays -->
+    <div id="title-overlay-1" class="title-overlay preload">
+      <h2>Find any type of company in seconds</h2>
+    </div>
+    <div id="title-overlay-2" class="title-overlay">
+      <h2>and email them</h2>
     </div>
     
     <!-- Replay Overlay -->
@@ -1228,7 +1318,7 @@
       </div>
       
       <!-- Product input area -->
-      <div class="bg-stone-50 rounded-lg p-3 mb-4 border border-slate-200">
+      <div class="bg-white rounded-lg p-3 mb-4 border border-slate-200">
         <div id="product-input" class="text-slate-500 min-h-[24px] mb-1">
           <span id="product-text" class="text-slate-800"></span><span id="product-placeholder" class="text-slate-400">Add your product</span><span id="product-cursor" class="hidden cursor-blink text-slate-400">|</span>
         </div>
@@ -1280,11 +1370,11 @@
     // Demo configuration
     const DEMO_QUERY_1 = "Private credit asset managers in NYC";
     const DEMO_QUERY_2 = "biotech series A startups in austin";
-    const TYPING_SPEED = 50;
-    const SEARCH_DELAY = 1500;
-    const START_DELAY = 800;
-    const CURSOR_MOVE_DURATION = 500;
-    const CURSOR_HOVER_DELAY = 300;
+    const TYPING_SPEED = 38;
+    const SEARCH_DELAY = 1125;
+    const START_DELAY = 600;
+    const CURSOR_MOVE_DURATION = 375;
+    const CURSOR_HOVER_DELAY = 225;
     
     // State
     let isRunning = false;
@@ -1331,6 +1421,8 @@
     const successToast = document.getElementById('success-toast');
     const replayOverlay = document.getElementById('replay-overlay');
     const replayOverlayBtn = document.getElementById('replay-overlay-btn');
+    const titleOverlay1 = document.getElementById('title-overlay-1');
+    const titleOverlay2 = document.getElementById('title-overlay-2');
     
     // Email content
     const PRODUCT_INPUT_TEXT = "crocs for business meetings";
@@ -1462,9 +1554,9 @@ Alex`;
       cards.forEach((card, index) => {
         card.classList.remove('card-animate');
         card.style.opacity = '0';
+        card.style.animationDelay = `${index * 0.12}s`;
         setTimeout(() => {
           card.classList.add('card-animate');
-          card.style.animationDelay = `${index * 0.1}s`;
         }, 50);
       });
     }
@@ -1553,15 +1645,17 @@ Alex`;
     
     function showConfetti() {
       const colors = ['#fbbf24', '#34d399', '#60a5fa', '#f472b6', '#a78bfa'];
-      for (let i = 0; i < 60; i++) {
+      const viewportWidth = demoViewport.offsetWidth || 800;
+      const viewportHeight = demoViewport.offsetHeight || 600;
+      for (let i = 0; i < 150; i++) {
         const confetti = document.createElement('div');
         confetti.className = 'confetti';
-        confetti.style.left = Math.random() * 520 + 'px';
-        confetti.style.top = Math.random() * 400 + 100 + 'px';
+        confetti.style.left = Math.random() * viewportWidth + 'px';
+        confetti.style.top = Math.random() * (viewportHeight * 0.7) + (viewportHeight * 0.15) + 'px';
         confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-        confetti.style.animationDelay = Math.random() * 0.5 + 's';
+        confetti.style.animationDelay = Math.random() * 0.6 + 's';
         demoViewport.appendChild(confetti);
-        setTimeout(() => confetti.remove(), 1500);
+        setTimeout(() => confetti.remove(), 1200);
       }
     }
     
@@ -1638,6 +1732,10 @@ Alex`;
       successToast.classList.remove('show');
       successToast.style.transform = 'translate(-50%, -50%) scale(0)';
       successToast.style.opacity = '';
+      // Reset title overlays for replays
+      titleOverlay1.classList.remove('visible');
+      titleOverlay1.classList.add('preload'); // Show immediately for replay
+      titleOverlay2.classList.remove('visible');
     }
     
     async function runDemo() {
@@ -1648,16 +1746,23 @@ Alex`;
       
       await new Promise(r => setTimeout(r, START_DELAY));
       
+      // First title overlay is already visible via preload class
+      // Switch from preload to visible to start the animation sequence
+      titleOverlay1.classList.remove('preload');
+      titleOverlay1.classList.add('visible');
+      await new Promise(r => setTimeout(r, 2500));
+      titleOverlay1.classList.remove('visible');
+      
       // ===== PHASE 1: Type biotech search query =====
       currentQuery = DEMO_QUERY_2;
       await typeText(DEMO_QUERY_2);
-      await new Promise(r => setTimeout(r, 400));
+      await new Promise(r => setTimeout(r, 300));
       
       // ===== PHASE 2: Open role selector and select CTO =====
       fakeCursor.style.left = '260px';
       fakeCursor.style.top = '150px';
       fakeCursor.classList.add('visible');
-      await new Promise(r => setTimeout(r, 200));
+      await new Promise(r => setTimeout(r, 150));
       
       await moveCursorTo(roleChip, 0.5, 0.5);
       roleChip.classList.add('cursor-hover');
@@ -1666,7 +1771,7 @@ Alex`;
       roleChip.classList.remove('cursor-hover');
       
       showRoleDropdown();
-      await new Promise(r => setTimeout(r, 400));
+      await new Promise(r => setTimeout(r, 300));
       
       const ctoOption = document.getElementById('role-cto');
       await moveCursorTo(ctoOption, 0.5, 0.5);
@@ -1677,13 +1782,13 @@ Alex`;
       
       setRole('cto');
       hideRoleDropdown();
-      await new Promise(r => setTimeout(r, 400));
+      await new Promise(r => setTimeout(r, 300));
       
       // ===== PHASE 3: Click search button =====
       await moveCursorTo(searchBtn, 0.5, 0.5);
       searchBtn.classList.add('cursor-hover');
       searchBtn.classList.add('btn-pulse');
-      await new Promise(r => setTimeout(r, CURSOR_HOVER_DELAY + 300));
+      await new Promise(r => setTimeout(r, CURSOR_HOVER_DELAY + 225));
       await simulateClick();
       searchBtn.classList.remove('cursor-hover');
       searchBtn.classList.remove('btn-pulse');
@@ -1694,14 +1799,14 @@ Alex`;
       hideProgress();
       
       showResults(2);
-      await new Promise(r => setTimeout(r, 600));
+      await new Promise(r => setTimeout(r, 450));
       
       // ===== PHASE 4: Interact with results - collapse first, expand second =====
       fakeCursor.style.transition = 'none';
       fakeCursor.style.left = '300px';
       fakeCursor.style.top = '200px';
       fakeCursor.classList.add('visible');
-      await new Promise(r => setTimeout(r, 200));
+      await new Promise(r => setTimeout(r, 150));
       
       // Click first company header to collapse it
       const company1Header = document.querySelector('#results-area-2 [data-company-header="1"]');
@@ -1714,7 +1819,7 @@ Alex`;
       // Collapse company 1 in results-area-2
       const contacts1 = document.querySelector('#results-area-2 [data-contacts="1"]');
       if (contacts1) contacts1.classList.add('hidden');
-      await new Promise(r => setTimeout(r, 400));
+      await new Promise(r => setTimeout(r, 300));
       
       // Click second company header to expand it
       const company2Header = document.querySelector('#results-area-2 [data-company-header="2"]');
@@ -1730,7 +1835,12 @@ Alex`;
         contacts2.classList.remove('hidden');
         contacts2.classList.add('slide-down');
       }
-      await new Promise(r => setTimeout(r, 600));
+      await new Promise(r => setTimeout(r, 450));
+      
+      // Show second title overlay - animation handles dark to light to fade
+      titleOverlay2.classList.add('visible');
+      await new Promise(r => setTimeout(r, 2500));
+      titleOverlay2.classList.remove('visible');
       
       // ===== PHASE 5: Click on contact to open composer =====
       await moveCursorTo(contactGleb, 0.3, 0.5);
@@ -1740,54 +1850,54 @@ Alex`;
       contactGleb.classList.remove('cursor-hover');
       
       openComposer();
-      await new Promise(r => setTimeout(r, 500));
+      await new Promise(r => setTimeout(r, 375));
       
       // ===== PHASE 6: Type product =====
       await moveCursorTo(productInput, 0.3, 0.5);
-      await new Promise(r => setTimeout(r, 200));
+      await new Promise(r => setTimeout(r, 150));
       await simulateClick();
       
       productPlaceholder.classList.add('hidden');
       productCursor.classList.remove('hidden');
-      await new Promise(r => setTimeout(r, 200));
+      await new Promise(r => setTimeout(r, 150));
       
       await typeInElement(productText, PRODUCT_INPUT_TEXT);
-      await new Promise(r => setTimeout(r, 400));
+      await new Promise(r => setTimeout(r, 300));
       productCursor.classList.add('hidden');
       
       // ===== PHASE 7: Click Generate =====
       await moveCursorTo(generateBtn, 0.5, 0.5);
       generateBtn.classList.add('btn-hover');
       generateBtn.classList.add('btn-pulse');
-      await new Promise(r => setTimeout(r, CURSOR_HOVER_DELAY + 300));
+      await new Promise(r => setTimeout(r, CURSOR_HOVER_DELAY + 225));
       await simulateClick();
       generateBtn.classList.remove('btn-hover');
       generateBtn.classList.remove('btn-pulse');
       
       // Generate content
-      await new Promise(r => setTimeout(r, 600));
+      await new Promise(r => setTimeout(r, 450));
       subjectText.textContent = GENERATED_SUBJECT;
       subjectText.classList.remove('text-slate-400');
       subjectText.classList.add('text-slate-800');
       
-      await new Promise(r => setTimeout(r, 300));
+      await new Promise(r => setTimeout(r, 225));
       bodyText.textContent = GENERATED_BODY;
       bodyText.classList.remove('text-slate-400');
       bodyText.classList.add('text-slate-800');
       bodyText.style.whiteSpace = 'pre-wrap';
       
-      await new Promise(r => setTimeout(r, 800));
+      await new Promise(r => setTimeout(r, 600));
       
       // ===== PHASE 8: Edit email body with backspace and retyping =====
       // Switch to I-beam text cursor
       fakeCursor.classList.add('text-mode');
       
-      await moveCursorTo(bodyText, 0.5, 0.18);
-      await new Promise(r => setTimeout(r, 300));
+      await moveCursorTo(bodyText, 0.9, 0.18);
+      await new Promise(r => setTimeout(r, 225));
       
       // Click to place cursor in text
       await simulateClick();
-      await new Promise(r => setTimeout(r, 400));
+      await new Promise(r => setTimeout(r, 300));
       
       // Simulate deleting "innovative" and typing "groundbreaking"
       const deleteWord = 'innovative';
@@ -1799,35 +1909,42 @@ Alex`;
       // Delete character by character (backspace)
       for (let i = deleteWord.length; i >= 0; i--) {
         bodyText.textContent = beforeWord + deleteWord.slice(0, i) + afterWord;
-        await new Promise(r => setTimeout(r, 50));
+        await new Promise(r => setTimeout(r, 38));
       }
       
-      await new Promise(r => setTimeout(r, 200));
+      await new Promise(r => setTimeout(r, 150));
       
       // Type new word character by character
       for (let i = 1; i <= newWord.length; i++) {
         bodyText.textContent = beforeWord + newWord.slice(0, i) + afterWord;
-        await new Promise(r => setTimeout(r, 60));
+        await new Promise(r => setTimeout(r, 45));
       }
       
-      await new Promise(r => setTimeout(r, 400));
+      await new Promise(r => setTimeout(r, 300));
       
       // Apply final edited text (includes the second word change: great → perfect)
       bodyText.textContent = EDITED_BODY;
       
       // Switch back to hand cursor
       fakeCursor.classList.remove('text-mode');
-      await new Promise(r => setTimeout(r, 500));
+      await new Promise(r => setTimeout(r, 375));
       
       // ===== PHASE 9: Send email =====
       // Scroll to show send button
       scrollComposerTo(sendBtn);
-      await new Promise(r => setTimeout(r, 800));
+      await new Promise(r => setTimeout(r, 600));
       
-      await moveCursorTo(sendBtn, 0.5, 0.5);
+      // Move cursor to fixed position at bottom-right where Send Email button appears
+      // (can't use getBoundingClientRect for elements inside scrollable drawer)
+      const viewportHeight = demoViewport.offsetHeight || 600;
+      const viewportWidth = demoViewport.offsetWidth || 520;
+      fakeCursor.style.transition = `left ${CURSOR_MOVE_DURATION}ms ease-out, top ${CURSOR_MOVE_DURATION}ms ease-out`;
+      fakeCursor.style.left = (viewportWidth - 80) + 'px';
+      fakeCursor.style.top = (viewportHeight + 230) + 'px';
+      await new Promise(r => setTimeout(r, CURSOR_MOVE_DURATION));
       sendBtn.classList.add('btn-hover');
       sendBtn.classList.add('btn-pulse');
-      await new Promise(r => setTimeout(r, CURSOR_HOVER_DELAY + 300));
+      await new Promise(r => setTimeout(r, CURSOR_HOVER_DELAY + 225));
       await simulateClick();
       sendBtn.classList.remove('btn-hover');
       sendBtn.classList.remove('btn-pulse');
@@ -1835,11 +1952,11 @@ Alex`;
       fakeCursor.classList.remove('visible');
       
       // ===== PHASE 10: Success! =====
-      await new Promise(r => setTimeout(r, 300));
+      await new Promise(r => setTimeout(r, 225));
       showSuccess();
       
       // Wait for success toast to show, then notify parent
-      await new Promise(r => setTimeout(r, 1000));
+      await new Promise(r => setTimeout(r, 750));
       
       // Notify parent that demo is complete (for overlay in React component)
       try {
