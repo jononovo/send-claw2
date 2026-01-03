@@ -1,4 +1,5 @@
 import express, { type Request, Response, NextFunction } from "express";
+import compression from "compression";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import { setupAuth } from "./auth";
@@ -21,6 +22,9 @@ app.use('/api/stripe/webhook', express.raw({ type: 'application/json' }));
 // Configure JSON parsing for all other routes
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+
+// Enable gzip/deflate compression for all responses
+app.use(compression());
 
 // Configure CORS to handle credentials properly
 app.use((req, res, next) => {
