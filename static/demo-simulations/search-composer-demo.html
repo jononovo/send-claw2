@@ -1645,15 +1645,17 @@ Alex`;
     
     function showConfetti() {
       const colors = ['#fbbf24', '#34d399', '#60a5fa', '#f472b6', '#a78bfa'];
-      for (let i = 0; i < 60; i++) {
+      const viewportWidth = demoViewport.offsetWidth || 800;
+      const viewportHeight = demoViewport.offsetHeight || 600;
+      for (let i = 0; i < 150; i++) {
         const confetti = document.createElement('div');
         confetti.className = 'confetti';
-        confetti.style.left = Math.random() * 520 + 'px';
-        confetti.style.top = Math.random() * 400 + 100 + 'px';
+        confetti.style.left = Math.random() * viewportWidth + 'px';
+        confetti.style.top = Math.random() * (viewportHeight * 0.7) + (viewportHeight * 0.15) + 'px';
         confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-        confetti.style.animationDelay = Math.random() * 0.5 + 's';
+        confetti.style.animationDelay = Math.random() * 0.6 + 's';
         demoViewport.appendChild(confetti);
-        setTimeout(() => confetti.remove(), 1125);
+        setTimeout(() => confetti.remove(), 1200);
       }
     }
     
