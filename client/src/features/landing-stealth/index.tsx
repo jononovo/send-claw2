@@ -831,16 +831,20 @@ export default function LandingStealth() {
             <div className="flex items-center gap-6">
              <div className="flex items-center gap-4 text-sm text-muted-foreground/80 p-3 rounded-2xl bg-white/5 border border-white/5 w-fit backdrop-blur-md hover:bg-white/10 transition-colors cursor-default">
               <div className="flex -space-x-3">
-                {[danThumb, sarahThumb, mikeThumb].map((img, i) => (
-                  <div key={i} className="w-8 h-8 rounded-full overflow-hidden border border-white/10 shadow-lg bg-gray-800">
-                    <img src={img} alt="Player" loading="lazy" className="w-full h-full object-cover" />
-                  </div>
-                ))}
-                <div className="w-8 h-8 rounded-full border border-white/10 shadow-lg bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center">
-                  <User className="w-4 h-4 text-white/90" />
+                <div className="w-8 h-8 rounded-full overflow-hidden border border-white/10 shadow-lg bg-gray-800">
+                  <img src={danThumb} alt="Player" loading="lazy" className="w-full h-full object-cover" />
                 </div>
-                <div className="w-8 h-8 rounded-full border border-white/10 shadow-lg bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center">
-                  <User className="w-4 h-4 text-white/90" />
+                <div className="w-8 h-8 rounded-full border-2 border-white/20 shadow-lg bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center">
+                  <span className="text-xs font-semibold text-white">JK</span>
+                </div>
+                <div className="w-8 h-8 rounded-full overflow-hidden border border-white/10 shadow-lg bg-gray-800">
+                  <img src={sarahThumb} alt="Player" loading="lazy" className="w-full h-full object-cover" />
+                </div>
+                <div className="w-8 h-8 rounded-full border-2 border-white/20 shadow-lg bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center">
+                  <span className="text-xs font-semibold text-white">AL</span>
+                </div>
+                <div className="w-8 h-8 rounded-full overflow-hidden border border-white/10 shadow-lg bg-gray-800">
+                  <img src={mikeThumb} alt="Player" loading="lazy" className="w-full h-full object-cover" />
                 </div>
               </div>
               <p className="font-heading"><span className="text-white font-bold">1,248</span> Players Waiting</p>
