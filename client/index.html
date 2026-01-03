@@ -19,14 +19,29 @@
       })();
     </script>
     
-    <!-- Google tag (gtag.js) - GA4 + Google Ads -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-4K01JPM2D8"></script>
+    <!-- Google tag (gtag.js) - GA4 + Google Ads - Deferred script loading -->
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
+      
+      // Queue config immediately so early events have a destination
       gtag('js', new Date());
       gtag('config', 'G-4K01JPM2D8');
       gtag('config', 'AW-17847406917');
+      
+      // Defer the actual script fetch until browser is idle
+      function loadGtagScript() {
+        var script = document.createElement('script');
+        script.src = 'https://www.googletagmanager.com/gtag/js?id=G-4K01JPM2D8';
+        script.async = true;
+        document.head.appendChild(script);
+      }
+      
+      if ('requestIdleCallback' in window) {
+        requestIdleCallback(loadGtagScript);
+      } else {
+        setTimeout(loadGtagScript, 1);
+      }
     </script>
     
     <style>
