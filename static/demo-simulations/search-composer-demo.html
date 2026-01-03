@@ -305,13 +305,17 @@
       left: 0;
       right: 0;
       bottom: 0;
-      background-color: rgba(0, 0, 0, 0.4);
+      background-color: rgba(0, 0, 0, 0.8);
       z-index: 300;
       display: flex;
       align-items: center;
       justify-content: center;
       opacity: 0;
       pointer-events: none;
+    }
+    
+    .title-overlay.preload {
+      opacity: 1;
     }
     
     .title-overlay::before {
@@ -397,7 +401,7 @@
     </div>
     
     <!-- Title Overlays -->
-    <div id="title-overlay-1" class="title-overlay">
+    <div id="title-overlay-1" class="title-overlay preload">
       <h2>Find any type of company in seconds</h2>
     </div>
     <div id="title-overlay-2" class="title-overlay">
@@ -1714,6 +1718,7 @@ Alex`;
       successToast.style.opacity = '';
       // Reset title overlays for replays
       titleOverlay1.classList.remove('visible');
+      titleOverlay1.classList.add('preload'); // Show immediately for replay
       titleOverlay2.classList.remove('visible');
     }
     
@@ -1725,7 +1730,9 @@ Alex`;
       
       await new Promise(r => setTimeout(r, START_DELAY));
       
-      // Show first title overlay - animation handles dark to light to fade
+      // First title overlay is already visible via preload class
+      // Switch from preload to visible to start the animation sequence
+      titleOverlay1.classList.remove('preload');
       titleOverlay1.classList.add('visible');
       await new Promise(r => setTimeout(r, 2500));
       titleOverlay1.classList.remove('visible');
