@@ -284,27 +284,18 @@
     }
     
     /* Title overlays */
-    @keyframes overlayFadeIn {
+    @keyframes overlaySequence {
       0% {
-        opacity: 0;
-        background-color: rgba(0, 0, 0, 0.85);
-      }
-      20% {
         opacity: 1;
-        background-color: rgba(0, 0, 0, 0.75);
+        background-color: rgba(0, 0, 0, 0.8);
+      }
+      70% {
+        opacity: 1;
+        background-color: rgba(0, 0, 0, 0.5);
       }
       100% {
-        opacity: 1;
+        opacity: 0;
         background-color: rgba(0, 0, 0, 0.4);
-      }
-    }
-    
-    @keyframes overlayFadeOut {
-      0% {
-        opacity: 1;
-      }
-      100% {
-        opacity: 0;
       }
     }
     
@@ -337,11 +328,7 @@
     }
     
     .title-overlay.visible {
-      animation: overlayFadeIn 2s ease-out forwards;
-    }
-    
-    .title-overlay.fading-out {
-      animation: overlayFadeOut 0.6s ease-out forwards;
+      animation: overlaySequence 2.5s ease-out forwards;
     }
     
     .title-overlay h2 {
@@ -1726,8 +1713,8 @@ Alex`;
       successToast.style.transform = 'translate(-50%, -50%) scale(0)';
       successToast.style.opacity = '';
       // Reset title overlays for replays
-      titleOverlay1.classList.remove('visible', 'fading-out');
-      titleOverlay2.classList.remove('visible', 'fading-out');
+      titleOverlay1.classList.remove('visible');
+      titleOverlay2.classList.remove('visible');
     }
     
     async function runDemo() {
@@ -1738,13 +1725,10 @@ Alex`;
       
       await new Promise(r => setTimeout(r, START_DELAY));
       
-      // Show first title overlay (visible on initial load, re-add for replays)
-      titleOverlay1.classList.remove('fading-out');
+      // Show first title overlay - animation handles dark to light to fade
       titleOverlay1.classList.add('visible');
-      await new Promise(r => setTimeout(r, 2000));
-      titleOverlay1.classList.add('fading-out');
+      await new Promise(r => setTimeout(r, 2500));
       titleOverlay1.classList.remove('visible');
-      await new Promise(r => setTimeout(r, 600));
       
       // ===== PHASE 1: Type biotech search query =====
       currentQuery = DEMO_QUERY_2;
@@ -1830,13 +1814,10 @@ Alex`;
       }
       await new Promise(r => setTimeout(r, 450));
       
-      // Show second title overlay
-      titleOverlay2.classList.remove('fading-out');
+      // Show second title overlay - animation handles dark to light to fade
       titleOverlay2.classList.add('visible');
-      await new Promise(r => setTimeout(r, 2000));
-      titleOverlay2.classList.add('fading-out');
+      await new Promise(r => setTimeout(r, 2500));
       titleOverlay2.classList.remove('visible');
-      await new Promise(r => setTimeout(r, 600));
       
       // ===== PHASE 5: Click on contact to open composer =====
       await moveCursorTo(contactGleb, 0.3, 0.5);
