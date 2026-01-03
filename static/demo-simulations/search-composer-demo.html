@@ -1934,7 +1934,14 @@ Alex`;
       scrollComposerTo(sendBtn);
       await new Promise(r => setTimeout(r, 600));
       
-      await moveCursorTo(sendBtn, 0.5, 0.5);
+      // Move cursor to fixed position at bottom-right where Send Email button appears
+      // (can't use getBoundingClientRect for elements inside scrollable drawer)
+      const viewportHeight = demoViewport.offsetHeight || 600;
+      const viewportWidth = demoViewport.offsetWidth || 520;
+      fakeCursor.style.transition = `left ${CURSOR_MOVE_DURATION}ms ease-out, top ${CURSOR_MOVE_DURATION}ms ease-out`;
+      fakeCursor.style.left = (viewportWidth - 80) + 'px';
+      fakeCursor.style.top = (viewportHeight - 45) + 'px';
+      await new Promise(r => setTimeout(r, CURSOR_MOVE_DURATION));
       sendBtn.classList.add('btn-hover');
       sendBtn.classList.add('btn-pulse');
       await new Promise(r => setTimeout(r, CURSOR_HOVER_DELAY + 225));
