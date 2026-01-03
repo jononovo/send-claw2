@@ -69,6 +69,9 @@ export default function LandingStealth() {
   // Image loading state for sequential loading (duck first, then background)
   const [isDuckLoaded, setIsDuckLoaded] = useState(false);
   
+  // Lazy load demo simulation - only render when slider reaches slide 3
+  const [shouldRenderDemo, setShouldRenderDemo] = useState(false);
+  
   // Redirect to /app when user is authenticated (from login flow, not secret code flow)
   // Only redirect on root path - direct links like /s or /landing-stealth should show the page
   useEffect(() => {
@@ -189,6 +192,13 @@ export default function LandingStealth() {
     }
   ];
 
+  // Lazy load demo when slider reaches slide 3 (index 2)
+  useEffect(() => {
+    if (currentIndex === 2 && !shouldRenderDemo) {
+      setShouldRenderDemo(true);
+    }
+  }, [currentIndex, shouldRenderDemo]);
+
   useEffect(() => {
     // Pause cycling during registration/onboarding flows
     if (currentIndex === 6 && code.length > 0) return;
@@ -200,17 +210,25 @@ export default function LandingStealth() {
     const item = content[currentIndex];
     const duration = (item as any).duration || 6000;
     
-    const timeout = setTimeout(() => {
-      setCurrentIndex((prev) => (prev + 1) % content.length);
-    }, duration);
+    let slideTimeout: ReturnType<typeof setTimeout> | undefined;
+    let testimonialInterval: ReturnType<typeof setInterval> | undefined;
+    
+    // Defer timer start by 150ms to allow browser to complete initial paint
+    // This improves Time to Interactive without noticeable delay to users
+    const deferralTimeout = setTimeout(() => {
+      slideTimeout = setTimeout(() => {
+        setCurrentIndex((prev) => (prev + 1) % content.length);
+      }, duration);
 
-    const testimonialInterval = setInterval(() => {
-      setCurrentTestimonialIndex((prev) => (prev + 1) % testimonials.length);
-    }, 5000);
+      testimonialInterval = setInterval(() => {
+        setCurrentTestimonialIndex((prev) => (prev + 1) % testimonials.length);
+      }, 5000);
+    }, 150);
 
     return () => {
-      clearTimeout(timeout);
-      clearInterval(testimonialInterval);
+      clearTimeout(deferralTimeout);
+      if (slideTimeout) clearTimeout(slideTimeout);
+      if (testimonialInterval) clearInterval(testimonialInterval);
     };
   }, [currentIndex, code, showAccessGranted, showQuestionnaire, isRegistrationModalOpen, showApplyForm]);
 
@@ -878,13 +896,19 @@ export default function LandingStealth() {
                       )}
                       {(content[currentIndex] as any).type === 'demo' ? (
                         <div className="w-full h-full flex items-center justify-center">
-                          <DemoSimulationPlayer 
-                            simulation="search-composer-demo" 
-                            width={520}
-                            height={520}
-                            className="shadow-none"
-                            onClose={() => setCurrentIndex((prev) => (prev + 1) % content.length)}
-                          />
+                          {shouldRenderDemo ? (
+                            <DemoSimulationPlayer 
+                              simulation="search-composer-demo" 
+                              width={520}
+                              height={520}
+                              className="shadow-none"
+                              onClose={() => setCurrentIndex((prev) => (prev + 1) % content.length)}
+                            />
+                          ) : (
+                            <div className="flex items-center justify-center text-white/50">
+                              <Loader2 className="w-8 h-8 animate-spin" />
+                            </div>
+                          )}
                         </div>
                       ) : (content[currentIndex] as any).component ? (
                         <div className="w-full h-full flex items-center justify-center">
