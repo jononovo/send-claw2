@@ -96,6 +96,15 @@ export default function LandingStealth() {
     setIsMounted(true);
   }, []);
   
+  // Preload testimonial images to prevent re-fetching when carousel cycles
+  useEffect(() => {
+    const imagesToPreload = [alexImage, sarahImage, mikeImage, danImage];
+    imagesToPreload.forEach(src => {
+      const img = new Image();
+      img.src = src;
+    });
+  }, []);
+  
   // Fire confetti from the button position
   const triggerUnlockConfetti = () => {
     fireUnlockConfetti(buttonRef.current);
