@@ -21,12 +21,14 @@ import "@/lib/firebase";
 import { initGA } from "@/lib/analytics";
 import { useAnalytics } from "@/hooks/use-analytics";
 
-// Static pages
-import Landing from "@/pages/landing";
-import Landing2 from "@/pages/landing2";
-import LandingStealth from "@/features/landing-stealth";
-import Planning from "@/pages/planning";
+// Static pages (small components kept static)
 import Auth from "@/pages/auth";
+
+// Lazy-loaded landing pages (large components)
+const Landing = lazy(() => import("@/pages/landing"));
+const Landing2 = lazy(() => import("@/pages/landing2"));
+const LandingStealth = lazy(() => import("@/features/landing-stealth"));
+const Planning = lazy(() => import("@/pages/planning"));
 
 // Lazy imports for app pages that can be loaded on demand
 const Home = lazy(() => import("@/pages/home"));
@@ -70,20 +72,44 @@ function Router() {
     <>
       <Switch>
         {/* Default landing page - Stealth Mode */}
-        <Route path="/" component={LandingStealth} />
+        <Route path="/" component={() => 
+          <Suspense fallback={<LoadingScreen />}>
+            <LandingStealth />
+          </Suspense>
+        } />
         
         {/* React version of landing page for comparison */}
-        <Route path="/react-landing" component={Landing} />
+        <Route path="/react-landing" component={() => 
+          <Suspense fallback={<LoadingScreen />}>
+            <Landing />
+          </Suspense>
+        } />
         
         {/* Landing2 Page Clone */}
-        <Route path="/landing2" component={Landing2} />
+        <Route path="/landing2" component={() => 
+          <Suspense fallback={<LoadingScreen />}>
+            <Landing2 />
+          </Suspense>
+        } />
         
         {/* Stealth Mode Landing Page */}
-        <Route path="/landing-stealth" component={LandingStealth} />
-        <Route path="/s" component={LandingStealth} />
+        <Route path="/landing-stealth" component={() => 
+          <Suspense fallback={<LoadingScreen />}>
+            <LandingStealth />
+          </Suspense>
+        } />
+        <Route path="/s" component={() => 
+          <Suspense fallback={<LoadingScreen />}>
+            <LandingStealth />
+          </Suspense>
+        } />
         
         {/* Strategic Planning Page (no nav) */}
-        <Route path="/planning" component={Planning} />
+        <Route path="/planning" component={() => 
+          <Suspense fallback={<LoadingScreen />}>
+            <Planning />
+          </Suspense>
+        } />
         
         {/* Daily Outreach Page - Standalone without navigation */}
         <Route path="/outreach/daily/:token" component={() => 
