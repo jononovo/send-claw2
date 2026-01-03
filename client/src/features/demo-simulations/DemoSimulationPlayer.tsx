@@ -85,9 +85,7 @@ export function DemoSimulationPlayer({
         }}
       />
       {!isLoaded && (
-        <div className="absolute inset-0 flex items-center justify-center bg-slate-100">
-          <div className="animate-pulse text-slate-400">Loading demo...</div>
-        </div>
+        <div className="absolute inset-0 bg-black" />
       )}
       
       {showControls && onClose && isLoaded && (
