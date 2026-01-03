@@ -1760,7 +1760,8 @@ Alex`;
       // Switch from preload to visible to start the animation sequence
       titleOverlay1.classList.remove('preload');
       titleOverlay1.classList.add('visible');
-      await new Promise(r => setTimeout(r, 2500));
+      // Start demo 1 second early while overlay is still fading out
+      await new Promise(r => setTimeout(r, 1500));
       titleOverlay1.classList.remove('visible');
       
       // ===== PHASE 1: Type biotech search query =====
