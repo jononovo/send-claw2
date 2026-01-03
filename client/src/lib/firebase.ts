@@ -104,9 +104,3 @@ export function setAuthToken(token: string | null) {
     localStorage.removeItem('authToken');
   }
 }
-
-export const getAuthToken = () => currentAuthToken;
-
-export const firebaseApp = app;
-export const firebaseAuth = auth;
-export const firebaseGoogleProvider = googleProvider;
