@@ -17,7 +17,6 @@ import { GuidanceProvider, QuestsPage } from "@/features/guidance-engine";
 import { InsufficientCreditsProvider } from "@/contexts/insufficient-credits-context";
 import { InsufficientCreditsModal } from "@/components/insufficient-credits-modal";
 import { InsufficientCreditsHandlerSetup } from "@/components/insufficient-credits-handler-setup";
-import "@/lib/firebase";
 import { initGA } from "@/lib/analytics";
 import { useAnalytics } from "@/hooks/use-analytics";
 
