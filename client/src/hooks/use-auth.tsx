@@ -7,18 +7,8 @@ import {
 import { User as SelectUser } from "@shared/schema";
 import { getQueryFn, queryClient } from "../lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import { firebaseAuth, firebaseGoogleProvider } from "@/lib/firebase";
-import { 
-  signInWithPopup, 
-  signOut, 
-  signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
-  updateProfile,
-  getAdditionalUserInfo,
-  GoogleAuthProvider,
-  type User as FirebaseUser,
-  type AuthCredential 
-} from "firebase/auth";
+import { loadFirebase, setAuthToken, type FirebaseInstances } from "@/lib/firebase";
+import type { User as FirebaseUser, AuthCredential } from "firebase/auth";
 
 type AuthContextType = {
   user: SelectUser | null;
@@ -36,20 +26,18 @@ export const AuthContext = createContext<AuthContextType | null>(null);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const { toast } = useToast();
   
-  // Track ongoing sync operations to prevent duplicate user creation
   const syncPromiseRef = useRef<Promise<void> | null>(null);
   
-  // Track whether Firebase auth has completed its initial check
   const [authReady, setAuthReady] = useState(false);
+  const [firebase, setFirebase] = useState<FirebaseInstances | null>(null);
   
-  // Check test mode status
   const { data: testModeStatus } = useQuery({
     queryKey: ["/api/test-mode-status"],
     queryFn: async () => {
       const res = await fetch("/api/test-mode-status");
       return res.json();
     },
-    staleTime: Infinity, // Test mode status doesn't change during runtime
+    staleTime: Infinity,
   });
   
   const isAITestMode = testModeStatus?.enabled === true;
@@ -61,7 +49,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   } = useQuery<SelectUser | undefined, Error>({
     queryKey: ["/api/user"],
     queryFn: getQueryFn({ on401: "returnNull" }),
-    // In AI test mode, provide a default guest user
     initialData: isAITestMode ? {
       id: 1,
       email: 'demo@5ducks.ai',
@@ -70,221 +57,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } as SelectUser : undefined,
   });
 
-  const logoutMutation = useMutation({
-    mutationFn: async () => {
-      // 1. Clear localStorage first (prevent auto-restore)
-      localStorage.removeItem('authToken');
-      
-      // 2. Clear axios headers
-      const axios = (await import('axios')).default;
-      delete axios.defaults.headers.common['Authorization'];
-      
-      // 3. Call backend logout (clear server session)
-      try {
-        await axios.post('/api/logout');
-      } catch (error) {
-        console.log('Backend logout failed, continuing with Firebase logout');
-      }
-      
-      // 4. Firebase signOut last
-      if (firebaseAuth) {
-        try {
-          await signOut(firebaseAuth);
-        } catch (error) {
-          console.error("Firebase sign out error:", error);
-          throw error;
-        }
-      }
-    },
-    onSuccess: () => {
-      queryClient.setQueryData(["/api/user"], null);
-    },
-    onError: (error: Error) => {
-      toast({
-        title: "Logout failed",
-        description: error.message,
-        variant: "destructive",
-      });
-    },
-  });
-
-  const signInWithEmail = async (email: string, password: string) => {
-    try {
-      if (!firebaseAuth) {
-        console.error('Firebase auth not initialized');
-        throw new Error("Authentication service is not properly configured");
-      }
-
-      console.log('Starting email sign-in process', {
-        email: email.split('@')[0] + '@...',
-        timestamp: new Date().toISOString()
-      });
-
-      const result = await signInWithEmailAndPassword(firebaseAuth, email, password);
-
-      if (!result.user?.email) {
-        throw new Error("No email available after sign-in");
-      }
-
-      console.log('Email sign-in successful, syncing with backend');
-      await syncWithBackend(result.user);
-
-    } catch (error: any) {
-      console.error("Email sign-in error:", {
-        error: error.message,
-        code: error.code
-      });
-
-      // Show user-friendly error messages
-      let errorMessage = "Please try again";
-      if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
-        errorMessage = "Invalid email or password";
-      } else if (error.code === 'auth/too-many-requests') {
-        errorMessage = "Too many attempts. Please try again later";
-      }
-
-      toast({
-        title: "Sign-in failed",
-        description: errorMessage,
-        variant: "destructive",
-      });
-
-      throw error;
-    }
-  };
-
-  const registerWithEmail = async (email: string, password: string, username?: string) => {
-    try {
-      if (!firebaseAuth) {
-        console.error('Firebase auth not initialized');
-        throw new Error("Authentication service is not properly configured");
-      }
-
-      console.log('Starting email registration process', {
-        email: email.split('@')[0] + '@...',
-        username: username || 'not provided',
-        timestamp: new Date().toISOString()
-      });
-
-      const result = await createUserWithEmailAndPassword(firebaseAuth, email, password);
-
-      if (!result.user?.email) {
-        throw new Error("No email available after registration");
-      }
-
-      // Set display name if username is provided
-      if (username && result.user) {
-        await updateProfile(result.user, {
-          displayName: username
-        });
-      }
-
-      console.log('Email registration successful, syncing with backend');
-      // Pass the username explicitly since Firebase token won't have displayName yet
-      await syncWithBackend(result.user, null, username);
-
-    } catch (error: any) {
-      console.error("Email registration error:", {
-        error: error.message,
-        code: error.code
-      });
-
-      // Show user-friendly error messages, but skip toast for email-already-in-use
-      // (registration modal will handle this case with auto-login)
-      if (error.code !== 'auth/email-already-in-use') {
-        let errorMessage = "Please try again";
-        if (error.code === 'auth/weak-password') {
-          errorMessage = "Password is too weak. Please use a stronger password";
-        } else if (error.code === 'auth/invalid-email') {
-          errorMessage = "Invalid email address";
-        }
-
-        toast({
-          title: "Registration failed",
-          description: errorMessage,
-          variant: "destructive",
-        });
-      }
-
-      throw error;
-    }
-  };
-
-  const signInWithGoogle = async (): Promise<{ isNewUser: boolean }> => {
-    try {
-      console.log('Starting Google sign-in process', {
-        environment: import.meta.env.MODE,
-        domain: window.location.hostname,
-        origin: window.location.origin
-      });
-
-      if (!firebaseAuth || !firebaseGoogleProvider) {
-        const configError = {
-          auth: !!firebaseAuth,
-          provider: !!firebaseGoogleProvider,
-          projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-          environment: import.meta.env.MODE,
-          domain: window.location.hostname
-        };
-        console.error('Firebase auth not initialized:', configError);
-        throw new Error("Authentication service is not properly configured");
-      }
-
-      // Use 'select_account' for better UX - allows account switching
-      // without forcing re-consent every time (Firebase auth uses minimal scopes)
-      // Note: This is for Firebase authentication only, not Gmail API permissions
-      firebaseGoogleProvider.setCustomParameters({
-        prompt: 'select_account'
-      });
-
-      console.log('Calling signInWithPopup...');
-      const result = await signInWithPopup(firebaseAuth, firebaseGoogleProvider);
-
-      // Check if this is a new user
-      const additionalUserInfo = getAdditionalUserInfo(result);
-      const isNewUser = additionalUserInfo?.isNewUser ?? false;
-
-      // Get the OAuth credential from the result
-      const credential = GoogleAuthProvider.credentialFromResult(result);
-      
-      if (!result.user?.email) {
-        throw new Error("No email provided from Google sign-in");
-      }
-
-      console.log('Google sign-in successful, syncing with backend', {
-        email: result.user.email.split('@')[0] + '@...',
-        displayName: result.user.displayName,
-        isNewUser
-      });
-
-      // Pass the OAuth credential to syncWithBackend
-      await syncWithBackend(result.user, credential);
-      
-      return { isNewUser };
-
-    } catch (error: any) {
-      console.error("Google sign-in error:", {
-        error: error.message,
-        code: error.code,
-        domain: window.location.hostname,
-        environment: import.meta.env.MODE
-      });
-
-      // Show a more user-friendly error message
-      toast({
-        title: "Google Sign-in failed",
-        description: error.code === 'auth/popup-blocked'
-          ? "Please allow popups for this site and try again"
-          : "Please try again or use email/password login",
-        variant: "destructive",
-      });
-
-      throw error;
-    }
-  };
-
-  // Safely parse JSON with better error handling
-  async function safeJsonParse(res: Response): Promise<any> {
+  const safeJsonParse = async (res: Response): Promise<any> => {
     try {
       return await res.json();
     } catch (error) {
@@ -295,11 +68,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         error
       });
       
-      // Get the text content for debugging
       try {
         const text = await res.clone().text();
         console.error('Response that failed to parse:', {
-          text: text.substring(0, 500), // Log only first 500 chars to avoid huge logs
+          text: text.substring(0, 500),
           contentType: res.headers.get('content-type')
         });
       } catch (textError) {
@@ -308,31 +80,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       
       throw new Error(`Failed to parse JSON response: ${error instanceof Error ? error.message : 'Unknown parsing error'}`);
     }
-  }
+  };
 
-  // Function to get Firebase ID token and sync with backend
   const syncWithBackend = async (firebaseUser: FirebaseUser, credential?: AuthCredential | null, explicitUsername?: string) => {
-    // Prevent duplicate sync calls that cause duplicate user creation
-    // This happens when both onAuthStateChanged and signInWithGoogle call syncWithBackend simultaneously
     if (syncPromiseRef.current) {
       console.log('Sync already in progress, waiting for it to complete');
       return syncPromiseRef.current;
     }
     
-    // Create the sync promise and store it
     syncPromiseRef.current = (async () => {
       try {
-        // Get the ID token for authentication
         const idToken = await firebaseUser.getIdToken(true);
+        
+        setAuthToken(idToken);
+        const axios = (await import('axios')).default;
+        axios.defaults.headers.common['Authorization'] = `Bearer ${idToken}`;
 
-        // Check for selected plan from pricing page
         const selectedPlan = localStorage.getItem('selectedPlan');
         const planSource = localStorage.getItem('planSource');
         const joinWaitlist = localStorage.getItem('joinWaitlist');
         const accessCode = localStorage.getItem('accessCode');
         
-        // Use explicit username if provided (for fresh registrations where Firebase token doesn't have displayName yet)
-        // Fall back to Firebase displayName, then email prefix
         const usernameToSync = explicitUsername || firebaseUser.displayName || firebaseUser.email?.split('@')[0];
 
         console.log('Making backend sync request', {
@@ -351,7 +119,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${idToken}`
           },
-          credentials: 'include', // Essential for session cookies to be set/received
+          credentials: 'include',
           body: JSON.stringify({
             email: firebaseUser.email,
             username: usernameToSync,
@@ -385,7 +153,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           const user = await safeJsonParse(createRes);
           queryClient.setQueryData(["/api/user"], user);
           
-          // Clean up localStorage after successful sync
           if (selectedPlan) {
             localStorage.removeItem('selectedPlan');
             localStorage.removeItem('planSource');
@@ -409,7 +176,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         });
         throw error;
       } finally {
-        // Clear the promise ref when sync completes (success or failure)
         syncPromiseRef.current = null;
       }
     })();
@@ -417,45 +183,267 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return syncPromiseRef.current;
   };
 
-  // Monitor Firebase auth state
   useEffect(() => {
-    // Skip Firebase auth monitoring in AI test mode
+    // Wait until test mode status is resolved before deciding
+    if (testModeStatus === undefined) {
+      return;
+    }
+    
     if (isAITestMode) {
-      console.log('AI Test Mode enabled - skipping Firebase auth monitoring');
+      console.log('AI Test Mode enabled - skipping Firebase initialization');
       setAuthReady(true);
       return;
     }
 
-    console.log('Setting up Firebase auth state listener');
+    let unsubscribe: (() => void) | undefined;
 
-    if (!firebaseAuth) {
-      console.warn('Firebase Auth not initialized in useEffect');
-      setAuthReady(true);
-      return;
-    }
+    loadFirebase()
+      .then(async (fb) => {
+        setFirebase(fb);
+        
+        const { onAuthStateChanged } = await import("firebase/auth");
+        
+        unsubscribe = onAuthStateChanged(fb.auth, async (firebaseUser) => {
+          console.log('Firebase auth state changed:', firebaseUser?.email);
 
-    const unsubscribe = firebaseAuth.onAuthStateChanged(async (firebaseUser) => {
-      console.log('Firebase auth state changed:', firebaseUser?.email);
+          if (firebaseUser?.email) {
+            try {
+              const token = await firebaseUser.getIdToken(true);
+              setAuthToken(token);
+              
+              const axios = (await import('axios')).default;
+              axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+              
+              await syncWithBackend(firebaseUser);
+            } catch (error) {
+              console.error('Error during auth state sync:', error);
+              queryClient.setQueryData(["/api/user"], null);
+            }
+          } else {
+            const existingToken = localStorage.getItem('authToken');
+            if (!existingToken) {
+              setAuthToken(null);
+              const axios = (await import('axios')).default;
+              delete axios.defaults.headers.common['Authorization'];
+            }
+            queryClient.setQueryData(["/api/user"], null);
+          }
+          
+          setAuthReady(true);
+        });
+      })
+      .catch((err) => {
+        console.error('Failed to load Firebase:', err);
+        setAuthReady(true);
+      });
 
-      if (firebaseUser?.email) {
-        try {
-          await syncWithBackend(firebaseUser);
-        } catch (error) {
-          console.error('Error during auth state sync:', error);
-          queryClient.setQueryData(["/api/user"], null);
-        }
-      } else {
-        queryClient.setQueryData(["/api/user"], null);
+    return () => {
+      if (unsubscribe) {
+        unsubscribe();
+      }
+    };
+  }, [testModeStatus, isAITestMode]);
+
+  const logoutMutation = useMutation({
+    mutationFn: async () => {
+      localStorage.removeItem('authToken');
+      
+      const axios = (await import('axios')).default;
+      delete axios.defaults.headers.common['Authorization'];
+      
+      try {
+        await axios.post('/api/logout');
+      } catch (error) {
+        console.log('Backend logout failed, continuing with Firebase logout');
       }
       
-      // Mark auth as ready after first auth state check completes
-      setAuthReady(true);
-    });
+      if (firebase?.auth) {
+        try {
+          const { signOut } = await import("firebase/auth");
+          await signOut(firebase.auth);
+        } catch (error) {
+          console.error("Firebase sign out error:", error);
+          throw error;
+        }
+      }
+    },
+    onSuccess: () => {
+      queryClient.setQueryData(["/api/user"], null);
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Logout failed",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
 
-    return () => unsubscribe();
-  }, [isAITestMode]);
+  const signInWithEmail = async (email: string, password: string) => {
+    try {
+      if (!firebase) {
+        console.error('Firebase not initialized');
+        throw new Error("Authentication service is not ready. Please try again.");
+      }
 
-  // In AI test mode, always return the guest user
+      console.log('Starting email sign-in process', {
+        email: email.split('@')[0] + '@...',
+        timestamp: new Date().toISOString()
+      });
+
+      const { signInWithEmailAndPassword } = await import("firebase/auth");
+      const result = await signInWithEmailAndPassword(firebase.auth, email, password);
+
+      if (!result.user?.email) {
+        throw new Error("No email available after sign-in");
+      }
+
+      console.log('Email sign-in successful, syncing with backend');
+      await syncWithBackend(result.user);
+
+    } catch (error: any) {
+      console.error("Email sign-in error:", {
+        error: error.message,
+        code: error.code
+      });
+
+      let errorMessage = "Please try again";
+      if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
+        errorMessage = "Invalid email or password";
+      } else if (error.code === 'auth/too-many-requests') {
+        errorMessage = "Too many attempts. Please try again later";
+      }
+
+      toast({
+        title: "Sign-in failed",
+        description: errorMessage,
+        variant: "destructive",
+      });
+
+      throw error;
+    }
+  };
+
+  const registerWithEmail = async (email: string, password: string, username?: string) => {
+    try {
+      if (!firebase) {
+        console.error('Firebase not initialized');
+        throw new Error("Authentication service is not ready. Please try again.");
+      }
+
+      console.log('Starting email registration process', {
+        email: email.split('@')[0] + '@...',
+        username: username || 'not provided',
+        timestamp: new Date().toISOString()
+      });
+
+      const { createUserWithEmailAndPassword, updateProfile } = await import("firebase/auth");
+      const result = await createUserWithEmailAndPassword(firebase.auth, email, password);
+
+      if (!result.user?.email) {
+        throw new Error("No email available after registration");
+      }
+
+      if (username && result.user) {
+        await updateProfile(result.user, {
+          displayName: username
+        });
+      }
+
+      console.log('Email registration successful, syncing with backend');
+      await syncWithBackend(result.user, null, username);
+
+    } catch (error: any) {
+      console.error("Email registration error:", {
+        error: error.message,
+        code: error.code
+      });
+
+      if (error.code !== 'auth/email-already-in-use') {
+        let errorMessage = "Please try again";
+        if (error.code === 'auth/weak-password') {
+          errorMessage = "Password is too weak. Please use a stronger password";
+        } else if (error.code === 'auth/invalid-email') {
+          errorMessage = "Invalid email address";
+        }
+
+        toast({
+          title: "Registration failed",
+          description: errorMessage,
+          variant: "destructive",
+        });
+      }
+
+      throw error;
+    }
+  };
+
+  const signInWithGoogle = async (): Promise<{ isNewUser: boolean }> => {
+    try {
+      console.log('Starting Google sign-in process', {
+        environment: import.meta.env.MODE,
+        domain: window.location.hostname,
+        origin: window.location.origin
+      });
+
+      if (!firebase) {
+        const configError = {
+          firebase: !!firebase,
+          projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+          environment: import.meta.env.MODE,
+          domain: window.location.hostname
+        };
+        console.error('Firebase not initialized:', configError);
+        throw new Error("Authentication service is not ready. Please try again.");
+      }
+
+      firebase.googleProvider.setCustomParameters({
+        prompt: 'select_account'
+      });
+
+      console.log('Calling signInWithPopup...');
+      const { signInWithPopup, getAdditionalUserInfo, GoogleAuthProvider } = await import("firebase/auth");
+      const result = await signInWithPopup(firebase.auth, firebase.googleProvider);
+
+      const additionalUserInfo = getAdditionalUserInfo(result);
+      const isNewUser = additionalUserInfo?.isNewUser ?? false;
+
+      const credential = GoogleAuthProvider.credentialFromResult(result);
+      
+      if (!result.user?.email) {
+        throw new Error("No email provided from Google sign-in");
+      }
+
+      console.log('Google sign-in successful, syncing with backend', {
+        email: result.user.email.split('@')[0] + '@...',
+        displayName: result.user.displayName,
+        isNewUser
+      });
+
+      await syncWithBackend(result.user, credential);
+      
+      return { isNewUser };
+
+    } catch (error: any) {
+      console.error("Google sign-in error:", {
+        error: error.message,
+        code: error.code,
+        domain: window.location.hostname,
+        environment: import.meta.env.MODE
+      });
+
+      toast({
+        title: "Google Sign-in failed",
+        description: error.code === 'auth/popup-blocked'
+          ? "Please allow popups for this site and try again"
+          : "Please try again or use email/password login",
+        variant: "destructive",
+      });
+
+      throw error;
+    }
+  };
+
   const finalUser = isAITestMode ? {
     id: 1,
     email: 'guest@5ducks.ai',
@@ -469,9 +457,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     <AuthContext.Provider
       value={{
         user: finalUser,
-        isLoading: isLoading && !isAITestMode, // Never loading in test mode
-        authReady: isAITestMode ? true : authReady, // Always ready in test mode
-        error: isAITestMode ? null : error, // No errors in test mode
+        isLoading: isLoading && !isAITestMode,
+        authReady: isAITestMode ? true : authReady,
+        error: isAITestMode ? null : error,
         logoutMutation,
         signInWithGoogle,
         signInWithEmail,

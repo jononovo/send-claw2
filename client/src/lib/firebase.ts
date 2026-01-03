@@ -1,21 +1,25 @@
-import { initializeApp, type FirebaseApp } from "firebase/app";
-import { 
-  getAuth, 
-  type Auth, 
-  GoogleAuthProvider, 
-  onAuthStateChanged, 
-  type User,
-  setPersistence,
-  browserLocalPersistence
-} from "firebase/auth";
+import type { FirebaseApp } from "firebase/app";
+import type { Auth, GoogleAuthProvider } from "firebase/auth";
 
-// Validate Firebase configuration
+let app: FirebaseApp | undefined;
+let auth: Auth | undefined;
+let googleProvider: GoogleAuthProvider | undefined;
+let currentAuthToken: string | null = null;
+let initPromise: Promise<FirebaseInstances> | null = null;
+
+export interface FirebaseInstances {
+  app: FirebaseApp;
+  auth: Auth;
+  googleProvider: GoogleAuthProvider;
+  getAuthToken: () => string | null;
+}
+
 function validateFirebaseConfig() {
   const apiKey = import.meta.env.VITE_FIREBASE_API_KEY;
   const projectId = import.meta.env.VITE_FIREBASE_PROJECT_ID;
   const appId = import.meta.env.VITE_FIREBASE_APP_ID;
 
-  const errors = [];
+  const errors: string[] = [];
 
   if (!apiKey) {
     errors.push('VITE_FIREBASE_API_KEY is missing');
@@ -35,7 +39,7 @@ function validateFirebaseConfig() {
 
   const config = {
     apiKey,
-    authDomain: 'auth.5ducks.ai',  // Custom domain for authentication
+    authDomain: 'auth.5ducks.ai',
     projectId,
     storageBucket: `${projectId}.appspot.com`,
     messagingSenderId: projectId?.split('-')[1] || '',
@@ -49,109 +53,60 @@ function validateFirebaseConfig() {
   };
 }
 
-// Initialize Firebase app
-let app: FirebaseApp | undefined;
-let auth: Auth | undefined;
-let googleProvider: GoogleAuthProvider | undefined;
-let currentAuthToken: string | null = null;
-
-try {
-  const { isValid, errors, config } = validateFirebaseConfig();
-
-  if (!isValid) {
-    console.error('Firebase configuration validation failed:', {
-      errors,
-      environment: import.meta.env.MODE,
-      domain: window.location.hostname
-    });
-    throw new Error(`Firebase configuration validation failed:\n${errors.join('\n')}`);
+export async function loadFirebase(): Promise<FirebaseInstances> {
+  if (initPromise) {
+    return initPromise;
   }
 
-  app = initializeApp(config);
-  auth = getAuth(app);
-  
-  // Set persistence to LOCAL for long-term authentication
-  setPersistence(auth, browserLocalPersistence)
-    .catch((error) => {
-      console.error('Error setting persistence:', error);
-    });
+  initPromise = (async () => {
+    const { initializeApp } = await import("firebase/app");
+    const { 
+      getAuth, 
+      GoogleAuthProvider, 
+      setPersistence, 
+      browserLocalPersistence 
+    } = await import("firebase/auth");
+
+    const { isValid, errors, config } = validateFirebaseConfig();
+
+    if (!isValid) {
+      console.error('Firebase configuration validation failed:', {
+        errors,
+        environment: import.meta.env.MODE,
+        domain: window.location.hostname
+      });
+      throw new Error(`Firebase configuration validation failed:\n${errors.join('\n')}`);
+    }
+
+    app = initializeApp(config);
+    auth = getAuth(app);
     
-  googleProvider = new GoogleAuthProvider();
+    await setPersistence(auth, browserLocalPersistence);
+    
+    googleProvider = new GoogleAuthProvider();
 
-  // ============================================================
-  // FIREBASE AUTHENTICATION VS GMAIL API - SCOPE SEPARATION
-  // ============================================================
-  // 
-  // FIREBASE AUTH (This file):
-  // - Handles app authentication only (login/signup)
-  // - Firebase automatically includes 'email' and 'profile' scopes
-  // - NO additional scopes needed or should be added here
-  // - Minimal permissions for better user experience
-  //
-  // GMAIL API (Separate OAuth flow):
-  // - Handled through gmail-api-service module
-  // - Requires extensive Gmail permissions (read, send, modify)
-  // - Uses Google People API OAuth flow
-  // - Only requested when user needs email features
-  //
-  // IMPORTANT: Keep these two auth systems completely separate!
-  // Never add Gmail scopes to Firebase auth configuration.
-  // ============================================================
+    return {
+      app,
+      auth,
+      googleProvider,
+      getAuthToken: () => currentAuthToken,
+    };
+  })();
 
-  // Set up auth state change listener
-  if (auth) {
-    onAuthStateChanged(auth, async (user: User | null) => {
-      if (user) {
-        try {
-          // Get the ID token
-          const token = await user.getIdToken(true);
-          currentAuthToken = token;
-          
-          // Store token in localStorage for added persistence
-          localStorage.setItem('authToken', token);
+  return initPromise;
+}
 
-          // Set up axios defaults for the auth header
-          const axios = (await import('axios')).default;
-          axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-
-        } catch (error) {
-          console.error('Error getting auth token:', error);
-          currentAuthToken = null;
-        }
-      } else {
-        // Check if we're initializing with an existing token
-        const existingToken = localStorage.getItem('authToken');
-        if (!existingToken) {
-          // Clear token on explicit logout
-          currentAuthToken = null;
-          localStorage.removeItem('authToken');
-          const axios = (await import('axios')).default;
-          delete axios.defaults.headers.common['Authorization'];
-        }
-      }
-    });
-  }
-
-} catch (error) {
-  console.error('Firebase initialization error:', {
-    error,
-    domain: window.location.hostname,
-    environment: import.meta.env.MODE,
-    timestamp: new Date().toISOString()
-  });
-
-  if (error instanceof Error) {
-    console.error('Detailed error information:', {
-      message: error.message,
-      name: error.name,
-      stack: error.stack,
-      domain: window.location.hostname
-    });
+export function setAuthToken(token: string | null) {
+  currentAuthToken = token;
+  if (token) {
+    localStorage.setItem('authToken', token);
+  } else {
+    localStorage.removeItem('authToken');
   }
 }
 
-// Export with fallbacks
+export const getAuthToken = () => currentAuthToken;
+
 export const firebaseApp = app;
 export const firebaseAuth = auth;
 export const firebaseGoogleProvider = googleProvider;
-export const getAuthToken = () => currentAuthToken;
