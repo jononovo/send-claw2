@@ -21,10 +21,10 @@ interface ApplyFormData {
 
 import duckImage from "./assets/3d_cute_duckling_mascot_edited.webp";
 import bgImage from "./assets/abstract_3d_sales_background_with_envelopes_and_charts.jpg";
-import salesImage from "./assets/sales_meeting_v9_transparent.png";
-import dealFlowImage from "./assets/deal_flow_v6_transparent.png";
-import leadsImage from "./assets/email-notification-no-bg-crop.png";
-import outreachImage from "./assets/outreach_campaign_v9_transparent.png";
+import salesImage from "./assets/sales_meeting_v9_transparent.webp";
+import dealFlowImage from "./assets/deal_flow_v6_transparent.webp";
+import leadsImage from "./assets/email-notification-no-bg-crop.webp";
+import outreachImage from "./assets/outreach_campaign_v9_transparent.webp";
 import danImage from "./assets/professional_headshot_of_dan_hartmann.jpg";
 import sarahImage from "./assets/professional_headshot_of_sarah_chen.jpg";
 import mikeImage from "./assets/professional_headshot_of_mike_ross.jpg";
