@@ -3,8 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { MessageSquare, Star, ThumbsDown } from "lucide-react";
-import { SiLinkedin } from "react-icons/si";
+import { MessageSquare, Star, ThumbsDown, Linkedin } from "lucide-react";
 import { ContactActionColumn } from "@/components/contact-action-column";
 import { ComprehensiveSearchButton } from "@/components/comprehensive-email-search";
 import { cn } from "@/lib/utils";
@@ -98,7 +97,7 @@ export function ContactRow({
                       className="text-gray-400 hover:text-blue-500 transition-colors"
                       data-testid={`linkedin-link-${contact.id}`}
                     >
-                      <SiLinkedin className="h-3 w-3" />
+                      <Linkedin className="h-3 w-3" />
                     </a>
                   )}
                 </>

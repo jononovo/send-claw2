@@ -26,9 +26,9 @@ import {
   ChevronRight,
   ScrollText,
   Layers,
-  Check
+  Check,
+  Linkedin
 } from "lucide-react";
-import { SiLinkedin } from "react-icons/si";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   Tooltip,
