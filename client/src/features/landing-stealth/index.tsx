@@ -836,6 +836,12 @@ export default function LandingStealth() {
                     <img src={img} alt="Player" loading="lazy" className="w-full h-full object-cover" />
                   </div>
                 ))}
+                <div className="w-8 h-8 rounded-full border border-white/10 shadow-lg bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center">
+                  <User className="w-4 h-4 text-white/90" />
+                </div>
+                <div className="w-8 h-8 rounded-full border border-white/10 shadow-lg bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center">
+                  <User className="w-4 h-4 text-white/90" />
+                </div>
               </div>
               <p className="font-heading"><span className="text-white font-bold">1,248</span> Players Waiting</p>
             </div>
