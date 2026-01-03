@@ -25,10 +25,10 @@ import salesImage from "./assets/sales_meeting_v9_transparent.png";
 import dealFlowImage from "./assets/deal_flow_v6_transparent.png";
 import leadsImage from "./assets/email-notification-no-bg-crop.png";
 import outreachImage from "./assets/outreach_campaign_v9_transparent.png";
-import danImage from "./assets/professional_headshot_of_dan_hartmann.png";
-import sarahImage from "./assets/professional_headshot_of_sarah_chen.png";
-import mikeImage from "./assets/professional_headshot_of_mike_ross.png";
-import alexImage from "./assets/natural_outdoor_portrait_of_older_alex_rivera_with_beard.png";
+import danImage from "./assets/professional_headshot_of_dan_hartmann.jpg";
+import sarahImage from "./assets/professional_headshot_of_sarah_chen.jpg";
+import mikeImage from "./assets/professional_headshot_of_mike_ross.jpg";
+import alexImage from "./assets/natural_outdoor_portrait_of_older_alex_rivera_with_beard.jpg";
 
 const LOADING_MESSAGES = [
   "Unlocking sales processes...",
