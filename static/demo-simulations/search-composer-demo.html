@@ -1760,12 +1760,19 @@ Alex`;
       // Switch from preload to visible to start the animation sequence
       titleOverlay1.classList.remove('preload');
       titleOverlay1.classList.add('visible');
-      // Start demo 1.5 seconds early while overlay is still fading out
-      await new Promise(r => setTimeout(r, 1000));
-      titleOverlay1.classList.remove('visible');
+      
+      // Wait 1.5 seconds then start typing while overlay continues fading
+      await new Promise(r => setTimeout(r, 1500));
       
       // ===== PHASE 1: Type biotech search query =====
+      // Start typing while overlay is still fading out
       currentQuery = DEMO_QUERY_2;
+      
+      // Remove overlay after a short delay (let it fade naturally while typing starts)
+      setTimeout(() => {
+        titleOverlay1.classList.remove('visible');
+      }, 1000);
+      
       await typeText(DEMO_QUERY_2);
       await new Promise(r => setTimeout(r, 300));
       
