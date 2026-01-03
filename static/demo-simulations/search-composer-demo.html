@@ -1940,7 +1940,7 @@ Alex`;
       const viewportWidth = demoViewport.offsetWidth || 520;
       fakeCursor.style.transition = `left ${CURSOR_MOVE_DURATION}ms ease-out, top ${CURSOR_MOVE_DURATION}ms ease-out`;
       fakeCursor.style.left = (viewportWidth - 80) + 'px';
-      fakeCursor.style.top = (viewportHeight - 45) + 'px';
+      fakeCursor.style.top = (viewportHeight - 20) + 'px';
       await new Promise(r => setTimeout(r, CURSOR_MOVE_DURATION));
       sendBtn.classList.add('btn-hover');
       sendBtn.classList.add('btn-pulse');
