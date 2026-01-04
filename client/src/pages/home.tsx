@@ -952,23 +952,15 @@ export default function Home() {
     });
   }, [currentResults]);
 
-  // Updated navigation handlers
-  const handleContactView = (contactId: number) => {
-    if (typeof contactId !== 'number') {
-      console.error('Invalid contact ID:', contactId);
-      return;
-    }
-    console.log('Navigating to contact:', contactId);
-    setLocation(`/contacts/${contactId}`);
+  // Updated navigation handlers with SEO-friendly URLs
+  const handleContactView = (contact: { id: number; slug?: string | null; name: string }) => {
+    const slug = contact.slug || contact.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '').substring(0, 50);
+    setLocation(`/p/${slug}/${contact.id}`);
   };
 
-  const handleCompanyView = (companyId: number) => {
-    if (typeof companyId !== 'number') {
-      console.error('Invalid company ID:', companyId);
-      return;
-    }
-    console.log('Navigating to company:', { companyId });
-    setLocation(`/companies/${companyId}`);
+  const handleCompanyView = (company: { id: number; slug?: string | null; name: string }) => {
+    const slug = company.slug || company.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '').substring(0, 50);
+    setLocation(`/company/${slug}/${company.id}`);
   };
 
 

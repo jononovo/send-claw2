@@ -24,10 +24,10 @@ export default function ListDetails() {
 
   if (!list) return null;
 
-  // Add a company view handler
-  const handleCompanyView = (companyId: number) => {
-    console.log('Navigating to company:', { companyId });
-    navigate(`/companies/${companyId}`);
+  // Add a company view handler with SEO-friendly URL
+  const handleCompanyView = (company: { id: number; slug?: string | null; name: string }) => {
+    const slug = company.slug || company.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '').substring(0, 50);
+    navigate(`/company/${slug}/${company.id}`);
   };
 
   return (

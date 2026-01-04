@@ -12,7 +12,7 @@ import { ContactWithCompanyInfo } from "@/lib/results-analysis/prospect-filterin
 export interface ContactActionColumnProps {
   contact: ContactWithCompanyInfo;
   standalone?: boolean;
-  handleContactView?: (contactId: number) => void;
+  handleContactView?: (contact: { id: number; slug?: string | null; name: string }) => void;
   className?: string;
 }
 
@@ -34,7 +34,7 @@ export function ContactActionColumn({
                   variant="ghost"
                   size="sm"
                   className="h-6 w-6 p-0"
-                  onClick={() => handleContactView(contact.id)}
+                  onClick={() => handleContactView(contact)}
                   data-testid={`button-view-contact-${contact.id}`}
                 >
                   <Eye className="h-3.5 w-3.5 text-muted-foreground" />

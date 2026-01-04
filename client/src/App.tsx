@@ -241,7 +241,7 @@ function Router() {
                     <Home />
                   </Suspense>
                 } />
-                <SemiProtectedRoute path="/companies/:id" component={() => 
+                <SemiProtectedRoute path="/company/:slug/:id" component={() => 
                   <Suspense fallback={<LoadingScreen message="Loading company details..." />}>
                     <CompanyDetails />
                   </Suspense>
@@ -293,7 +293,7 @@ function Router() {
                     <Replies />
                   </Suspense>
                 } />
-                <ProtectedRoute path="/contacts/:id" component={() => 
+                <SemiProtectedRoute path="/p/:slug/:id" component={() => 
                   <Suspense fallback={<LoadingScreen />}>
                     <ContactDetails />
                   </Suspense>
