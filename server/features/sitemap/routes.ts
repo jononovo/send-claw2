@@ -27,8 +27,10 @@ Allow: /contact
 Allow: /blog
 Allow: /login
 Allow: /signup
-Allow: /companies
-Allow: /contacts
+Allow: /terms
+Allow: /privacy
+Allow: /company/
+Allow: /p/
 
 Disallow: /app
 Disallow: /lists
@@ -36,6 +38,7 @@ Disallow: /campaigns
 Disallow: /api
 Disallow: /outreach
 Disallow: /home
+Disallow: /admin
 
 Sitemap: https://5ducks.ai/sitemap.xml
 `;
@@ -47,9 +50,9 @@ Sitemap: https://5ducks.ai/sitemap.xml
 /**
  * Handle sitemap generation request
  */
-function handleSitemapRequest(req: Request, res: Response): void {
+async function handleSitemapRequest(req: Request, res: Response): Promise<void> {
   try {
-    const xml = generateSitemapXML();
+    const xml = await generateSitemapXML();
     
     // Set appropriate headers for XML response
     res.header('Content-Type', 'application/xml');

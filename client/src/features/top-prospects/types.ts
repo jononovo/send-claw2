@@ -4,7 +4,7 @@ export interface TopProspectsCardProps {
   prospects: ContactWithCompanyInfo[];
   pendingComprehensiveSearchIds?: Set<number>;
   isVisible: boolean;
-  onContactView: (contactId: number) => void;
-  onContactFeedback: (contactId: number, feedback: string) => void;
+  onContactView: (contact: { id: number; slug?: string | null; name: string }) => void;
+  onContactFeedback: (contactId: number, feedbackType: "excellent" | "terrible") => void;
   handleComprehensiveEmailSearch?: (contactId: number) => void;
 }

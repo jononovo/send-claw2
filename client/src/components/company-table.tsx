@@ -45,7 +45,7 @@ import { ComprehensiveSearchButton } from "@/components/comprehensive-email-sear
 
 interface CompanyTableProps {
   companies: Array<Company & { contacts?: ContactWithCompanyInfo[] }>;
-  handleCompanyView: (companyId: number) => void;
+  handleCompanyView: (company: { id: number; slug?: string | null; name: string }) => void;
   handleComprehensiveEmailSearch?: (contactId: number) => void;
   pendingContactIds?: Set<number>;
   pendingComprehensiveSearchIds?: Set<number>;
@@ -312,7 +312,7 @@ export default function CompanyTable({
                             onClick={(e) => {
                               e.stopPropagation();
                               console.log('Company view button clicked:', { id: company.id, name: company.name });
-                              handleCompanyView(company.id);
+                              handleCompanyView(company);
                             }}
                           >
                             <ExternalLink className="h-4 w-4" />
@@ -398,8 +398,9 @@ export default function CompanyTable({
                     </TableCell>
                     <ContactActionColumn
                       contact={contact}
-                      handleContactView={(id) => {
-                        setLocation(`/contacts/${id}`);
+                      handleContactView={(c) => {
+                        const slug = c.slug || c.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '').substring(0, 50);
+                        setLocation(`/p/${slug}/${c.id}`);
                       }}
                       className="py-1"
                     />

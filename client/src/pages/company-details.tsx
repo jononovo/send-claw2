@@ -65,12 +65,12 @@ function ChartLoadingSkeleton() {
 }
 
 export default function CompanyDetails() {
-  const [, params] = useRoute("/companies/:id");
+  const [, params] = useRoute("/company/:slug/:id");
   const [, navigate] = useLocation();
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  // Ensure companyId is properly parsed from params
+  // Ensure companyId is properly parsed from params (slug is for SEO, id is source of truth)
   const companyId = params?.id ? parseInt(params.id, 10) : null;
 
   console.log('CompanyDetails - Loading company ID:', companyId);

@@ -54,7 +54,7 @@ import { useRef } from "react";
 
 interface CompanyCardsProps {
   companies: Array<Company & { contacts?: ContactWithCompanyInfo[] }>;
-  handleCompanyView: (companyId: number) => void;
+  handleCompanyView: (company: { id: number; slug?: string | null; name: string }) => void;
   handleComprehensiveEmailSearch?: (contactId: number) => void;
   pendingContactIds?: Set<number>;
   pendingComprehensiveSearchIds?: Set<number>;
@@ -87,7 +87,7 @@ interface CompanyCardProps {
   companySelectionState?: 'checked' | 'indeterminate' | 'unchecked';
   onCompanyCheckboxChange?: () => void;
   shouldShowCompanyCheckbox?: boolean;
-  handleCompanyView: (companyId: number) => void;
+  handleCompanyView: (company: { id: number; slug?: string | null; name: string }) => void;
   handleComprehensiveEmailSearch?: (contactId: number) => void;
   pendingContactIds?: Set<number>;
   pendingComprehensiveSearchIds?: Set<number>;
@@ -258,7 +258,7 @@ const CompanyCard: React.FC<CompanyCardProps> = ({
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
-                    <DropdownMenuItem onClick={() => handleCompanyView(company.id)}>
+                    <DropdownMenuItem onClick={() => handleCompanyView(company)}>
                       <ExternalLink className="mr-2 h-4 w-4" />
                       View Details
                     </DropdownMenuItem>
@@ -295,7 +295,10 @@ const CompanyCard: React.FC<CompanyCardProps> = ({
                     onLeave={onContactLeave}
                     showCheckbox={shouldShowCheckbox?.(contact.id) ?? false}
                     isHighlighted={selectedEmailContact?.id === contact.id}
-                    handleContactView={(id) => setLocation(`/contacts/${id}`)}
+                    handleContactView={(contact) => {
+                      const slug = contact.slug || contact.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '').substring(0, 50);
+                      setLocation(`/p/${slug}/${contact.id}`);
+                    }}
                     handleComprehensiveEmailSearch={handleComprehensiveEmailSearch}
                     pendingComprehensiveSearchIds={pendingComprehensiveSearchIds}
                   />

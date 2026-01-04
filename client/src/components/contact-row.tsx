@@ -22,7 +22,7 @@ export interface ContactRowProps {
   showFeedback?: boolean;
   isHighlighted?: boolean;
   hasEmail?: boolean;
-  handleContactView?: (contactId: number) => void;
+  handleContactView?: (contact: { id: number; slug?: string | null; name: string }) => void;
   handleComprehensiveEmailSearch?: (contactId: number) => void;
   onContactFeedback?: (contactId: number, feedbackType: "excellent" | "terrible") => void;
   pendingComprehensiveSearchIds?: Set<number>;
@@ -143,7 +143,7 @@ export function ContactRow({
 
             <ContactActionColumn
               contact={contact}
-              handleContactView={handleContactView ? (id) => handleContactView(id) : undefined}
+              handleContactView={handleContactView}
               standalone={true}
             />
 

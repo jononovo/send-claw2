@@ -30,8 +30,9 @@ import {
 import type { Contact, Company } from "@shared/schema";
 
 export default function ContactDetails() {
-  const [, params] = useRoute("/contacts/:id");
+  const [, params] = useRoute("/p/:slug/:id");
   const [, navigate] = useLocation();
+  // slug is for SEO, id is source of truth
   const contactId = params?.id ? parseInt(params.id, 10) : null;
 
   console.log('ContactDetails - Loading contact ID:', contactId);
@@ -276,7 +277,10 @@ export default function ContactDetails() {
 
                   <Button
                     variant="outline"
-                    onClick={() => navigate(`/companies/${company.id}`)}
+                    onClick={() => {
+                      const slug = company.slug || company.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '').substring(0, 50);
+                      navigate(`/company/${slug}/${company.id}`);
+                    }}
                   >
                     View Company Details
                   </Button>

@@ -160,6 +160,7 @@ export const companies = pgTable("companies", {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
   userId: integer("user_id").notNull().references(() => users.id, { onDelete: 'cascade' }),
   name: text("name").notNull(),
+  slug: text("slug"),
   listId: integer("list_id"),  
   description: text("description"),
   age: integer("age"),
@@ -181,6 +182,7 @@ export const companies = pgTable("companies", {
   index('idx_companies_user_id').on(table.userId),
   index('idx_companies_list_id').on(table.listId),
   index('idx_companies_name').on(table.name),
+  index('idx_companies_slug').on(table.slug),
 ]);
 
 export const contacts = pgTable("contacts", {
@@ -188,6 +190,7 @@ export const contacts = pgTable("contacts", {
   userId: integer("user_id").notNull().references(() => users.id, { onDelete: 'cascade' }),
   companyId: integer("company_id"),
   name: text("name").notNull(),
+  slug: text("slug"),
   role: text("role"),
   email: text("email"),
   alternativeEmails: jsonb("alternative_emails").$type<string[]>().default([]),
@@ -220,6 +223,7 @@ export const contacts = pgTable("contacts", {
   index('idx_contacts_company_id').on(table.companyId),
   index('idx_contacts_user_id').on(table.userId),
   index('idx_contacts_email').on(table.email),
+  index('idx_contacts_slug').on(table.slug),
 ]);
 
 /* 
@@ -334,6 +338,7 @@ const searchListSchema = z.object({
 
 const companySchema = z.object({
   name: z.string().min(1, "Company name is required"),
+  slug: z.string().nullable().optional(),
   listId: z.number().nullable(),
   description: z.string().nullable(),
   age: z.number().nullable(),
@@ -354,6 +359,7 @@ const companySchema = z.object({
 
 const contactSchema = z.object({
   name: z.string().min(1, "Contact name is required"),
+  slug: z.string().nullable().optional(),
   companyId: z.number(),
   role: z.string().nullable(),
   email: z.string().email().nullable(),
