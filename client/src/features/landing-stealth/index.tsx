@@ -1116,12 +1116,13 @@ export default function LandingStealth() {
               </div>
               
               <div className="flex justify-center gap-1 mt-24 md:mt-20">
-                {testimonials.map((_, idx) => (
+                {testimonials.map((testimonial, idx) => (
                   <button
                     key={idx}
                     onClick={() => setCurrentTestimonialIndex(idx)}
                     className="py-4 px-2 group"
                     data-testid={`button-testimonial-${idx}`}
+                    aria-label={`View ${testimonial.author}'s testimonial`}
                   >
                     <div className={`h-1 rounded-full transition-all duration-300 ${
                       idx === currentTestimonialIndex 
