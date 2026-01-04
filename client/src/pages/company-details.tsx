@@ -91,23 +91,13 @@ export default function CompanyDetails() {
   console.log('CompanyDetails - Loading company ID:', companyId);
 
   const { data: company, isLoading: companyLoading } = useQuery<Company>({
-    queryKey: [`/api/companies/${companyId}`],
+    queryKey: ['/api/companies', companyId],
     enabled: !!companyId,
-    staleTime: 0, // Don't use cached data
-    cacheTime: 0, // Don't cache the response
-    retry: false, // Don't retry failed requests
-    refetchOnMount: true, // Always refetch when component mounts
-    refetchOnWindowFocus: false // Don't refetch on window focus
   });
 
   const { data: contacts = [], refetch: refetchContacts } = useQuery<Contact[]>({
-    queryKey: [`/api/companies/${companyId}/contacts`],
+    queryKey: ['/api/companies', companyId, 'contacts'],
     enabled: !!companyId,
-    staleTime: 0,
-    cacheTime: 0,
-    retry: false,
-    refetchOnMount: true,
-    refetchOnWindowFocus: false
   });
 
   // Log the fetched data
@@ -337,16 +327,16 @@ export default function CompanyDetails() {
           </CardContent>
         </Card>
 
-        {(company.services?.length > 0 || company.validationPoints?.length > 0) && (
+        {(Array.isArray(company.services) && company.services.length > 0 || Array.isArray(company.validationPoints) && company.validationPoints.length > 0) && (
           <div className="grid md:grid-cols-2 gap-8">
-            {company.services && company.services.length > 0 && (
+            {Array.isArray(company.services) && company.services.length > 0 && (
               <Card>
                 <CardHeader>
                   <CardTitle>Services Offered</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="flex flex-wrap gap-2">
-                    {company.services.map((service, index) => (
+                    {(company.services as string[]).map((service, index) => (
                       <Badge key={index} variant="secondary">
                         {service}
                       </Badge>
@@ -356,14 +346,14 @@ export default function CompanyDetails() {
               </Card>
             )}
 
-            {company.validationPoints && company.validationPoints.length > 0 && (
+            {Array.isArray(company.validationPoints) && company.validationPoints.length > 0 && (
               <Card>
                 <CardHeader>
                   <CardTitle>Validation Points</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <ul className="space-y-2">
-                    {company.validationPoints.map((point, index) => (
+                    {(company.validationPoints as string[]).map((point, index) => (
                       <li key={index} className="flex items-center gap-2">
                         <Star className="h-4 w-4 text-yellow-500" />
                         <span>{point}</span>

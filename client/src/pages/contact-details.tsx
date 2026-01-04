@@ -49,23 +49,13 @@ export default function ContactDetails() {
   console.log('ContactDetails - Loading contact ID:', contactId);
 
   const { data: contact, isLoading: contactLoading } = useQuery<Contact>({
-    queryKey: [`/api/contacts/${contactId}`],
+    queryKey: ['/api/contacts', contactId],
     enabled: !!contactId,
-    staleTime: 0, // Don't use cached data
-    cacheTime: 0, // Don't cache the response
-    retry: false, // Don't retry failed requests
-    refetchOnMount: true, // Always refetch when component mounts
-    refetchOnWindowFocus: false // Don't refetch on window focus
   });
 
   const { data: company, isLoading: companyLoading } = useQuery<Company>({
-    queryKey: [`/api/companies/${contact?.companyId}`],
+    queryKey: ['/api/companies', contact?.companyId],
     enabled: !!contact?.companyId,
-    staleTime: 0,
-    cacheTime: 0,
-    retry: false,
-    refetchOnMount: true,
-    refetchOnWindowFocus: false
   });
 
   // Show loading state
@@ -291,11 +281,11 @@ export default function ContactDetails() {
                     </p>
                   </div>
 
-                  {company.services && company.services.length > 0 && (
+                  {Array.isArray(company.services) && company.services.length > 0 && (
                     <div>
                       <h3 className="font-medium mb-2">Services</h3>
                       <div className="flex flex-wrap gap-2">
-                        {company.services.map((service, index) => (
+                        {(company.services as string[]).map((service, index) => (
                           <Badge key={index} variant="secondary">
                             {service}
                           </Badge>
