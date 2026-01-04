@@ -1,5 +1,6 @@
 import { useRoute, useLocation } from "wouter";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { lazy, Suspense } from "react";
 import {
   Card,
   CardContent,
@@ -16,15 +17,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-} from "recharts";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Building2,
   Users,
@@ -41,6 +34,35 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import type { Company, Contact } from "@shared/schema";
+
+type ChartDataItem = { name: string; value: number };
+
+const LazyPerformanceChart = lazy(() => 
+  import("recharts").then((module) => ({
+    default: ({ data }: { data: ChartDataItem[] }) => (
+      <module.ResponsiveContainer width="100%" height="100%">
+        <module.BarChart data={data}>
+          <module.CartesianGrid strokeDasharray="3 3" />
+          <module.XAxis dataKey="name" />
+          <module.YAxis />
+          <module.Tooltip />
+          <module.Bar dataKey="value" fill="hsl(var(--primary))" />
+        </module.BarChart>
+      </module.ResponsiveContainer>
+    ),
+  }))
+);
+
+function ChartLoadingSkeleton() {
+  return (
+    <div className="h-[300px] w-full flex items-end justify-around gap-4 p-4">
+      <Skeleton className="h-[60%] w-16" />
+      <Skeleton className="h-[80%] w-16" />
+      <Skeleton className="h-[40%] w-16" />
+      <Skeleton className="h-[70%] w-16" />
+    </div>
+  );
+}
 
 export default function CompanyDetails() {
   const [, params] = useRoute("/companies/:id");
@@ -380,15 +402,9 @@ export default function CompanyDetails() {
           </CardHeader>
           <CardContent>
             <div className="h-[300px]">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={chartData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="name" />
-                  <YAxis />
-                  <Tooltip />
-                  <Bar dataKey="value" fill="hsl(var(--primary))" />
-                </BarChart>
-              </ResponsiveContainer>
+              <Suspense fallback={<ChartLoadingSkeleton />}>
+                <LazyPerformanceChart data={chartData} />
+              </Suspense>
             </div>
           </CardContent>
         </Card>
