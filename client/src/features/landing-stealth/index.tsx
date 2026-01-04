@@ -1091,9 +1091,9 @@ export default function LandingStealth() {
                   >
                     <div className="flex flex-col md:flex-row items-end justify-center md:pl-20">
                       
-                      <h3 className="relative z-20 text-4xl md:text-6xl font-serif italic leading-[1.1] text-white max-w-2xl text-left drop-shadow-2xl -mb-8 md:-mb-0 pointer-events-none">
+                      <blockquote className="relative z-20 text-4xl md:text-6xl font-serif italic leading-[1.1] text-white max-w-2xl text-left drop-shadow-2xl -mb-8 md:-mb-0 pointer-events-none">
                         &ldquo;{testimonials[currentTestimonialIndex].quote}&rdquo;
-                      </h3>
+                      </blockquote>
 
                       <div className="relative z-10 flex items-center gap-5 p-6 pr-10 md:-translate-y-8 shrink-0 mt-8 md:mt-0">
                          <div className="w-20 h-20 rounded-full overflow-hidden border border-white/20 shadow-lg shrink-0">
