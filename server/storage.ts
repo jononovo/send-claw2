@@ -364,7 +364,9 @@ class DatabaseStorage implements IStorage {
   }
 
   async createCompany(data: InsertCompany): Promise<Company> {
-    const [company] = await db.insert(companies).values(data as any).returning();
+    const { generateCompanySlug } = await import('./utils/slug-generator');
+    const slug = data.slug || generateCompanySlug(data.name);
+    const [company] = await db.insert(companies).values({ ...data, slug } as any).returning();
     return company;
   }
 
@@ -469,9 +471,21 @@ class DatabaseStorage implements IStorage {
   async createContact(data: InsertContact): Promise<Contact> {
     // Clean contact data to prevent duplicate emails
     const { cleanContactData } = await import('./lib/email-utils');
+    const { generateContactSlug } = await import('./utils/slug-generator');
     const cleanedData = cleanContactData(data);
     
-    const [contact] = await db.insert(contacts).values(cleanedData as any).returning();
+    // Generate slug if not provided
+    let slug = cleanedData.slug;
+    if (!slug) {
+      let companyName: string | undefined;
+      if (cleanedData.companyId) {
+        const [company] = await db.select({ name: companies.name }).from(companies).where(eq(companies.id, cleanedData.companyId)).limit(1);
+        companyName = company?.name;
+      }
+      slug = generateContactSlug(cleanedData.name, companyName, cleanedData.role);
+    }
+    
+    const [contact] = await db.insert(contacts).values({ ...cleanedData, slug } as any).returning();
     return contact;
   }
 
