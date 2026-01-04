@@ -18,6 +18,11 @@ The platform is built with a React SPA frontend (TypeScript, Vite, Tailwind, sha
 - **Mobile Optimization**: Designed with an 80% drawer width and tap-outside-to-close functionality for better mobile experience.
 - **Improved Navigation**: Employs event-based communication between components for a smoother user experience.
 - **Better Table Layout**: Optimized column spacing for search results.
+- **SEO-Friendly URLs**: Company and contact pages use slug-based URLs for better SEO discoverability:
+  - Companies: `/company/:slug/:id` (e.g., `/company/acme-corp/4521`)
+  - Contacts: `/p/:slug/:id` (e.g., `/p/john-smith-acme-ceo/12847`)
+  - ID is the source of truth for lookups; slug is purely for SEO/readability
+  - Slugs are auto-generated on record creation and stored in `slug` column with indexes
 
 **Technical Implementations:**
 - **Search System**: Features a progressive pipeline for companies, contacts, and emails, coordinated by `SearchOrchestrator` and processed asynchronously by `JobProcessor`.
