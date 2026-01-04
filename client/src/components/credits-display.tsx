@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { Coins, AlertTriangle } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/hooks/use-auth";
 
 interface CreditData {
   balance: number;
@@ -11,9 +12,17 @@ interface CreditData {
 }
 
 export function CreditsDisplay() {
+  const { user } = useAuth();
+  
   const { data: credits, isLoading } = useQuery<CreditData>({
     queryKey: ['/api/credits'],
+    enabled: !!user,
   });
+
+  // Don't render for unauthenticated users
+  if (!user) {
+    return null;
+  }
 
   if (isLoading) {
     return (
