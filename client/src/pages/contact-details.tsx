@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import {
   ArrowLeft,
   Building2,
@@ -26,12 +27,22 @@ import {
   UserCircle,
   Link as LinkIcon,
   Building,
+  Sparkles,
 } from "lucide-react";
 import type { Contact, Company } from "@shared/schema";
+import { useAuth } from "@/hooks/use-auth";
+import { useRegistrationModal } from "@/hooks/use-registration-modal";
+
+function isMaskedEmail(email: string | null | undefined): boolean {
+  if (!email) return false;
+  return email.includes('***');
+}
 
 export default function ContactDetails() {
   const [, params] = useRoute("/p/:slug/:id");
   const [, navigate] = useLocation();
+  const { user } = useAuth();
+  const { openModal } = useRegistrationModal();
   // slug is for SEO, id is source of truth
   const contactId = params?.id ? parseInt(params.id, 10) : null;
 
@@ -130,6 +141,24 @@ export default function ContactDetails() {
               </div>
             </CardHeader>
           </Card>
+
+          {/* Signup CTA for masked emails */}
+          {!user && isMaskedEmail(contact.email) && (
+            <Alert className="bg-gradient-to-r from-primary/10 to-primary/5 border-primary/20">
+              <Sparkles className="h-4 w-4 text-primary" />
+              <AlertDescription className="flex items-center justify-between">
+                <span>Sign up to see the full email address and run search prompts with AI - 100 credits included.</span>
+                <Button 
+                  size="sm" 
+                  onClick={() => openModal()}
+                  className="ml-4 shrink-0"
+                  data-testid="button-signup-cta"
+                >
+                  Sign Up Free
+                </Button>
+              </AlertDescription>
+            </Alert>
+          )}
 
           {/* Contact Details */}
           <Card>

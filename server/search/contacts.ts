@@ -7,10 +7,11 @@
 
 import { Express, Request, Response } from "express";
 import { storage } from "../storage";
-import { getUserId } from "./utils";
+import { getUserId, isAuthenticated } from "../utils/auth";
 import { searchContactDetails } from "./enrichment/contact-details";
 import { findKeyDecisionMakers } from "./contacts/finder";
 import { CreditService } from "../features/billing/credits/service";
+import { maskContactEmails, maskContactsEmails } from "../utils/email-masker";
 
 export function registerContactRoutes(app: Express, requireAuth: any) {
   
@@ -32,28 +33,44 @@ export function registerContactRoutes(app: Express, requireAuth: any) {
     }
   });
 
-  // Get a single contact by ID
-  app.get("/api/contacts/:id", requireAuth, async (req: Request, res: Response) => {
+  // Get a single contact by ID (allows unauthenticated access with masked emails)
+  app.get("/api/contacts/:id", async (req: Request, res: Response) => {
     try {
+      const userIsAuthenticated = isAuthenticated(req);
       const userId = getUserId(req);
       
       console.log('GET /api/contacts/:id - Request params:', {
         id: req.params.id,
-        userId: userId
+        userId: userId,
+        isAuthenticated: userIsAuthenticated
       });
 
-      const contact = await storage.getContact(parseInt(req.params.id), userId);
+      let contact = null;
+      
+      // First try to find the contact for the authenticated user
+      if (userIsAuthenticated) {
+        contact = await storage.getContact(parseInt(req.params.id), userId);
+      }
+      
+      // If not found or not authenticated, check demo user's contacts
+      if (!contact) {
+        contact = await storage.getContact(parseInt(req.params.id), 1); // Demo user ID
+      }
 
       console.log('GET /api/contacts/:id - Retrieved contact:', {
         requested: req.params.id,
-        found: contact ? { id: contact.id, name: contact.name } : null
+        found: contact ? { id: contact.id, name: contact.name } : null,
+        isAuthenticated: userIsAuthenticated
       });
 
       if (!contact) {
         res.status(404).json({ message: "Contact not found" });
         return;
       }
-      res.json(contact);
+      
+      // Mask emails for unauthenticated users (SEO bots can't scrape emails)
+      const responseContact = userIsAuthenticated ? contact : maskContactEmails(contact);
+      res.json(responseContact);
     } catch (error) {
       console.error('Error fetching contact:', error);
       res.status(500).json({
@@ -186,9 +203,10 @@ export function registerContactRoutes(app: Express, requireAuth: any) {
     }
   });
 
-  // Get contacts by company ID
+  // Get contacts by company ID (masks emails for unauthenticated users)
   app.get("/api/companies/:companyId/contacts", async (req: Request, res: Response) => {
     try {
+      const userIsAuthenticated = isAuthenticated(req);
       const userId = getUserId(req);
       const companyId = parseInt(req.params.companyId);
       
@@ -206,7 +224,9 @@ export function registerContactRoutes(app: Express, requireAuth: any) {
         });
       }
       
-      res.json(contacts);
+      // Mask emails for unauthenticated users (SEO bots can't scrape emails)
+      const responseContacts = userIsAuthenticated ? contacts : maskContactsEmails(contacts);
+      res.json(responseContacts);
     } catch (error) {
       console.error("Error fetching contacts by company:", error);
       res.status(500).json({ message: "Failed to fetch contacts" });

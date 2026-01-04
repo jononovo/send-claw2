@@ -18,6 +18,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import {
   Building2,
   Users,
@@ -29,11 +30,23 @@ import {
   TrendingUp,
   RefreshCw,
   Link2,
+  Sparkles,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import type { Company, Contact } from "@shared/schema";
+import { useAuth } from "@/hooks/use-auth";
+import { useRegistrationModal } from "@/hooks/use-registration-modal";
+
+function isMaskedEmail(email: string | null | undefined): boolean {
+  if (!email) return false;
+  return email.includes('***');
+}
+
+function hasAnyMaskedEmails(contacts: Contact[]): boolean {
+  return contacts.some(c => isMaskedEmail(c.email));
+}
 
 type ChartDataItem = { name: string; value: number };
 
@@ -69,6 +82,8 @@ export default function CompanyDetails() {
   const [, navigate] = useLocation();
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const { user } = useAuth();
+  const { openModal } = useRegistrationModal();
 
   // Ensure companyId is properly parsed from params (slug is for SEO, id is source of truth)
   const companyId = params?.id ? parseInt(params.id, 10) : null;
@@ -257,6 +272,24 @@ export default function CompanyDetails() {
           </CardContent>
         </Card>
 
+        {/* Signup CTA for masked emails */}
+        {!user && hasAnyMaskedEmails(contacts) && (
+          <Alert className="bg-gradient-to-r from-primary/10 to-primary/5 border-primary/20">
+            <Sparkles className="h-4 w-4 text-primary" />
+            <AlertDescription className="flex items-center justify-between">
+              <span>Sign up to see the full email address and run search prompts with AI - 100 credits included.</span>
+              <Button 
+                size="sm" 
+                onClick={() => openModal()}
+                className="ml-4 shrink-0"
+                data-testid="button-signup-cta"
+              >
+                Sign Up Free
+              </Button>
+            </AlertDescription>
+          </Alert>
+        )}
+
         <Card>
           <CardHeader>
             <div className="flex items-center justify-between">
@@ -264,14 +297,16 @@ export default function CompanyDetails() {
                 <Mail className="h-5 w-5" />
                 Key Contacts
               </CardTitle>
-              <Button
-                variant="outline"
-                onClick={handleEnrichContacts}
-                disabled={contactSearchMutation.isPending}
-              >
-                <RefreshCw className={`h-4 w-4 mr-2 ${contactSearchMutation.isPending ? 'animate-spin' : ''}`} />
-                Enrich Contacts
-              </Button>
+              {user && (
+                <Button
+                  variant="outline"
+                  onClick={handleEnrichContacts}
+                  disabled={contactSearchMutation.isPending}
+                >
+                  <RefreshCw className={`h-4 w-4 mr-2 ${contactSearchMutation.isPending ? 'animate-spin' : ''}`} />
+                  Enrich Contacts
+                </Button>
+              )}
             </div>
           </CardHeader>
           <CardContent>

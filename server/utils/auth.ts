@@ -1,5 +1,20 @@
 import express from "express";
 
+// Check if user is truly authenticated (not using demo fallback)
+export function isAuthenticated(req: express.Request): boolean {
+  try {
+    if (req.isAuthenticated && req.isAuthenticated() && req.user && (req.user as any).id) {
+      return true;
+    }
+    if ((req as any).firebaseUser && (req as any).firebaseUser.id) {
+      return true;
+    }
+  } catch (error) {
+    return false;
+  }
+  return false;
+}
+
 // Helper function to safely get user ID from request
 export function getUserId(req: express.Request): number {
   console.log('getUserId() called:', {
