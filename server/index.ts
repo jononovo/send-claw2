@@ -16,6 +16,9 @@ dotenv.config();
 
 const app = express();
 
+// Trust proxy for correct IP detection behind Replit's proxy
+app.set('trust proxy', 1);
+
 // Configure webhook-specific raw body parsing
 app.use('/api/stripe/webhook', express.raw({ type: 'application/json' }));
 

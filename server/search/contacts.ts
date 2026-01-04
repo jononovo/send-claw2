@@ -12,6 +12,7 @@ import { searchContactDetails } from "./enrichment/contact-details";
 import { findKeyDecisionMakers } from "./contacts/finder";
 import { CreditService } from "../features/billing/credits/service";
 import { maskContactEmails, maskContactsEmails } from "../utils/email-masker";
+import { seoRateLimiter } from "../middleware/seo-rate-limiter";
 
 export function registerContactRoutes(app: Express, requireAuth: any) {
   
@@ -34,7 +35,8 @@ export function registerContactRoutes(app: Express, requireAuth: any) {
   });
 
   // Get a single contact by ID (allows unauthenticated access with masked emails)
-  app.get("/api/contacts/:id", async (req: Request, res: Response) => {
+  // Rate limited to protect against scraping (30 req/min per IP)
+  app.get("/api/contacts/:id", seoRateLimiter, async (req: Request, res: Response) => {
     try {
       const userIsAuthenticated = isAuthenticated(req);
       const userId = getUserId(req);

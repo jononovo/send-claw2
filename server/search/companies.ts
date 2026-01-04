@@ -9,6 +9,7 @@ import { CreditService } from "../features/billing/credits/service";
 import { SessionManager } from "./sessions";
 import { getUserId } from "../utils/auth";
 import rateLimit from "express-rate-limit";
+import { seoRateLimiter } from "../middleware/seo-rate-limiter";
 import type { 
   QuickSearchRequest, 
   CompanySearchRequest
@@ -151,7 +152,8 @@ export function registerCompanyRoutes(app: Express, requireAuth: any) {
   });
 
   // Get company by ID (allows unauthenticated access for demo companies)
-  app.get("/api/companies/:id", async (req: Request, res: Response) => {
+  // Rate limited to protect against scraping (30 req/min per IP)
+  app.get("/api/companies/:id", seoRateLimiter, async (req: Request, res: Response) => {
     try {
       const companyId = parseInt(req.params.id);
       const isAuthenticated = (req as any).isAuthenticated && (req as any).isAuthenticated() && (req as any).user;
