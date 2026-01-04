@@ -1,5 +1,5 @@
 import { lazy, Suspense, useEffect, useState, ReactNode } from "react";
-import { Switch, Route } from "wouter";
+import { Switch, Route, useLocation } from "wouter";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "@/lib/queryClient";
 import { LoadingScreen } from "@/components/ui/loading-screen";
@@ -12,7 +12,6 @@ import { RegistrationModalProvider } from "@/hooks/use-registration-modal";
 import { RegistrationModalContainer } from "@/components/registration-modal-container";
 import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from "@/hooks/use-theme";
-import { QuestsPage } from "@/features/guidance-engine";
 import { InsufficientCreditsProvider } from "@/contexts/insufficient-credits-context";
 import { InsufficientCreditsModal } from "@/components/insufficient-credits-modal";
 import { InsufficientCreditsHandlerSetup } from "@/components/insufficient-credits-handler-setup";
@@ -64,14 +63,39 @@ const Levels = lazy(() => import("@/pages/levels"));
 const Privacy = lazy(() => import("@/pages/privacy"));
 const Changelog = lazy(() => import("@/pages/changelog"));
 
+// Lazy import for guidance engine (heavy feature - only load on /quests)
+const QuestsPage = lazy(() => import("@/features/guidance-engine").then(module => ({ default: module.QuestsPage })));
+
+const GUIDANCE_ENABLED_ROUTES = ["/app", "/quests", "/contacts", "/campaigns", "/replies", "/account", "/strategy", "/companies", "/admin"];
+
+function isGuidanceRoute(path: string): boolean {
+  return GUIDANCE_ENABLED_ROUTES.some(route => path === route || path.startsWith(route + "/"));
+}
+
 function LazyGuidanceWrapper({ children }: { children: ReactNode }) {
+  const [location] = useLocation();
   const [GuidanceProvider, setGuidanceProvider] = useState<React.ComponentType<{ children: ReactNode; autoStartForNewUsers?: boolean }> | null>(null);
+  const [shouldLoad, setShouldLoad] = useState(false);
   
   useEffect(() => {
+    if (!isGuidanceRoute(location)) {
+      return;
+    }
+    
+    const timer = setTimeout(() => {
+      setShouldLoad(true);
+    }, 1000);
+    
+    return () => clearTimeout(timer);
+  }, [location]);
+  
+  useEffect(() => {
+    if (!shouldLoad) return;
+    
     import("@/features/guidance-engine").then(module => {
       setGuidanceProvider(() => module.GuidanceProvider);
     });
-  }, []);
+  }, [shouldLoad]);
   
   if (GuidanceProvider) {
     return <GuidanceProvider autoStartForNewUsers={true}>{children}</GuidanceProvider>;
