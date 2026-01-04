@@ -420,11 +420,10 @@ export default function LandingStealth() {
 
         <div className="absolute inset-0 z-0">
           {isDuckLoaded && (
-            <img 
-              src={bgImage} 
-              alt="Background" 
-              loading="lazy"
-              className="w-full h-full object-cover opacity-40 mix-blend-screen"
+            <div 
+              className="absolute inset-0 opacity-40 mix-blend-screen bg-cover bg-center"
+              style={{ backgroundImage: `url(${bgImage})` }}
+              aria-hidden="true"
             />
           )}
           <div className="absolute inset-0 bg-background/80 backdrop-blur-[2px]" />
