@@ -23,6 +23,13 @@ The platform is built with a React SPA frontend (TypeScript, Vite, Tailwind, sha
   - Contacts: `/p/:slug/:id` (e.g., `/p/john-smith-acme-ceo/12847`)
   - ID is the source of truth for lookups; slug is purely for SEO/readability
   - Slugs are auto-generated on record creation and stored in `slug` column with indexes
+- **SEO Content Gating**: Public company/contact pages use server-side email masking for unauthenticated users:
+  - Emails are masked as `j***@acme.com` format (first character + *** + domain)
+  - All other contact info (name, role, company, phone, etc.) remains visible
+  - Utility: `server/utils/email-masker.ts` with `maskEmail()`, `maskContactEmails()`, `maskContactsEmails()`
+  - Auth helper: `server/utils/auth.ts` exports `isAuthenticated()` to check true auth vs demo fallback
+  - CTA banner on masked pages: "Sign up to see the full email address and run search prompts with AI - 100 credits included."
+  - Bots cannot scrape what isn't sent (server-side masking, not CSS blur)
 
 **Technical Implementations:**
 - **Search System**: Features a progressive pipeline for companies, contacts, and emails, coordinated by `SearchOrchestrator` and processed asynchronously by `JobProcessor`.

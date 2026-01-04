@@ -172,9 +172,9 @@ export const companies = pgTable("companies", {
   linkedinProminence: integer("linkedin_prominence"),
   customerCount: integer("customer_count"),
   rating: integer("rating"),
-  services: jsonb("services").default('[]'),
-  validationPoints: jsonb("validation_points").default('[]'),
-  differentiation: jsonb("differentiation").default('[]'),
+  services: jsonb("services").$type<string[]>().default([]),
+  validationPoints: jsonb("validation_points").$type<string[]>().default([]),
+  differentiation: jsonb("differentiation").$type<string[]>().default([]),
   totalScore: integer("total_score"),
   snapshot: jsonb("snapshot"),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow()
