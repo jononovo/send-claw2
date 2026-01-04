@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Zap, Crown, Check } from 'lucide-react';
 import { useQuery } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/use-auth";
 import { apiRequest } from "@/lib/queryClient";
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -36,8 +37,10 @@ interface PlanCardsProps {
 }
 
 export function PlanCards({ onClose }: PlanCardsProps) {
+  const { user } = useAuth();
   const { data: subscriptionStatus } = useQuery<SubscriptionStatus>({
     queryKey: ['/api/stripe/subscription-status'],
+    enabled: !!user,
   });
   
   const { toast } = useToast();

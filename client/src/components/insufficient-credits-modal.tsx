@@ -9,6 +9,7 @@ import {
 } from '@/components/ui/dialog';
 import { PlanCards } from '@/components/plan-cards';
 import { useInsufficientCredits } from '@/contexts/insufficient-credits-context';
+import { useAuth } from '@/hooks/use-auth';
 import { cn } from "@/lib/utils";
 
 interface CreditData {
@@ -27,13 +28,16 @@ interface SubscriptionStatus {
 
 export function InsufficientCreditsModal() {
   const { isOpen, closeModal } = useInsufficientCredits();
+  const { user } = useAuth();
   
   const { data: credits } = useQuery<CreditData>({
     queryKey: ['/api/credits'],
+    enabled: !!user,
   });
 
   const { data: subscriptionStatus } = useQuery<SubscriptionStatus>({
     queryKey: ['/api/stripe/subscription-status'],
+    enabled: !!user,
   });
 
   const hasActiveSubscription = subscriptionStatus?.hasSubscription && subscriptionStatus?.status === 'active';

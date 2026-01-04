@@ -375,9 +375,9 @@ function App() {
                 <Toaster />
               </LazyGuidanceWrapper>
             </RegistrationModalProvider>
+            <InsufficientCreditsModal />
+            <InsufficientCreditsHandlerSetup />
           </AuthProvider>
-          <InsufficientCreditsModal />
-          <InsufficientCreditsHandlerSetup />
         </InsufficientCreditsProvider>
       </ThemeProvider>
     </QueryClientProvider>
