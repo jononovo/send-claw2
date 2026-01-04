@@ -15,7 +15,6 @@ import { ThemeProvider } from "@/hooks/use-theme";
 import { InsufficientCreditsProvider } from "@/contexts/insufficient-credits-context";
 import { InsufficientCreditsModal } from "@/components/insufficient-credits-modal";
 import { InsufficientCreditsHandlerSetup } from "@/components/insufficient-credits-handler-setup";
-import { initGA } from "@/lib/analytics";
 import { useAnalytics } from "@/hooks/use-analytics";
 
 // Static pages (small components kept static)
@@ -361,16 +360,9 @@ function Router() {
 }
 
 function App() {
-  // Initialize Google Analytics when app loads
-  useEffect(() => {
-    // Verify required environment variable is present
-    if (!import.meta.env.VITE_GA_MEASUREMENT_ID) {
-      console.warn('Missing required Google Analytics key: VITE_GA_MEASUREMENT_ID');
-    } else {
-      initGA();
-    }
-  }, []);
-
+  // Google Analytics is initialized in index.html with requestIdleCallback deferral
+  // No need to call initGA() here - it would cause duplicate script loading
+  
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
