@@ -25,13 +25,10 @@ import salesImage from "./assets/sales_meeting_v9_transparent.webp";
 import dealFlowImage from "./assets/deal_flow_v6_transparent.webp";
 import leadsImage from "./assets/email-notification-no-bg-crop.webp";
 import outreachImage from "./assets/outreach_campaign_v9_transparent.webp";
-import danImage from "./assets/professional_headshot_of_dan_hartmann.jpg";
-import sarahImage from "./assets/professional_headshot_of_sarah_chen.jpg";
-import mikeImage from "./assets/professional_headshot_of_mike_ross.jpg";
 import danThumb from "./assets/professional_headshot_of_dan_hartmann_thumb.jpg";
 import sarahThumb from "./assets/professional_headshot_of_sarah_chen_thumb.jpg";
 import mikeThumb from "./assets/professional_headshot_of_mike_ross_thumb.jpg";
-import alexImage from "./assets/natural_outdoor_portrait_of_older_alex_rivera_with_beard.jpg";
+import alexThumb from "./assets/natural_outdoor_portrait_of_older_alex_rivera_with_beard_thumb.jpg";
 
 const LOADING_MESSAGES = [
   "Unlocking sales processes...",
@@ -106,15 +103,6 @@ export default function LandingStealth() {
     setIsMounted(true);
   }, []);
   
-  // Preload testimonial images to prevent re-fetching when carousel cycles
-  useEffect(() => {
-    const imagesToPreload = [alexImage, sarahImage, mikeImage, danImage];
-    imagesToPreload.forEach(src => {
-      const img = new Image();
-      img.src = src;
-    });
-  }, []);
-  
   // Fire confetti from the button position
   const triggerUnlockConfetti = () => {
     fireUnlockConfetti(buttonRef.current);
@@ -183,19 +171,19 @@ export default function LandingStealth() {
       quote: "Sales for dummies (or busy people)",
       author: "Alex Rivera",
       role: "Growth Hacker Daily",
-      image: alexImage
+      image: alexThumb
     },
     {
       quote: "...crushes distractions and procrastination",
       author: "Sarah Chen",
       role: "TechWeekly",
-      image: sarahImage
+      image: sarahThumb
     },
     {
       quote: "...simplifies prospecting & outreach into one page",
       author: "Mike Polinski",
       role: "Startup Insider",
-      image: mikeImage
+      image: mikeThumb
     }
   ];
 
