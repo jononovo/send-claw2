@@ -1,5 +1,3 @@
-import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
-
 function formatCredentialId(userId?: string): string {
   const paddedId = (userId || "0").padStart(6, "0");
   return `${paddedId}-PE021`;
@@ -10,6 +8,7 @@ export async function generateCertificatePDF(
   completionDate: string,
   userId?: string
 ): Promise<Uint8Array> {
+  const { PDFDocument, rgb, StandardFonts } = await import("pdf-lib");
   const pdfDoc = await PDFDocument.create();
   
   const width = 842;

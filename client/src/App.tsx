@@ -12,7 +12,6 @@ import { RegistrationModalProvider } from "@/hooks/use-registration-modal";
 import { RegistrationModalContainer } from "@/components/registration-modal-container";
 import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from "@/hooks/use-theme";
-import { QuestsPage } from "@/features/guidance-engine";
 import { InsufficientCreditsProvider } from "@/contexts/insufficient-credits-context";
 import { InsufficientCreditsModal } from "@/components/insufficient-credits-modal";
 import { InsufficientCreditsHandlerSetup } from "@/components/insufficient-credits-handler-setup";
@@ -63,6 +62,9 @@ const Support = lazy(() => import("@/pages/support"));
 const Levels = lazy(() => import("@/pages/levels"));
 const Privacy = lazy(() => import("@/pages/privacy"));
 const Changelog = lazy(() => import("@/pages/changelog"));
+
+// Lazy import for guidance engine (heavy feature - only load on /quests)
+const QuestsPage = lazy(() => import("@/features/guidance-engine").then(module => ({ default: module.QuestsPage })));
 
 function LazyGuidanceWrapper({ children }: { children: ReactNode }) {
   const [GuidanceProvider, setGuidanceProvider] = useState<React.ComponentType<{ children: ReactNode; autoStartForNewUsers?: boolean }> | null>(null);
