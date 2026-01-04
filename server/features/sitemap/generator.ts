@@ -18,14 +18,9 @@ export function generateSitemapXML(): string {
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>${baseUrl}/app</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
     <loc>${baseUrl}/pricing</loc>
     <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.9</priority>
   </url>
   <url>
     <loc>${baseUrl}/blog</loc>
@@ -48,24 +43,14 @@ export function generateSitemapXML(): string {
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>${baseUrl}/home</loc>
+    <loc>${baseUrl}/companies</loc>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>${baseUrl}/outreach</loc>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>${baseUrl}/lists</loc>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
     <loc>${baseUrl}/contacts</loc>
     <changefreq>daily</changefreq>
-    <priority>0.7</priority>
+    <priority>0.8</priority>
   </url>
 </urlset>`;
 }
