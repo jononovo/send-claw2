@@ -6,30 +6,13 @@ declare global {
   }
 }
 
-// Initialize Google Analytics
+// DEPRECATED: initGA is no longer needed
+// GTM is now loaded in index.html with requestIdleCallback for optimal performance
+// This function is kept for backwards compatibility but does nothing
 export const initGA = () => {
-  const measurementId = import.meta.env.VITE_GA_MEASUREMENT_ID;
-
-  if (!measurementId) {
-    console.warn('Missing required Google Analytics key: VITE_GA_MEASUREMENT_ID');
-    return;
-  }
-
-  // Add Google Analytics script to the head
-  const script1 = document.createElement('script');
-  script1.async = true;
-  script1.src = `https://www.googletagmanager.com/gtag/js?id=${measurementId}`;
-  document.head.appendChild(script1);
-
-  // Initialize gtag
-  const script2 = document.createElement('script');
-  script2.textContent = `
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', '${measurementId}');
-  `;
-  document.head.appendChild(script2);
+  // GTM script loading is handled in index.html with deferred loading
+  // Do not inject scripts here - it would cause duplicate loading
+  console.debug('[Analytics] initGA called but GTM is already loaded via index.html');
 };
 
 // Track page views - useful for single-page applications
