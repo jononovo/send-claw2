@@ -31,6 +31,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [authReady, setAuthReady] = useState(false);
   const [firebase, setFirebase] = useState<FirebaseInstances | null>(null);
   
+  // Optimization: Skip unnecessary API calls for unauthenticated visitors
+  const hasLocalAuth = typeof window !== 'undefined' && !!localStorage.getItem('authToken');
+  const isLocalDev = typeof window !== 'undefined' && (
+    window.location.hostname.includes('localhost') ||
+    window.location.hostname.includes('127.0.0.1') ||
+    window.location.hostname.includes('.replit.dev')
+  );
+  const isLikelyProduction = typeof window !== 'undefined' && !isLocalDev;
+  
+  // Test mode status - skip on production (answer is always false)
   const { data: testModeStatus } = useQuery({
     queryKey: ["/api/test-mode-status"],
     queryFn: async () => {
@@ -38,10 +48,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return res.json();
     },
     staleTime: Infinity,
+    enabled: !isLikelyProduction,
+    initialData: isLikelyProduction ? { enabled: false, user: null } : undefined,
   });
   
   const isAITestMode = testModeStatus?.enabled === true;
   
+  // User query - only call if we have auth evidence
   const {
     data: user,
     error,
@@ -49,6 +62,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   } = useQuery<SelectUser | undefined, Error>({
     queryKey: ["/api/user"],
     queryFn: getQueryFn({ on401: "returnNull" }),
+    enabled: hasLocalAuth || isAITestMode,
     initialData: isAITestMode ? {
       id: 1,
       email: 'demo@5ducks.ai',

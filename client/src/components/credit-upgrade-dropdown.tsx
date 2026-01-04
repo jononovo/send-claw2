@@ -9,6 +9,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { cn } from "@/lib/utils";
 import { PlanCards } from '@/components/plan-cards';
+import { useAuth } from "@/hooks/use-auth";
 
 interface CreditData {
   balance: number;
@@ -25,13 +26,22 @@ interface SubscriptionStatus {
 }
 
 export function CreditUpgradeDropdown() {
+  const { user } = useAuth();
+  
   const { data: credits, isLoading } = useQuery<CreditData>({
     queryKey: ['/api/credits'],
+    enabled: !!user,
   });
 
   const { data: subscriptionStatus } = useQuery<SubscriptionStatus>({
     queryKey: ['/api/stripe/subscription-status'],
+    enabled: !!user,
   });
+
+  // Don't render for unauthenticated users
+  if (!user) {
+    return null;
+  }
 
   const [isOpen, setIsOpen] = useState(false);
 

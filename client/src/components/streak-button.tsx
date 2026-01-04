@@ -9,6 +9,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useAuth } from "@/hooks/use-auth";
 
 interface StreakStats {
   currentStreak: number;
@@ -33,11 +34,19 @@ interface StreakStats {
 }
 
 export function StreakButton() {
+  const { user } = useAuth();
+  
   const { data: stats, isLoading } = useQuery<StreakStats>({
     queryKey: ['/api/daily-outreach/streak-stats'],
     refetchInterval: 30000, // Refresh every 30 seconds
     retry: false,
+    enabled: !!user,
   });
+
+  // Don't render for unauthenticated users
+  if (!user) {
+    return null;
+  }
 
   const streakCount = stats?.currentStreak || 0;
   

@@ -53,11 +53,14 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   );
   const hasHydratedFromDb = useRef(false);
 
-  // Fetch user preferences to get stored theme (only for authenticated users)
+  // Only fetch preferences for authenticated users (skip for landing page visitors)
+  const hasAuthToken = typeof window !== 'undefined' && !!localStorage.getItem('authToken');
+  
   const { data: preferences } = useQuery<UserPreferences>({
     queryKey: ["/api/user/preferences"],
     retry: false,
     staleTime: 1000 * 60 * 5, // 5 minutes
+    enabled: hasAuthToken,
   });
 
   // Mutation to save theme preference to database
