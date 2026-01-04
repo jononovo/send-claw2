@@ -20,7 +20,7 @@ interface ApplyFormData {
 
 
 import duckImage from "./assets/3d_cute_duckling_mascot_edited.webp";
-import bgImage from "./assets/abstract_3d_sales_background_with_envelopes_and_charts.jpg";
+import bgImage from "./assets/abstract_3d_sales_background_with_envelopes_and_charts.webp";
 import salesImage from "./assets/sales_meeting_v9_transparent.webp";
 import dealFlowImage from "./assets/deal_flow_v6_transparent.webp";
 import leadsImage from "./assets/email-notification-no-bg-crop.webp";
