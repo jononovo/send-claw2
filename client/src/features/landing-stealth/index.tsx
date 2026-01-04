@@ -20,6 +20,7 @@ interface ApplyFormData {
 
 
 import duckImage from "./assets/3d_cute_duckling_mascot_edited.webp";
+import duckImageMobile from "./assets/3d_cute_duckling_mascot_edited-400w.webp";
 import bgImage from "./assets/abstract_3d_sales_background_with_envelopes_and_charts.webp";
 import salesImage from "./assets/sales_meeting_v9_transparent.webp";
 import dealFlowImage from "./assets/deal_flow_v6_transparent.webp";
@@ -986,7 +987,9 @@ export default function LandingStealth() {
            />
            
            <motion.img 
-            src={duckImage} 
+            src={duckImage}
+            srcSet={`${duckImageMobile} 400w, ${duckImage} 800w`}
+            sizes="(max-width: 640px) 400px, 800px"
             alt="Fluffy the Duck" 
             loading="lazy"
             onLoad={() => setIsDuckLoaded(true)}
