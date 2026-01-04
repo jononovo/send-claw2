@@ -20,6 +20,8 @@ export function registerSitemapRoutes(app: Express): void {
  */
 function handleRobotsRequest(req: Request, res: Response): void {
   const robotsTxt = `# 5Ducks Robots.txt
+
+# Default rules for all bots
 User-agent: *
 Allow: /
 Allow: /pricing
@@ -31,7 +33,6 @@ Allow: /terms
 Allow: /privacy
 Allow: /company/
 Allow: /p/
-
 Disallow: /app
 Disallow: /lists
 Disallow: /campaigns
@@ -39,6 +40,64 @@ Disallow: /api
 Disallow: /outreach
 Disallow: /home
 Disallow: /admin
+
+# Search engine crawlers - explicitly allowed
+User-agent: Googlebot
+Allow: /company/
+Allow: /p/
+
+User-agent: Bingbot
+Allow: /company/
+Allow: /p/
+
+User-agent: DuckDuckBot
+Allow: /company/
+Allow: /p/
+
+# AI bots - allowed to index public content
+User-agent: GPTBot
+Allow: /company/
+Allow: /p/
+Disallow: /app
+Disallow: /api
+
+User-agent: Claude-Web
+Allow: /company/
+Allow: /p/
+Disallow: /app
+Disallow: /api
+
+User-agent: Anthropic-AI
+Allow: /company/
+Allow: /p/
+Disallow: /app
+Disallow: /api
+
+# SEO tool bots - blocked (competitive scraping)
+User-agent: SemrushBot
+Disallow: /
+
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: DotBot
+Disallow: /
+
+User-agent: BLEXBot
+Disallow: /
+
+# Scraper bots - blocked
+User-agent: MegaIndex
+Disallow: /
+
+User-agent: SeznamBot
+Disallow: /
+
+User-agent: YandexBot
+Disallow: /
 
 Sitemap: https://5ducks.ai/sitemap.xml
 `;

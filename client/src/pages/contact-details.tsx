@@ -1,5 +1,6 @@
 import { useRoute, useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
+import { SEOHead } from "@/components/ui/seo-head";
 import { Footer } from "@/components/footer";
 import {
   Card,
@@ -99,8 +100,26 @@ export default function ContactDetails() {
     return null;
   }
 
+  const contactSlug = contact.slug || `${contact.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '')}${company ? `-${company.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '')}` : ''}`.substring(0, 50);
+  const canonicalUrl = `https://5ducks.ai/p/${contactSlug}/${contact.id}`;
+  
+  const personSchema = {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": contact.name,
+    "jobTitle": contact.role || undefined,
+    ...(company && { "worksFor": { "@type": "Organization", "name": company.name } }),
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
+      <SEOHead
+        title={`${contact.name}${contact.role ? ` - ${contact.role}` : ''}${company ? ` at ${company.name}` : ''}`}
+        description={`Contact profile for ${contact.name}${contact.role ? `, ${contact.role}` : ''}${company ? ` at ${company.name}` : ''}. Find professional contact information on 5Ducks.`}
+        canonicalUrl={canonicalUrl}
+        type="website"
+        jsonLd={personSchema}
+      />
       <div className="container mx-auto py-8 flex-1">
         <Button
           variant="ghost"

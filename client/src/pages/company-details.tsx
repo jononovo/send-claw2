@@ -1,6 +1,7 @@
 import { useRoute, useLocation } from "wouter";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { lazy, Suspense } from "react";
+import { SEOHead } from "@/components/ui/seo-head";
 import {
   Card,
   CardContent,
@@ -214,8 +215,27 @@ export default function CompanyDetails() {
     }
   };
 
+  const companySlug = company.slug || company.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '').substring(0, 50);
+  const canonicalUrl = `https://5ducks.ai/company/${companySlug}/${company.id}`;
+  
+  const organizationSchema = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": company.name,
+    "description": company.description || `${company.name} - B2B company profile`,
+    "url": company.website || canonicalUrl,
+    ...(company.size && { "numberOfEmployees": { "@type": "QuantitativeValue", "value": company.size } }),
+  };
+
   return (
     <div className="container mx-auto py-8">
+      <SEOHead
+        title={`${company.name} - Company Profile`}
+        description={company.description || `View ${company.name} company profile, key contacts, and business information on 5Ducks.`}
+        canonicalUrl={canonicalUrl}
+        type="website"
+        jsonLd={organizationSchema}
+      />
       <Button
         variant="ghost"
         className="mb-6"
