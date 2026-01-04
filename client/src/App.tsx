@@ -22,10 +22,12 @@ import { useAnalytics } from "@/hooks/use-analytics";
 // Static pages (small components kept static)
 import Auth from "@/pages/auth";
 
-// Lazy-loaded landing pages (large components)
+// Direct import for primary landing page (critical path - no lazy loading)
+import LandingStealth from "@/features/landing-stealth";
+
+// Lazy-loaded landing pages (secondary pages)
 const Landing = lazy(() => import("@/pages/landing"));
 const Landing2 = lazy(() => import("@/pages/landing2"));
-const LandingStealth = lazy(() => import("@/features/landing-stealth"));
 const Planning = lazy(() => import("@/pages/planning"));
 
 // Lazy imports for app pages that can be loaded on demand
@@ -85,12 +87,8 @@ function Router() {
   return (
     <>
       <Switch>
-        {/* Default landing page - Stealth Mode */}
-        <Route path="/" component={() => 
-          <Suspense fallback={<LoadingScreen />}>
-            <LandingStealth />
-          </Suspense>
-        } />
+        {/* Default landing page - Stealth Mode (directly imported, no Suspense needed) */}
+        <Route path="/" component={LandingStealth} />
         
         {/* React version of landing page for comparison */}
         <Route path="/react-landing" component={() => 
@@ -106,17 +104,9 @@ function Router() {
           </Suspense>
         } />
         
-        {/* Stealth Mode Landing Page */}
-        <Route path="/landing-stealth" component={() => 
-          <Suspense fallback={<LoadingScreen />}>
-            <LandingStealth />
-          </Suspense>
-        } />
-        <Route path="/s" component={() => 
-          <Suspense fallback={<LoadingScreen />}>
-            <LandingStealth />
-          </Suspense>
-        } />
+        {/* Stealth Mode Landing Page (directly imported, no Suspense needed) */}
+        <Route path="/landing-stealth" component={LandingStealth} />
+        <Route path="/s" component={LandingStealth} />
         
         {/* Strategic Planning Page (no nav) */}
         <Route path="/planning" component={() => 
