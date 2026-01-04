@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect } from "react";
+import { lazy, Suspense, useEffect, useState, ReactNode } from "react";
 import { Switch, Route } from "wouter";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "@/lib/queryClient";
@@ -7,13 +7,12 @@ import { AppLayout, Layout } from "@/components/layout";
 import { MainNav } from "@/components/main-nav";
 import { ProtectedRoute } from "@/lib/protected-route";
 import { SemiProtectedRoute } from "@/lib/semi-protected-route";
-import { StrategyOverlayProvider } from "@/features/strategy-chat";
 import { AuthProvider } from "@/hooks/use-auth";
 import { RegistrationModalProvider } from "@/hooks/use-registration-modal";
 import { RegistrationModalContainer } from "@/components/registration-modal-container";
 import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from "@/hooks/use-theme";
-import { GuidanceProvider, QuestsPage } from "@/features/guidance-engine";
+import { QuestsPage } from "@/features/guidance-engine";
 import { InsufficientCreditsProvider } from "@/contexts/insufficient-credits-context";
 import { InsufficientCreditsModal } from "@/components/insufficient-credits-modal";
 import { InsufficientCreditsHandlerSetup } from "@/components/insufficient-credits-handler-setup";
@@ -62,6 +61,22 @@ const Support = lazy(() => import("@/pages/support"));
 const Levels = lazy(() => import("@/pages/levels"));
 const Privacy = lazy(() => import("@/pages/privacy"));
 const Changelog = lazy(() => import("@/pages/changelog"));
+
+function LazyGuidanceWrapper({ children }: { children: ReactNode }) {
+  const [GuidanceProvider, setGuidanceProvider] = useState<React.ComponentType<{ children: ReactNode; autoStartForNewUsers?: boolean }> | null>(null);
+  
+  useEffect(() => {
+    import("@/features/guidance-engine").then(module => {
+      setGuidanceProvider(() => module.GuidanceProvider);
+    });
+  }, []);
+  
+  if (GuidanceProvider) {
+    return <GuidanceProvider autoStartForNewUsers={true}>{children}</GuidanceProvider>;
+  }
+  
+  return <>{children}</>;
+}
 
 function Router() {
   // Track page views when routes change
@@ -327,7 +342,6 @@ function Router() {
         </Route>
       </Switch>
       
-      {/* Strategy Chat Overlay - will be rendered by StrategyOverlayProvider */}
     </>
   );
 }
@@ -349,13 +363,11 @@ function App() {
         <InsufficientCreditsProvider>
           <AuthProvider>
             <RegistrationModalProvider>
-              <StrategyOverlayProvider>
-                <GuidanceProvider autoStartForNewUsers={true}>
-                  <Router />
-                  <RegistrationModalContainer />
-                  <Toaster />
-                </GuidanceProvider>
-              </StrategyOverlayProvider>
+              <LazyGuidanceWrapper>
+                <Router />
+                <RegistrationModalContainer />
+                <Toaster />
+              </LazyGuidanceWrapper>
             </RegistrationModalProvider>
           </AuthProvider>
           <InsufficientCreditsModal />

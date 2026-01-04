@@ -14,12 +14,43 @@ import {
 
 const GuidanceContext = createContext<GuidanceContextValue | null>(null);
 
+const defaultGuidanceValue: GuidanceContextValue = {
+  state: {
+    isActive: false,
+    currentQuestId: null,
+    currentChallengeIndex: 0,
+    currentStepIndex: 0,
+    completedQuests: [],
+    completedChallenges: {},
+    isHeaderVisible: false,
+  },
+  currentQuest: null,
+  currentChallenge: null,
+  currentStep: null,
+  startQuest: () => {},
+  startNextChallenge: () => {},
+  advanceStep: () => {},
+  previousStep: () => {},
+  completeChallenge: () => {},
+  pauseGuidance: () => {},
+  resumeGuidance: () => {},
+  toggleHeader: () => {},
+  resetProgress: () => {},
+  restartChallenge: () => {},
+  getChallengeProgress: () => ({ completed: 0, total: 0 }),
+  getQuestProgress: () => ({ completed: 0, total: 0 }),
+  startChallenge: () => {},
+  stopChallenge: () => {},
+  isTestMode: false,
+  recording: { isRecording: false, steps: [], selectedQuestId: null, startRoute: null },
+  startRecording: () => {},
+  stopRecording: () => [],
+  clearRecording: () => {},
+};
+
 export function useGuidance() {
   const context = useContext(GuidanceContext);
-  if (!context) {
-    throw new Error("useGuidance must be used within a GuidanceProvider");
-  }
-  return context;
+  return context ?? defaultGuidanceValue;
 }
 
 interface GuidanceProviderProps {
