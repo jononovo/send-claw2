@@ -327,16 +327,16 @@ export default function CompanyDetails() {
           </CardContent>
         </Card>
 
-        {(Array.isArray(company.services) && company.services.length > 0 || Array.isArray(company.validationPoints) && company.validationPoints.length > 0) && (
+        {((company.services?.length ?? 0) > 0 || (company.validationPoints?.length ?? 0) > 0) && (
           <div className="grid md:grid-cols-2 gap-8">
-            {Array.isArray(company.services) && company.services.length > 0 && (
+            {company.services && company.services.length > 0 && (
               <Card>
                 <CardHeader>
                   <CardTitle>Services Offered</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="flex flex-wrap gap-2">
-                    {(company.services as string[]).map((service, index) => (
+                    {company.services.map((service, index) => (
                       <Badge key={index} variant="secondary">
                         {service}
                       </Badge>
@@ -346,14 +346,14 @@ export default function CompanyDetails() {
               </Card>
             )}
 
-            {Array.isArray(company.validationPoints) && company.validationPoints.length > 0 && (
+            {company.validationPoints && company.validationPoints.length > 0 && (
               <Card>
                 <CardHeader>
                   <CardTitle>Validation Points</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <ul className="space-y-2">
-                    {(company.validationPoints as string[]).map((point, index) => (
+                    {company.validationPoints.map((point, index) => (
                       <li key={index} className="flex items-center gap-2">
                         <Star className="h-4 w-4 text-yellow-500" />
                         <span>{point}</span>

@@ -281,11 +281,11 @@ export default function ContactDetails() {
                     </p>
                   </div>
 
-                  {Array.isArray(company.services) && company.services.length > 0 && (
+                  {company.services && company.services.length > 0 && (
                     <div>
                       <h3 className="font-medium mb-2">Services</h3>
                       <div className="flex flex-wrap gap-2">
-                        {(company.services as string[]).map((service, index) => (
+                        {company.services.map((service, index) => (
                           <Badge key={index} variant="secondary">
                             {service}
                           </Badge>
