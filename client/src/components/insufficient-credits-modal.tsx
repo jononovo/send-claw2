@@ -32,12 +32,12 @@ export function InsufficientCreditsModal() {
   
   const { data: credits } = useQuery<CreditData>({
     queryKey: ['/api/credits'],
-    enabled: !!user,
+    enabled: !!user && isOpen,
   });
 
   const { data: subscriptionStatus } = useQuery<SubscriptionStatus>({
     queryKey: ['/api/stripe/subscription-status'],
-    enabled: !!user,
+    enabled: !!user && isOpen,
   });
 
   const hasActiveSubscription = subscriptionStatus?.hasSubscription && subscriptionStatus?.status === 'active';
