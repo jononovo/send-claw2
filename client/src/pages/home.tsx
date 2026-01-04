@@ -22,7 +22,6 @@ import { getPersistedEmailSubject } from "@/hooks/use-email-composer-persistence
 import { useAuth } from "@/hooks/use-auth";
 import { useRegistrationModal } from "@/hooks/use-registration-modal";
 import { useNotifications } from "@/hooks/use-notifications";
-import { useStrategyOverlay } from "@/features/strategy-chat";
 import { NotificationToast } from "@/components/ui/notification-toast";
 import {
   Search,
@@ -164,7 +163,6 @@ export default function Home() {
   const registrationModal = useRegistrationModal();
   const auth = useAuth();
   const { notificationState, triggerNotification, closeNotification } = useNotifications();
-  const { setState: setStrategyOverlayState } = useStrategyOverlay();
   
   // Use shared comprehensive email search hook
   // Handler for contact click to open email drawer

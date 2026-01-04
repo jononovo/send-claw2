@@ -14,12 +14,52 @@ import {
 
 const GuidanceContext = createContext<GuidanceContextValue | null>(null);
 
+const defaultGuidanceValue: GuidanceContextValue = {
+  state: {
+    isActive: false,
+    currentQuestId: null,
+    currentChallengeIndex: 0,
+    currentStepIndex: 0,
+    completedQuests: [],
+    completedChallenges: {},
+    isHeaderVisible: false,
+  },
+  currentQuest: null,
+  currentChallenge: null,
+  currentStep: null,
+  startQuest: () => {},
+  startNextChallenge: () => {},
+  advanceStep: () => {},
+  previousStep: () => {},
+  completeChallenge: () => {},
+  pauseGuidance: () => {},
+  resumeGuidance: () => {},
+  toggleHeader: () => {},
+  resetProgress: () => {},
+  restartChallenge: () => {},
+  getChallengeProgress: () => ({ completed: 0, total: 0 }),
+  getQuestProgress: () => ({ completed: 0, total: 0 }),
+  startChallenge: () => {},
+  stopChallenge: () => {},
+  isTestMode: false,
+  recording: { isRecording: false, steps: [], selectedQuestId: null, startRoute: null },
+  startRecording: () => {},
+  stopRecording: () => [],
+  clearRecording: () => {},
+};
+
+/**
+ * Returns the guidance context, or safe defaults if the provider hasn't loaded yet.
+ * 
+ * Why defaults instead of throwing:
+ * GuidanceProvider is lazy-loaded to reduce the critical rendering path (~70KB deferred).
+ * Components using this hook render immediately with no-op functions and empty state,
+ * then automatically upgrade once the provider loads. This allows the landing page
+ * and other routes to render without waiting for the guidance engine.
+ */
 export function useGuidance() {
   const context = useContext(GuidanceContext);
-  if (!context) {
-    throw new Error("useGuidance must be used within a GuidanceProvider");
-  }
-  return context;
+  return context ?? defaultGuidanceValue;
 }
 
 interface GuidanceProviderProps {

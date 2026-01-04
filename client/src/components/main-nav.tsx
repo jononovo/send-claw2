@@ -3,7 +3,6 @@ import { Link, useLocation } from "wouter";
 import { LogOut, User, Menu, Target, PanelLeft, LifeBuoy } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { useRegistrationModal } from "@/hooks/use-registration-modal";
-import { useStrategyOverlay } from "@/features/strategy-chat";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/logo";
 import { CreditUpgradeDropdown } from "@/components/credit-upgrade-dropdown";
@@ -29,7 +28,6 @@ export function MainNav() {
   let user = null;
   let logoutMutation = null;
   let openRegistrationModal = null;
-  let strategyOverlay = null;
   
   try {
     const auth = useAuth();
@@ -39,9 +37,6 @@ export function MainNav() {
     // Registration modal for login functionality
     const { openModal } = useRegistrationModal();
     openRegistrationModal = openModal;
-    
-    // Strategy overlay for chat trigger
-    strategyOverlay = useStrategyOverlay();
   } catch (error) {
     // MainNav is being rendered outside AuthProvider context
     // This is acceptable for public routes - just don't show user menu
