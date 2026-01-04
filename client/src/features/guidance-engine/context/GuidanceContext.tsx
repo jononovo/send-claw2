@@ -48,6 +48,15 @@ const defaultGuidanceValue: GuidanceContextValue = {
   clearRecording: () => {},
 };
 
+/**
+ * Returns the guidance context, or safe defaults if the provider hasn't loaded yet.
+ * 
+ * Why defaults instead of throwing:
+ * GuidanceProvider is lazy-loaded to reduce the critical rendering path (~70KB deferred).
+ * Components using this hook render immediately with no-op functions and empty state,
+ * then automatically upgrade once the provider loads. This allows the landing page
+ * and other routes to render without waiting for the guidance engine.
+ */
 export function useGuidance() {
   const context = useContext(GuidanceContext);
   return context ?? defaultGuidanceValue;
