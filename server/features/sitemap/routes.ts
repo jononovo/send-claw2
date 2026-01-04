@@ -1,7 +1,7 @@
 /**
  * Sitemap Routes Module
  * 
- * Handles HTTP endpoints for sitemap generation
+ * Handles HTTP endpoints for sitemap generation and robots.txt
  */
 
 import { Express, Request, Response } from "express";
@@ -11,8 +11,37 @@ import { generateSitemapXML } from "./generator";
  * Register sitemap routes
  */
 export function registerSitemapRoutes(app: Express): void {
-  // Sitemap XML endpoint
   app.get('/sitemap.xml', handleSitemapRequest);
+  app.get('/robots.txt', handleRobotsRequest);
+}
+
+/**
+ * Handle robots.txt request
+ */
+function handleRobotsRequest(req: Request, res: Response): void {
+  const robotsTxt = `# 5Ducks Robots.txt
+User-agent: *
+Allow: /
+Allow: /pricing
+Allow: /contact
+Allow: /blog
+Allow: /login
+Allow: /signup
+Allow: /companies
+Allow: /contacts
+
+Disallow: /app
+Disallow: /lists
+Disallow: /campaigns
+Disallow: /api
+Disallow: /outreach
+Disallow: /home
+
+Sitemap: https://5ducks.ai/sitemap.xml
+`;
+
+  res.header('Content-Type', 'text/plain');
+  res.send(robotsTxt);
 }
 
 /**

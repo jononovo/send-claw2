@@ -15,10 +15,10 @@ interface SEOProps {
  * SEO component for managing document head metadata
  */
 export function SEOHead({
-  title = '5Ducks - Sales Prospecting and Lead Generation',
-  description = 'Discover potential clients and enrich your contact database with the 5Ducks sales prospecting platform.',
+  title = '5Ducks - Sales Gamified | Find Prospects in 5 Minutes a Day',
+  description = 'Sales Gamified. Find prospects, craft emails, and close deals in just 5 minutes a day. Delete distractions and enjoy sales simplicity with 5Ducks.',
   canonicalUrl,
-  image = 'https://5ducks.ai/images/5Ducks-logo-square-lrg.png',
+  image = 'https://5ducks.ai/images/og-image.png',
   type = 'website',
   twitterCard = 'summary',
   jsonLd,
