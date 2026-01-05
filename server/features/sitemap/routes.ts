@@ -2,16 +2,25 @@
  * Sitemap Routes Module
  * 
  * Handles HTTP endpoints for sitemap generation and robots.txt
+ * Uses sitemap index pattern with separate sitemaps for pages, companies, and contacts
  */
 
 import { Express, Request, Response } from "express";
-import { generateSitemapXML } from "./generator";
+import { 
+  generateSitemapIndex, 
+  generatePagesSitemap, 
+  generateCompaniesSitemap, 
+  generateContactsSitemap 
+} from "./generator";
 
 /**
  * Register sitemap routes
  */
 export function registerSitemapRoutes(app: Express): void {
-  app.get('/sitemap.xml', handleSitemapRequest);
+  app.get('/sitemap.xml', handleSitemapIndexRequest);
+  app.get('/sitemap-pages.xml', handlePagesSitemapRequest);
+  app.get('/sitemap-companies.xml', handleCompaniesSitemapRequest);
+  app.get('/sitemap-contacts.xml', handleContactsSitemapRequest);
   app.get('/robots.txt', handleRobotsRequest);
 }
 
@@ -107,17 +116,57 @@ Sitemap: https://5ducks.ai/sitemap.xml
 }
 
 /**
- * Handle sitemap generation request
+ * Handle sitemap index request - main entry point
  */
-async function handleSitemapRequest(req: Request, res: Response): Promise<void> {
+function handleSitemapIndexRequest(req: Request, res: Response): void {
   try {
-    const xml = await generateSitemapXML();
-    
-    // Set appropriate headers for XML response
+    const xml = generateSitemapIndex();
     res.header('Content-Type', 'application/xml');
     res.send(xml);
   } catch (error) {
-    console.error('Error generating sitemap:', error);
+    console.error('Error generating sitemap index:', error);
+    res.status(500).send('Error generating sitemap');
+  }
+}
+
+/**
+ * Handle static pages sitemap request
+ */
+function handlePagesSitemapRequest(req: Request, res: Response): void {
+  try {
+    const xml = generatePagesSitemap();
+    res.header('Content-Type', 'application/xml');
+    res.send(xml);
+  } catch (error) {
+    console.error('Error generating pages sitemap:', error);
+    res.status(500).send('Error generating sitemap');
+  }
+}
+
+/**
+ * Handle companies sitemap request
+ */
+async function handleCompaniesSitemapRequest(req: Request, res: Response): Promise<void> {
+  try {
+    const xml = await generateCompaniesSitemap();
+    res.header('Content-Type', 'application/xml');
+    res.send(xml);
+  } catch (error) {
+    console.error('Error generating companies sitemap:', error);
+    res.status(500).send('Error generating sitemap');
+  }
+}
+
+/**
+ * Handle contacts sitemap request
+ */
+async function handleContactsSitemapRequest(req: Request, res: Response): Promise<void> {
+  try {
+    const xml = await generateContactsSitemap();
+    res.header('Content-Type', 'application/xml');
+    res.send(xml);
+  } catch (error) {
+    console.error('Error generating contacts sitemap:', error);
     res.status(500).send('Error generating sitemap');
   }
 }
