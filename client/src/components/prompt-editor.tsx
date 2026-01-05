@@ -11,6 +11,7 @@ import { Loader2, Search, HelpCircle, Crown, Building, Users, Target, Settings }
 
 import { useConfetti } from "@/hooks/use-confetti";
 import { SearchSessionManager } from "@/lib/search-session-manager";
+import { trackConversion } from "@/lib/analytics";
 
 import { useAuth } from "@/hooks/use-auth";
 import { useRegistrationModal } from "@/hooks/use-registration-modal";
@@ -1101,6 +1102,9 @@ export default function PromptEditor({
       startTime: Date.now(),
       companies: []
     });
+    
+    // Track Google Ads conversion for search performed
+    trackConversion.searchPerformed();
     
     console.log("Analyzing search query...");
     console.log(`Preparing to search for ${searchType === 'companies' ? 'companies only' : searchType === 'contacts' ? 'companies and contacts' : searchType === 'individual_search' ? 'specific individual' : 'companies, contacts, and emails'}...`);

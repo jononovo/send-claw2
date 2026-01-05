@@ -20,6 +20,7 @@ import { SelectionToolbar } from "@/components/SelectionToolbar";
 import { useToast } from "@/hooks/use-toast";
 import { getPersistedEmailSubject } from "@/hooks/use-email-composer-persistence";
 import { useAuth } from "@/hooks/use-auth";
+import { trackConversion } from "@/lib/analytics";
 import { useRegistrationModal } from "@/hooks/use-registration-modal";
 import { useNotifications } from "@/hooks/use-notifications";
 import { NotificationToast } from "@/components/ui/notification-toast";
@@ -138,6 +139,15 @@ export default function Home() {
     total: 5,
     isVisible: false
   });
+  
+  // Track Google Ads conversion for app page view (once per session)
+  useEffect(() => {
+    const hasTrackedAppView = sessionStorage.getItem('hasTrackedAppPageView');
+    if (!hasTrackedAppView) {
+      trackConversion.appPageView();
+      sessionStorage.setItem('hasTrackedAppPageView', 'true');
+    }
+  }, []);
   
   // Onboarding state
   const [showOnboarding, setShowOnboarding] = useState(false);
