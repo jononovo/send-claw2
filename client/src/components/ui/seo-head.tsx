@@ -18,7 +18,7 @@ export function SEOHead({
   title = '5Ducks - Sales Gamified | Find Prospects in 5 Minutes a Day',
   description = 'Sales Gamified. Find prospects, craft emails, and close deals in just 5 minutes a day. Delete distractions and enjoy sales simplicity with 5Ducks.',
   canonicalUrl,
-  image = 'https://5ducks.ai/images/og-image.png',
+  image = 'https://5ducks.ai/images/og-image.webp',
   type = 'website',
   twitterCard = 'summary',
   jsonLd,
