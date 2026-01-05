@@ -48,7 +48,11 @@ export const trackEvent = (
 
 export const trackConversion = {
   accessCodeRequested: () => {
-    if (typeof window === 'undefined' || !window.gtag) return;
+    console.log('[Conversion] 🎯 Access Code Requested fired');
+    if (typeof window === 'undefined' || !window.gtag) {
+      console.warn('[Conversion] gtag not available');
+      return;
+    }
     window.gtag('event', 'conversion', {
       'send_to': 'AW-17847406917/2QUzCK-Dt90bEMWip75C',
       'value': 2.0,
@@ -57,7 +61,11 @@ export const trackConversion = {
   },
   
   secretCodeUnlock: () => {
-    if (typeof window === 'undefined' || !window.gtag) return;
+    console.log('[Conversion] 🎯 Secret Code Unlock fired');
+    if (typeof window === 'undefined' || !window.gtag) {
+      console.warn('[Conversion] gtag not available');
+      return;
+    }
     window.gtag('event', 'conversion', {
       'send_to': 'AW-17847406917/DFXLCK2Lq90bEMWip75C',
       'value': 3.0,
@@ -66,7 +74,11 @@ export const trackConversion = {
   },
   
   registrationComplete: () => {
-    if (typeof window === 'undefined' || !window.gtag) return;
+    console.log('[Conversion] 🎯 Registration Complete fired');
+    if (typeof window === 'undefined' || !window.gtag) {
+      console.warn('[Conversion] gtag not available');
+      return;
+    }
     window.gtag('event', 'conversion', {
       'send_to': 'AW-17847406917/Pv7KCMecq90bEMWip75C',
       'value': 3.0,
@@ -75,7 +87,11 @@ export const trackConversion = {
   },
   
   appPageView: () => {
-    if (typeof window === 'undefined' || !window.gtag) return;
+    console.log('[Conversion] 🎯 App Page View fired');
+    if (typeof window === 'undefined' || !window.gtag) {
+      console.warn('[Conversion] gtag not available');
+      return;
+    }
     window.gtag('event', 'conversion', {
       'send_to': 'AW-17847406917/WkH_CNqpp90bEMWip75C',
       'value': 1.0,
@@ -84,7 +100,11 @@ export const trackConversion = {
   },
   
   searchPerformed: () => {
-    if (typeof window === 'undefined' || !window.gtag) return;
+    console.log('[Conversion] 🎯 Search Performed fired');
+    if (typeof window === 'undefined' || !window.gtag) {
+      console.warn('[Conversion] gtag not available');
+      return;
+    }
     window.gtag('event', 'conversion', {
       'send_to': 'AW-17847406917/_rGeCOjvt90bEMWip75C',
       'value': 2.0,
