@@ -1,0 +1,57 @@
+Contrast
+Background and foreground colors do not have a sufficient contrast ratio.
+Low-contrast text is difficult or impossible for many users to read. Learn how to provide sufficient color contrast.
+Failing Elements
+5Ducks makes it easy for founders to build a $70k pipeline in only five minutes…
+<p class="text-sm text-gray-500 mt-4 leading-relaxed" data-testid="text-footer-description">
+5 Ducks 🐥 5Ducks makes it easy for founders to build a $70k pipeline in only f…
+<footer class="border-t border-white/10 py-12 mt-auto bg-background" data-testid="footer-stealth">
+Pricing
+<a data-testid="link-footer-pricing" href="/pricing" class="text-gray-500 hover:text-white transition-colors">
+5 Ducks 🐥 5Ducks makes it easy for founders to build a $70k pipeline in only f…
+<footer class="border-t border-white/10 py-12 mt-auto bg-background" data-testid="footer-stealth">
+Vibe-Coding
+<a href="/contact#vibe-coding" target="_blank" rel="noopener noreferrer" class="text-gray-500 hover:text-white transition-colors" data-testid="link-footer-vibe-coding">
+5 Ducks 🐥 5Ducks makes it easy for founders to build a $70k pipeline in only f…
+<footer class="border-t border-white/10 py-12 mt-auto bg-background" data-testid="footer-stealth">
+Blog
+<a data-testid="link-footer-blog" href="/blog" class="text-gray-500 hover:text-white transition-colors">
+5 Ducks 🐥 5Ducks makes it easy for founders to build a $70k pipeline in only f…
+<footer class="border-t border-white/10 py-12 mt-auto bg-background" data-testid="footer-stealth">
+Contact
+<a data-testid="link-footer-contact" href="/contact" class="text-gray-500 hover:text-white transition-colors">
+5 Ducks 🐥 5Ducks makes it easy for founders to build a $70k pipeline in only f…
+<footer class="border-t border-white/10 py-12 mt-auto bg-background" data-testid="footer-stealth">
+Support
+<a data-testid="link-footer-support" href="/contact" class="text-gray-500 hover:text-white transition-colors">
+5 Ducks 🐥 5Ducks makes it easy for founders to build a $70k pipeline in only f…
+<footer class="border-t border-white/10 py-12 mt-auto bg-background" data-testid="footer-stealth">
+Changelog
+<a data-testid="link-footer-changelog" href="/changelog" class="text-gray-500 hover:text-white transition-colors">
+5 Ducks 🐥 5Ducks makes it easy for founders to build a $70k pipeline in only f…
+<footer class="border-t border-white/10 py-12 mt-auto bg-background" data-testid="footer-stealth">
+Sitemap
+<a href="/sitemap.xml" class="text-gray-500 hover:text-white transition-colors" data-testid="link-footer-sitemap">
+5 Ducks 🐥 5Ducks makes it easy for founders to build a $70k pipeline in only f…
+<footer class="border-t border-white/10 py-12 mt-auto bg-background" data-testid="footer-stealth">
+Privacy Policy
+<a href="/privacy.html" class="text-gray-500 hover:text-white transition-colors" data-testid="link-footer-privacy">
+5 Ducks 🐥 5Ducks makes it easy for founders to build a $70k pipeline in only f…
+<footer class="border-t border-white/10 py-12 mt-auto bg-background" data-testid="footer-stealth">
+Terms of Service
+<a data-testid="link-footer-tos" href="/blog/tos" class="text-gray-500 hover:text-white transition-colors">
+5 Ducks 🐥 5Ducks makes it easy for founders to build a $70k pipeline in only f…
+<footer class="border-t border-white/10 py-12 mt-auto bg-background" data-testid="footer-stealth">
+© 2026 5Ducks. All rights reserved.
+<div class="text-xs text-gray-600" data-testid="text-footer-copyright">
+5 Ducks 🐥 5Ducks makes it easy for founders to build a $70k pipeline in only f…
+<footer class="border-t border-white/10 py-12 mt-auto bg-background" data-testid="footer-stealth">
+Soli Deo Gloria
+<span class="text-xs text-gray-600 italic" data-testid="text-footer-motto">
+5 Ducks 🐥 5Ducks makes it easy for founders to build a $70k pipeline in only f…
+<footer class="border-t border-white/10 py-12 mt-auto bg-background" data-testid="footer-stealth">
+LinkedIn
+<a href="https://www.linkedin.com/company/5ducks/" target="_blank" rel="noopener noreferrer" class="text-xs text-gray-600 hover:text-gray-400 transition-colors" data-testid="link-footer-linkedin">
+5 Ducks 🐥 5Ducks makes it easy for founders to build a $70k pipeline in only f…
+<footer class="border-t border-white/10 py-12 mt-auto bg-background" data-testid="footer-stealth">
+These are opportunities to improve the legibility of your content.
