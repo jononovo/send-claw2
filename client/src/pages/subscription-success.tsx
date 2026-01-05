@@ -36,6 +36,18 @@ export default function SubscriptionSuccess() {
     return () => clearInterval(timer);
   }, [setLocation]);
 
+  const isSubscriptionActive = subscriptionStatus?.hasSubscription && subscriptionStatus?.status === 'active';
+
+  // Track Google Ads conversion when subscription is confirmed active
+  useEffect(() => {
+    if (isSubscriptionActive && window.gtag) {
+      window.gtag('event', 'conversion', {
+        'send_to': 'AW-17847406917/uFsKCOq-iN0bEMWip75C',
+        'transaction_id': '',
+      });
+    }
+  }, [isSubscriptionActive]);
+
   const handleGoToApp = () => {
     setLocation('/app');
   };
@@ -52,8 +64,6 @@ export default function SubscriptionSuccess() {
       </div>
     );
   }
-
-  const isSubscriptionActive = subscriptionStatus?.hasSubscription && subscriptionStatus?.status === 'active';
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-4">
