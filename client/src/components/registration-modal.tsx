@@ -6,6 +6,7 @@ import { useRegistrationModal, type RegistrationPage } from "@/hooks/use-registr
 import { loadFirebase } from "@/lib/firebase";
 import { motion } from "framer-motion";
 import { useToast } from "@/hooks/use-toast";
+import { trackConversion } from "@/lib/analytics";
 
 export function RegistrationModal() {
   const { closeModal, isOpenedFromProtectedRoute, initialPage, setIsNewUser } = useRegistrationModal();
@@ -58,6 +59,12 @@ export function RegistrationModal() {
       const { isNewUser } = await signInWithGoogle();
       // Set isNewUser so the callback knows whether to show questionnaire
       setIsNewUser(isNewUser);
+      
+      // Track Google Ads conversion for new registrations via Google
+      if (isNewUser) {
+        trackConversion.registrationComplete();
+      }
+      
       closeModal();
     } catch (error) {
       // Error handling is already done in the signInWithGoogle function
@@ -150,6 +157,9 @@ export function RegistrationModal() {
         // Mark as new user before auth completes
         setIsNewUser(true);
         await registerWithEmail(email, password, name);
+        
+        // Track Google Ads conversion for registration
+        trackConversion.registrationComplete();
         
         console.log("Registration successful with Firebase");
         closeModal();

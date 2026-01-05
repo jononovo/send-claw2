@@ -12,6 +12,7 @@ import { fireUnlockConfetti } from "@/features/animations";
 import { StealthOnboardingModal } from "./StealthOnboardingModal";
 import { FooterStealth } from "@/components/footer-stealth";
 import { DemoSimulationPlayer } from "@/features/demo-simulations";
+import { trackConversion } from "@/lib/analytics";
 
 interface ApplyFormData {
   name: string;
@@ -264,6 +265,9 @@ export default function LandingStealth() {
   const handleQuack = () => {
     const validCodes = ["quack", "charlie"];
     if (validCodes.includes(code.toLowerCase())) {
+      // Track Google Ads conversion for secret code unlock
+      trackConversion.secretCodeUnlock();
+      
       // Mark that we're in the secret code flow (prevents auto-redirect to /app)
       setIsSecretCodeFlow(true);
       
@@ -363,6 +367,9 @@ export default function LandingStealth() {
         });
         return;
       }
+      
+      // Track Google Ads conversion for access code request
+      trackConversion.accessCodeRequested();
       
       toast({
         title: "Application Received! 🎉",
