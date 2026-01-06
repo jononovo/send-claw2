@@ -686,9 +686,9 @@ export default function LandingStealth() {
               </motion.button>
               
               <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 max-w-md w-full scale-110 shadow-2xl flex flex-col gap-4 px-4">
-                {/* Secret Code Input */}
+                {/* Secret Code Input - hidden when apply form is open */}
                 <AnimatePresence mode="wait">
-                  {!showAccessGranted && (
+                  {!showAccessGranted && !showApplyForm && (
                     <motion.div 
                       key="code-input"
                       initial={{ opacity: 1 }}
@@ -771,38 +771,41 @@ export default function LandingStealth() {
                   )}
                 </AnimatePresence>
 
-                {/* Apply for code link and accordion form */}
+                {/* Apply for code link and form */}
                 {!isUnlocking && !showAccessGranted && (
                   <motion.div
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="w-full text-center mt-24"
+                    className={`w-full text-center ${showApplyForm ? '' : 'mt-24'}`}
                   >
-                    <Button 
-                      variant="link" 
-                      className="text-white/60 hover:text-white transition-colors font-code uppercase tracking-widest text-sm no-underline hover:no-underline cursor-pointer" 
-                      onClick={() => setShowApplyForm(!showApplyForm)}
-                      data-testid="link-apply-code"
-                    >
-                      Apply for a code <ArrowRight className="w-4 h-4 ml-2" />
-                    </Button>
+                    {/* Show trigger button only when form is closed */}
+                    {!showApplyForm && (
+                      <Button 
+                        variant="link" 
+                        className="text-white/60 hover:text-white transition-colors font-code uppercase tracking-widest text-sm no-underline hover:no-underline cursor-pointer" 
+                        onClick={() => setShowApplyForm(true)}
+                        data-testid="link-apply-code"
+                      >
+                        Don't have a code? Request one <ArrowRight className="w-4 h-4 ml-2" />
+                      </Button>
+                    )}
                     
-                    {/* Apply Form Accordion */}
+                    {/* Apply Form - shown centered when open */}
                     <AnimatePresence>
                       {showApplyForm && (
                         <motion.div
-                          initial={{ opacity: 0, height: 0, y: -10 }}
-                          animate={{ opacity: 1, height: "auto", y: 0 }}
-                          exit={{ opacity: 0, height: 0, y: -10 }}
+                          initial={{ opacity: 0, scale: 0.95 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          exit={{ opacity: 0, scale: 0.95 }}
                           transition={{ type: "spring", stiffness: 200, damping: 25 }}
-                          className="mt-6 overflow-hidden"
+                          className="overflow-hidden"
                         >
                           <div className="relative">
                             <div className="absolute inset-0 bg-gradient-to-b from-blue-500/10 via-cyan-500/5 to-transparent blur-2xl rounded-lg" />
                             
                             <div className="relative space-y-4 p-6 bg-gray-900/60 backdrop-blur-md rounded-lg border border-white/15 text-left">
-                              <p className="text-sm text-gray-400 text-center mb-4">
-                                Request early access to 5Ducks
+                              <p className="text-xl text-white/70 text-center mb-4 font-code uppercase tracking-widest">
+                                REQUEST EARLY ACCESS
                               </p>
                               
                               {/* Name Input */}
@@ -850,10 +853,22 @@ export default function LandingStealth() {
                                     </>
                                   ) : (
                                     <>
-                                      Request Access
+                                      Join the Game
                                       <ArrowRight className="w-5 h-5 ml-2" />
                                     </>
                                   )}
+                                </Button>
+                              </div>
+                              
+                              {/* Back to code entry */}
+                              <div className="text-center pt-2">
+                                <Button 
+                                  variant="link" 
+                                  className="text-white/50 hover:text-white transition-colors font-code uppercase tracking-widest text-xs no-underline hover:no-underline cursor-pointer" 
+                                  onClick={() => setShowApplyForm(false)}
+                                  data-testid="link-back-to-code"
+                                >
+                                  I have a code
                                 </Button>
                               </div>
                             </div>
