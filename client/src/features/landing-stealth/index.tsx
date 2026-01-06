@@ -11,6 +11,7 @@ import { useRegistrationModal } from "@/hooks/use-registration-modal";
 import { useAuth } from "@/hooks/use-auth";
 import { fireUnlockConfetti } from "@/features/animations";
 import { StealthOnboardingModal } from "./StealthOnboardingModal";
+import { FreshDataSection } from "./FreshDataSection";
 import { FooterStealth } from "@/components/footer-stealth";
 import { DemoSimulationPlayer } from "@/features/demo-simulations";
 import { trackConversion } from "@/lib/analytics";
@@ -1203,6 +1204,9 @@ export default function LandingStealth() {
           </div>
         </div>
       </div>
+
+      {/* Fresh Data. Zero Bloat. Section */}
+      <FreshDataSection />
 
       {/* My Story Section */}
       <div className="relative z-20 py-24">
