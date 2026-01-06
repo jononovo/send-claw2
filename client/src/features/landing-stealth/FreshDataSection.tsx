@@ -25,7 +25,7 @@ const ComparisonChart = () => (
             </div>
           </div>
           <span className="text-gray-500 text-sm mt-3 text-center">Stale DB</span>
-          <span className="text-gray-600 text-xs">6-12 months old</span>
+          <span className="text-gray-600 text-xs">12-18 months old</span>
         </div>
         
         <div className="flex flex-col items-center">
