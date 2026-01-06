@@ -32,6 +32,50 @@ import sarahThumb from "./assets/professional_headshot_of_sarah_chen_thumb.jpg";
 import mikeThumb from "./assets/professional_headshot_of_mike_ross_thumb.jpg";
 import alexThumb from "./assets/natural_outdoor_portrait_of_older_alex_rivera_with_beard_thumb.jpg";
 
+function getPlayerCount(): number {
+  const BASE_COUNT = 1248;
+  const BASE_DATE_EST = new Date('2026-01-06T09:00:00-05:00'); // Jan 6, 2026 9AM EST
+  
+  const now = new Date();
+  
+  if (now < BASE_DATE_EST) return BASE_COUNT;
+  
+  const formatter = new Intl.DateTimeFormat('en-US', {
+    timeZone: 'America/New_York',
+    year: 'numeric', month: '2-digit', day: '2-digit',
+    hour: '2-digit', minute: '2-digit', hour12: false
+  });
+  const parts = formatter.formatToParts(now);
+  const getPart = (type: string) => parts.find(p => p.type === type)?.value || '0';
+  const estHour = parseInt(getPart('hour'), 10);
+  const estMinute = parseInt(getPart('minute'), 10);
+  const estMonth = parseInt(getPart('month'), 10);
+  const estDay = parseInt(getPart('day'), 10);
+  const estYear = parseInt(getPart('year'), 10);
+  
+  const baseParts = formatter.formatToParts(BASE_DATE_EST);
+  const getBasePart = (type: string) => baseParts.find(p => p.type === type)?.value || '0';
+  const baseMonth = parseInt(getBasePart('month'), 10);
+  const baseDay = parseInt(getBasePart('day'), 10);
+  const baseYear = parseInt(getBasePart('year'), 10);
+  
+  const estTodayUTC = Date.UTC(estYear, estMonth - 1, estDay);
+  const estBaseDayUTC = Date.UTC(baseYear, baseMonth - 1, baseDay);
+  const msPerDay = 24 * 60 * 60 * 1000;
+  const fullDaysPassed = Math.floor((estTodayUTC - estBaseDayUTC) / msPerDay);
+  
+  let totalIncrements = Math.max(0, fullDaysPassed) * 96;
+  
+  if (estHour >= 9 && estHour < 17) {
+    const minutesSince9AM = (estHour - 9) * 60 + estMinute;
+    totalIncrements += Math.floor(minutesSince9AM / 5);
+  } else if (estHour >= 17) {
+    totalIncrements += 96;
+  }
+  
+  return BASE_COUNT + totalIncrements;
+}
+
 const LOADING_MESSAGES = [
   "Unlocking sales processes...",
   "Loading registration portal...",
@@ -894,7 +938,7 @@ export default function LandingStealth() {
                   <img src={mikeThumb} alt="Player" loading="lazy" className="w-full h-full object-cover" />
                 </div>
               </div>
-              <p className="font-heading"><span className="text-white font-bold">1,248</span> Players Waiting</p>
+              <p className="font-heading"><span className="text-white font-bold">{getPlayerCount().toLocaleString()}</span> Players Waiting</p>
             </div>
 
             <Button 
