@@ -815,5 +815,346 @@
         "contacts": []
       }
     ]
+  },
+  {
+    "id": 16,
+    "prompt": "plumbers in flushing queens",
+    "roleFilter": "Operations",
+    "companies": [
+      {
+        "name": "Roto-Rooter",
+        "website": "rotorooter.com",
+        "contactCount": 4,
+        "contacts": [
+          { "name": "Mike Sinclair", "role": "Regional Manager", "email": "msinclair@rotorooter.com", "score": 86 }
+        ]
+      },
+      {
+        "name": "Hub Plumbing & Heating",
+        "website": "hubplumbingnyc.com",
+        "contactCount": 3,
+        "contacts": [
+          { "name": "James Chen", "role": "Owner", "email": "james@hubplumbingnyc.com", "score": 89 }
+        ]
+      },
+      {
+        "name": "Ranshaw",
+        "website": "ranshaw.com",
+        "contactCount": 2,
+        "contacts": []
+      },
+      {
+        "name": "Jerry's Plumbing & HVAC",
+        "website": "jerrysplumbinghvac.com",
+        "contactCount": 2,
+        "contacts": []
+      },
+      {
+        "name": "Senid Plumbing and Heating",
+        "website": "senidplumbing.com",
+        "contactCount": 2,
+        "contacts": []
+      },
+      {
+        "name": "HBNY Plumbing & Heating",
+        "website": "hbnyplumbing.com",
+        "contactCount": 2,
+        "contacts": []
+      },
+      {
+        "name": "Rao Plumbing and Heating",
+        "website": "raoplumbingandheating.com",
+        "contactCount": 1,
+        "contacts": []
+      }
+    ]
+  },
+  {
+    "id": 17,
+    "prompt": "evangelical churches in Staten Island",
+    "roleFilter": "Leadership",
+    "companies": [
+      {
+        "name": "Bethel Community Church",
+        "website": "bethelcommunitychurch.org",
+        "contactCount": 8,
+        "contacts": [
+          { "name": "Rich Blum", "role": "Senior Pastor", "email": "rblum@bethelcommunitychurch.org", "score": 89 },
+          { "name": "Krystal Varney", "role": "Children's Ministry Director", "email": "kvarney@bethelcommunitychurch.org", "score": 86 }
+        ]
+      },
+      {
+        "name": "Christ Abundant Life Ministries",
+        "website": "calmchurch.org",
+        "contactCount": 4,
+        "contacts": [
+          { "name": "Charmaine Flanagan", "role": "Pastor / Co-Founder", "email": "pastor@calmchurch.org", "score": 89 }
+        ]
+      },
+      {
+        "name": "Casa de Oracion Church",
+        "website": "casadeoracion.com",
+        "contactCount": 3,
+        "contacts": [
+          { "name": "Joseph Rivera", "role": "Pastor", "email": "pastorjoseph@casadeoracion.com", "score": 71 }
+        ]
+      },
+      {
+        "name": "Messiah Evangelical Lutheran Church",
+        "website": "messiahonline.org",
+        "contactCount": 4,
+        "contacts": [
+          { "name": "Rev. Anna K. Gordy", "role": "Pastor", "email": "messiahlutheransi@gmail.com", "score": 86 }
+        ]
+      },
+      {
+        "name": "Evangelical Free Church of America",
+        "website": "efca.org",
+        "contactCount": 5,
+        "contacts": [
+          { "name": "Kevin Kompelien", "role": "President", "email": "president@efca.org", "score": 89 }
+        ]
+      },
+      {
+        "name": "Bethel Temple Church",
+        "website": "betheltemplesi.org",
+        "contactCount": 2,
+        "contacts": []
+      },
+      {
+        "name": "Reformed Church on Staten Island",
+        "website": "reformedchurchsi.org",
+        "contactCount": 2,
+        "contacts": []
+      }
+    ]
+  },
+  {
+    "id": 18,
+    "prompt": "boutique ad agencies in NYC",
+    "roleFilter": "Creative",
+    "companies": [
+      {
+        "name": "Anomaly",
+        "website": "anomaly.com",
+        "contactCount": 12,
+        "contacts": [
+          { "name": "Karina Wilsher", "role": "Partner, Global CEO", "email": "karina@anomaly.com", "score": 89 },
+          { "name": "Franke Rodriguez", "role": "Partner / CEO (NYC)", "email": "franke@anomaly.com", "score": 89 },
+          { "name": "Jeff Stamp", "role": "Managing Partner, Chief Creative Officer", "email": "jeff@anomaly.com", "score": 86 }
+        ]
+      },
+      {
+        "name": "Day One Agency",
+        "website": "dayoneagency.com",
+        "contactCount": 8,
+        "contacts": [
+          { "name": "Josh Rosenberg", "role": "Co-Founder & CEO", "email": "josh@d1a.com", "score": 89 },
+          { "name": "Brad Laney", "role": "Co-Founder & President", "email": "brad@d1a.com", "score": 89 }
+        ]
+      },
+      {
+        "name": "Walrus",
+        "website": "walrusnyc.com",
+        "contactCount": 5,
+        "contacts": [
+          { "name": "Frances L. Webster", "role": "CEO", "email": "frances@walrusnyc.com", "score": 89 },
+          { "name": "Deacon Webster", "role": "Owner, Chief Creative Officer", "email": "deacon@walrusnyc.com", "score": 89 }
+        ]
+      },
+      {
+        "name": "Boucher + Co.",
+        "website": "boucherplusco.com",
+        "contactCount": 4,
+        "contacts": [
+          { "name": "Gerard Boucher", "role": "Chief Executive Officer", "email": "gerard.boucher@boucherco.com", "score": 89 }
+        ]
+      },
+      {
+        "name": "inBeat",
+        "website": "inbeat.co",
+        "contactCount": 3,
+        "contacts": [
+          { "name": "David Morneau", "role": "CEO", "email": "david@inbeat.agency", "score": 89 }
+        ]
+      },
+      {
+        "name": "Wild Factory",
+        "website": "wildfactory.com",
+        "contactCount": 3,
+        "contacts": [
+          { "name": "Adam Gourley", "role": "President/Owner", "email": "adamg@wildfactory.com", "score": 89 }
+        ]
+      },
+      {
+        "name": "Postlight",
+        "website": "postlight.com",
+        "contactCount": 4,
+        "contacts": []
+      }
+    ]
+  },
+  {
+    "id": 19,
+    "prompt": "web dev agencies in NYC using WordPress",
+    "roleFilter": "Engineering",
+    "companies": [
+      {
+        "name": "Five Jars",
+        "website": "fivejars.com",
+        "contactCount": 5,
+        "contacts": [
+          { "name": "Alex Schedrov", "role": "CEO", "email": "alex@fivejars.com", "score": 89 }
+        ]
+      },
+      {
+        "name": "XWP",
+        "website": "xwp.co",
+        "contactCount": 4,
+        "contacts": [
+          { "name": "Tom Willmot", "role": "Founder & CEO", "email": "tom@xwp.co", "score": 89 }
+        ]
+      },
+      {
+        "name": "Lounge Lizard",
+        "website": "loungelizard.com",
+        "contactCount": 4,
+        "contacts": [
+          { "name": "Ken Braun", "role": "CEO", "email": "ken@loungelizard.com", "score": 89 }
+        ]
+      },
+      {
+        "name": "cmsMinds",
+        "website": "cmsminds.com",
+        "contactCount": 3,
+        "contacts": [
+          { "name": "Rajesh Laddha", "role": "Principal", "email": "rajesh@cmsminds.com", "score": 89 }
+        ]
+      },
+      {
+        "name": "Alliance Interactive",
+        "website": "allianceinteractive.com",
+        "contactCount": 3,
+        "contacts": []
+      },
+      {
+        "name": "iQlance",
+        "website": "iqlance.com",
+        "contactCount": 3,
+        "contacts": []
+      },
+      {
+        "name": "ThinKASA",
+        "website": "thinkasa.com",
+        "contactCount": 2,
+        "contacts": []
+      }
+    ]
+  },
+  {
+    "id": 20,
+    "prompt": "software companies in Zurich",
+    "roleFilter": "Engineering",
+    "companies": [
+      {
+        "name": "Squirro",
+        "website": "squirro.com",
+        "contactCount": 6,
+        "contacts": [
+          { "name": "Dorian Selz", "role": "CEO & Co-Founder", "email": "dorian@squirro.com", "score": 94 }
+        ]
+      },
+      {
+        "name": "Zühlke",
+        "website": "zuhlke.com",
+        "contactCount": 5,
+        "contacts": [
+          { "name": "Nicolas Durville", "role": "CEO", "email": "nicolas.durville@zuhlke.com", "score": 89 }
+        ]
+      },
+      {
+        "name": "Comerge",
+        "website": "comerge.com",
+        "contactCount": 3,
+        "contacts": []
+      },
+      {
+        "name": "Valudio GmbH",
+        "website": "valudio.com",
+        "contactCount": 3,
+        "contacts": []
+      },
+      {
+        "name": "Zappter AG",
+        "website": "zappter.com",
+        "contactCount": 2,
+        "contacts": []
+      },
+      {
+        "name": "astarios",
+        "website": "astarios.com",
+        "contactCount": 2,
+        "contacts": []
+      },
+      {
+        "name": "modeso",
+        "website": "modeso.ch",
+        "contactCount": 2,
+        "contacts": []
+      }
+    ]
+  },
+  {
+    "id": 21,
+    "prompt": "recently exited startups in Miami",
+    "roleFilter": "Leadership",
+    "companies": [
+      {
+        "name": "Chewy",
+        "website": "chewy.com",
+        "contactCount": 8,
+        "contacts": [
+          { "name": "Sumit Singh", "role": "CEO", "email": "sumit@chewy.com", "score": 94 }
+        ]
+      },
+      {
+        "name": "Mindbody",
+        "website": "mindbodyonline.com",
+        "contactCount": 6,
+        "contacts": [
+          { "name": "Josh McCarter", "role": "CEO", "email": "josh@mindbody.com", "score": 92 }
+        ]
+      },
+      {
+        "name": "Midas",
+        "website": "midas.com",
+        "contactCount": 5,
+        "contacts": []
+      },
+      {
+        "name": "GovComm",
+        "website": "govcomm.com",
+        "contactCount": 4,
+        "contacts": []
+      },
+      {
+        "name": "Alleaves",
+        "website": "alleaves.com",
+        "contactCount": 4,
+        "contacts": []
+      },
+      {
+        "name": "Bahama Boat Works",
+        "website": "bahamaboatworks.com",
+        "contactCount": 3,
+        "contacts": []
+      },
+      {
+        "name": "Johnny Clean Car Wash",
+        "website": "johnnycleancarwash.com",
+        "contactCount": 3,
+        "contacts": []
+      }
+    ]
   }
 ]

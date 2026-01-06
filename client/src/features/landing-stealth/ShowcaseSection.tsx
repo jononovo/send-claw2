@@ -35,20 +35,20 @@ function BrowserFrame({ children }: { children: ReactNode }) {
 
 const SHOWCASE_PROMPTS = [
   { id: 1, prompt: "biotech series A startups in Austin", role: "CTO", companies: 7, contacts: 55 },
-  { id: 2, prompt: "private credit asset managers in NYC", role: "Finance", companies: 7, contacts: 45 },
   { id: 3, prompt: "AI/ML startups in San Francisco", role: "Engineering", companies: 6, contacts: 218 },
-  { id: 4, prompt: "FinTech companies in London", role: "Leadership", companies: 6, contacts: 285 },
-  { id: 5, prompt: "Healthcare tech companies in Boston", role: "Sales", companies: 6, contacts: 186 },
-  { id: 6, prompt: "large audit firms in NYC", role: "Leadership", companies: 7, contacts: 44 },
-  { id: 7, prompt: "energy companies in New York", role: "Legal", companies: 12, contacts: 33 },
-  { id: 8, prompt: "hedge funds in Connecticut", role: "Finance", companies: 7, contacts: 63 },
-  { id: 9, prompt: "hedge funds in Miami", role: "Leadership", companies: 7, contacts: 40 },
+  { id: 16, prompt: "plumbers in flushing queens", role: "Operations", companies: 7, contacts: 11 },
+  { id: 17, prompt: "evangelical churches in Staten Island", role: "Leadership", companies: 7, contacts: 26 },
+  { id: 18, prompt: "boutique ad agencies in NYC", role: "Creative", companies: 7, contacts: 21 },
+  { id: 19, prompt: "web dev agencies in NYC using WordPress", role: "Engineering", companies: 7, contacts: 23 },
+  { id: 20, prompt: "software companies in Zurich", role: "Engineering", companies: 7, contacts: 20 },
+  { id: 21, prompt: "recently exited startups in Miami", role: "Leadership", companies: 7, contacts: 33 },
   { id: 10, prompt: "fitness chains in NYC", role: "Operations", companies: 7, contacts: 40 },
   { id: 11, prompt: "marketing agencies in Austin", role: "Creative", companies: 7, contacts: 27 },
-  { id: 12, prompt: "tech hedge funds in Seattle", role: "Engineering", companies: 7, contacts: 38 },
+  { id: 5, prompt: "Healthcare tech companies in Boston", role: "Sales", companies: 6, contacts: 186 },
   { id: 13, prompt: "real estate lawyers in Atlanta", role: "Legal", companies: 7, contacts: 45 },
+  { id: 7, prompt: "energy companies in New York", role: "Legal", companies: 12, contacts: 33 },
+  { id: 4, prompt: "FinTech companies in London", role: "Leadership", companies: 6, contacts: 285 },
   { id: 14, prompt: "investment banks in New York City", role: "Finance", companies: 7, contacts: 51 },
-  { id: 15, prompt: "hedge funds in Los Angeles", role: "Leadership", companies: 7, contacts: 60 },
 ];
 
 export function ShowcaseSection() {
