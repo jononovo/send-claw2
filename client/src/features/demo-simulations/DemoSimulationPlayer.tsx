@@ -13,6 +13,8 @@ interface DemoSimulationPlayerProps {
   onComplete?: () => void;
   onClose?: () => void;
   showControls?: boolean;
+  responsive?: boolean;
+  aspectRatio?: number;
 }
 
 export function DemoSimulationPlayer({
@@ -27,14 +29,18 @@ export function DemoSimulationPlayer({
   onComplete,
   onClose,
   showControls = true,
+  responsive = false,
+  aspectRatio = 1,
 }: DemoSimulationPlayerProps) {
   const iframeRef = useRef<HTMLIFrameElement>(null);
+  const initialParamsRef = useRef(params);
   const [isLoaded, setIsLoaded] = useState(false);
   const [isHoveringControls, setIsHoveringControls] = useState(false);
   const [showReplayOverlay, setShowReplayOverlay] = useState(false);
 
-  const queryString = params 
-    ? '?' + Object.entries(params).map(([k, v]) => `${k}=${encodeURIComponent(v)}`).join('&')
+  // Only use initial params for the src URL - subsequent changes go through postMessage
+  const queryString = initialParamsRef.current 
+    ? '?' + Object.entries(initialParamsRef.current).map(([k, v]) => `${k}=${encodeURIComponent(v)}`).join('&')
     : '';
   const src = `/static/demo-simulations/${simulation}.html${queryString}`;
 
@@ -56,6 +62,16 @@ export function DemoSimulationPlayer({
     return () => iframe.removeEventListener("load", handleLoad);
   }, [onLoad]);
 
+  // Send postMessage when params change (for seamless content switching)
+  useEffect(() => {
+    if (isLoaded && iframeRef.current && params?.id) {
+      iframeRef.current.contentWindow?.postMessage({ 
+        type: 'changeShowcase', 
+        id: params.id 
+      }, '*');
+    }
+  }, [params?.id, isLoaded]);
+
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
       if (event.data?.type === 'demoComplete') {
@@ -68,10 +84,14 @@ export function DemoSimulationPlayer({
     return () => window.removeEventListener('message', handleMessage);
   }, [onComplete]);
 
+  const containerStyle = responsive 
+    ? { aspectRatio: aspectRatio, width: '100%' }
+    : { width, height };
+
   return (
     <div
-      className={`relative overflow-hidden rounded-2xl shadow-lg ${className}`}
-      style={{ width, height }}
+      className={`relative overflow-hidden ${responsive ? '' : 'rounded-2xl shadow-lg'} ${className}`}
+      style={containerStyle}
       data-testid="demo-simulation-player"
       onMouseEnter={() => setIsHoveringControls(true)}
       onMouseLeave={() => setIsHoveringControls(false)}
@@ -79,9 +99,7 @@ export function DemoSimulationPlayer({
       <iframe
         ref={iframeRef}
         src={src}
-        width={width}
-        height={height}
-        className="border-0"
+        className="border-0 w-full h-full"
         title="Interactive Demo"
         loading="lazy"
         style={{

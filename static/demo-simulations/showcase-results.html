@@ -18,19 +18,35 @@
       background: transparent;
     }
     
-    /* Warm color overrides */
-    .text-slate-400 { color: hsl(35, 12%, 55%) !important; }
-    .text-slate-500 { color: hsl(35, 12%, 48%) !important; }
-    .text-slate-600 { color: hsl(35, 14%, 40%) !important; }
-    .text-slate-700 { color: hsl(35, 16%, 32%) !important; }
-    .text-slate-800 { color: hsl(35, 18%, 22%) !important; }
-    .bg-slate-50 { background-color: hsl(40, 15%, 97%) !important; }
-    .bg-slate-100 { background-color: hsl(40, 14%, 94%) !important; }
-    .bg-slate-200 { background-color: hsl(40, 12%, 88%) !important; }
-    .border-slate-100 { border-color: hsl(40, 14%, 92%) !important; }
-    .border-slate-200 { border-color: hsl(40, 12%, 85%) !important; }
-    .border-slate-300 { border-color: hsl(40, 10%, 78%) !important; }
-    .hover\:bg-slate-50:hover { background-color: hsl(40, 15%, 96%) !important; }
+    /* Light mode - Warm color overrides */
+    .light .text-slate-400 { color: hsl(35, 12%, 55%) !important; }
+    .light .text-slate-500 { color: hsl(35, 12%, 48%) !important; }
+    .light .text-slate-600 { color: hsl(35, 14%, 40%) !important; }
+    .light .text-slate-700 { color: hsl(35, 16%, 32%) !important; }
+    .light .text-slate-800 { color: hsl(35, 18%, 22%) !important; }
+    .light .bg-slate-50 { background-color: hsl(40, 15%, 97%) !important; }
+    .light .bg-slate-100 { background-color: hsl(40, 14%, 94%) !important; }
+    .light .bg-slate-200 { background-color: hsl(40, 12%, 88%) !important; }
+    .light .border-slate-100 { border-color: hsl(40, 14%, 92%) !important; }
+    .light .border-slate-200 { border-color: hsl(40, 12%, 85%) !important; }
+    .light .border-slate-300 { border-color: hsl(40, 10%, 78%) !important; }
+    .light .hover\:bg-slate-50:hover { background-color: hsl(40, 15%, 96%) !important; }
+    
+    /* Dark mode overrides - warm amber tones */
+    .dark .text-slate-400 { color: hsl(35, 15%, 55%) !important; }
+    .dark .text-slate-500 { color: hsl(35, 15%, 62%) !important; }
+    .dark .text-slate-600 { color: hsl(35, 12%, 70%) !important; }
+    .dark .text-slate-700 { color: hsl(35, 10%, 80%) !important; }
+    .dark .text-slate-800 { color: hsl(35, 8%, 90%) !important; }
+    .dark .bg-slate-50 { background-color: hsl(30, 12%, 16%) !important; }
+    .dark .bg-slate-100 { background-color: hsl(30, 12%, 20%) !important; }
+    .dark .bg-slate-200 { background-color: hsl(30, 10%, 26%) !important; }
+    .dark .border-slate-100 { border-color: hsl(30, 10%, 22%) !important; }
+    .dark .border-slate-200 { border-color: hsl(30, 10%, 28%) !important; }
+    .dark .border-slate-300 { border-color: hsl(30, 8%, 32%) !important; }
+    .dark .hover\:bg-slate-50:hover { background-color: hsl(30, 12%, 22%) !important; }
+    .dark .bg-white { background-color: hsl(30, 12%, 14%) !important; }
+    .dark .text-white { color: hsl(35, 10%, 95%) !important; }
     
     #demo-container {
       width: 100%;
@@ -41,26 +57,33 @@
       background: transparent;
     }
     
+    /* Light mode viewport */
+    .light #demo-viewport {
+      background: linear-gradient(135deg, #ffffff 0%, #ffffff 60%, #fef3c7 100%);
+    }
+    
+    /* Dark mode viewport - warm amber gradient */
+    .dark #demo-viewport {
+      background: linear-gradient(135deg, #1a1814 0%, #1f1a14 60%, #1a1814 100%);
+    }
+    
     #demo-viewport {
       width: 100%;
-      max-width: 800px;
       height: 100%;
-      max-height: 620px;
-      background: linear-gradient(135deg, #ffffff 0%, #ffffff 60%, #fef3c7 100%);
-      border-radius: 16px;
-      overflow: hidden;
+      border-radius: 0;
+      overflow-y: auto;
+      overflow-x: hidden;
       position: relative;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
     }
     
     #demo-content {
       width: 100%;
-      height: 100%;
+      min-height: 100%;
       display: flex;
       flex-direction: column;
-      padding: 24px 28px;
-      overflow: hidden;
+      padding: 12px 6px;
     }
+    
     
     .slide-down {
       animation: slideDown 0.3s ease-out forwards;
@@ -81,6 +104,46 @@
       animation: cardFadeIn 0.4s ease-out forwards;
     }
     
+    /* First company highlight */
+    .company-highlight {
+      position: relative;
+    }
+    
+    .company-highlight .rounded-lg {
+      border: 2px solid hsl(35, 80%, 55%) !important;
+      box-shadow: 0 0 12px hsla(35, 80%, 55%, 0.3) !important;
+    }
+    
+    .highlight-tooltip {
+      position: absolute;
+      top: -52px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #1f2937;
+      color: #ffffff;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 400;
+      max-width: 280px;
+      white-space: normal;
+      line-height: 1.4;
+      z-index: 100;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(234, 179, 8, 0.3);
+    }
+    
+    .highlight-tooltip::after {
+      content: '';
+      position: absolute;
+      bottom: -6px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-top: 6px solid #1f2937;
+      border-left: 6px solid transparent;
+      border-right: 6px solid transparent;
+    }
+    
     @keyframes cardFadeIn {
       from {
         opacity: 0;
@@ -94,25 +157,42 @@
     
     #results-container {
       flex: 1;
-      overflow-y: auto;
-      padding-right: 4px;
     }
     
-    #results-container::-webkit-scrollbar {
+    /* Light mode scrollbar for viewport */
+    .light #demo-viewport::-webkit-scrollbar {
       width: 6px;
     }
     
-    #results-container::-webkit-scrollbar-track {
+    .light #demo-viewport::-webkit-scrollbar-track {
       background: transparent;
     }
     
-    #results-container::-webkit-scrollbar-thumb {
+    .light #demo-viewport::-webkit-scrollbar-thumb {
       background: rgba(0, 0, 0, 0.15);
       border-radius: 3px;
     }
     
-    .company-header:hover {
+    /* Dark mode scrollbar for viewport */
+    .dark #demo-viewport::-webkit-scrollbar {
+      width: 6px;
+    }
+    
+    .dark #demo-viewport::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.05);
+    }
+    
+    .dark #demo-viewport::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 3px;
+    }
+    
+    .light .company-header:hover {
       background-color: #f8fafc;
+    }
+    
+    .dark .company-header:hover {
+      background-color: hsl(30, 12%, 18%);
     }
     
     .chevron-icon {
@@ -122,30 +202,88 @@
     .chevron-icon.expanded {
       transform: rotate(180deg);
     }
+    
+    /* Theme toggle button */
+    .theme-toggle {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    
+    .light .theme-toggle {
+      background: rgba(0, 0, 0, 0.05);
+      color: hsl(35, 16%, 40%);
+    }
+    
+    .light .theme-toggle:hover {
+      background: rgba(0, 0, 0, 0.1);
+    }
+    
+    .dark .theme-toggle {
+      background: rgba(255, 200, 100, 0.1);
+      color: hsl(35, 30%, 65%);
+    }
+    
+    .dark .theme-toggle:hover {
+      background: rgba(255, 200, 100, 0.15);
+    }
+    
+    /* Dark mode specific card styles - warm amber tones */
+    .dark .company-card .rounded-lg {
+      background-color: hsl(30, 12%, 14%) !important;
+      border-color: hsl(30, 10%, 22%) !important;
+    }
+    
+    .dark .company-card button {
+      border-color: hsl(30, 10%, 28%) !important;
+    }
+    
+    .dark .company-card button:hover {
+      background-color: hsl(30, 12%, 22%) !important;
+    }
+    
+    .dark #search-display {
+      background: rgba(255, 200, 100, 0.05) !important;
+      border-color: hsl(30, 10%, 22%) !important;
+    }
+    
+    .dark #role-chip {
+      background: hsl(30, 15%, 22%) !important;
+      color: hsl(35, 20%, 70%) !important;
+    }
   </style>
 </head>
 <body>
-  <div id="demo-container">
+  <div id="demo-container" class="dark">
     <div id="demo-viewport">
       <div id="demo-content">
         
-        <div class="flex items-center justify-between mb-4">
-          <div class="flex items-center gap-2">
-            <div class="w-6 h-6 bg-amber-400 rounded flex items-center justify-center">
-              <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/>
-              </svg>
-            </div>
+        <div class="flex items-center justify-between mb-4 px-2">
+          <div class="flex items-center gap-1.5">
+            <img src="/static/demo-simulations/duckling-mascot.png" alt="5Ducks" class="w-6 h-6 object-contain" />
             <span class="font-semibold text-slate-700">5Ducks</span>
           </div>
+          <button id="theme-toggle" class="theme-toggle" title="Toggle theme">
+            <svg id="sun-icon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
+            </svg>
+            <svg id="moon-icon" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+            </svg>
+          </button>
         </div>
         
         <div id="search-display" class="bg-white/90 backdrop-blur rounded-xl p-3 mb-4 shadow-sm border border-slate-100">
           <div class="flex items-center gap-3">
             <div class="flex-1">
-              <div class="text-slate-800 font-medium" id="query-display">Loading...</div>
+              <div class="text-slate-800 font-medium" id="query-display"></div>
             </div>
-            <div id="role-chip" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-100 text-slate-600 text-sm">
+            <div id="role-chip" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-100 text-slate-600 text-sm cursor-help" title="Role searched: How contacts are scored for role affinity.">
               <svg id="role-icon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
               </svg>
@@ -163,21 +301,50 @@
 
   <script>
     const urlParams = new URLSearchParams(window.location.search);
-    const showcaseId = parseInt(urlParams.get('id')) || 1;
+    let currentShowcaseId = parseInt(urlParams.get('id')) || 1;
+    let showcaseData = null;
+    let hasShownHighlight = false;
+    
+    // Theme toggle functionality
+    const container = document.getElementById('demo-container');
+    const themeToggle = document.getElementById('theme-toggle');
+    const sunIcon = document.getElementById('sun-icon');
+    const moonIcon = document.getElementById('moon-icon');
+    
+    let isDark = true;
+    
+    themeToggle.addEventListener('click', () => {
+      isDark = !isDark;
+      container.className = isDark ? 'dark' : 'light';
+      sunIcon.classList.toggle('hidden', !isDark);
+      moonIcon.classList.toggle('hidden', isDark);
+    });
+    
+    // Listen for prompt change messages from parent
+    window.addEventListener('message', (event) => {
+      if (event.data?.type === 'changeShowcase' && event.data.id) {
+        const newId = parseInt(event.data.id);
+        if (newId !== currentShowcaseId && showcaseData) {
+          currentShowcaseId = newId;
+          const showcase = showcaseData.find(s => s.id === newId) || showcaseData[0];
+          renderShowcase(showcase, true);
+        }
+      }
+    });
     
     async function loadShowcaseData() {
       try {
         const response = await fetch('/static/demo-simulations/showcase-data.json');
-        const data = await response.json();
-        const showcase = data.find(s => s.id === showcaseId) || data[0];
-        renderShowcase(showcase);
+        showcaseData = await response.json();
+        const showcase = showcaseData.find(s => s.id === currentShowcaseId) || showcaseData[0];
+        renderShowcase(showcase, false);
       } catch (error) {
         console.error('Failed to load showcase data:', error);
         document.getElementById('query-display').textContent = 'Failed to load data';
       }
     }
     
-    function renderShowcase(showcase) {
+    function renderShowcase(showcase, isSwitch = false) {
       document.getElementById('query-display').textContent = showcase.prompt;
       document.getElementById('role-text').textContent = showcase.roleFilter;
       
@@ -189,54 +356,48 @@
         const isExpanded = index < 2 && hasContacts;
         
         const card = document.createElement('div');
-        card.className = 'company-card';
-        card.style.opacity = '0';
-        card.style.animationDelay = `${index * 0.08}s`;
+        const isFirstCard = index === 0 && !hasShownHighlight && !isSwitch;
+        card.className = isFirstCard ? 'company-card company-highlight' : 'company-card';
+        if (!isSwitch) {
+          card.style.opacity = '0';
+          card.style.animationDelay = `${index * 0.08}s`;
+        }
         
         card.innerHTML = `
           <div class="rounded-lg border border-slate-200 bg-white overflow-hidden shadow-sm">
-            <div class="company-header flex items-center justify-between p-4 transition-colors cursor-pointer" data-company-index="${index}">
-              <div class="flex items-center gap-3">
-                <div class="w-9 h-9 rounded bg-slate-100 flex items-center justify-center">
-                  <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="company-header flex items-center justify-between px-3 py-2.5 transition-colors cursor-pointer" data-company-index="${index}">
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-1.5">
+                  <svg class="w-4 h-4 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
                   </svg>
+                  <h4 class="font-semibold text-slate-800 text-sm truncate">${company.name}</h4>
                 </div>
-                <div>
-                  <div class="flex items-center gap-2">
-                    <h4 class="font-semibold text-slate-800 text-lg">${company.name}</h4>
-                    ${hasContacts ? `
-                    <svg class="w-4 h-4 text-slate-400 chevron-icon ${isExpanded ? 'expanded' : ''}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                <div class="flex items-center gap-2 text-xs text-slate-500 mt-1">
+                  <div class="flex items-center gap-1">
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/>
                     </svg>
-                    ` : ''}
+                    <span class="truncate">${company.website}</span>
                   </div>
-                  <div class="flex items-center gap-3 text-sm text-slate-500">
-                    <div class="flex items-center gap-1">
-                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/>
-                      </svg>
-                      <span>${company.website}</span>
-                    </div>
-                    <div class="flex items-center gap-1">
-                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
-                      </svg>
-                      <span>${company.contactCount} contacts</span>
-                    </div>
+                  <div class="flex items-center gap-1">
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+                    </svg>
+                    <span>${company.contactCount} contacts</span>
                   </div>
                 </div>
               </div>
-              <div class="flex items-center gap-2">
+              <div class="flex items-center gap-1.5 shrink-0">
                 ${hasContacts ? `
-                <button class="expand-btn w-9 h-9 rounded-lg border border-slate-200 flex items-center justify-center text-slate-400 hover:bg-slate-50">
-                  <svg class="w-4 h-4 transition-transform ${isExpanded ? 'rotate-180' : ''}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <button class="expand-btn w-7 h-7 rounded-md border border-slate-200 flex items-center justify-center text-slate-400 hover:bg-slate-50">
+                  <svg class="w-3.5 h-3.5 transition-transform ${isExpanded ? 'rotate-180' : ''}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                   </svg>
                 </button>
                 ` : ''}
-                <button class="w-9 h-9 rounded-lg border border-slate-200 flex items-center justify-center text-slate-400 hover:bg-slate-50">
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <button class="w-7 h-7 rounded-md border border-slate-200 flex items-center justify-center text-slate-400 hover:bg-slate-50">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
                   </svg>
                 </button>
@@ -246,20 +407,20 @@
             ${hasContacts ? `
             <div class="contacts-list border-t border-slate-100 ${isExpanded ? '' : 'hidden'}" data-contacts-index="${index}">
               ${company.contacts.map((contact, cIndex) => `
-                <div class="flex items-center justify-between px-4 py-3 hover:bg-slate-50 ${cIndex < company.contacts.length - 1 ? 'border-b border-slate-100' : ''}">
-                  <div>
-                    <h5 class="font-medium text-slate-800">${contact.name}</h5>
-                    <p class="text-sm text-slate-500">${contact.role}</p>
-                    <div class="flex items-center gap-2 mt-0.5">
-                      <span class="text-sm text-slate-500">${contact.email}</span>
-                      <svg class="w-4 h-4 text-slate-400" viewBox="0 0 24 24" fill="currentColor">
+                <div class="flex items-center justify-between px-3 py-2 hover:bg-slate-50 ${cIndex < company.contacts.length - 1 ? 'border-b border-slate-100' : ''}">
+                  <div class="min-w-0 flex-1">
+                    <h5 class="font-medium text-slate-800 text-sm">${contact.name}</h5>
+                    <p class="text-xs text-slate-500">${contact.role}</p>
+                    <div class="flex items-center gap-1.5 mt-0.5">
+                      <span class="text-xs text-slate-500 truncate">${contact.email}</span>
+                      <svg class="w-3 h-3 text-slate-400 shrink-0" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
                       </svg>
                     </div>
                   </div>
-                  <div class="flex items-center gap-3">
-                    <span class="text-sm font-medium text-slate-600">${contact.score}%</span>
-                    <svg class="w-5 h-5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div class="flex items-center gap-2 shrink-0">
+                    <span class="text-xs font-medium text-slate-600">${contact.score}%</span>
+                    <svg class="w-4 h-4 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
                     </svg>
@@ -267,7 +428,7 @@
                 </div>
               `).join('')}
               ${company.contactCount > company.contacts.length ? `
-                <div class="px-4 py-3 text-center text-sm text-slate-500">
+                <div class="px-3 py-2 text-center text-xs text-slate-500">
                   +${company.contactCount - company.contacts.length} more contacts available
                 </div>
               ` : ''}
@@ -278,9 +439,28 @@
         
         container.appendChild(card);
         
-        setTimeout(() => {
-          card.classList.add('card-animate');
-        }, 50);
+        // Add tooltip for first card highlight (after innerHTML to avoid being overwritten)
+        if (isFirstCard) {
+          hasShownHighlight = true;
+          const tooltip = document.createElement('div');
+          tooltip.className = 'highlight-tooltip';
+          tooltip.textContent = 'Click on company to see highest-scored contacts for searched role.';
+          card.appendChild(tooltip);
+          
+          // Dismiss highlight on any click within the card
+          card.addEventListener('click', () => {
+            card.classList.remove('company-highlight');
+            tooltip.remove();
+          }, { once: true });
+        }
+        
+        if (!isSwitch) {
+          setTimeout(() => {
+            card.classList.add('card-animate');
+          }, 50);
+        } else {
+          card.style.opacity = '1';
+        }
         
         if (hasContacts) {
           const header = card.querySelector('.company-header');

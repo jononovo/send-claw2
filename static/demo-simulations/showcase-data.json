@@ -20,8 +20,7 @@
         "contactCount": 10,
         "contacts": [
           { "name": "Gleb Kuznetsov", "role": "Co-Founder & CEO", "email": "gleb@manifoldlabs.bio", "score": 89 },
-          { "name": "Pierce Ogden", "role": "Co-Founder & CTO", "email": "pierce@manifoldlabs.bio", "score": 89 },
-          { "name": "Shane Lofgren", "role": "Co-Founder & Head of Portfolio Development", "email": "shane@manifoldlabs.bio", "score": 89 }
+          { "name": "Pierce Ogden", "role": "Co-Founder & CTO", "email": "pierce@manifoldlabs.bio", "score": 89 }
         ]
       },
       {
@@ -58,55 +57,70 @@
   },
   {
     "id": 2,
-    "prompt": "Private credit asset managers in NYC",
-    "roleFilter": "Leadership",
+    "prompt": "private credit asset managers in NYC",
+    "roleFilter": "Finance",
     "companies": [
       {
-        "name": "Quilvest Capital Partners",
-        "website": "quilvest.com",
+        "name": "Ares Management",
+        "website": "aresmgmt.com",
         "contactCount": 8,
         "contacts": [
-          { "name": "Cyril Heneine", "role": "CEO Quilvest Dubai", "email": "c.heneine@quilvest.com", "score": 89 },
-          { "name": "John Eggleston", "role": "Partner, Chief Operating Officer", "email": "j.eggleston@quilvest.com", "score": 86 }
-        ]
-      },
-      {
-        "name": "GoldenTree Asset Management",
-        "website": "goldentree.com",
-        "contactCount": 8,
-        "contacts": [
-          { "name": "Steven Tananbaum", "role": "Founder & Chief Investment Officer", "email": "s.tananbaum@goldentree.com", "score": 92 }
+          { "name": "Michael Arougheti", "role": "Co-Founder and Chief Executive Officer", "email": "marougheti@aresmgmt.com", "score": 94 },
+          { "name": "Antony Ressler", "role": "Co-Founder and Executive Chairman", "email": "aressler@aresmgmt.com", "score": 92 }
         ]
       },
       {
         "name": "Apollo Global Management",
         "website": "apollo.com",
         "contactCount": 12,
-        "contacts": []
-      },
-      {
-        "name": "Ares Management",
-        "website": "aresmgmt.com",
-        "contactCount": 9,
-        "contacts": []
-      },
-      {
-        "name": "Blue Owl Capital",
-        "website": "blueowl.com",
-        "contactCount": 7,
-        "contacts": []
-      },
-      {
-        "name": "Blackstone Credit",
-        "website": "blackstone.com",
-        "contactCount": 15,
-        "contacts": []
+        "contacts": [
+          { "name": "Kristy Kinahan", "role": "Chief Accounting Officer", "email": "kkinahan@apollo.com", "score": 86 },
+          { "name": "John DeRosa", "role": "Managing Director, Finance", "email": "jderosa@apollo.com", "score": 85 }
+        ]
       },
       {
         "name": "HPS Investment Partners",
         "website": "hpspartners.com",
         "contactCount": 11,
-        "contacts": []
+        "contacts": [
+          { "name": "Scott Kapnick", "role": "Founder", "email": "scott.kapnick@hpspartners.com", "score": 94 },
+          { "name": "Doris Lee-Silvestri", "role": "Chief Financial Officer of Funds", "email": "doris.lee-silvestri@hpspartners.com", "score": 84 },
+          { "name": "Scot French", "role": "Founding Partner", "email": "scot.french@hpspartners.com", "score": 84 }
+        ]
+      },
+      {
+        "name": "Blackstone Credit",
+        "website": "blackstone.com",
+        "contactCount": 15,
+        "contacts": [
+          { "name": "Carlos Whitaker", "role": "President", "email": "carlos.whitaker@blackstone.com", "score": 94 },
+          { "name": "Brad Marshall", "role": "Chairman and Co-CEO", "email": "brad.marshall@blackstone.com", "score": 94 }
+        ]
+      },
+      {
+        "name": "Blue Owl Capital",
+        "website": "blueowl.com",
+        "contactCount": 7,
+        "contacts": [
+          { "name": "Katie Abouzahr", "role": "Principal, Finance & Operations", "email": "katie.abouzahr@blueowl.com", "score": 86 }
+        ]
+      },
+      {
+        "name": "TCW Private Credit",
+        "website": "tcw.com",
+        "contactCount": 9,
+        "contacts": [
+          { "name": "Katie Koch", "role": "President and CEO", "email": "katie.koch@tcw.com", "score": 94 },
+          { "name": "Ryan K. Carroll", "role": "Head of Portfolio Management", "email": "ryan.carroll@tcw.com", "score": 84 }
+        ]
+      },
+      {
+        "name": "Monroe Capital",
+        "website": "monroecap.com",
+        "contactCount": 8,
+        "contacts": [
+          { "name": "Karina Stahl", "role": "Managing Director, CFO – Investment Funds", "email": "kstahl@monroecap.com", "score": 83 }
+        ]
       }
     ]
   },
@@ -260,6 +274,885 @@
         "name": "Olive AI",
         "website": "oliveai.com",
         "contactCount": 25,
+        "contacts": []
+      }
+    ]
+  },
+  {
+    "id": 6,
+    "prompt": "large audit firms in NYC",
+    "roleFilter": "Leadership",
+    "companies": [
+      {
+        "name": "Deloitte LLP",
+        "website": "deloitte.com",
+        "contactCount": 15,
+        "contacts": [
+          { "name": "Joe Ucuzoglu", "role": "Global Chief Executive Officer", "email": "jucuzoglu@deloitte.com", "score": 94 },
+          { "name": "Anna Marks", "role": "Chair of Global Board", "email": "amarks@deloitte.co.uk", "score": 94 },
+          { "name": "Dennis Chow", "role": "Global Deputy Chair", "email": "dchow@deloitte.com", "score": 94 }
+        ]
+      },
+      {
+        "name": "PwC",
+        "website": "pwc.com",
+        "contactCount": 12,
+        "contacts": [
+          { "name": "Mohamed Kande", "role": "CEO", "email": "mohamed.k.kande@pwc.com", "score": 94 },
+          { "name": "Paul Griggs", "role": "US Senior Partner", "email": "paul.griggs@pwc.com", "score": 94 }
+        ]
+      },
+      {
+        "name": "Ernst & Young LLP",
+        "website": "ey.com",
+        "contactCount": 10,
+        "contacts": [
+          { "name": "Janet Truncale", "role": "Global Chair and CEO", "email": "janet.truncale@ey.com", "score": 94 }
+        ]
+      },
+      {
+        "name": "KPMG",
+        "website": "kpmg.com",
+        "contactCount": 14,
+        "contacts": [
+          { "name": "Tim Walsh", "role": "Chair and CEO", "email": "twalsh@kpmg.com", "score": 94 },
+          { "name": "Atif Zaim", "role": "Deputy Chair", "email": "azaim@kpmg.com", "score": 94 }
+        ]
+      },
+      {
+        "name": "Marcum LLP",
+        "website": "marcumllp.com",
+        "contactCount": 8,
+        "contacts": [
+          { "name": "Jeffrey M. Weiner", "role": "Chairman and CEO", "email": "jeffrey.weiner@marcumllp.com", "score": 94 }
+        ]
+      },
+      {
+        "name": "Anchin",
+        "website": "anchin.com",
+        "contactCount": 6,
+        "contacts": [
+          { "name": "Russell B. Shinsky", "role": "Managing Partner", "email": "russell.shinsky@anchin.com", "score": 94 }
+        ]
+      },
+      {
+        "name": "Citrin Cooperman",
+        "website": "citrincooperman.com",
+        "contactCount": 5,
+        "contacts": []
+      }
+    ]
+  },
+  {
+    "id": 7,
+    "prompt": "energy companies in New York",
+    "roleFilter": "Legal",
+    "companies": [
+      {
+        "name": "Con Edison",
+        "website": "coned.com",
+        "contactCount": 8,
+        "contacts": [
+          { "name": "Scott Levinson", "role": "VP of Legal Services", "email": "levinsons@coned.com", "score": 86 },
+          { "name": "Deneen L. Donnley", "role": "SVP and General Counsel", "email": "donnleyd@coned.com", "score": 81 }
+        ]
+      },
+      {
+        "name": "National Grid",
+        "website": "nationalgrid.com",
+        "contactCount": 12,
+        "contacts": [
+          { "name": "Justine Campbell", "role": "Chief Legal Officer", "email": "justine.campbell@nationalgrid.com", "score": 86 }
+        ]
+      },
+      {
+        "name": "Avangrid",
+        "website": "avangrid.com",
+        "contactCount": 9,
+        "contacts": []
+      },
+      {
+        "name": "Central Hudson",
+        "website": "cenhud.com",
+        "contactCount": 6,
+        "contacts": []
+      },
+      {
+        "name": "PSEG",
+        "website": "pseg.com",
+        "contactCount": 11,
+        "contacts": []
+      }
+    ]
+  },
+  {
+    "id": 8,
+    "prompt": "hedge funds in Connecticut",
+    "roleFilter": "Finance",
+    "companies": [
+      {
+        "name": "Bridgewater Associates",
+        "website": "bridgewater.com",
+        "contactCount": 18,
+        "contacts": [
+          { "name": "Nir Bar Dea", "role": "Co-CEO", "email": "nir.bardea@bridgewater.com", "score": 95 },
+          { "name": "Mark Bertolini", "role": "Co-CEO", "email": "mark.bertolini@bridgewater.com", "score": 95 }
+        ]
+      },
+      {
+        "name": "AQR Capital Management",
+        "website": "aqr.com",
+        "contactCount": 14,
+        "contacts": [
+          { "name": "Cliff Asness", "role": "Founder & CIO", "email": "cliff.asness@aqr.com", "score": 96 }
+        ]
+      },
+      {
+        "name": "Point72 Asset Management",
+        "website": "point72.com",
+        "contactCount": 12,
+        "contacts": [
+          { "name": "Steve Cohen", "role": "Founder & Chairman", "email": "steve.cohen@point72.com", "score": 96 }
+        ]
+      },
+      {
+        "name": "Viking Global Investors",
+        "website": "vikingglobal.com",
+        "contactCount": 9,
+        "contacts": []
+      },
+      {
+        "name": "Two Sigma",
+        "website": "twosigma.com",
+        "contactCount": 15,
+        "contacts": []
+      },
+      {
+        "name": "Lone Pine Capital",
+        "website": "lonepinecapital.com",
+        "contactCount": 7,
+        "contacts": []
+      },
+      {
+        "name": "Tudor Investment Corp",
+        "website": "tudorinvestments.com",
+        "contactCount": 8,
+        "contacts": []
+      }
+    ]
+  },
+  {
+    "id": 9,
+    "prompt": "hedge funds in Miami",
+    "roleFilter": "Leadership",
+    "companies": [
+      {
+        "name": "Citadel",
+        "website": "citadel.com",
+        "contactCount": 14,
+        "contacts": [
+          { "name": "Ken Griffin", "role": "Founder & CEO", "email": "ken.griffin@citadel.com", "score": 97 }
+        ]
+      },
+      {
+        "name": "Schonfeld Strategic Advisors",
+        "website": "schonfeld.com",
+        "contactCount": 11,
+        "contacts": [
+          { "name": "Ryan Tolkin", "role": "CEO", "email": "ryan.tolkin@schonfeld.com", "score": 94 }
+        ]
+      },
+      {
+        "name": "Millennium Management",
+        "website": "mlp.com",
+        "contactCount": 13,
+        "contacts": []
+      },
+      {
+        "name": "D1 Capital Partners",
+        "website": "d1capital.com",
+        "contactCount": 8,
+        "contacts": []
+      },
+      {
+        "name": "Thoma Bravo",
+        "website": "thomabravo.com",
+        "contactCount": 10,
+        "contacts": []
+      },
+      {
+        "name": "Apollo",
+        "website": "apollo.com",
+        "contactCount": 12,
+        "contacts": []
+      },
+      {
+        "name": "Blackstone",
+        "website": "blackstone.com",
+        "contactCount": 15,
+        "contacts": []
+      }
+    ]
+  },
+  {
+    "id": 10,
+    "prompt": "fitness chains in NYC",
+    "roleFilter": "Operations",
+    "companies": [
+      {
+        "name": "Equinox",
+        "website": "equinox.com",
+        "contactCount": 12,
+        "contacts": [
+          { "name": "Harvey Spevak", "role": "Executive Chairman", "email": "harvey.spevak@equinox.com", "score": 94 },
+          { "name": "Sean Mahoney", "role": "President", "email": "sean.mahoney@equinox.com", "score": 92 }
+        ]
+      },
+      {
+        "name": "SoulCycle",
+        "website": "soul-cycle.com",
+        "contactCount": 8,
+        "contacts": []
+      },
+      {
+        "name": "Barry's Bootcamp",
+        "website": "barrys.com",
+        "contactCount": 7,
+        "contacts": []
+      },
+      {
+        "name": "Orangetheory Fitness",
+        "website": "orangetheory.com",
+        "contactCount": 9,
+        "contacts": []
+      },
+      {
+        "name": "Planet Fitness",
+        "website": "planetfitness.com",
+        "contactCount": 11,
+        "contacts": []
+      },
+      {
+        "name": "NYSC",
+        "website": "newyorksportsclubs.com",
+        "contactCount": 6,
+        "contacts": []
+      },
+      {
+        "name": "Rumble Boxing",
+        "website": "rumbleboxinggym.com",
+        "contactCount": 5,
+        "contacts": []
+      }
+    ]
+  },
+  {
+    "id": 11,
+    "prompt": "marketing agencies in Austin",
+    "roleFilter": "Creative",
+    "companies": [
+      {
+        "name": "GSD&M",
+        "website": "gsdm.com",
+        "contactCount": 9,
+        "contacts": [
+          { "name": "Marianne Malina", "role": "CEO", "email": "marianne.malina@gsdm.com", "score": 94 }
+        ]
+      },
+      {
+        "name": "McGarrah Jessee",
+        "website": "mcgarrahjessee.com",
+        "contactCount": 6,
+        "contacts": []
+      },
+      {
+        "name": "Proof Advertising",
+        "website": "proofadvertising.com",
+        "contactCount": 5,
+        "contacts": []
+      },
+      {
+        "name": "Helios Interactive",
+        "website": "heliosinteractive.com",
+        "contactCount": 4,
+        "contacts": []
+      },
+      {
+        "name": "Door Number 3",
+        "website": "doornumber3.com",
+        "contactCount": 4,
+        "contacts": []
+      },
+      {
+        "name": "Sensis",
+        "website": "sensisagency.com",
+        "contactCount": 5,
+        "contacts": []
+      },
+      {
+        "name": "Enviromedia",
+        "website": "enviromedia.com",
+        "contactCount": 4,
+        "contacts": []
+      }
+    ]
+  },
+  {
+    "id": 12,
+    "prompt": "tech hedge funds in Seattle",
+    "roleFilter": "Engineering",
+    "companies": [
+      {
+        "name": "Madrona Venture Group",
+        "website": "madrona.com",
+        "contactCount": 11,
+        "contacts": [
+          { "name": "Matt McIlwain", "role": "Managing Director", "email": "matt@madrona.com", "score": 94 }
+        ]
+      },
+      {
+        "name": "Vulcan Capital",
+        "website": "vulcan.com",
+        "contactCount": 9,
+        "contacts": []
+      },
+      {
+        "name": "Maveron",
+        "website": "maveron.com",
+        "contactCount": 7,
+        "contacts": []
+      },
+      {
+        "name": "Pioneer Square Labs",
+        "website": "pioneersquarelabs.com",
+        "contactCount": 6,
+        "contacts": []
+      },
+      {
+        "name": "Flying Fish Partners",
+        "website": "flyingfish.vc",
+        "contactCount": 5,
+        "contacts": []
+      },
+      {
+        "name": "Trilogy Equity Partners",
+        "website": "trilogyequity.com",
+        "contactCount": 6,
+        "contacts": []
+      },
+      {
+        "name": "Ignition Partners",
+        "website": "ignitionpartners.com",
+        "contactCount": 5,
+        "contacts": []
+      }
+    ]
+  },
+  {
+    "id": 13,
+    "prompt": "real estate lawyers in Atlanta",
+    "roleFilter": "Legal",
+    "companies": [
+      {
+        "name": "Arnall Golden Gregory LLP",
+        "website": "agg.com",
+        "contactCount": 12,
+        "contacts": [
+          { "name": "Sean P. Fogarty", "role": "Managing Partner", "email": "sean.fogarty@agg.com", "score": 86 },
+          { "name": "Jonathan E. Eady", "role": "Chairman", "email": "jonathan.eady@agg.com", "score": 86 }
+        ]
+      },
+      {
+        "name": "Drew Eckl & Farnham, LLP",
+        "website": "deflaw.com",
+        "contactCount": 8,
+        "contacts": [
+          { "name": "Joseph Chancey", "role": "Managing Partner", "email": "jchancey@deflaw.com", "score": 86 }
+        ]
+      },
+      {
+        "name": "Dentons",
+        "website": "dentons.com",
+        "contactCount": 10,
+        "contacts": [
+          { "name": "Kate Barton", "role": "Global CEO", "email": "kate.barton@dentons.com", "score": 86 }
+        ]
+      },
+      {
+        "name": "Eversheds Sutherland",
+        "website": "eversheds-sutherland.com",
+        "contactCount": 9,
+        "contacts": []
+      },
+      {
+        "name": "Taylor English Duma LLP",
+        "website": "taylorenglish.com",
+        "contactCount": 6,
+        "contacts": []
+      },
+      {
+        "name": "Bodker Ramsey",
+        "website": "bodkerramsey.com",
+        "contactCount": 7,
+        "contacts": []
+      },
+      {
+        "name": "Kaplan Legal Services",
+        "website": "kaplanlegalservices.com",
+        "contactCount": 3,
+        "contacts": []
+      }
+    ]
+  },
+  {
+    "id": 14,
+    "prompt": "investment banks in New York City",
+    "roleFilter": "Finance",
+    "companies": [
+      {
+        "name": "Goldman Sachs",
+        "website": "goldmansachs.com",
+        "contactCount": 25,
+        "contacts": [
+          { "name": "David Solomon", "role": "Chairman & CEO", "email": "david.solomon@gs.com", "score": 97 },
+          { "name": "John Waldron", "role": "President & COO", "email": "john.waldron@gs.com", "score": 96 }
+        ]
+      },
+      {
+        "name": "Morgan Stanley",
+        "website": "morganstanley.com",
+        "contactCount": 22,
+        "contacts": [
+          { "name": "Ted Pick", "role": "CEO", "email": "ted.pick@morganstanley.com", "score": 97 }
+        ]
+      },
+      {
+        "name": "JPMorgan Chase",
+        "website": "jpmorganchase.com",
+        "contactCount": 28,
+        "contacts": [
+          { "name": "Jamie Dimon", "role": "Chairman & CEO", "email": "jamie.dimon@jpmchase.com", "score": 98 }
+        ]
+      },
+      {
+        "name": "Lazard",
+        "website": "lazard.com",
+        "contactCount": 14,
+        "contacts": []
+      },
+      {
+        "name": "Evercore",
+        "website": "evercore.com",
+        "contactCount": 12,
+        "contacts": []
+      },
+      {
+        "name": "Moelis & Company",
+        "website": "moelis.com",
+        "contactCount": 10,
+        "contacts": []
+      },
+      {
+        "name": "Centerview Partners",
+        "website": "centerviewpartners.com",
+        "contactCount": 8,
+        "contacts": []
+      }
+    ]
+  },
+  {
+    "id": 15,
+    "prompt": "hedge funds in Los Angeles",
+    "roleFilter": "Leadership",
+    "companies": [
+      {
+        "name": "Capital Group",
+        "website": "capitalgroup.com",
+        "contactCount": 18,
+        "contacts": [
+          { "name": "Tim Armour", "role": "Chairman & CEO", "email": "tim.armour@capgroup.com", "score": 96 }
+        ]
+      },
+      {
+        "name": "Oaktree Capital",
+        "website": "oaktreecapital.com",
+        "contactCount": 14,
+        "contacts": [
+          { "name": "Howard Marks", "role": "Co-Founder & Co-Chairman", "email": "howard.marks@oaktreecapital.com", "score": 97 },
+          { "name": "Bruce Karsh", "role": "Co-Founder & Co-Chairman", "email": "bruce.karsh@oaktreecapital.com", "score": 97 }
+        ]
+      },
+      {
+        "name": "TCW Group",
+        "website": "tcw.com",
+        "contactCount": 12,
+        "contacts": [
+          { "name": "Katie Koch", "role": "President & CEO", "email": "katie.koch@tcw.com", "score": 94 }
+        ]
+      },
+      {
+        "name": "Ares Management",
+        "website": "aresmgmt.com",
+        "contactCount": 11,
+        "contacts": []
+      },
+      {
+        "name": "Canyon Partners",
+        "website": "canyonpartners.com",
+        "contactCount": 9,
+        "contacts": []
+      },
+      {
+        "name": "Kayne Anderson",
+        "website": "kayneanderson.com",
+        "contactCount": 10,
+        "contacts": []
+      },
+      {
+        "name": "Brentwood Associates",
+        "website": "brentwoodassociates.com",
+        "contactCount": 7,
+        "contacts": []
+      }
+    ]
+  },
+  {
+    "id": 16,
+    "prompt": "plumbers in flushing queens",
+    "roleFilter": "Operations",
+    "companies": [
+      {
+        "name": "Roto-Rooter",
+        "website": "rotorooter.com",
+        "contactCount": 4,
+        "contacts": [
+          { "name": "Mike Sinclair", "role": "Regional Manager", "email": "msinclair@rotorooter.com", "score": 86 }
+        ]
+      },
+      {
+        "name": "Hub Plumbing & Heating",
+        "website": "hubplumbingnyc.com",
+        "contactCount": 3,
+        "contacts": [
+          { "name": "James Chen", "role": "Owner", "email": "james@hubplumbingnyc.com", "score": 89 }
+        ]
+      },
+      {
+        "name": "Ranshaw",
+        "website": "ranshaw.com",
+        "contactCount": 2,
+        "contacts": []
+      },
+      {
+        "name": "Jerry's Plumbing & HVAC",
+        "website": "jerrysplumbinghvac.com",
+        "contactCount": 2,
+        "contacts": []
+      },
+      {
+        "name": "Senid Plumbing and Heating",
+        "website": "senidplumbing.com",
+        "contactCount": 2,
+        "contacts": []
+      },
+      {
+        "name": "HBNY Plumbing & Heating",
+        "website": "hbnyplumbing.com",
+        "contactCount": 2,
+        "contacts": []
+      },
+      {
+        "name": "Rao Plumbing and Heating",
+        "website": "raoplumbingandheating.com",
+        "contactCount": 1,
+        "contacts": []
+      }
+    ]
+  },
+  {
+    "id": 17,
+    "prompt": "evangelical churches in Staten Island",
+    "roleFilter": "Leadership",
+    "companies": [
+      {
+        "name": "Bethel Community Church",
+        "website": "bethelcommunitychurch.org",
+        "contactCount": 8,
+        "contacts": [
+          { "name": "Rich Blum", "role": "Senior Pastor", "email": "rblum@bethelcommunitychurch.org", "score": 89 },
+          { "name": "Krystal Varney", "role": "Children's Ministry Director", "email": "kvarney@bethelcommunitychurch.org", "score": 86 }
+        ]
+      },
+      {
+        "name": "Christ Abundant Life Ministries",
+        "website": "calmchurch.org",
+        "contactCount": 4,
+        "contacts": [
+          { "name": "Charmaine Flanagan", "role": "Pastor / Co-Founder", "email": "pastor@calmchurch.org", "score": 89 }
+        ]
+      },
+      {
+        "name": "Casa de Oracion Church",
+        "website": "casadeoracion.com",
+        "contactCount": 3,
+        "contacts": [
+          { "name": "Joseph Rivera", "role": "Pastor", "email": "pastorjoseph@casadeoracion.com", "score": 71 }
+        ]
+      },
+      {
+        "name": "Messiah Evangelical Lutheran Church",
+        "website": "messiahonline.org",
+        "contactCount": 4,
+        "contacts": [
+          { "name": "Rev. Anna K. Gordy", "role": "Pastor", "email": "messiahlutheransi@gmail.com", "score": 86 }
+        ]
+      },
+      {
+        "name": "Evangelical Free Church of America",
+        "website": "efca.org",
+        "contactCount": 5,
+        "contacts": [
+          { "name": "Kevin Kompelien", "role": "President", "email": "president@efca.org", "score": 89 }
+        ]
+      },
+      {
+        "name": "Bethel Temple Church",
+        "website": "betheltemplesi.org",
+        "contactCount": 2,
+        "contacts": []
+      },
+      {
+        "name": "Reformed Church on Staten Island",
+        "website": "reformedchurchsi.org",
+        "contactCount": 2,
+        "contacts": []
+      }
+    ]
+  },
+  {
+    "id": 18,
+    "prompt": "boutique ad agencies in NYC",
+    "roleFilter": "Creative",
+    "companies": [
+      {
+        "name": "Anomaly",
+        "website": "anomaly.com",
+        "contactCount": 12,
+        "contacts": [
+          { "name": "Karina Wilsher", "role": "Partner, Global CEO", "email": "karina@anomaly.com", "score": 89 },
+          { "name": "Franke Rodriguez", "role": "Partner / CEO (NYC)", "email": "franke@anomaly.com", "score": 89 },
+          { "name": "Jeff Stamp", "role": "Managing Partner, Chief Creative Officer", "email": "jeff@anomaly.com", "score": 86 }
+        ]
+      },
+      {
+        "name": "Day One Agency",
+        "website": "dayoneagency.com",
+        "contactCount": 8,
+        "contacts": [
+          { "name": "Josh Rosenberg", "role": "Co-Founder & CEO", "email": "josh@d1a.com", "score": 89 },
+          { "name": "Brad Laney", "role": "Co-Founder & President", "email": "brad@d1a.com", "score": 89 }
+        ]
+      },
+      {
+        "name": "Walrus",
+        "website": "walrusnyc.com",
+        "contactCount": 5,
+        "contacts": [
+          { "name": "Frances L. Webster", "role": "CEO", "email": "frances@walrusnyc.com", "score": 89 },
+          { "name": "Deacon Webster", "role": "Owner, Chief Creative Officer", "email": "deacon@walrusnyc.com", "score": 89 }
+        ]
+      },
+      {
+        "name": "Boucher + Co.",
+        "website": "boucherplusco.com",
+        "contactCount": 4,
+        "contacts": [
+          { "name": "Gerard Boucher", "role": "Chief Executive Officer", "email": "gerard.boucher@boucherco.com", "score": 89 }
+        ]
+      },
+      {
+        "name": "inBeat",
+        "website": "inbeat.co",
+        "contactCount": 3,
+        "contacts": [
+          { "name": "David Morneau", "role": "CEO", "email": "david@inbeat.agency", "score": 89 }
+        ]
+      },
+      {
+        "name": "Wild Factory",
+        "website": "wildfactory.com",
+        "contactCount": 3,
+        "contacts": [
+          { "name": "Adam Gourley", "role": "President/Owner", "email": "adamg@wildfactory.com", "score": 89 }
+        ]
+      },
+      {
+        "name": "Postlight",
+        "website": "postlight.com",
+        "contactCount": 4,
+        "contacts": []
+      }
+    ]
+  },
+  {
+    "id": 19,
+    "prompt": "web dev agencies in NYC using WordPress",
+    "roleFilter": "Engineering",
+    "companies": [
+      {
+        "name": "Five Jars",
+        "website": "fivejars.com",
+        "contactCount": 5,
+        "contacts": [
+          { "name": "Alex Schedrov", "role": "CEO", "email": "alex@fivejars.com", "score": 89 }
+        ]
+      },
+      {
+        "name": "XWP",
+        "website": "xwp.co",
+        "contactCount": 4,
+        "contacts": [
+          { "name": "Tom Willmot", "role": "Founder & CEO", "email": "tom@xwp.co", "score": 89 }
+        ]
+      },
+      {
+        "name": "Lounge Lizard",
+        "website": "loungelizard.com",
+        "contactCount": 4,
+        "contacts": [
+          { "name": "Ken Braun", "role": "CEO", "email": "ken@loungelizard.com", "score": 89 }
+        ]
+      },
+      {
+        "name": "cmsMinds",
+        "website": "cmsminds.com",
+        "contactCount": 3,
+        "contacts": [
+          { "name": "Rajesh Laddha", "role": "Principal", "email": "rajesh@cmsminds.com", "score": 89 }
+        ]
+      },
+      {
+        "name": "Alliance Interactive",
+        "website": "allianceinteractive.com",
+        "contactCount": 3,
+        "contacts": []
+      },
+      {
+        "name": "iQlance",
+        "website": "iqlance.com",
+        "contactCount": 3,
+        "contacts": []
+      },
+      {
+        "name": "ThinKASA",
+        "website": "thinkasa.com",
+        "contactCount": 2,
+        "contacts": []
+      }
+    ]
+  },
+  {
+    "id": 20,
+    "prompt": "software companies in Zurich",
+    "roleFilter": "Engineering",
+    "companies": [
+      {
+        "name": "Squirro",
+        "website": "squirro.com",
+        "contactCount": 6,
+        "contacts": [
+          { "name": "Dorian Selz", "role": "CEO & Co-Founder", "email": "dorian@squirro.com", "score": 94 }
+        ]
+      },
+      {
+        "name": "Zühlke",
+        "website": "zuhlke.com",
+        "contactCount": 5,
+        "contacts": [
+          { "name": "Nicolas Durville", "role": "CEO", "email": "nicolas.durville@zuhlke.com", "score": 89 }
+        ]
+      },
+      {
+        "name": "Comerge",
+        "website": "comerge.com",
+        "contactCount": 3,
+        "contacts": []
+      },
+      {
+        "name": "Valudio GmbH",
+        "website": "valudio.com",
+        "contactCount": 3,
+        "contacts": []
+      },
+      {
+        "name": "Zappter AG",
+        "website": "zappter.com",
+        "contactCount": 2,
+        "contacts": []
+      },
+      {
+        "name": "astarios",
+        "website": "astarios.com",
+        "contactCount": 2,
+        "contacts": []
+      },
+      {
+        "name": "modeso",
+        "website": "modeso.ch",
+        "contactCount": 2,
+        "contacts": []
+      }
+    ]
+  },
+  {
+    "id": 21,
+    "prompt": "recently exited startups in Miami",
+    "roleFilter": "Leadership",
+    "companies": [
+      {
+        "name": "Chewy",
+        "website": "chewy.com",
+        "contactCount": 8,
+        "contacts": [
+          { "name": "Sumit Singh", "role": "CEO", "email": "sumit@chewy.com", "score": 94 }
+        ]
+      },
+      {
+        "name": "Mindbody",
+        "website": "mindbodyonline.com",
+        "contactCount": 6,
+        "contacts": [
+          { "name": "Josh McCarter", "role": "CEO", "email": "josh@mindbody.com", "score": 92 }
+        ]
+      },
+      {
+        "name": "Midas",
+        "website": "midas.com",
+        "contactCount": 5,
+        "contacts": []
+      },
+      {
+        "name": "GovComm",
+        "website": "govcomm.com",
+        "contactCount": 4,
+        "contacts": []
+      },
+      {
+        "name": "Alleaves",
+        "website": "alleaves.com",
+        "contactCount": 4,
+        "contacts": []
+      },
+      {
+        "name": "Bahama Boat Works",
+        "website": "bahamaboatworks.com",
+        "contactCount": 3,
+        "contacts": []
+      },
+      {
+        "name": "Johnny Clean Car Wash",
+        "website": "johnnycleancarwash.com",
+        "contactCount": 3,
         "contacts": []
       }
     ]
