@@ -7,25 +7,25 @@ import { DemoSimulationPlayer } from "@/features/demo-simulations";
 function BrowserFrame({ children }: { children: ReactNode }) {
   return (
     <div className="bg-[#1a1814] rounded-xl overflow-hidden shadow-2xl border border-white/10 w-full">
-      {/* Browser chrome header */}
-      <div className="flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-2 sm:py-3 bg-[#141210] border-b border-white/5">
+      {/* Browser chrome header - darker/cooler tint to differentiate */}
+      <div className="flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-1.5 sm:py-2 bg-[#0f0e0c] border-b border-white/5">
         {/* Traffic light buttons */}
         <div className="flex items-center gap-1.5 sm:gap-2">
-          <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-[#ff5f57]" />
-          <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-[#febc2e]" />
-          <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-[#28c840]" />
+          <div className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-[#ff5f57]" />
+          <div className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-[#febc2e]" />
+          <div className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-[#28c840]" />
         </div>
         {/* Address bar */}
         <div className="flex-1 flex items-center justify-center">
-          <div className="flex items-center gap-1.5 sm:gap-2 px-2 sm:px-4 py-1 sm:py-1.5 bg-white/5 rounded-lg text-xs sm:text-sm text-gray-500">
-            <svg className="w-3 h-3 sm:w-3.5 sm:h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-0.5 sm:py-1 bg-white/5 rounded-md text-[10px] sm:text-xs text-gray-500">
+            <svg className="w-2.5 h-2.5 sm:w-3 sm:h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
             </svg>
             <span>app.5ducks.com</span>
           </div>
         </div>
         {/* Spacer to balance traffic lights */}
-        <div className="w-[40px] sm:w-[52px]" />
+        <div className="w-[36px] sm:w-[44px]" />
       </div>
       {/* Demo content */}
       {children}
