@@ -852,7 +852,7 @@ export default function LandingStealth() {
                                     </>
                                   ) : (
                                     <>
-                                      Request Access
+                                      Join the Game
                                       <ArrowRight className="w-5 h-5 ml-2" />
                                     </>
                                   )}
