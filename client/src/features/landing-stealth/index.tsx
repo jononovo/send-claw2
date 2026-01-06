@@ -549,7 +549,6 @@ export default function LandingStealth() {
                      transition={{ duration: 0.6, ease: "circOut" }}
                      className="relative w-full h-full"
                    >
-                     <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 to-cyan-400/20 rounded-xl blur-xl" />
                      <div className="relative w-full h-full rounded-xl overflow-hidden border border-white/10 shadow-2xl bg-black/50 backdrop-blur-sm">
                         {content[currentIndex].component}
                      </div>
