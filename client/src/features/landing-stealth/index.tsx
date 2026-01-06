@@ -1145,8 +1145,8 @@ export default function LandingStealth() {
       </div>
 
       {/* Fresh Data. Zero Bloat. Section */}
-      <div className="relative z-20 py-24 bg-[#0A0A10]">
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-green-900/10 to-transparent" />
+      <div className="relative z-20 bg-[#0A0A10] py-24">
+        <div className="absolute inset-0 opacity-10" style={{ backgroundImage: "radial-gradient(#1e293b 1px, transparent 1px)", backgroundSize: "40px 40px" }} />
         
         <div className="container mx-auto px-6 relative z-10">
           <motion.div
@@ -1154,11 +1154,11 @@ export default function LandingStealth() {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
             viewport={{ once: true }}
-            className="text-center mb-12"
+            className="text-center mb-16"
           >
-            <h2 className="text-4xl md:text-5xl font-serif text-white mb-4">Fresh Data. Zero Bloat.</h2>
-            <p className="text-lg text-gray-400 max-w-2xl mx-auto">
-              While competitors rely on stale databases with 300+ million outdated contacts, we search and collect everything <span className="text-white font-medium">fresh</span> — every single time.
+            <h2 className="text-3xl md:text-5xl font-serif text-white mb-4">Fresh Data. Zero Bloat.</h2>
+            <p className="text-xl text-gray-500 italic">
+              While competitors rely on stale databases, we search fresh — every time.
             </p>
           </motion.div>
           
@@ -1166,16 +1166,32 @@ export default function LandingStealth() {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0 }}
+              viewport={{ once: true }}
+              className="group"
+            >
+              <div className="relative h-full bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8 hover:border-yellow-500/30 transition-all duration-300">
+                <div className="w-14 h-14 bg-yellow-500/10 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                  <Zap className="w-7 h-7 text-yellow-400" />
+                </div>
+                <h3 className="text-xl font-bold text-white mb-3">0 Contacts in Our DB</h3>
+                <p className="text-gray-500 leading-relaxed">We don't store stale data. Every search pulls fresh, real-time results directly from the source.</p>
+              </div>
+            </motion.div>
+            
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.1 }}
               viewport={{ once: true }}
               className="group"
             >
-              <div className="relative h-full bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8 hover:border-green-500/30 transition-all duration-300">
-                <div className="w-14 h-14 bg-green-500/10 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                  <Zap className="w-7 h-7 text-green-400" />
+              <div className="relative h-full bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8 hover:border-yellow-500/30 transition-all duration-300">
+                <div className="w-14 h-14 bg-yellow-500/10 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                  <Sparkles className="w-7 h-7 text-yellow-400" />
                 </div>
-                <h3 className="text-xl font-bold text-white mb-3">0 Contacts in Our DB</h3>
-                <p className="text-gray-400">We don't store stale data. Every search pulls fresh, real-time results directly from the source.</p>
+                <h3 className="text-xl font-bold text-white mb-3">1 Prompt, Not 75 Filters</h3>
+                <p className="text-gray-500 leading-relaxed">No dropdown mazes. No endless checkboxes. Just type what you want in plain English.</p>
               </div>
             </motion.div>
             
@@ -1186,28 +1202,12 @@ export default function LandingStealth() {
               viewport={{ once: true }}
               className="group"
             >
-              <div className="relative h-full bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8 hover:border-orange-500/30 transition-all duration-300">
-                <div className="w-14 h-14 bg-orange-500/10 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                  <Sparkles className="w-7 h-7 text-orange-400" />
-                </div>
-                <h3 className="text-xl font-bold text-white mb-3">1 Prompt, Not 75 Filters</h3>
-                <p className="text-gray-400">No dropdown mazes. No endless checkboxes. Just type what you want in plain English.</p>
-              </div>
-            </motion.div>
-            
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.3 }}
-              viewport={{ once: true }}
-              className="group"
-            >
-              <div className="relative h-full bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8 hover:border-indigo-500/30 transition-all duration-300">
-                <div className="w-14 h-14 bg-indigo-500/10 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                  <Map className="w-7 h-7 text-indigo-400" />
+              <div className="relative h-full bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8 hover:border-yellow-500/30 transition-all duration-300">
+                <div className="w-14 h-14 bg-yellow-500/10 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                  <Map className="w-7 h-7 text-yellow-400" />
                 </div>
                 <h3 className="text-xl font-bold text-white mb-3">Search the Unsearchable</h3>
-                <p className="text-gray-400">"Beach-side 4-star hotels on the Space Coast" or "Recently-exited startups in Miami" — literally anything.</p>
+                <p className="text-gray-500 leading-relaxed">"Beach-side 4-star hotels on the Space Coast" or "Recently-exited startups in Miami" — literally anything.</p>
               </div>
             </motion.div>
           </div>
@@ -1215,7 +1215,7 @@ export default function LandingStealth() {
           <motion.p
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
             viewport={{ once: true }}
             className="text-center mt-10 text-xl text-white font-medium"
           >
