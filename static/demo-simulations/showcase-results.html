@@ -224,11 +224,7 @@
         
         <div class="flex items-center justify-between mb-4">
           <div class="flex items-center gap-2">
-            <div class="w-6 h-6 bg-amber-400 rounded flex items-center justify-center">
-              <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/>
-              </svg>
-            </div>
+            <img src="/static/demo-simulations/duckling-mascot.png" alt="5Ducks" class="w-6 h-6 object-contain" />
             <span class="font-semibold text-slate-700">5Ducks</span>
           </div>
           <button id="theme-toggle" class="theme-toggle" title="Toggle theme">
@@ -329,7 +325,9 @@
             <div class="company-header flex items-center justify-between px-3 py-2.5 transition-colors cursor-pointer" data-company-index="${index}">
               <div class="flex-1 min-w-0">
                 <div class="flex items-center gap-1.5">
-                  <img src="/static/demo-simulations/duckling-mascot.png" alt="" class="w-4 h-4 shrink-0 object-contain" />
+                  <svg class="w-4 h-4 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                  </svg>
                   <h4 class="font-semibold text-slate-800 text-sm truncate">${company.name}</h4>
                 </div>
                 <div class="flex items-center gap-2 text-xs text-slate-500 mt-1">
