@@ -85,9 +85,9 @@ export function ShowcaseSection() {
         </motion.div>
         
         {/* Desktop: Split-panel layout */}
-        <div className="hidden lg:grid lg:grid-cols-[320px_1fr] gap-6 max-w-6xl mx-auto">
+        <div className="hidden lg:flex lg:justify-center lg:items-start gap-10 xl:gap-16 max-w-7xl mx-auto">
           {/* Left: Scrollable prompt list */}
-          <div className="bg-white/5 border border-white/10 rounded-2xl p-3 max-h-[560px] overflow-y-auto scrollbar-dark">
+          <div className="w-[320px] shrink-0 bg-white/5 border border-white/10 rounded-2xl p-3 max-h-[560px] overflow-y-auto scrollbar-dark">
             <div className="space-y-1">
               {SHOWCASE_PROMPTS.map((item, index) => {
                 const isActive = selectedPrompt === item.id;
@@ -138,7 +138,7 @@ export function ShowcaseSection() {
             whileInView={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5 }}
             viewport={{ once: true }}
-            className="relative w-full max-w-[620px]"
+            className="relative w-full max-w-[580px] xl:max-w-[640px]"
           >
             <BrowserFrame>
               <DemoSimulationPlayer
