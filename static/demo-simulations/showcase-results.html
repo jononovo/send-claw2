@@ -84,9 +84,6 @@
       padding: 12px 6px;
     }
     
-    #results-container {
-      padding-top: 60px;
-    }
     
     .slide-down {
       animation: slideDown 0.3s ease-out forwards;
@@ -122,18 +119,18 @@
       top: -52px;
       left: 50%;
       transform: translateX(-50%);
-      background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+      background: #1f2937;
       color: #ffffff;
       padding: 10px 14px;
-      border-radius: 10px;
+      border-radius: 8px;
       font-size: 13px;
-      font-weight: 500;
+      font-weight: 400;
       max-width: 280px;
       white-space: normal;
       line-height: 1.4;
       z-index: 100;
-      box-shadow: 0 8px 24px rgba(99, 102, 241, 0.4), 0 2px 8px rgba(0,0,0,0.2);
-      animation: tooltipBounce 1.5s ease-in-out infinite;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(234, 179, 8, 0.3);
     }
     
     .highlight-tooltip::after {
@@ -142,14 +139,9 @@
       bottom: -6px;
       left: 50%;
       transform: translateX(-50%);
-      border-top: 6px solid #7c3aed;
+      border-top: 6px solid #1f2937;
       border-left: 6px solid transparent;
       border-right: 6px solid transparent;
-    }
-    
-    @keyframes tooltipBounce {
-      0%, 100% { transform: translateX(-50%) translateY(0); }
-      50% { transform: translateX(-50%) translateY(-4px); }
     }
     
     @keyframes cardFadeIn {
