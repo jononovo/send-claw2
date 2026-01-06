@@ -1,0 +1,267 @@
+[
+  {
+    "id": 1,
+    "prompt": "biotech series A startups in Austin",
+    "roleFilter": "CTO",
+    "companies": [
+      {
+        "name": "Maxwell Biosciences",
+        "website": "maxwellbio.com",
+        "contactCount": 10,
+        "contacts": [
+          { "name": "Dr. David Mancini", "role": "CEO & Co-Founder", "email": "d.mancini@maxwellbio.com", "score": 92 },
+          { "name": "Dr. Sarah Chen", "role": "CTO", "email": "s.chen@maxwellbio.com", "score": 91 },
+          { "name": "Michael Torres", "role": "VP Engineering", "email": "m.torres@maxwellbio.com", "score": 88 }
+        ]
+      },
+      {
+        "name": "Manifold Labs",
+        "website": "manifoldlabs.bio",
+        "contactCount": 10,
+        "contacts": [
+          { "name": "Gleb Kuznetsov", "role": "Co-Founder & CEO", "email": "gleb@manifoldlabs.bio", "score": 89 },
+          { "name": "Pierce Ogden", "role": "Co-Founder & CTO", "email": "pierce@manifoldlabs.bio", "score": 89 },
+          { "name": "Shane Lofgren", "role": "Co-Founder & Head of Portfolio Development", "email": "shane@manifoldlabs.bio", "score": 89 }
+        ]
+      },
+      {
+        "name": "QbDVision",
+        "website": "qbdvision.com",
+        "contactCount": 9,
+        "contacts": []
+      },
+      {
+        "name": "Genprex",
+        "website": "genprex.com",
+        "contactCount": 6,
+        "contacts": []
+      },
+      {
+        "name": "Jurata Thin Film",
+        "website": "juratatf.com",
+        "contactCount": 5,
+        "contacts": []
+      },
+      {
+        "name": "Willow Laboratories",
+        "website": "willowlabs.io",
+        "contactCount": 8,
+        "contacts": []
+      },
+      {
+        "name": "NuProbe Global",
+        "website": "nuprobe.com",
+        "contactCount": 7,
+        "contacts": []
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "prompt": "Private credit asset managers in NYC",
+    "roleFilter": "Leadership",
+    "companies": [
+      {
+        "name": "Quilvest Capital Partners",
+        "website": "quilvest.com",
+        "contactCount": 8,
+        "contacts": [
+          { "name": "Cyril Heneine", "role": "CEO Quilvest Dubai", "email": "c.heneine@quilvest.com", "score": 89 },
+          { "name": "John Eggleston", "role": "Partner, Chief Operating Officer", "email": "j.eggleston@quilvest.com", "score": 86 }
+        ]
+      },
+      {
+        "name": "GoldenTree Asset Management",
+        "website": "goldentree.com",
+        "contactCount": 8,
+        "contacts": [
+          { "name": "Steven Tananbaum", "role": "Founder & Chief Investment Officer", "email": "s.tananbaum@goldentree.com", "score": 92 }
+        ]
+      },
+      {
+        "name": "Apollo Global Management",
+        "website": "apollo.com",
+        "contactCount": 12,
+        "contacts": []
+      },
+      {
+        "name": "Ares Management",
+        "website": "aresmgmt.com",
+        "contactCount": 9,
+        "contacts": []
+      },
+      {
+        "name": "Blue Owl Capital",
+        "website": "blueowl.com",
+        "contactCount": 7,
+        "contacts": []
+      },
+      {
+        "name": "Blackstone Credit",
+        "website": "blackstone.com",
+        "contactCount": 15,
+        "contacts": []
+      },
+      {
+        "name": "HPS Investment Partners",
+        "website": "hpspartners.com",
+        "contactCount": 11,
+        "contacts": []
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "prompt": "AI/ML startups in San Francisco",
+    "roleFilter": "Engineering",
+    "companies": [
+      {
+        "name": "Anthropic",
+        "website": "anthropic.com",
+        "contactCount": 45,
+        "contacts": [
+          { "name": "Dario Amodei", "role": "CEO & Co-Founder", "email": "dario@anthropic.com", "score": 95 },
+          { "name": "Daniela Amodei", "role": "President & Co-Founder", "email": "daniela@anthropic.com", "score": 94 },
+          { "name": "Chris Olah", "role": "Co-Founder", "email": "chris@anthropic.com", "score": 93 }
+        ]
+      },
+      {
+        "name": "Scale AI",
+        "website": "scale.com",
+        "contactCount": 38,
+        "contacts": [
+          { "name": "Alexandr Wang", "role": "CEO & Founder", "email": "alex@scale.com", "score": 94 },
+          { "name": "Lucy Guo", "role": "Co-Founder", "email": "lucy@scale.com", "score": 91 }
+        ]
+      },
+      {
+        "name": "Cohere",
+        "website": "cohere.com",
+        "contactCount": 28,
+        "contacts": [
+          { "name": "Aidan Gomez", "role": "CEO & Co-Founder", "email": "aidan@cohere.com", "score": 93 }
+        ]
+      },
+      {
+        "name": "Hugging Face",
+        "website": "huggingface.co",
+        "contactCount": 52,
+        "contacts": []
+      },
+      {
+        "name": "Weights & Biases",
+        "website": "wandb.ai",
+        "contactCount": 31,
+        "contacts": []
+      },
+      {
+        "name": "Anyscale",
+        "website": "anyscale.com",
+        "contactCount": 24,
+        "contacts": []
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "prompt": "FinTech companies in London",
+    "roleFilter": "Leadership",
+    "companies": [
+      {
+        "name": "Revolut",
+        "website": "revolut.com",
+        "contactCount": 67,
+        "contacts": [
+          { "name": "Nikolay Storonsky", "role": "CEO & Co-Founder", "email": "nik@revolut.com", "score": 96 },
+          { "name": "Vlad Yatsenko", "role": "CTO & Co-Founder", "email": "vlad@revolut.com", "score": 94 }
+        ]
+      },
+      {
+        "name": "Monzo",
+        "website": "monzo.com",
+        "contactCount": 43,
+        "contacts": [
+          { "name": "TS Anil", "role": "CEO", "email": "ts@monzo.com", "score": 93 },
+          { "name": "Sujata Bhatia", "role": "COO", "email": "sujata@monzo.com", "score": 91 }
+        ]
+      },
+      {
+        "name": "Wise",
+        "website": "wise.com",
+        "contactCount": 51,
+        "contacts": [
+          { "name": "Kristo Kaarmann", "role": "CEO & Co-Founder", "email": "kristo@wise.com", "score": 95 }
+        ]
+      },
+      {
+        "name": "Starling Bank",
+        "website": "starlingbank.com",
+        "contactCount": 38,
+        "contacts": []
+      },
+      {
+        "name": "Checkout.com",
+        "website": "checkout.com",
+        "contactCount": 45,
+        "contacts": []
+      },
+      {
+        "name": "GoCardless",
+        "website": "gocardless.com",
+        "contactCount": 29,
+        "contacts": []
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "prompt": "Healthcare tech companies in Boston",
+    "roleFilter": "Sales",
+    "companies": [
+      {
+        "name": "Flatiron Health",
+        "website": "flatiron.com",
+        "contactCount": 34,
+        "contacts": [
+          { "name": "Carolyn Starrett", "role": "CEO", "email": "carolyn@flatiron.com", "score": 94 },
+          { "name": "Amy Abernethy", "role": "President", "email": "amy@flatiron.com", "score": 92 }
+        ]
+      },
+      {
+        "name": "Tempus AI",
+        "website": "tempus.com",
+        "contactCount": 42,
+        "contacts": [
+          { "name": "Eric Lefkofsky", "role": "CEO & Founder", "email": "eric@tempus.com", "score": 95 },
+          { "name": "Ryan Fukushima", "role": "President", "email": "ryan@tempus.com", "score": 91 }
+        ]
+      },
+      {
+        "name": "Veeva Systems",
+        "website": "veeva.com",
+        "contactCount": 56,
+        "contacts": [
+          { "name": "Peter Gassner", "role": "CEO & Founder", "email": "peter@veeva.com", "score": 96 }
+        ]
+      },
+      {
+        "name": "Doximity",
+        "website": "doximity.com",
+        "contactCount": 31,
+        "contacts": []
+      },
+      {
+        "name": "Health Catalyst",
+        "website": "healthcatalyst.com",
+        "contactCount": 28,
+        "contacts": []
+      },
+      {
+        "name": "Olive AI",
+        "website": "oliveai.com",
+        "contactCount": 25,
+        "contacts": []
+      }
+    ]
+  }
+]

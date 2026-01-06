@@ -3,6 +3,7 @@ import { X, RotateCcw } from "lucide-react";
 
 interface DemoSimulationPlayerProps {
   simulation: string;
+  params?: Record<string, string | number>;
   width?: number;
   height?: number;
   autoPlay?: boolean;
@@ -16,6 +17,7 @@ interface DemoSimulationPlayerProps {
 
 export function DemoSimulationPlayer({
   simulation,
+  params,
   width = 520,
   height = 520,
   autoPlay = true,
@@ -31,7 +33,10 @@ export function DemoSimulationPlayer({
   const [isHoveringControls, setIsHoveringControls] = useState(false);
   const [showReplayOverlay, setShowReplayOverlay] = useState(false);
 
-  const src = `/static/demo-simulations/${simulation}.html`;
+  const queryString = params 
+    ? '?' + Object.entries(params).map(([k, v]) => `${k}=${encodeURIComponent(v)}`).join('&')
+    : '';
+  const src = `/static/demo-simulations/${simulation}.html${queryString}`;
 
   const handleReplay = useCallback(() => {
     setShowReplayOverlay(false);
