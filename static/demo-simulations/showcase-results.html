@@ -269,7 +269,8 @@
 
   <script>
     const urlParams = new URLSearchParams(window.location.search);
-    const showcaseId = parseInt(urlParams.get('id')) || 1;
+    let currentShowcaseId = parseInt(urlParams.get('id')) || 1;
+    let showcaseData = null;
     
     // Theme toggle functionality
     const container = document.getElementById('demo-container');
@@ -286,19 +287,31 @@
       moonIcon.classList.toggle('hidden', isDark);
     });
     
+    // Listen for prompt change messages from parent
+    window.addEventListener('message', (event) => {
+      if (event.data?.type === 'changeShowcase' && event.data.id) {
+        const newId = parseInt(event.data.id);
+        if (newId !== currentShowcaseId && showcaseData) {
+          currentShowcaseId = newId;
+          const showcase = showcaseData.find(s => s.id === newId) || showcaseData[0];
+          renderShowcase(showcase, true);
+        }
+      }
+    });
+    
     async function loadShowcaseData() {
       try {
         const response = await fetch('/static/demo-simulations/showcase-data.json');
-        const data = await response.json();
-        const showcase = data.find(s => s.id === showcaseId) || data[0];
-        renderShowcase(showcase);
+        showcaseData = await response.json();
+        const showcase = showcaseData.find(s => s.id === currentShowcaseId) || showcaseData[0];
+        renderShowcase(showcase, false);
       } catch (error) {
         console.error('Failed to load showcase data:', error);
         document.getElementById('query-display').textContent = 'Failed to load data';
       }
     }
     
-    function renderShowcase(showcase) {
+    function renderShowcase(showcase, isSwitch = false) {
       document.getElementById('query-display').textContent = showcase.prompt;
       document.getElementById('role-text').textContent = showcase.roleFilter;
       
@@ -311,8 +324,10 @@
         
         const card = document.createElement('div');
         card.className = 'company-card';
-        card.style.opacity = '0';
-        card.style.animationDelay = `${index * 0.08}s`;
+        if (!isSwitch) {
+          card.style.opacity = '0';
+          card.style.animationDelay = `${index * 0.08}s`;
+        }
         
         card.innerHTML = `
           <div class="rounded-lg border border-slate-200 bg-white overflow-hidden shadow-sm">
@@ -399,9 +414,13 @@
         
         container.appendChild(card);
         
-        setTimeout(() => {
-          card.classList.add('card-animate');
-        }, 50);
+        if (!isSwitch) {
+          setTimeout(() => {
+            card.classList.add('card-animate');
+          }, 50);
+        } else {
+          card.style.opacity = '1';
+        }
         
         if (hasContacts) {
           const header = card.querySelector('.company-header');

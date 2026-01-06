@@ -111,24 +111,14 @@ export function ShowcaseSection() {
             viewport={{ once: true }}
             className="relative"
           >
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={selectedPrompt}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.2 }}
-              >
-                <DemoSimulationPlayer
-                  simulation="showcase-results"
-                  params={{ id: selectedPrompt }}
-                  width={580}
-                  height={540}
-                  showControls={false}
-                  className="shadow-2xl mx-auto"
-                />
-              </motion.div>
-            </AnimatePresence>
+            <DemoSimulationPlayer
+              simulation="showcase-results"
+              params={{ id: selectedPrompt }}
+              width={580}
+              height={540}
+              showControls={false}
+              className="shadow-2xl mx-auto"
+            />
           </motion.div>
         </div>
         

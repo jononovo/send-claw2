@@ -56,6 +56,16 @@ export function DemoSimulationPlayer({
     return () => iframe.removeEventListener("load", handleLoad);
   }, [onLoad]);
 
+  // Send postMessage when params change (for seamless content switching)
+  useEffect(() => {
+    if (isLoaded && iframeRef.current && params?.id) {
+      iframeRef.current.contentWindow?.postMessage({ 
+        type: 'changeShowcase', 
+        id: params.id 
+      }, '*');
+    }
+  }, [params?.id, isLoaded]);
+
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
       if (event.data?.type === 'demoComplete') {
