@@ -10,6 +10,7 @@ import { useRegistrationModal } from "@/hooks/use-registration-modal";
 import { useAuth } from "@/hooks/use-auth";
 import { fireUnlockConfetti } from "@/features/animations";
 import { StealthOnboardingModal } from "./StealthOnboardingModal";
+import { FreshDataSection } from "./FreshDataSection";
 import { FooterStealth } from "@/components/footer-stealth";
 import { DemoSimulationPlayer } from "@/features/demo-simulations";
 import { trackConversion } from "@/lib/analytics";
@@ -1145,75 +1146,7 @@ export default function LandingStealth() {
       </div>
 
       {/* Fresh Data. Zero Bloat. Section */}
-      <div className="relative z-20 bg-[#0A0A10] py-24">
-        <div className="absolute inset-0 opacity-10" style={{ backgroundImage: "radial-gradient(#1e293b 1px, transparent 1px)", backgroundSize: "40px 40px" }} />
-        
-        <div className="container mx-auto px-6 relative z-10">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-            className="text-center mb-16"
-          >
-            <h2 className="text-3xl md:text-5xl font-serif text-white mb-4">Fresh Data. Zero Bloat.</h2>
-            <p className="text-xl text-gray-500 italic">
-              While competitors rely on stale databases, we search fresh — every time.
-            </p>
-          </motion.div>
-          
-          <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0 }}
-              viewport={{ once: true }}
-              className="group"
-            >
-              <div className="relative h-full bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8 hover:border-yellow-500/30 transition-all duration-300">
-                <div className="w-14 h-14 bg-yellow-500/10 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                  <Zap className="w-7 h-7 text-yellow-400" />
-                </div>
-                <h3 className="text-xl font-bold text-white mb-3">0 Contacts in Our DB</h3>
-                <p className="text-gray-500 leading-relaxed">The era of cold emailing 30k "industry-related" people is over. Find your ISP for THIS WEEK, maybe 10, 20 or 30, and email them.</p>
-              </div>
-            </motion.div>
-            
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-              viewport={{ once: true }}
-              className="group"
-            >
-              <div className="relative h-full bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8 hover:border-yellow-500/30 transition-all duration-300">
-                <div className="w-14 h-14 bg-yellow-500/10 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                  <Sparkles className="w-7 h-7 text-yellow-400" />
-                </div>
-                <h3 className="text-xl font-bold text-white mb-3">1 Prompt, Not 75 Filters</h3>
-                <p className="text-gray-500 leading-relaxed">No dropdown mazes. No endless checkboxes. Just type what you want in plain English.</p>
-              </div>
-            </motion.div>
-            
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              viewport={{ once: true }}
-              className="group"
-            >
-              <div className="relative h-full bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8 hover:border-yellow-500/30 transition-all duration-300">
-                <div className="w-14 h-14 bg-yellow-500/10 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                  <Map className="w-7 h-7 text-yellow-400" />
-                </div>
-                <h3 className="text-xl font-bold text-white mb-3">Search the Unsearchable</h3>
-                <p className="text-gray-500 leading-relaxed">"Beach-side 4-star hotels on the Space Coast" or "Recently-exited startups in Miami" — literally anything.</p>
-              </div>
-            </motion.div>
-          </div>
-          
-        </div>
-      </div>
+      <FreshDataSection />
 
       {/* My Story Section */}
       <div className="relative z-20 py-24">
