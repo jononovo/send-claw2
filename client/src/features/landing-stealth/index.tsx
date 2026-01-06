@@ -804,7 +804,7 @@ export default function LandingStealth() {
                             
                             <div className="relative space-y-4 p-6 bg-gray-900/60 backdrop-blur-md rounded-lg border border-white/15 text-left">
                               <p className="text-xl text-white/70 text-center mb-4 font-code uppercase tracking-widest">
-                                EARLY ACCESS
+                                REQUEST EARLY ACCESS
                               </p>
                               
                               {/* Name Input */}
