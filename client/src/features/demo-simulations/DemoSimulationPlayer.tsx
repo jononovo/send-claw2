@@ -33,12 +33,14 @@ export function DemoSimulationPlayer({
   aspectRatio = 1,
 }: DemoSimulationPlayerProps) {
   const iframeRef = useRef<HTMLIFrameElement>(null);
+  const initialParamsRef = useRef(params);
   const [isLoaded, setIsLoaded] = useState(false);
   const [isHoveringControls, setIsHoveringControls] = useState(false);
   const [showReplayOverlay, setShowReplayOverlay] = useState(false);
 
-  const queryString = params 
-    ? '?' + Object.entries(params).map(([k, v]) => `${k}=${encodeURIComponent(v)}`).join('&')
+  // Only use initial params for the src URL - subsequent changes go through postMessage
+  const queryString = initialParamsRef.current 
+    ? '?' + Object.entries(initialParamsRef.current).map(([k, v]) => `${k}=${encodeURIComponent(v)}`).join('&')
     : '';
   const src = `/static/demo-simulations/${simulation}.html${queryString}`;
 
