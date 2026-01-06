@@ -103,7 +103,7 @@ export function ShowcaseSection() {
             </div>
           </div>
           
-          {/* Right: Live demo preview */}
+          {/* Right: Live demo preview with browser chrome */}
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
@@ -111,14 +111,37 @@ export function ShowcaseSection() {
             viewport={{ once: true }}
             className="relative"
           >
-            <DemoSimulationPlayer
-              simulation="showcase-results"
-              params={{ id: selectedPrompt }}
-              width={580}
-              height={540}
-              showControls={false}
-              className="shadow-2xl mx-auto"
-            />
+            <div className="bg-[#1a1814] rounded-xl overflow-hidden shadow-2xl border border-white/10">
+              {/* Browser chrome header */}
+              <div className="flex items-center gap-3 px-4 py-3 bg-[#141210] border-b border-white/5">
+                {/* Traffic light buttons */}
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 rounded-full bg-[#ff5f57]" />
+                  <div className="w-3 h-3 rounded-full bg-[#febc2e]" />
+                  <div className="w-3 h-3 rounded-full bg-[#28c840]" />
+                </div>
+                {/* Address bar */}
+                <div className="flex-1 flex items-center justify-center">
+                  <div className="flex items-center gap-2 px-4 py-1.5 bg-white/5 rounded-lg text-sm text-gray-500">
+                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                    </svg>
+                    <span>app.5ducks.com</span>
+                  </div>
+                </div>
+                {/* Spacer to balance traffic lights */}
+                <div className="w-[52px]" />
+              </div>
+              {/* Demo content */}
+              <DemoSimulationPlayer
+                simulation="showcase-results"
+                params={{ id: selectedPrompt }}
+                width={580}
+                height={500}
+                showControls={false}
+                className="mx-auto"
+              />
+            </div>
           </motion.div>
         </div>
         
