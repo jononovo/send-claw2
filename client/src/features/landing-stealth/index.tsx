@@ -778,12 +778,12 @@ export default function LandingStealth() {
                     className="w-full text-center mt-24"
                   >
                     <Button 
-                      variant="link" 
-                      className="text-white/60 hover:text-white transition-colors font-code uppercase tracking-widest text-sm no-underline hover:no-underline cursor-pointer" 
+                      variant="outline" 
+                      className="text-white/80 hover:text-white border-white/20 hover:border-white/40 hover:bg-white/5 transition-all font-heading text-base px-6 py-3 h-auto cursor-pointer" 
                       onClick={() => setShowApplyForm(!showApplyForm)}
                       data-testid="link-apply-code"
                     >
-                      Apply for a code <ArrowRight className="w-4 h-4 ml-2" />
+                      Don't have a code? Request one <ArrowRight className="w-4 h-4 ml-2" />
                     </Button>
                     
                     {/* Apply Form Accordion */}
