@@ -35,20 +35,20 @@ function BrowserFrame({ children }: { children: ReactNode }) {
 
 const SHOWCASE_PROMPTS = [
   { id: 1, prompt: "biotech series A startups in Austin", role: "CTO", companies: 7, contacts: 55 },
-  { id: 2, prompt: "private credit asset managers in NYC", role: "Finance", companies: 7, contacts: 45 },
-  { id: 3, prompt: "AI/ML startups in San Francisco", role: "Engineering", companies: 6, contacts: 218 },
-  { id: 4, prompt: "FinTech companies in London", role: "Leadership", companies: 6, contacts: 285 },
-  { id: 5, prompt: "Healthcare tech companies in Boston", role: "Sales", companies: 6, contacts: 186 },
-  { id: 6, prompt: "large audit firms in NYC", role: "Leadership", companies: 7, contacts: 44 },
-  { id: 7, prompt: "energy companies in New York", role: "Legal", companies: 12, contacts: 33 },
-  { id: 8, prompt: "hedge funds in Connecticut", role: "Finance", companies: 7, contacts: 63 },
-  { id: 9, prompt: "hedge funds in Miami", role: "Leadership", companies: 7, contacts: 40 },
+  { id: 2, prompt: "AI/ML startups in San Francisco", role: "Engineering", companies: 6, contacts: 218 },
+  { id: 3, prompt: "indie game studios in Los Angeles", role: "Creative", companies: 8, contacts: 67 },
+  { id: 4, prompt: "sustainable fashion brands in NYC", role: "Marketing", companies: 9, contacts: 42 },
+  { id: 5, prompt: "farm-to-table restaurants in Portland", role: "Operations", companies: 11, contacts: 38 },
+  { id: 6, prompt: "architecture firms specializing in hotels", role: "Design", companies: 6, contacts: 29 },
+  { id: 7, prompt: "electric vehicle charging companies", role: "BD", companies: 8, contacts: 71 },
+  { id: 8, prompt: "podcast production studios in LA", role: "Creative", companies: 7, contacts: 33 },
+  { id: 9, prompt: "craft breweries in Denver", role: "Operations", companies: 12, contacts: 44 },
   { id: 10, prompt: "fitness chains in NYC", role: "Operations", companies: 7, contacts: 40 },
-  { id: 11, prompt: "marketing agencies in Austin", role: "Creative", companies: 7, contacts: 27 },
-  { id: 12, prompt: "tech hedge funds in Seattle", role: "Engineering", companies: 7, contacts: 38 },
-  { id: 13, prompt: "real estate lawyers in Atlanta", role: "Legal", companies: 7, contacts: 45 },
-  { id: 14, prompt: "investment banks in New York City", role: "Finance", companies: 7, contacts: 51 },
-  { id: 15, prompt: "hedge funds in Los Angeles", role: "Leadership", companies: 7, contacts: 60 },
+  { id: 11, prompt: "robotics startups in Boston", role: "Engineering", companies: 9, contacts: 86 },
+  { id: 12, prompt: "independent record labels in Nashville", role: "A&R", companies: 8, contacts: 52 },
+  { id: 13, prompt: "organic skincare brands in California", role: "Sales", companies: 10, contacts: 37 },
+  { id: 14, prompt: "coworking spaces in Austin", role: "Operations", companies: 6, contacts: 28 },
+  { id: 15, prompt: "veterinary hospital chains in Texas", role: "Leadership", companies: 7, contacts: 45 },
 ];
 
 export function ShowcaseSection() {
