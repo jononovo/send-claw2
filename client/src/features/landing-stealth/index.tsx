@@ -1175,7 +1175,7 @@ export default function LandingStealth() {
                   <Zap className="w-7 h-7 text-yellow-400" />
                 </div>
                 <h3 className="text-xl font-bold text-white mb-3">0 Contacts in Our DB</h3>
-                <p className="text-gray-500 leading-relaxed">We don't store stale data. Every search pulls fresh, real-time results directly from the source.</p>
+                <p className="text-gray-500 leading-relaxed">The era of cold emailing 30k "industry-related" people is over. Find your ISP for THIS WEEK, maybe 10 or 50, and email them.</p>
               </div>
             </motion.div>
             
@@ -1212,15 +1212,6 @@ export default function LandingStealth() {
             </motion.div>
           </div>
           
-          <motion.p
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-            viewport={{ once: true }}
-            className="text-center mt-10 text-xl text-white font-medium"
-          >
-            At. Your. Fingertips. <span className="text-2xl">🎯</span>
-          </motion.p>
         </div>
       </div>
 
