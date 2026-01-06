@@ -103,6 +103,48 @@
       animation: cardFadeIn 0.4s ease-out forwards;
     }
     
+    /* First company highlight */
+    .company-highlight {
+      position: relative;
+    }
+    
+    .company-highlight .rounded-lg {
+      border: 2px solid hsl(35, 80%, 55%) !important;
+      box-shadow: 0 0 12px hsla(35, 80%, 55%, 0.3) !important;
+    }
+    
+    .highlight-tooltip {
+      position: absolute;
+      top: -42px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: hsl(35, 15%, 20%);
+      color: hsl(35, 10%, 90%);
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      white-space: nowrap;
+      z-index: 20;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      animation: tooltipPulse 2s ease-in-out infinite;
+    }
+    
+    .highlight-tooltip::after {
+      content: '';
+      position: absolute;
+      bottom: -6px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-left: 6px solid transparent;
+      border-right: 6px solid transparent;
+      border-top: 6px solid hsl(35, 15%, 20%);
+    }
+    
+    @keyframes tooltipPulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.8; }
+    }
+    
     @keyframes cardFadeIn {
       from {
         opacity: 0;
@@ -262,6 +304,7 @@
     const urlParams = new URLSearchParams(window.location.search);
     let currentShowcaseId = parseInt(urlParams.get('id')) || 1;
     let showcaseData = null;
+    let hasShownHighlight = false;
     
     // Theme toggle functionality
     const container = document.getElementById('demo-container');
@@ -314,7 +357,8 @@
         const isExpanded = index < 2 && hasContacts;
         
         const card = document.createElement('div');
-        card.className = 'company-card';
+        const isFirstCard = index === 0 && !hasShownHighlight && !isSwitch;
+        card.className = isFirstCard ? 'company-card company-highlight' : 'company-card';
         if (!isSwitch) {
           card.style.opacity = '0';
           card.style.animationDelay = `${index * 0.08}s`;
@@ -395,6 +439,21 @@
         `;
         
         container.appendChild(card);
+        
+        // Add tooltip for first card highlight (after innerHTML to avoid being overwritten)
+        if (isFirstCard) {
+          hasShownHighlight = true;
+          const tooltip = document.createElement('div');
+          tooltip.className = 'highlight-tooltip';
+          tooltip.textContent = 'Click on company to see highest-scored contacts for searched role.';
+          card.appendChild(tooltip);
+          
+          // Dismiss highlight on any click within the card
+          card.addEventListener('click', () => {
+            card.classList.remove('company-highlight');
+            tooltip.remove();
+          }, { once: true });
+        }
         
         if (!isSwitch) {
           setTimeout(() => {
