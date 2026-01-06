@@ -1,4 +1,4 @@
-import { useState, useEffect, ReactNode } from "react";
+import { useState, useEffect, useMemo, ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Building2, Users, Search } from "lucide-react";
@@ -52,7 +52,16 @@ const SHOWCASE_PROMPTS = [
 ];
 
 export function ShowcaseSection() {
-  const [selectedPrompt, setSelectedPrompt] = useState<number>(1);
+  const shuffledPrompts = useMemo(() => {
+    const shuffled = [...SHOWCASE_PROMPTS];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled;
+  }, []);
+
+  const [selectedPrompt, setSelectedPrompt] = useState<number>(() => shuffledPrompts[0]?.id ?? 1);
   const [mobileModalOpen, setMobileModalOpen] = useState<number | null>(null);
   const [isMounted, setIsMounted] = useState(false);
 
@@ -89,7 +98,7 @@ export function ShowcaseSection() {
           {/* Left: Scrollable prompt list */}
           <div className="w-[320px] shrink-0 bg-white/5 border border-white/10 rounded-2xl p-3 max-h-[560px] overflow-y-auto scrollbar-dark">
             <div className="space-y-1">
-              {SHOWCASE_PROMPTS.map((item, index) => {
+              {shuffledPrompts.map((item, index) => {
                 const isActive = selectedPrompt === item.id;
                 return (
                   <motion.button
@@ -155,7 +164,7 @@ export function ShowcaseSection() {
         {/* Mobile/Tablet: Card grid with modal */}
         <div className="lg:hidden">
           <div className="grid sm:grid-cols-2 gap-3 max-w-2xl mx-auto">
-            {SHOWCASE_PROMPTS.slice(0, 8).map((item, index) => (
+            {shuffledPrompts.slice(0, 8).map((item, index) => (
               <motion.button
                 key={item.id}
                 initial={{ opacity: 0, y: 20 }}
