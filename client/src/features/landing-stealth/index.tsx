@@ -12,6 +12,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { fireUnlockConfetti } from "@/features/animations";
 import { StealthOnboardingModal } from "./StealthOnboardingModal";
 import { FreshDataSection } from "./FreshDataSection";
+import { ShowcaseSection } from "./ShowcaseSection";
 import { FooterStealth } from "@/components/footer-stealth";
 import { DemoSimulationPlayer } from "@/features/demo-simulations";
 import { trackConversion } from "@/lib/analytics";
@@ -1221,6 +1222,9 @@ export default function LandingStealth() {
 
       {/* Fresh Data. Zero Bloat. Section */}
       <FreshDataSection />
+
+      {/* Interactive Search Results Showcase */}
+      <ShowcaseSection />
 
       {/* My Story Section */}
       <div className="relative z-20 py-24">
