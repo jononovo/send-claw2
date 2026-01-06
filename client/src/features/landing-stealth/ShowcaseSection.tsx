@@ -58,7 +58,7 @@ export function ShowcaseSection() {
         {/* Desktop: Split-panel layout */}
         <div className="hidden lg:grid lg:grid-cols-[320px_1fr] gap-6 max-w-6xl mx-auto">
           {/* Left: Scrollable prompt list */}
-          <div className="bg-white/5 border border-white/10 rounded-2xl p-3 max-h-[560px] overflow-y-auto">
+          <div className="bg-white/5 border border-white/10 rounded-2xl p-3 max-h-[560px] overflow-y-auto scrollbar-dark">
             <div className="space-y-1">
               {SHOWCASE_PROMPTS.map((item, index) => {
                 const isActive = selectedPrompt === item.id;
