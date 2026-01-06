@@ -32,21 +32,21 @@
     .light .border-slate-300 { border-color: hsl(40, 10%, 78%) !important; }
     .light .hover\:bg-slate-50:hover { background-color: hsl(40, 15%, 96%) !important; }
     
-    /* Dark mode overrides */
-    .dark .text-slate-400 { color: hsl(220, 10%, 55%) !important; }
-    .dark .text-slate-500 { color: hsl(220, 10%, 60%) !important; }
-    .dark .text-slate-600 { color: hsl(220, 10%, 70%) !important; }
-    .dark .text-slate-700 { color: hsl(220, 10%, 80%) !important; }
-    .dark .text-slate-800 { color: hsl(220, 10%, 90%) !important; }
-    .dark .bg-slate-50 { background-color: hsl(220, 15%, 18%) !important; }
-    .dark .bg-slate-100 { background-color: hsl(220, 15%, 22%) !important; }
-    .dark .bg-slate-200 { background-color: hsl(220, 12%, 28%) !important; }
-    .dark .border-slate-100 { border-color: hsl(220, 10%, 25%) !important; }
-    .dark .border-slate-200 { border-color: hsl(220, 10%, 30%) !important; }
-    .dark .border-slate-300 { border-color: hsl(220, 10%, 35%) !important; }
-    .dark .hover\:bg-slate-50:hover { background-color: hsl(220, 15%, 25%) !important; }
-    .dark .bg-white { background-color: hsl(220, 15%, 15%) !important; }
-    .dark .text-white { color: hsl(220, 10%, 95%) !important; }
+    /* Dark mode overrides - warm amber tones */
+    .dark .text-slate-400 { color: hsl(35, 15%, 55%) !important; }
+    .dark .text-slate-500 { color: hsl(35, 15%, 62%) !important; }
+    .dark .text-slate-600 { color: hsl(35, 12%, 70%) !important; }
+    .dark .text-slate-700 { color: hsl(35, 10%, 80%) !important; }
+    .dark .text-slate-800 { color: hsl(35, 8%, 90%) !important; }
+    .dark .bg-slate-50 { background-color: hsl(30, 12%, 16%) !important; }
+    .dark .bg-slate-100 { background-color: hsl(30, 12%, 20%) !important; }
+    .dark .bg-slate-200 { background-color: hsl(30, 10%, 26%) !important; }
+    .dark .border-slate-100 { border-color: hsl(30, 10%, 22%) !important; }
+    .dark .border-slate-200 { border-color: hsl(30, 10%, 28%) !important; }
+    .dark .border-slate-300 { border-color: hsl(30, 8%, 32%) !important; }
+    .dark .hover\:bg-slate-50:hover { background-color: hsl(30, 12%, 22%) !important; }
+    .dark .bg-white { background-color: hsl(30, 12%, 14%) !important; }
+    .dark .text-white { color: hsl(35, 10%, 95%) !important; }
     
     #demo-container {
       width: 100%;
@@ -62,9 +62,9 @@
       background: linear-gradient(135deg, #ffffff 0%, #ffffff 60%, #fef3c7 100%);
     }
     
-    /* Dark mode viewport */
+    /* Dark mode viewport - warm amber gradient */
     .dark #demo-viewport {
-      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 60%, #1a1a2e 100%);
+      background: linear-gradient(135deg, #1a1814 0%, #1f1a14 60%, #1a1814 100%);
     }
     
     #demo-viewport {
@@ -156,7 +156,7 @@
     }
     
     .dark .company-header:hover {
-      background-color: hsl(220, 15%, 20%);
+      background-color: hsl(30, 12%, 18%);
     }
     
     .chevron-icon {
@@ -189,41 +189,41 @@
     }
     
     .dark .theme-toggle {
-      background: rgba(255, 255, 255, 0.1);
-      color: hsl(220, 10%, 70%);
+      background: rgba(255, 200, 100, 0.1);
+      color: hsl(35, 30%, 65%);
     }
     
     .dark .theme-toggle:hover {
-      background: rgba(255, 255, 255, 0.15);
+      background: rgba(255, 200, 100, 0.15);
     }
     
-    /* Dark mode specific card styles */
+    /* Dark mode specific card styles - warm amber tones */
     .dark .company-card .rounded-lg {
-      background-color: hsl(220, 15%, 15%) !important;
-      border-color: hsl(220, 10%, 25%) !important;
+      background-color: hsl(30, 12%, 14%) !important;
+      border-color: hsl(30, 10%, 22%) !important;
     }
     
     .dark .company-card button {
-      border-color: hsl(220, 10%, 30%) !important;
+      border-color: hsl(30, 10%, 28%) !important;
     }
     
     .dark .company-card button:hover {
-      background-color: hsl(220, 15%, 25%) !important;
+      background-color: hsl(30, 12%, 22%) !important;
     }
     
     .dark #search-display {
-      background: rgba(255, 255, 255, 0.05) !important;
-      border-color: hsl(220, 10%, 25%) !important;
+      background: rgba(255, 200, 100, 0.05) !important;
+      border-color: hsl(30, 10%, 22%) !important;
     }
     
     .dark #role-chip {
-      background: hsl(220, 15%, 25%) !important;
-      color: hsl(220, 10%, 70%) !important;
+      background: hsl(30, 15%, 22%) !important;
+      color: hsl(35, 20%, 70%) !important;
     }
   </style>
 </head>
 <body>
-  <div id="demo-container" class="light">
+  <div id="demo-container" class="dark">
     <div id="demo-viewport">
       <div id="demo-content">
         
@@ -237,10 +237,10 @@
             <span class="font-semibold text-slate-700">5Ducks</span>
           </div>
           <button id="theme-toggle" class="theme-toggle" title="Toggle theme">
-            <svg id="sun-icon" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg id="sun-icon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
             </svg>
-            <svg id="moon-icon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg id="moon-icon" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
             </svg>
           </button>
@@ -277,7 +277,7 @@
     const sunIcon = document.getElementById('sun-icon');
     const moonIcon = document.getElementById('moon-icon');
     
-    let isDark = false;
+    let isDark = true;
     
     themeToggle.addEventListener('click', () => {
       isDark = !isDark;
