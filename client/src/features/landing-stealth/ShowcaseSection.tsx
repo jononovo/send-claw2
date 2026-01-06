@@ -1,8 +1,37 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Building2, Users, Search } from "lucide-react";
 import { DemoSimulationPlayer } from "@/features/demo-simulations";
+
+function BrowserFrame({ children }: { children: ReactNode }) {
+  return (
+    <div className="bg-[#1a1814] rounded-xl overflow-hidden shadow-2xl border border-white/10 w-full">
+      {/* Browser chrome header */}
+      <div className="flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-2 sm:py-3 bg-[#141210] border-b border-white/5">
+        {/* Traffic light buttons */}
+        <div className="flex items-center gap-1.5 sm:gap-2">
+          <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-[#ff5f57]" />
+          <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-[#febc2e]" />
+          <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-[#28c840]" />
+        </div>
+        {/* Address bar */}
+        <div className="flex-1 flex items-center justify-center">
+          <div className="flex items-center gap-1.5 sm:gap-2 px-2 sm:px-4 py-1 sm:py-1.5 bg-white/5 rounded-lg text-xs sm:text-sm text-gray-500">
+            <svg className="w-3 h-3 sm:w-3.5 sm:h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+            </svg>
+            <span>app.5ducks.com</span>
+          </div>
+        </div>
+        {/* Spacer to balance traffic lights */}
+        <div className="w-[40px] sm:w-[52px]" />
+      </div>
+      {/* Demo content */}
+      {children}
+    </div>
+  );
+}
 
 const SHOWCASE_PROMPTS = [
   { id: 1, prompt: "biotech series A startups in Austin", role: "CTO", companies: 7, contacts: 55 },
@@ -109,39 +138,17 @@ export function ShowcaseSection() {
             whileInView={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5 }}
             viewport={{ once: true }}
-            className="relative"
+            className="relative w-full max-w-[620px]"
           >
-            <div className="bg-[#1a1814] rounded-xl overflow-hidden shadow-2xl border border-white/10">
-              {/* Browser chrome header */}
-              <div className="flex items-center gap-3 px-4 py-3 bg-[#141210] border-b border-white/5">
-                {/* Traffic light buttons */}
-                <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full bg-[#ff5f57]" />
-                  <div className="w-3 h-3 rounded-full bg-[#febc2e]" />
-                  <div className="w-3 h-3 rounded-full bg-[#28c840]" />
-                </div>
-                {/* Address bar */}
-                <div className="flex-1 flex items-center justify-center">
-                  <div className="flex items-center gap-2 px-4 py-1.5 bg-white/5 rounded-lg text-sm text-gray-500">
-                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                    </svg>
-                    <span>app.5ducks.com</span>
-                  </div>
-                </div>
-                {/* Spacer to balance traffic lights */}
-                <div className="w-[52px]" />
-              </div>
-              {/* Demo content */}
+            <BrowserFrame>
               <DemoSimulationPlayer
                 simulation="showcase-results"
                 params={{ id: selectedPrompt }}
-                width={580}
-                height={500}
+                responsive
+                aspectRatio={58/50}
                 showControls={false}
-                className="mx-auto"
               />
-            </div>
+            </BrowserFrame>
           </motion.div>
         </div>
         
@@ -194,7 +201,7 @@ export function ShowcaseSection() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-md flex items-center justify-center p-4"
+              className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-md flex items-center justify-center p-3 sm:p-4"
               onClick={handleMobileClose}
             >
               <motion.div
@@ -202,25 +209,26 @@ export function ShowcaseSection() {
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0.9, opacity: 0 }}
                 transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                className="relative"
+                className="relative w-full max-w-lg max-h-[calc(100svh-2rem)]"
                 onClick={(e) => e.stopPropagation()}
               >
                 <button
                   onClick={handleMobileClose}
-                  className="absolute -top-3 -right-3 z-10 w-10 h-10 rounded-full bg-black/60 hover:bg-black/80 backdrop-blur-sm flex items-center justify-center text-white/80 hover:text-white transition-all border border-white/10"
+                  className="absolute -top-2 -right-2 sm:-top-3 sm:-right-3 z-10 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-black/60 hover:bg-black/80 backdrop-blur-sm flex items-center justify-center text-white/80 hover:text-white transition-all border border-white/10"
                   data-testid="button-close-showcase"
                 >
-                  <X size={20} />
+                  <X size={18} />
                 </button>
                 
-                <DemoSimulationPlayer
-                  simulation="showcase-results"
-                  params={{ id: mobileModalOpen }}
-                  width={520}
-                  height={540}
-                  showControls={false}
-                  className="shadow-2xl"
-                />
+                <BrowserFrame>
+                  <DemoSimulationPlayer
+                    simulation="showcase-results"
+                    params={{ id: mobileModalOpen }}
+                    responsive
+                    aspectRatio={58/70}
+                    showControls={false}
+                  />
+                </BrowserFrame>
               </motion.div>
             </motion.div>
           )}
