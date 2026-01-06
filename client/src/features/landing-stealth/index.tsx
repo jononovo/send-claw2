@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Map, X, Unlock, Sparkles, ChevronRight, ChevronLeft, Check, Loader2, User, Mail, Clock, Star, Zap } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 import { useToast } from "@/hooks/use-toast";
 import { useRegistrationModal } from "@/hooks/use-registration-modal";
 import { useAuth } from "@/hooks/use-auth";
@@ -32,20 +33,20 @@ import sarahThumb from "./assets/professional_headshot_of_sarah_chen_thumb.jpg";
 import mikeThumb from "./assets/professional_headshot_of_mike_ross_thumb.jpg";
 import alexThumb from "./assets/natural_outdoor_portrait_of_older_alex_rivera_with_beard_thumb.jpg";
 
-function getPlayerCount(): number {
+function getPlayerCount(atDate?: Date): number {
   const BASE_COUNT = 1248;
   const BASE_DATE_EST = new Date('2026-01-06T09:00:00-05:00'); // Jan 6, 2026 9AM EST
   
-  const now = new Date();
+  const targetDate = atDate || new Date();
   
-  if (now < BASE_DATE_EST) return BASE_COUNT;
+  if (targetDate < BASE_DATE_EST) return BASE_COUNT;
   
   const formatter = new Intl.DateTimeFormat('en-US', {
     timeZone: 'America/New_York',
     year: 'numeric', month: '2-digit', day: '2-digit',
     hour: '2-digit', minute: '2-digit', hour12: false
   });
-  const parts = formatter.formatToParts(now);
+  const parts = formatter.formatToParts(targetDate);
   const getPart = (type: string) => parts.find(p => p.type === type)?.value || '0';
   const estHour = parseInt(getPart('hour'), 10);
   const estMinute = parseInt(getPart('minute'), 10);
@@ -74,6 +75,12 @@ function getPlayerCount(): number {
   }
   
   return BASE_COUNT + totalIncrements;
+}
+
+function getNewPlayersLast8Hours(): number {
+  const now = new Date();
+  const eightHoursAgo = new Date(now.getTime() - 8 * 60 * 60 * 1000);
+  return Math.max(0, getPlayerCount(now) - getPlayerCount(eightHoursAgo));
 }
 
 const LOADING_MESSAGES = [
@@ -923,23 +930,32 @@ export default function LandingStealth() {
           )}
             
             <div className="flex items-center gap-6">
-             <div className="flex items-center gap-4 text-sm text-muted-foreground/80 p-3 rounded-2xl bg-white/5 border border-white/5 w-fit backdrop-blur-md hover:bg-white/10 transition-colors cursor-default">
-              <div className="flex -space-x-3">
-                <div className="w-8 h-8 rounded-full overflow-hidden border border-white/10 shadow-lg bg-gray-800">
-                  <img src={danThumb} alt="Player" loading="lazy" className="w-full h-full object-cover" />
+             <HoverCard openDelay={200} closeDelay={100}>
+              <HoverCardTrigger asChild>
+                <div className="flex items-center gap-4 text-sm text-muted-foreground/80 p-3 rounded-2xl bg-white/5 border border-white/5 w-fit backdrop-blur-md hover:bg-white/10 transition-colors cursor-default">
+                  <div className="flex -space-x-3">
+                    <div className="w-8 h-8 rounded-full overflow-hidden border border-white/10 shadow-lg bg-gray-800">
+                      <img src={danThumb} alt="Player" loading="lazy" className="w-full h-full object-cover" />
+                    </div>
+                    <div className="w-8 h-8 rounded-full border border-white/10 shadow-lg bg-gradient-to-br from-zinc-500 to-zinc-600 flex items-center justify-center">
+                      <span className="text-xs font-medium text-white/80">AL</span>
+                    </div>
+                    <div className="w-8 h-8 rounded-full overflow-hidden border border-white/10 shadow-lg bg-gray-800">
+                      <img src={sarahThumb} alt="Player" loading="lazy" className="w-full h-full object-cover" />
+                    </div>
+                    <div className="w-8 h-8 rounded-full overflow-hidden border border-white/10 shadow-lg bg-gray-800">
+                      <img src={mikeThumb} alt="Player" loading="lazy" className="w-full h-full object-cover" />
+                    </div>
+                  </div>
+                  <p className="font-heading"><span className="text-white font-bold">{getPlayerCount().toLocaleString()}</span> Players Waiting</p>
                 </div>
-                <div className="w-8 h-8 rounded-full border border-white/10 shadow-lg bg-gradient-to-br from-zinc-500 to-zinc-600 flex items-center justify-center">
-                  <span className="text-xs font-medium text-white/80">AL</span>
-                </div>
-                <div className="w-8 h-8 rounded-full overflow-hidden border border-white/10 shadow-lg bg-gray-800">
-                  <img src={sarahThumb} alt="Player" loading="lazy" className="w-full h-full object-cover" />
-                </div>
-                <div className="w-8 h-8 rounded-full overflow-hidden border border-white/10 shadow-lg bg-gray-800">
-                  <img src={mikeThumb} alt="Player" loading="lazy" className="w-full h-full object-cover" />
-                </div>
-              </div>
-              <p className="font-heading"><span className="text-white font-bold">{getPlayerCount().toLocaleString()}</span> Players Waiting</p>
-            </div>
+              </HoverCardTrigger>
+              <HoverCardContent className="w-auto bg-zinc-900/95 border-white/10 backdrop-blur-md" data-testid="tooltip-new-players">
+                <p className="text-sm text-white/80 font-heading">
+                  <span className="text-white font-bold">{getNewPlayersLast8Hours()}</span> new players joined in the last 8 hours
+                </p>
+              </HoverCardContent>
+            </HoverCard>
 
             <Button 
               variant="link" 
