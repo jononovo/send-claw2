@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, lazy, Suspense } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Input } from "@/components/ui/input";
@@ -11,18 +11,9 @@ import { useRegistrationModal } from "@/hooks/use-registration-modal";
 import { useAuth } from "@/hooks/use-auth";
 import { fireUnlockConfetti } from "@/features/animations";
 import { StealthOnboardingModal } from "./StealthOnboardingModal";
-import { FreshDataSection } from "./FreshDataSection";
-import { ShowcaseSection } from "./ShowcaseSection";
 import { FooterStealth } from "@/components/footer-stealth";
 import { DemoSimulationPlayer } from "@/features/demo-simulations";
 import { trackConversion } from "@/lib/analytics";
-
-interface ApplyFormData {
-  name: string;
-  email: string;
-}
-
-
 import duckImage from "./assets/3d_cute_duckling_mascot_edited.webp";
 import duckImageMobile from "./assets/3d_cute_duckling_mascot_edited-400w.webp";
 import bgImage from "./assets/abstract_3d_sales_background_with_envelopes_and_charts.webp";
@@ -34,6 +25,14 @@ import danThumb from "./assets/professional_headshot_of_dan_hartmann_thumb.jpg";
 import sarahThumb from "./assets/professional_headshot_of_sarah_chen_thumb.jpg";
 import mikeThumb from "./assets/professional_headshot_of_mike_ross_thumb.jpg";
 import alexThumb from "./assets/natural_outdoor_portrait_of_older_alex_rivera_with_beard_thumb.jpg";
+
+const FreshDataSection = lazy(() => import("./FreshDataSection").then(m => ({ default: m.FreshDataSection })));
+const ShowcaseSection = lazy(() => import("./ShowcaseSection").then(m => ({ default: m.ShowcaseSection })));
+
+interface ApplyFormData {
+  name: string;
+  email: string;
+}
 
 function getPlayerCount(atDate?: Date): number {
   const BASE_COUNT = 1248;
@@ -1220,11 +1219,15 @@ export default function LandingStealth() {
         </div>
       </div>
 
-      {/* Fresh Data. Zero Bloat. Section */}
-      <FreshDataSection />
+      {/* Fresh Data. Zero Bloat. Section - Lazy loaded */}
+      <Suspense fallback={<div className="bg-[#0A0A10] py-24 min-h-[600px]" />}>
+        <FreshDataSection />
+      </Suspense>
 
-      {/* Interactive Search Results Showcase */}
-      <ShowcaseSection />
+      {/* Interactive Search Results Showcase - Lazy loaded */}
+      <Suspense fallback={<div className="bg-[#0A0A10] py-24 min-h-[700px]" />}>
+        <ShowcaseSection />
+      </Suspense>
 
       {/* My Story Section */}
       <div className="relative z-20 py-24">
