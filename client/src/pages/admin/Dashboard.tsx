@@ -16,7 +16,8 @@ import {
   RefreshCw,
   Play,
   Shield,
-  FileText
+  FileText,
+  TrendingUp
 } from 'lucide-react';
 import { useAuth } from '@/hooks/use-auth';
 import { useLocation } from 'wouter';
@@ -316,6 +317,14 @@ export default function AdminDashboard() {
                   >
                     <AlertTriangle className="h-4 w-4 mr-2" />
                     System Health
+                  </Button>
+                  <Button 
+                    onClick={() => setLocation('/admin/attribution')}
+                    variant="outline"
+                    size="sm"
+                  >
+                    <TrendingUp className="h-4 w-4 mr-2" />
+                    Ads Attribution
                   </Button>
                 </div>
               </CardContent>

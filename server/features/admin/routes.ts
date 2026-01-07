@@ -1,8 +1,8 @@
 import { Router, Request, Response, Application } from 'express';
 import { db } from '../../db';
 import { requireAdmin } from '../../utils/admin-auth';
-import { users, companies, contacts, dailyOutreachBatches, dailyOutreachJobs, userOutreachPreferences, communicationHistory, emailTemplates } from '@shared/schema';
-import { eq, desc, and, gte, lte, sql, count } from 'drizzle-orm';
+import { users, companies, contacts, dailyOutreachBatches, dailyOutreachJobs, userOutreachPreferences, communicationHistory, emailTemplates, userAttribution } from '@shared/schema';
+import { eq, desc, and, gte, lte, sql, count, inArray } from 'drizzle-orm';
 import { startOfDay, endOfDay, subDays, startOfWeek, endOfWeek } from 'date-fns';
 import { HealthMonitoringTestRunner } from '../health-monitoring/test-runner';
 import { dripEmailEngine } from '../../email/drip-engine';
@@ -607,6 +607,72 @@ router.delete('/templates/:id', requireAdmin, async (req: Request, res: Response
     console.error('Error deleting template:', error);
     res.status(500).json({
       error: 'Failed to delete template',
+      message: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
+});
+
+// Attribution stats for ads dashboard
+router.get('/attribution', requireAdmin, async (req: Request, res: Response) => {
+  try {
+    // Get all attribution records
+    const allAttribution = await db
+      .select({
+        id: userAttribution.id,
+        userId: userAttribution.userId,
+        source: userAttribution.source,
+        attributionData: userAttribution.attributionData,
+        conversionEvents: userAttribution.conversionEvents,
+        createdAt: userAttribution.createdAt
+      })
+      .from(userAttribution)
+      .orderBy(desc(userAttribution.createdAt));
+
+    // Get source breakdown
+    const sourceBreakdown = await db
+      .select({
+        source: userAttribution.source,
+        count: count(userAttribution.id)
+      })
+      .from(userAttribution)
+      .groupBy(userAttribution.source);
+
+    // Get users with their emails for the attribution records
+    const userIds = allAttribution.map(a => a.userId).filter((id): id is number => id !== null && id !== undefined);
+    const userEmails: Record<number, string> = {};
+    
+    if (userIds.length > 0) {
+      const usersData = await db
+        .select({ id: users.id, email: users.email })
+        .from(users)
+        .where(inArray(users.id, userIds));
+      
+      usersData.forEach(u => {
+        if (u.email) userEmails[u.id] = u.email;
+      });
+    }
+
+    // Enrich attribution with user emails
+    const enrichedAttribution = allAttribution.map(a => ({
+      ...a,
+      userEmail: a.userId ? userEmails[a.userId] || null : null
+    }));
+
+    // Build source breakdown with initial empty object
+    const sourceBreakdownMap: Record<string, number> = {};
+    for (const item of sourceBreakdown) {
+      sourceBreakdownMap[item.source || 'unknown'] = Number(item.count);
+    }
+
+    res.json({
+      totalTracked: allAttribution.length,
+      sourceBreakdown: sourceBreakdownMap,
+      recentAttributions: enrichedAttribution.slice(0, 50)
+    });
+  } catch (error) {
+    console.error('Error fetching attribution stats:', error);
+    res.status(500).json({
+      error: 'Failed to fetch attribution statistics',
       message: error instanceof Error ? error.message : 'Unknown error'
     });
   }
