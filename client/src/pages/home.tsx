@@ -21,6 +21,7 @@ import { useToast } from "@/hooks/use-toast";
 import { getPersistedEmailSubject } from "@/hooks/use-email-composer-persistence";
 import { useAuth } from "@/hooks/use-auth";
 import { trackConversion } from "@/lib/analytics";
+import { logConversionEvent } from "@/features/attribution";
 import { useRegistrationModal } from "@/hooks/use-registration-modal";
 import { useNotifications } from "@/hooks/use-notifications";
 import { NotificationToast } from "@/components/ui/notification-toast";
@@ -145,6 +146,7 @@ export default function Home() {
     const hasTrackedAppView = sessionStorage.getItem('hasTrackedAppPageView');
     if (!hasTrackedAppView) {
       trackConversion.appPageView();
+      logConversionEvent('app_page_view').catch(() => {});
       sessionStorage.setItem('hasTrackedAppPageView', 'true');
     }
   }, []);

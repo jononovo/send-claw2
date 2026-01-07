@@ -16,6 +16,7 @@ import { InsufficientCreditsProvider } from "@/contexts/insufficient-credits-con
 import { InsufficientCreditsModal } from "@/components/insufficient-credits-modal";
 import { InsufficientCreditsHandlerSetup } from "@/components/insufficient-credits-handler-setup";
 import { useAnalytics } from "@/hooks/use-analytics";
+import { useAttributionCapture } from "@/features/attribution";
 
 // Static pages (small components kept static)
 import Auth from "@/pages/auth";
@@ -106,6 +107,9 @@ function LazyGuidanceWrapper({ children }: { children: ReactNode }) {
 function Router() {
   // Track page views when routes change
   useAnalytics();
+  
+  // Capture attribution data (UTM params, referrer, etc.) on first visit
+  useAttributionCapture();
   
   return (
     <>

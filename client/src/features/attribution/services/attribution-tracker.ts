@@ -74,11 +74,30 @@ export function getAttributionSource(): string {
   return data ? detectSource(data) : 'organic';
 }
 
+async function waitForAuth(maxAttempts = 5, delayMs = 500): Promise<boolean> {
+  for (let i = 0; i < maxAttempts; i++) {
+    try {
+      const res = await fetch('/api/user', { credentials: 'include' });
+      if (res.ok) return true;
+    } catch {}
+    if (i < maxAttempts - 1) {
+      await new Promise(resolve => setTimeout(resolve, delayMs));
+    }
+  }
+  return false;
+}
+
 export async function sendAttributionToServer(userId?: number): Promise<void> {
   const data = getStoredAttribution();
   if (!data) return;
 
   const source = detectSource(data);
+  
+  const isAuthed = await waitForAuth();
+  if (!isAuthed) {
+    console.debug('[Attribution] Not authenticated, skipping attribution send');
+    return;
+  }
   
   try {
     await apiRequest('POST', '/api/attribution', {
@@ -95,6 +114,12 @@ export async function logConversionEvent(
   event: AttributionEventType,
   metadata?: Record<string, any>
 ): Promise<void> {
+  const isAuthed = await waitForAuth();
+  if (!isAuthed) {
+    console.debug(`[Attribution] Not authenticated, skipping event ${event}`);
+    return;
+  }
+  
   try {
     await apiRequest('POST', '/api/attribution/event', { event, metadata });
     console.debug(`[Attribution] Conversion event logged: ${event}`);
