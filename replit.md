@@ -85,6 +85,22 @@ The platform is built with a React SPA frontend (TypeScript, Vite, Tailwind, sha
 - **Storage Helper**: `storage.awardOneTimeCredits()` uses database transaction with conflict detection for race-safe credit attribution.
 - **Demo User Exclusion**: User id=1 (demo user) is excluded from progress saving and credit operations (enforced in CreditRewardService).
 
+**Attribution Tracking System:**
+- **Location**: `client/src/features/attribution/` and `server/features/attribution/`
+- **Purpose**: Track user acquisition sources (Reddit, Google, LinkedIn, organic) and conversion events
+- **First-Touch Model**: UTM parameters and click IDs are captured on first visit and stored in localStorage; never overwritten on subsequent visits
+- **Database Table**: `user_attribution` with source, attributionData (JSONB), conversionEvents (JSONB array)
+- **Tracked Parameters**: UTM params (source, medium, campaign, content, term) and platform click IDs (rdt_cid, gclid, li_fat_id)
+- **Conversion Events**: registration_complete, app_page_view, search_performed, subscription_purchase
+- **Auth Timing**: Uses waitForAuth() retry mechanism to ensure API calls only fire after user session is established
+- **Usage**:
+  ```typescript
+  import { sendAttributionToServer, logConversionEvent } from '@/features/attribution';
+  sendAttributionToServer().catch(() => {});  // Call after registration
+  logConversionEvent('search_performed').catch(() => {});  // Call on conversion
+  ```
+- **Expandability**: Add new ad platforms by extending CLICK_ID_PARAMS in attribution-tracker.ts
+
 **System Design Choices:**
 - **Data Architecture**: PostgreSQL serves as the primary database for core entities (users, companies, contacts, campaigns) and analytics. Credits, subscriptions, and tokens are stored in PostgreSQL tables (`user_credits`, `credit_transactions`, `subscriptions`, `oauth_tokens`). A database-persistent job queue with retry logic manages background tasks.
 - **List ID Naming Convention**: Clarification provided for `lists.id` (DB primary key) and `lists.list_id` (user-facing display number), with a future plan to rename `lists.list_id` to `lists.display_id`.
