@@ -16,6 +16,7 @@ import { InsufficientCreditsProvider } from "@/contexts/insufficient-credits-con
 import { InsufficientCreditsModal } from "@/components/insufficient-credits-modal";
 import { InsufficientCreditsHandlerSetup } from "@/components/insufficient-credits-handler-setup";
 import { useAnalytics } from "@/hooks/use-analytics";
+import { useAttributionCapture } from "@/features/attribution";
 
 // Static pages (small components kept static)
 import Auth from "@/pages/auth";
@@ -52,6 +53,7 @@ const AdminUsers = lazy(() => import("@/pages/admin/Users"));
 const AdminEmailTesting = lazy(() => import("@/pages/admin/EmailTesting"));
 const AdminApiTesting = lazy(() => import("@/pages/admin/ApiTesting"));
 const AdminTemplates = lazy(() => import("@/pages/admin/Templates"));
+const AdminAttribution = lazy(() => import("@/pages/admin/Attribution"));
 
 // Lazy imports for marketing pages
 const Terms = lazy(() => import("@/pages/terms"));
@@ -106,6 +108,9 @@ function LazyGuidanceWrapper({ children }: { children: ReactNode }) {
 function Router() {
   // Track page views when routes change
   useAnalytics();
+  
+  // Capture attribution data (UTM params, referrer, etc.) on first visit
+  useAttributionCapture();
   
   return (
     <>
@@ -333,6 +338,11 @@ function Router() {
                 <ProtectedRoute path="/admin/templates" component={() => 
                   <Suspense fallback={<LoadingScreen />}>
                     <AdminTemplates />
+                  </Suspense>
+                } />
+                <ProtectedRoute path="/admin/attribution" component={() => 
+                  <Suspense fallback={<LoadingScreen />}>
+                    <AdminAttribution />
                   </Suspense>
                 } />
                 

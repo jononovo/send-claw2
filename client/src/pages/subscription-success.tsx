@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useLocation } from 'wouter';
 import { useQuery } from '@tanstack/react-query';
 import { CheckCircle, Coins, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { logConversionEvent } from '@/features/attribution';
 
 interface SubscriptionStatus {
   hasSubscription: boolean;
@@ -39,12 +40,18 @@ export default function SubscriptionSuccess() {
   const isSubscriptionActive = subscriptionStatus?.hasSubscription && subscriptionStatus?.status === 'active';
 
   // Track Google Ads conversion when subscription is confirmed active
+  const hasLoggedConversion = useRef(false);
   useEffect(() => {
-    if (isSubscriptionActive && window.gtag) {
-      window.gtag('event', 'conversion', {
-        'send_to': 'AW-17847406917/uFsKCOq-iN0bEMWip75C',
-        'transaction_id': '',
-      });
+    if (isSubscriptionActive && !hasLoggedConversion.current) {
+      hasLoggedConversion.current = true;
+      if (window.gtag) {
+        window.gtag('event', 'conversion', {
+          'send_to': 'AW-17847406917/uFsKCOq-iN0bEMWip75C',
+          'transaction_id': '',
+        });
+      }
+      // Log attribution event
+      logConversionEvent('subscription_purchase').catch(() => {});
     }
   }, [isSubscriptionActive]);
 

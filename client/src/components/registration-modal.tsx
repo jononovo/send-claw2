@@ -7,6 +7,7 @@ import { loadFirebase } from "@/lib/firebase";
 import { motion } from "framer-motion";
 import { useToast } from "@/hooks/use-toast";
 import { trackConversion } from "@/lib/analytics";
+import { sendAttributionToServer, logConversionEvent } from "@/features/attribution";
 
 export function RegistrationModal() {
   const { closeModal, isOpenedFromProtectedRoute, initialPage, setIsNewUser } = useRegistrationModal();
@@ -63,6 +64,9 @@ export function RegistrationModal() {
       // Track Google Ads conversion for new registrations via Google
       if (isNewUser) {
         trackConversion.registrationComplete();
+        // Send attribution data and log conversion event
+        sendAttributionToServer().catch(() => {});
+        logConversionEvent('registration_complete').catch(() => {});
       }
       
       closeModal();
@@ -160,6 +164,9 @@ export function RegistrationModal() {
         
         // Track Google Ads conversion for registration
         trackConversion.registrationComplete();
+        // Send attribution data and log conversion event
+        sendAttributionToServer().catch(() => {});
+        logConversionEvent('registration_complete').catch(() => {});
         
         console.log("Registration successful with Firebase");
         closeModal();

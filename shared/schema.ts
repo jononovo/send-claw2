@@ -63,6 +63,40 @@ export const subscriptions = pgTable("subscriptions", {
   index('idx_subscriptions_status').on(table.status)
 ]);
 
+// User Attribution - tracks where users came from (ad campaigns, organic, etc.)
+export interface AttributionData {
+  utm_source?: string;      // reddit, google, linkedin, organic
+  utm_medium?: string;      // cpc, paid, social, email
+  utm_campaign?: string;    // campaign ID or name
+  utm_content?: string;     // ad content/name
+  utm_term?: string;        // search term or ad group
+  rdt_cid?: string;         // Reddit click ID
+  gclid?: string;           // Google click ID
+  li_fat_id?: string;       // LinkedIn click ID
+  first_seen?: string;      // ISO timestamp
+  landing_page?: string;    // First page visited
+  referrer?: string;        // Document referrer
+}
+
+export interface ConversionEvent {
+  event: string;            // 'access_code_requested', 'registration_complete', etc.
+  timestamp: string;        // ISO timestamp
+  metadata?: Record<string, any>;
+}
+
+export const userAttribution = pgTable("user_attribution", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull().references(() => users.id, { onDelete: 'cascade' }),
+  source: text("source"),                                    // Primary source: 'reddit', 'google', 'linkedin', 'organic'
+  attributionData: jsonb("attribution_data").$type<AttributionData>().default({}),
+  conversionEvents: jsonb("conversion_events").$type<ConversionEvent[]>().default([]),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow()
+}, (table) => [
+  uniqueIndex('idx_user_attribution_user_id').on(table.userId),
+  index('idx_user_attribution_source').on(table.source)
+]);
+
 // User notifications (migrated from KV)  
 export const userNotifications = pgTable("user_notifications", {
   id: serial("id").primaryKey(),
@@ -491,6 +525,15 @@ export const insertUserSchema = userSchema;
 
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
+
+// User Attribution types
+export type UserAttribution = typeof userAttribution.$inferSelect;
+export type InsertUserAttribution = {
+  userId: number;
+  source?: string;
+  attributionData?: AttributionData;
+  conversionEvents?: ConversionEvent[];
+};
 
 // Legacy type stubs for components that still import them
 export type SearchSection = { id: string; title: string; content: string };

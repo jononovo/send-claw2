@@ -14,6 +14,7 @@ import { StealthOnboardingModal } from "./StealthOnboardingModal";
 import { FooterStealth } from "@/components/footer-stealth";
 import { DemoSimulationPlayer } from "@/features/demo-simulations";
 import { trackConversion } from "@/lib/analytics";
+import { logConversionEvent } from "@/features/attribution";
 import duckImage from "./assets/3d_cute_duckling_mascot_edited.webp";
 import duckImageMobile from "./assets/3d_cute_duckling_mascot_edited-400w.webp";
 import bgImage from "./assets/abstract_3d_sales_background_with_envelopes_and_charts.webp";
@@ -319,6 +320,8 @@ export default function LandingStealth() {
     if (validCodes.includes(code.toLowerCase())) {
       // Track Google Ads conversion for secret code unlock
       trackConversion.secretCodeUnlock();
+      // Log attribution event
+      logConversionEvent('secret_code_unlock').catch(() => {});
       
       // Mark that we're in the secret code flow (prevents auto-redirect to /app)
       setIsSecretCodeFlow(true);
@@ -422,6 +425,8 @@ export default function LandingStealth() {
       
       // Track Google Ads conversion for access code request
       trackConversion.accessCodeRequested();
+      // Log attribution event
+      logConversionEvent('access_code_requested').catch(() => {});
       
       toast({
         title: "Application Received! 🎉",

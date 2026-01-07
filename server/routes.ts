@@ -56,6 +56,7 @@ import { registerProgressRoutes } from "./features/progress/routes";
 import { registerAccessApplicationsRoutes } from "./features/access-applications/routes";
 import { registerFeedbackRoutes } from "./features/feedback/routes";
 import { registerFindIdealCustomerRoutes } from "./features/find-ideal-customer/routes";
+import { attributionRoutes } from "./features/attribution";
 
 
 // Import centralized auth utilities
@@ -202,6 +203,9 @@ export function registerRoutes(app: Express) {
   // Register daily outreach routes
   // Note: Auth is handled selectively inside the router - token-based endpoints don't need auth
   app.use('/api/daily-outreach', dailyOutreachRoutes);
+  
+  // Register attribution tracking routes
+  app.use('/api/attribution', requireAuth, attributionRoutes);
 
   // Register campaigns module (includes sender profiles, customer profiles, and products)
   registerCampaignsRoutes(app, requireAuth);
