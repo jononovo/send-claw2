@@ -165,6 +165,11 @@ export function registerRoutes(app: Express) {
     res.sendFile(path.join(__dirname, '../static/privacy.html'));
   });
   
+  // Serve llms.txt for AI assistants (similar to robots.txt but for LLMs)
+  app.get('/llms.txt', (req, res) => {
+    res.type('text/plain').sendFile(path.join(__dirname, '../static/llms.txt'));
+  });
+  
 
 
 
