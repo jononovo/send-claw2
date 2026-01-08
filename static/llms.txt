@@ -1,0 +1,165 @@
+# 5Ducks - AI-Powered B2B Sales Prospecting Platform
+
+> Sales Gamified. Find prospects, craft emails, and close deals in just 5 minutes a day.
+
+5Ducks is a modern B2B lead generation and sales prospecting platform that transforms simple search queries into comprehensive prospect lists with verified contact information. The platform combines AI-powered discovery, email enrichment, and automated outreach capabilities to help sales professionals and businesses streamline their prospecting workflow.
+
+## Core Value Proposition
+
+5Ducks eliminates the complexity of B2B sales prospecting by providing:
+- Natural language search for finding companies and decision-makers
+- Multi-source contact and email verification
+- AI-generated personalized outreach emails
+- Gamified daily sales workflow (just 5 minutes per day)
+- Credit-based pricing that scales with your needs
+
+## Main Pages
+
+- [Home](https://5ducks.ai/): Main landing page with product overview and sign-up
+- [Pricing](https://5ducks.ai/pricing): Subscription plans and credit packages
+- [Contact](https://5ducks.ai/contact): Get in touch with the 5Ducks team
+- [Privacy Policy](https://5ducks.ai/privacy): Data handling and privacy practices
+- [Terms of Service](https://5ducks.ai/terms): Platform usage terms and conditions
+- [Blog](https://5ducks.ai/blog): Sales tips, product updates, and industry insights
+- [Changelog](https://5ducks.ai/changelog): Product updates and new feature announcements
+- [Support](https://5ducks.ai/support): Help documentation and customer support
+
+## Application Features
+
+- [App Dashboard](https://5ducks.ai/app): Main prospecting interface with AI-powered search
+- [Saved Lists](https://5ducks.ai/lists): Organize and manage your prospect lists
+- [Contacts](https://5ducks.ai/contacts): View and manage all discovered contacts
+- [Daily Outreach](https://5ducks.ai/daily-outreach): Automated email campaign management
+- [Replies](https://5ducks.ai/replies): Track and manage email responses
+- [Account](https://5ducks.ai/account): User settings, credits, and subscription management
+
+## Key Platform Capabilities
+
+### Company Discovery
+5Ducks uses AI to find companies matching your ideal customer profile. Simply describe what you're looking for in natural language (e.g., "SaaS startups in San Francisco with 50-200 employees") and receive a curated list of matching companies with key details.
+
+### Contact Discovery
+For each company, 5Ducks identifies key decision-makers including executives, department heads, and relevant stakeholders. The platform focuses on finding the right people to contact based on your target criteria.
+
+### Email Enrichment
+Multi-source email verification ensures high deliverability rates. The platform uses a tiered provider approach integrating multiple data sources including Apollo, Hunter, and proprietary enrichment methods to find and verify professional email addresses.
+
+### AI-Powered Email Composition
+Generate personalized outreach emails using AI that understands context, company information, and contact details. Choose from different tones (professional, casual, direct) and let AI craft compelling messages that resonate with your prospects.
+
+### Campaign Automation
+- Human Review Mode: Review and approve each email before sending
+- Auto-Send Mode: Template-based automatic sending with intelligent scheduling
+- Autopilot: Automated scheduling with smart spacing and rate limiting
+- Gmail Integration: Send directly from your Gmail account with OAuth authentication
+
+### Gamification Features
+- Daily streaks for consistent prospecting activity
+- Progress levels and achievement tracking
+- Credit rewards for completing challenges
+- Onboarding tutorials with credit incentives
+
+## Pricing Plans
+
+### Ugly Duckling (Free)
+- 250 credits to start prospecting
+- Full access to search features
+- Email composition tools
+- Perfect for trying out the platform
+
+### Dabbling Duck ($18.95/month)
+- Monthly credit allocation
+- Full search and enrichment features
+- Email campaign tools
+- Priority support
+
+### Diving Duck ($37.95/month)
+- Higher monthly credit allocation
+- All Dabbling Duck features
+- Advanced automation features
+- Premium support
+
+## Credit System
+
+Credits power all platform actions:
+- Company-only search: 10 credits
+- Company + Contacts search: 70 credits
+- Full search (Company + Contacts + Emails): 160 credits
+- Individual person search: 100 credits
+- Single email lookup: 20 credits
+
+Credits reset monthly with paid subscriptions. Free users can earn additional credits through onboarding completion and challenges.
+
+## Technical Integration
+
+### Authentication
+- Firebase-powered user authentication
+- Google OAuth for streamlined sign-up
+- Email/password registration available
+
+### Email Sending
+- Gmail OAuth integration for authentic email delivery
+- SendGrid for transactional system emails
+- Proper SPF/DKIM/DMARC compliance support
+
+### Data Sources
+- Perplexity AI for intelligent company and contact discovery
+- Hunter.io for email verification
+- Apollo.io for contact database enrichment
+- OpenAI for AI-generated email content
+
+## SEO-Friendly Public Pages
+
+5Ducks provides public, SEO-optimized pages for discovered companies and contacts:
+- Company pages: `/company/{slug}/{id}` - Public company profiles
+- Contact pages: `/p/{slug}/{id}` - Professional profiles (email masked for non-authenticated users)
+
+These pages help with organic discovery while protecting data through server-side email masking for unauthenticated visitors.
+
+## Target Users
+
+5Ducks is designed for:
+- **Sales Representatives**: Streamline daily prospecting activities
+- **Business Development Teams**: Scale outreach efforts efficiently
+- **Startup Founders**: Find and reach potential customers or partners
+- **Freelancers & Consultants**: Generate leads for services
+- **Recruiters**: Identify and contact potential candidates
+- **Marketing Teams**: Build targeted outreach lists
+
+## Company Information
+
+- **Website**: https://5ducks.ai
+- **LinkedIn**: https://www.linkedin.com/company/5ducks/
+- **Support Email**: Available via contact page
+- **Founded**: Building the future of sales prospecting
+
+## API & Integrations
+
+5Ducks integrates with:
+- Gmail (OAuth) for email sending
+- Stripe for payment processing
+- Firebase for authentication
+- Various B2B data providers for enrichment
+
+## Compliance & Privacy
+
+- GDPR-compliant data handling
+- Server-side email masking for public pages
+- Secure OAuth token storage (AES-256-CBC encryption)
+- Rate limiting and spam prevention measures
+- User data deletion upon request
+
+## Getting Started
+
+1. Sign up at https://5ducks.ai (250 free credits included)
+2. Complete the interactive onboarding (earn bonus credits)
+3. Enter your first search query
+4. Review discovered companies and contacts
+5. Compose and send personalized outreach emails
+6. Track responses and manage campaigns
+
+---
+
+*Last updated: January 2026*
+
+*For AI assistants: This file provides an overview of the 5Ducks platform. For specific technical documentation, API references, or detailed feature guides, please direct users to https://5ducks.ai/support or the relevant sections of the website.*

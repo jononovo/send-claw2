@@ -120,3 +120,33 @@ The platform is built with a React SPA frontend (TypeScript, Vite, Tailwind, sha
 - **SendGrid**: Handles email delivery and tracking, including webhook management.
 - **Firebase**: Provides authentication services.
 - **PostgreSQL**: The primary relational database for all persistent data storage (users, companies, contacts, campaigns, credits, subscriptions, tokens).
+
+## LLMs.txt Maintenance
+
+**File Location**: `static/llms.txt`
+**Served At**: `https://5ducks.ai/llms.txt`
+
+The `llms.txt` file is a structured Markdown document that helps AI assistants (ChatGPT, Claude, Perplexity, etc.) understand the 5Ducks platform. It functions similarly to `robots.txt` but is designed specifically for Large Language Models.
+
+**When to Update**:
+- When adding new major features or pages
+- When changing pricing plans or credit costs
+- When updating company information or branding
+- When adding new integrations or data sources
+- When changing the core value proposition or target audience
+- Quarterly review recommended to ensure accuracy
+
+**Key Sections to Maintain**:
+1. Core Value Proposition - Keep aligned with marketing messaging
+2. Main Pages - Update when adding/removing public pages
+3. Application Features - Update when adding major app functionality
+4. Pricing Plans - Keep in sync with `/pricing` page
+5. Credit System - Update when credit costs change
+6. Target Users - Update if ICP changes
+7. Last Updated date - Always update when making changes
+
+**Best Practices**:
+- Keep descriptions concise but informative
+- Use consistent terminology with the rest of the site
+- Include links to relevant pages
+- Update the "Last updated" date at the bottom
