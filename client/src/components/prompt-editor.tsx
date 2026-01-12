@@ -11,7 +11,6 @@ import { Loader2, Search, HelpCircle, Crown, Building, Users, Target, Settings }
 
 import { useConfetti } from "@/hooks/use-confetti";
 import { SearchSessionManager } from "@/lib/search-session-manager";
-import { trackConversion } from "@/lib/analytics";
 import { logConversionEvent } from "@/features/attribution";
 
 import { useAuth } from "@/hooks/use-auth";
@@ -1104,8 +1103,8 @@ export default function PromptEditor({
       companies: []
     });
     
-    // Track Google Ads conversion for search performed
-    trackConversion.searchPerformed();
+    // Push event to dataLayer for GTM to handle conversion tracking
+    window.dataLayer?.push({ event: 'search_performed' });
     // Log attribution event
     logConversionEvent('search_performed').catch(() => {});
     

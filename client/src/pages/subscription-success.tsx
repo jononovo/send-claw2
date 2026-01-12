@@ -39,17 +39,11 @@ export default function SubscriptionSuccess() {
 
   const isSubscriptionActive = subscriptionStatus?.hasSubscription && subscriptionStatus?.status === 'active';
 
-  // Track Google Ads conversion when subscription is confirmed active
+  // Track subscription purchase for attribution (GTM handles Google Ads conversion via page view trigger on /subscription-success)
   const hasLoggedConversion = useRef(false);
   useEffect(() => {
     if (isSubscriptionActive && !hasLoggedConversion.current) {
       hasLoggedConversion.current = true;
-      if (window.gtag) {
-        window.gtag('event', 'conversion', {
-          'send_to': 'AW-17847406917/uFsKCOq-iN0bEMWip75C',
-          'transaction_id': '',
-        });
-      }
       // Log attribution event
       logConversionEvent('subscription_purchase').catch(() => {});
     }

@@ -20,7 +20,6 @@ import { SelectionToolbar } from "@/components/SelectionToolbar";
 import { useToast } from "@/hooks/use-toast";
 import { getPersistedEmailSubject } from "@/hooks/use-email-composer-persistence";
 import { useAuth } from "@/hooks/use-auth";
-import { trackConversion } from "@/lib/analytics";
 import { logConversionEvent } from "@/features/attribution";
 import { useRegistrationModal } from "@/hooks/use-registration-modal";
 import { useNotifications } from "@/hooks/use-notifications";
@@ -141,11 +140,10 @@ export default function Home() {
     isVisible: false
   });
   
-  // Track Google Ads conversion for app page view (once per session)
+  // Track app page view for attribution (GTM handles Google Ads conversion via page view trigger on /app)
   useEffect(() => {
     const hasTrackedAppView = sessionStorage.getItem('hasTrackedAppPageView');
     if (!hasTrackedAppView) {
-      trackConversion.appPageView();
       logConversionEvent('app_page_view').catch(() => {});
       sessionStorage.setItem('hasTrackedAppPageView', 'true');
     }
