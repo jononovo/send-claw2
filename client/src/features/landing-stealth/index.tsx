@@ -13,7 +13,6 @@ import { fireUnlockConfetti } from "@/features/animations";
 import { StealthOnboardingModal } from "./StealthOnboardingModal";
 import { FooterStealth } from "@/components/footer-stealth";
 import { DemoSimulationPlayer } from "@/features/demo-simulations";
-import { trackConversion } from "@/lib/analytics";
 import { logConversionEvent } from "@/features/attribution";
 import duckImage from "./assets/3d_cute_duckling_mascot_edited.webp";
 import duckImageMobile from "./assets/3d_cute_duckling_mascot_edited-400w.webp";
@@ -318,8 +317,8 @@ export default function LandingStealth() {
   const handleQuack = () => {
     const validCodes = ["quack", "charlie"];
     if (validCodes.includes(code.toLowerCase())) {
-      // Track Google Ads conversion for secret code unlock
-      trackConversion.secretCodeUnlock();
+      // Push event to dataLayer for GTM to handle conversion tracking
+      window.dataLayer?.push({ event: 'secret_code_unlock' });
       // Log attribution event
       logConversionEvent('secret_code_unlock').catch(() => {});
       
@@ -423,8 +422,8 @@ export default function LandingStealth() {
         return;
       }
       
-      // Track Google Ads conversion for access code request
-      trackConversion.accessCodeRequested();
+      // Push event to dataLayer for GTM to handle conversion tracking
+      window.dataLayer?.push({ event: 'access_code_requested' });
       // Log attribution event
       logConversionEvent('access_code_requested').catch(() => {});
       

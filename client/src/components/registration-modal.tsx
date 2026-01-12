@@ -6,7 +6,6 @@ import { useRegistrationModal, type RegistrationPage } from "@/hooks/use-registr
 import { loadFirebase } from "@/lib/firebase";
 import { motion } from "framer-motion";
 import { useToast } from "@/hooks/use-toast";
-import { trackConversion } from "@/lib/analytics";
 import { sendAttributionToServer, logConversionEvent } from "@/features/attribution";
 
 export function RegistrationModal() {
@@ -61,9 +60,9 @@ export function RegistrationModal() {
       // Set isNewUser so the callback knows whether to show questionnaire
       setIsNewUser(isNewUser);
       
-      // Track Google Ads conversion for new registrations via Google
+      // Push event to dataLayer for GTM to handle conversion tracking
       if (isNewUser) {
-        trackConversion.registrationComplete();
+        window.dataLayer?.push({ event: 'registration_complete' });
         // Send attribution data and log conversion event
         sendAttributionToServer().catch(() => {});
         logConversionEvent('registration_complete').catch(() => {});
@@ -162,8 +161,8 @@ export function RegistrationModal() {
         setIsNewUser(true);
         await registerWithEmail(email, password, name);
         
-        // Track Google Ads conversion for registration
-        trackConversion.registrationComplete();
+        // Push event to dataLayer for GTM to handle conversion tracking
+        window.dataLayer?.push({ event: 'registration_complete' });
         // Send attribution data and log conversion event
         sendAttributionToServer().catch(() => {});
         logConversionEvent('registration_complete').catch(() => {});

@@ -1,0 +1,117 @@
+Version 4 - 6 Tags for Google Ads
+Version Summary
+Published
+01/11/2026, 9:42 PM by jon@5ducks.ai
+Created
+01/11/2026, 9:42 PM by jon@5ducks.ai
+Description
+Added 6 conversion tags and triggers for Google Ads
+Version Items
+11
+Tags
+7
+Triggers
+6
+Variables
+Version Changes
+Change
+/app_page-view
+Trigger	Added
+2601_GAds_/app_page_view
+Tag	Added
+2601_GAds_access_code_requested
+Tag	Added
+2601_GAds_registration_complete
+Tag	Added
+2601_GAds_search_performed
+Tag	Added
+2601_GAds_secret_code_unlock
+Tag	Added
+2601_GAds_subscription-success
+Tag	Added
+Access Code Requested
+Trigger	Added
+registration_complete
+Trigger	Added
+search_performed
+Trigger	Added
+secret_code_unlock
+Trigger	Added
+subscription-success
+Trigger	Added
+Activity History
+Tags
+Firing Triggers	
+2601_GAds_/app_page_view
+Google Ads Conversion Tracking	
+/app_page-view	01/11/2026, 9:37 PM
+2601_GAds_access_code_requested
+Google Ads Conversion Tracking	
+Access Code Requested	01/11/2026, 9:30 PM
+2601_GAds_registration_complete
+Google Ads Conversion Tracking	
+registration_complete	01/11/2026, 9:33 PM
+2601_GAds_search_performed
+Google Ads Conversion Tracking	
+search_performed	01/11/2026, 9:34 PM
+2601_GAds_secret_code_unlock
+Google Ads Conversion Tracking	
+secret_code_unlock	01/11/2026, 9:30 PM
+2601_GAds_subscription-success
+Google Ads Conversion Tracking	
+subscription-success	01/11/2026, 9:41 PM
+Google Ads - Conversion Linker
+Conversion Linker	
+All Pages	01/07/2026, 5:55 PM
+Google Ads Remarketing
+Google Ads Remarketing	
+All Pages	01/07/2026, 5:57 PM
+Google Analytics
+Google Tag	
+Initialization - All Pages	01/07/2026, 5:50 PM
+Reddit Pixel
+Reddit Pixel	
+All Pages	01/07/2026, 6:03 PM
+REDDIT-a2_iaqg0x09ms97-Web-Tag
+Reddit Pixel	
+REDDIT-a2_iaqg0x09ms97-Web-Trigger-Custom_Event	01/08/2026, 5:19 AM
+Triggers
+Filter		
+/app_page-view
+Page View	
+Page Path equals /app
+1	01/11/2026, 9:37 PM
+Access Code Requested
+Custom Event	
+Event equals access_code_requested
+1	01/11/2026, 9:17 PM
+REDDIT-a2_iaqg0x09ms97-Web-Trigger-Custom_Event
+Custom Event	
+1	01/08/2026, 5:19 AM
+registration_complete
+Custom Event	
+Event equals registration_complete
+1	01/11/2026, 9:31 PM
+search_performed
+Custom Event	
+Event equals search_performed
+1	01/11/2026, 9:34 PM
+secret_code_unlock
+Custom Event	
+Event equals secret_code_unlock
+1	01/11/2026, 9:29 PM
+subscription-success
+Page View	
+Page Path equals /subscription-success
+1	01/11/2026, 9:41 PM
+Variables
+Event	Built-in Variable	—
+Page Hostname	Built-in Variable	—
+Page Path	Built-in Variable	—
+Page URL	Built-in Variable	—
+REDDIT-a2_iaqg0x09ms97-Web-Variable
+Constant	01/08/2026, 5:19 AM
+Referrer	Built-in Variable	—
+Custom Templates
+Reddit Pixel
+Tag	01/07/2026, 5:58 PM
