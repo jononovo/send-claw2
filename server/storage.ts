@@ -5,7 +5,7 @@ import {
   contactLists, contactListMembers, oauthTokens,
   userCredits, creditTransactions, subscriptions, userNotifications,
   campaignRecipients, userGuidanceProgress, userProgress, accessApplications,
-  emailSequences, emailSequenceEvents, emailSends,
+  emailSequences, emailSequenceEvents, emailSends, guidanceVideos,
   type UserPreferences, type InsertUserPreferences,
   type UserEmailPreferences, type InsertUserEmailPreferences,
   type SearchList, type InsertSearchList,
@@ -26,7 +26,8 @@ import {
   type AccessApplication, type InsertAccessApplication,
   type EmailSequence, type InsertEmailSequence,
   type EmailSequenceEvent, type InsertEmailSequenceEvent,
-  type EmailSend, type InsertEmailSend
+  type EmailSend, type InsertEmailSend,
+  type GuidanceVideo, type InsertGuidanceVideo
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, and, or, sql, desc, lt, inArray, isNull, ne } from "drizzle-orm";
@@ -200,6 +201,12 @@ export interface IStorage {
   getPendingEmailSends(limit?: number): Promise<EmailSend[]>;
   updateEmailSendStatus(id: number, status: string, errorMessage?: string): Promise<EmailSend | undefined>;
   markEmailSendAsSent(id: number): Promise<EmailSend | undefined>;
+
+  // Guidance Videos
+  createGuidanceVideo(data: InsertGuidanceVideo): Promise<GuidanceVideo>;
+  getGuidanceVideo(id: number): Promise<GuidanceVideo | undefined>;
+  getGuidanceVideoByChallenge(challengeId: string): Promise<GuidanceVideo | undefined>;
+  updateGuidanceVideo(id: number, data: Partial<GuidanceVideo>): Promise<void>;
 }
 
 class DatabaseStorage implements IStorage {
@@ -1838,6 +1845,43 @@ class DatabaseStorage implements IStorage {
       .where(eq(emailSends.id, id))
       .returning();
     return updated;
+  }
+
+  // Guidance Videos
+  async createGuidanceVideo(data: InsertGuidanceVideo): Promise<GuidanceVideo> {
+    const [video] = await db.insert(guidanceVideos)
+      .values({
+        challengeId: data.challengeId,
+        questId: data.questId,
+        rawPath: data.rawPath,
+        timestamps: data.timestamps || [],
+        status: data.status || 'pending',
+        createdBy: data.createdBy
+      })
+      .returning();
+    return video;
+  }
+
+  async getGuidanceVideo(id: number): Promise<GuidanceVideo | undefined> {
+    const [video] = await db.select()
+      .from(guidanceVideos)
+      .where(eq(guidanceVideos.id, id));
+    return video;
+  }
+
+  async getGuidanceVideoByChallenge(challengeId: string): Promise<GuidanceVideo | undefined> {
+    const [video] = await db.select()
+      .from(guidanceVideos)
+      .where(eq(guidanceVideos.challengeId, challengeId))
+      .orderBy(desc(guidanceVideos.createdAt))
+      .limit(1);
+    return video;
+  }
+
+  async updateGuidanceVideo(id: number, data: Partial<GuidanceVideo>): Promise<void> {
+    await db.update(guidanceVideos)
+      .set({ ...data, updatedAt: new Date() })
+      .where(eq(guidanceVideos.id, id));
   }
 }
 
