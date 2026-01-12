@@ -1,0 +1,386 @@
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 
+    ____                   _        _____
+   / ___| ___   ___   __ _| | ___  |_   _|_ _  __ _
+  | |  _ / _ \ / _ \ / _` | |/ _ \   | |/ _` |/ _` |
+  | |_| | (_) | (_) | (_| | |  __/   | | (_| | (_| |
+   \____|\___/ \___/ \__, |_|\___|   |_|\__,_|\__, |
+                     |___/                    |___/
+
+ Processing commands (2)
+ Processing data layer push: {event: "gtm.init_consent", gtm.uniqueEventId: 1}
+ Processing data layer push: {event: "gtm.init", gtm.uniqueEventId: 2}
+ Tag fired: {function: "__ogt_cross_domain", priority: 14, vtp_rules: ["list", "^5ducks\.ai$"], tag_id: 8}
+ Tag fired: {function: "__ogt_1p_data_v2", priority: 4, vtp_isAutoEnabled: true, vtp_autoPhoneEnabled: true, vtp_autoCollectExclusionSelectors: ["list", ["map", "exclusionSelector", ""]], vtp_isEnabled: true, vtp_autoAddressEnabled: true, vtp_autoEmailEnabled: true, vtp_isAutoCollectPiiEnabledFlag: true, tag_id: 10}
+ Tag fired: {function: "__ccd_ads_first", priority: 3, vtp_instanceDestinationId: "AW-17847406917", tag_id: 14}
+ Tag fired: {function: "__ccd_em_page_view", priority: 2, vtp_historyEvents: true, vtp_deferPageView: true, vtp_includeParams: true, vtp_instanceDestinationId: "AW-17847406917", tag_id: 13}
+ Tag fired: {function: "__ccd_ads_conv_marking", priority: 1, vtp_conversionRules: ["list", ["map", "matchingRules", "{"type":2,"args":[{"booleanExpressionValue":{"type":1,"args":[{"booleanExpressionValue":{"type":6,"args":[{"contextValue":{"namespaceType":1,"keyParts":["hitData","page_location"]}},{"stringValue":"http://5ducks.ai"}]}},{"booleanExpressionValue":{"type":6,"args":[{"contextValue":{"namespaceType":1,"keyParts":["hitData","page_location"]}},{"stringValue":"https://5ducks.ai"}]}}]}},{"booleanExpressionValue":{"type":2,"args":[{"booleanExpressionValue":{"type":5,"args":[{"stringValue":"page_view"},{"contextValue":{"namespaceType":1,"keyParts":["eventName"]}}]}},{"booleanExpressionValue":{"type":1,"args":[{"booleanExpressionValue":{"type":6,"args":[{"contextValue":{"namespaceType":1,"keyParts":["hitData","page_location"]}},{"stringValue":"http://5ducks.ai/subscription-success"}]}},{"booleanExpressionValue":{"type":6,"args":[{"contextValue":{"namespaceType":1,"keyParts":["hitData","page_location"]}},{"stringValue":"https://5ducks.ai/subscription-success"}]}}]}}]}}]}", "conversionLabel", "NMGMCNei-tobEMWip75C"]], vtp_instanceDestinationId: "AW-17847406917", tag_id: 12}
+ Tag fired: {function: "__ccd_ads_last", priority: 0, vtp_instanceDestinationId: "AW-17847406917", tag_id: 11}
+ Processing GTAG command: ["config", "G-4K01JPM2D8", {}]
+ Processing GTAG command: ["config", "AW-17847406917", {}]
+ GTAG Command: "config", target: "AW-17847406917", configuration: {}
+ Processing data layer push: {gtm.start: 1768250424829, event: "gtm.js", gtm.uniqueEventId: 3}
+ Tag fired: {function: "__rep", vtp_containerId: "AW-17847406917", vtp_remoteConfig: ["map"], tag_id: 5}
+ Sending "Google Ads" hit.
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 Target ID: "AW-17847406917"
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 Hit URL: "https://googleads.g.doubleclick.net/pagead/viewthroughconversion/17847406917/?random=1768250425109&cv=11&fst=1768250425109&fmt=3&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6191h2v9239384306z89239972064za20gzb9239972064zd9239972064xec&gcd=13l3l3l3l1l1&dma=0&tag_exp=103116026~103200004~104527906~104528501~104684208~104684211~105391253~115616985~115938465~115938469~116514482~116682876&u_w=1352&u_h=878&url=https%3A%2F%2F5ducks.ai%2Fs&frm=0&tiba=5Ducks%20-%20Sales%20Gamified%20%7C%20Find%20Prospects%20in%205%20Minutes%20a%20Day&_dbg=1&hn=www.googleadservices.com&npa=0&pscdl=noapi&auid=2017448683.1767455625&uaa=arm&uab=64&uafvl=Google%2520Chrome%3B143.0.7499.170%7CChromium%3B143.0.7499.170%7CNot%2520A(Brand%3B24.0.0.0&uamb=0&uam=&uap=macOS&uapv=15.2.0&uaw=0&data=event%3Dgtag.config"
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 Hit Data:
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "cv": "11"
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "fst": 1768250425109
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "fmt": 3
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "bg": "ffffff"
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "guid": "ON"
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "async": "1"
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "en": "gtag.config"
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "gtm": "45be6191h2v9239384306z89239972064za20gzb9239972064zd9239972064xec"
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "gcd": "13l3l3l3l1l1"
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "dma": "0"
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "tag_exp": "103116026~103200004~104527906~104528501~104684208~104684211~105391253~115616985~115938465~115938469~116514482~116682876"
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "u_w": "1352"
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "u_h": "878"
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "url": "https://5ducks.ai/s"
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "frm": 0
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "tiba": "5Ducks - Sales Gamified | Find Prospects in 5 Minutes a Day"
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "_dbg": true
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "hn": "www.googleadservices.com"
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "npa": "0"
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "pscdl": "noapi"
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "auid": "2017448683.1767455625"
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "uaa": "arm"
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "uab": "64"
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "uafvl": "Google%20Chrome;143.0.7499.170|Chromium;143.0.7499.170|Not%20A(Brand;24.0.0.0"
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "uamb": "0"
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "uam": ""
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "uap": "macOS"
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "uapv": "15.2.0"
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "uaw": "0"
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "data": "event=gtag.config"
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 Processing GTAG command: ["event", "", {aw_remarketing_only: true, conversion_cookie_prefix: undefined, conversion_linker: true, ads_data_redaction: undefined, user_id: undefined, send_to: "AW-AW-17847406917"}]
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 Processing data layer push: {event: "gtm.dom", gtm.uniqueEventId: 4}
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 
+    ____                   _        _____
+   / ___| ___   ___   __ _| | ___  |_   _|_ _  __ _
+  | |  _ / _ \ / _ \ / _` | |/ _ \   | |/ _` |/ _` |
+  | |_| | (_) | (_) | (_| | |  __/   | | (_| | (_| |
+   \____|\___/ \___/ \__, |_|\___|   |_|\__,_|\__, |
+                     |___/                    |___/
+
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 Processing commands (2)
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 Processing data layer push: {event: "gtm.init_consent", gtm.uniqueEventId: 1}
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 Processing data layer push: {event: "gtm.init", gtm.uniqueEventId: 2}
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 Tag fired: {function: "__ogt_1p_data_v2", priority: 7, vtp_isAutoEnabled: true, vtp_autoPhoneEnabled: true, vtp_autoCollectExclusionSelectors: ["list", ["map", "exclusionSelector", ""]], vtp_isEnabled: true, vtp_autoAddressEnabled: true, vtp_autoEmailEnabled: true, vtp_isAutoCollectPiiEnabledFlag: true, tag_id: 4}
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 Tag fired: {function: "__ccd_ga_first", priority: 6, vtp_instanceDestinationId: "G-4K01JPM2D8", tag_id: 12}
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 Tag fired: {function: "__set_product_settings", priority: 5, vtp_instanceDestinationId: "G-4K01JPM2D8", vtp_foreignTldMacroResult: ["macro", 1], vtp_isChinaVipRegionMacroResult: ["macro", 2], tag_id: 11}
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 Tag fired: {function: "__ccd_ga_regscope", priority: 4, vtp_settingsTable: ["list", ["map", "redactFieldGroup", "DEVICE_AND_GEO", "disallowAllRegions", false, "disallowedRegions", ""], ["map", "redactFieldGroup", "GOOGLE_SIGNALS", "disallowAllRegions", true, "disallowedRegions", ""]], vtp_instanceDestinationId: "G-4K01JPM2D8", tag_id: 10}
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 Tag fired: {function: "__ccd_conversion_marking", priority: 3, vtp_conversionRules: ["list", ["map", "matchingRules", "{"type":5,"args":[{"stringValue":"purchase"},{"contextValue":{"namespaceType":1,"keyParts":["eventName"]}}]}"]], vtp_instanceDestinationId: "G-4K01JPM2D8", tag_id: 9}
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 Tag fired: {function: "__ccd_auto_redact", priority: 2, vtp_redactEmail: true, vtp_instanceDestinationId: "G-4K01JPM2D8", tag_id: 8}
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 Tag fired: {function: "__ccd_ga_ads_link", priority: 1, vtp_instanceDestinationId: "G-4K01JPM2D8", tag_id: 7}
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 Tag fired: {function: "__ccd_ga_last", priority: 0, vtp_instanceDestinationId: "G-4K01JPM2D8", tag_id: 6}
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 Processing GTAG command: ["config", "G-4K01JPM2D8", {}]
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 GTAG Command: "config", target: "G-4K01JPM2D8", configuration: {}
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 Processing GTAG command: ["config", "AW-17847406917", {}]
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 Processing data layer push: {gtm.start: 1768250424829, event: "gtm.js", gtm.uniqueEventId: 3}
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 Tag fired: {function: "__gct", vtp_trackingId: "G-4K01JPM2D8", vtp_sessionDuration: 0, tag_id: 1}
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 Loaded existing client id: 513253871.1749964611
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 Event would be batched, but batching is disabled in debug mode.
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 Sending event "page_view" to undefined
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 Request parameters:
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 v: 2
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 tid: G-4K01JPM2D8
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 gtm: 45je6191h2v9220642943z89239972064za20gzb9239972064zd9239972064
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 _p: 1768250424829
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 _dbg: 1
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 gcd: 13l3l3l3l1l1
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 npa: 0
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 dma: 0
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 cid: 513253871.1749964611
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 ul: en-us
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 sr: 1352x878
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 uaa: arm
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 uab: 64
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 uafvl: Google%20Chrome;143.0.7499.170|Chromium;143.0.7499.170|Not%20A(Brand;24.0.0.0
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 uamb: 0
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 uam: 
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 uap: macOS
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 uapv: 15.2.0
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 uaw: 0
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 are: 1
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 frm: 0
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 pscdl: noapi
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 _eu: AAAAAAQ
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 Event parameters:
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 en: page_view
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 Shared parameters:
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 tag_exp: 103116026~103200004~104527906~104528501~104684208~104684211~105391252~115938465~115938469~116514482~116682876~116988316
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 sid: 1768247262
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 sct: 9
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 seg: 1
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 dl: https://5ducks.ai/s
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 dt: 5Ducks - Sales Gamified | Find Prospects in 5 Minutes a Day
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 Processing GTAG command: ["event", "", {aw_remarketing_only: true, conversion_cookie_prefix: undefined, conversion_linker: true, ads_data_redaction: undefined, user_id: undefined, send_to: "AW-AW-17847406917"}]
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 Processing data layer push: {event: "gtm.dom", gtm.uniqueEventId: 4}
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 Processing commands (1)
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 Processing data layer push: {event: "gtm.load", gtm.uniqueEventId: 6}
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 Processing commands (1)
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 Processing data layer push: {event: "gtm.load", gtm.uniqueEventId: 6}
+index-DDzlodxh.js:315 Firebase auth state changed: undefined
+console.log('Manual test'); window.dataLayer.push({ event: 'secret_code_unlock' });
+VM2849:1 Manual test
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 Processing commands (1)
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 Processing data layer push: {event: "secret_code_unlock", gtm.uniqueEventId: 7}
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 Processing GTAG command: ["event", "conversion", {value: "3", currency: "USD", transaction_id: undefined, conversion_cookie_prefix: undefined, conversion_linker: true, allow_enhanced_conversions: false, ads_data_redaction: undefined, developer_id: undefined, send_to: "AW-17847406917/2QUzCK-Dt90bEMWip75C"}]
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 Processing GTAG command: ["event", "secret_code_unlock", {send_to: "G-4K01JPM2D8"}]
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 Processing commands (1)
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 Processing data layer push: {event: "secret_code_unlock", gtm.uniqueEventId: 7}
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 Processing GTAG command: ["event", "conversion", {value: "3", currency: "USD", transaction_id: undefined, conversion_cookie_prefix: undefined, conversion_linker: true, allow_enhanced_conversions: false, ads_data_redaction: undefined, developer_id: undefined, send_to: "AW-17847406917/2QUzCK-Dt90bEMWip75C"}]
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 Processing GTAG command: ["event", "secret_code_unlock", {send_to: "G-4K01JPM2D8"}]
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 Loaded existing client id: 513253871.1749964611
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 Event would be batched, but batching is disabled in debug mode.
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 Sending event "secret_code_unlock" to undefined
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 Request parameters:
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 v: 2
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 tid: G-4K01JPM2D8
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 gtm: 45je6191h2v9220642943z89239972064za20gzb9239972064zd9239972064
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 _p: 1768250424829
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 _dbg: 1
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 gcd: 13l3l3l3l1l1
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 npa: 0
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 dma: 0
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 cid: 513253871.1749964611
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 ul: en-us
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 sr: 1352x878
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 uaa: arm
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 uab: 64
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 uafvl: Google%20Chrome;143.0.7499.170|Chromium;143.0.7499.170|Not%20A(Brand;24.0.0.0
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 uamb: 0
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 uam: 
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 uap: macOS
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 uapv: 15.2.0
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 uaw: 0
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 are: 1
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 frm: 0
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 pscdl: noapi
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 _eu: AAAAAAQ
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 Event parameters:
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 en: secret_code_unlock
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 _et: 1752
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 Shared parameters:
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 tag_exp: 103116026~103200004~104527906~104528501~104684208~104684211~105391252~115938465~115938469~116514482~116682876~116988316
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 sid: 1768247262
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 sct: 9
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 seg: 1
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 dl: https://5ducks.ai/s
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 dt: 5Ducks - Sales Gamified | Find Prospects in 5 Minutes a Day
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 _tu: CA
+false
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 Sending "Google Ads" hit.
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 Target ID: "AW-17847406917"
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 Hit URL: "https://www.googleadservices.com/pagead/conversion/17847406917/?random=1768250429167&cv=11&fst=1768250429167&fmt=3&bg=ffffff&guid=ON&async=1&en=conversion&gtm=45be6191h2v9239384306z89239972064za20gzb9239972064zd9239972064xea&gcd=13l3l3l3l1l1&dma=0&tag_exp=103116026~103200004~104527906~104528501~104684208~104684211~105391253~115616985~115938465~115938469~116514482~116682876&u_w=1352&u_h=878&url=https%3A%2F%2F5ducks.ai%2Fs&label=2QUzCK-Dt90bEMWip75C&capi=1&frm=0&tiba=5Ducks%20-%20Sales%20Gamified%20%7C%20Find%20Prospects%20in%205%20Minutes%20a%20Day&bttype=purchase&_dbg=1&value=3&currency_code=USD&hn=www.googleadservices.com&npa=0&pscdl=noapi&auid=2017448683.1767455625&uaa=arm&uab=64&uafvl=Google%2520Chrome%3B143.0.7499.170%7CChromium%3B143.0.7499.170%7CNot%2520A(Brand%3B24.0.0.0&uamb=0&uam=&uap=macOS&uapv=15.2.0&uaw=0&_tu=CA&gcl_ctr=35~0"
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 Hit Data:
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "cv": "11"
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "fst": 1768250429167
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "fmt": 3
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "bg": "ffffff"
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "guid": "ON"
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "async": "1"
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "en": "conversion"
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "gtm": "45be6191h2v9239384306z89239972064za20gzb9239972064zd9239972064xea"
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "gcd": "13l3l3l3l1l1"
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "dma": "0"
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "tag_exp": "103116026~103200004~104527906~104528501~104684208~104684211~105391253~115616985~115938465~115938469~116514482~116682876"
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "u_w": "1352"
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "u_h": "878"
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "url": "https://5ducks.ai/s"
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "label": "2QUzCK-Dt90bEMWip75C"
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "capi": "1"
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "frm": 0
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "tiba": "5Ducks - Sales Gamified | Find Prospects in 5 Minutes a Day"
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "bttype": "purchase"
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "_dbg": true
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "value": "3"
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "currency_code": "USD"
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "hn": "www.googleadservices.com"
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "npa": "0"
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "pscdl": "noapi"
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "auid": "2017448683.1767455625"
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "uaa": "arm"
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "uab": "64"
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "uafvl": "Google%20Chrome;143.0.7499.170|Chromium;143.0.7499.170|Not%20A(Brand;24.0.0.0"
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "uamb": "0"
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "uam": ""
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "uap": "macOS"
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "uapv": "15.2.0"
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "uaw": "0"
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "_tu": "CA"
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "gcl_ctr": "35~0"
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "data": ""
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 Processing commands (1)
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 Processing data layer push: {event: "secret_code_unlock", gtm.uniqueEventId: 8}
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 Processing GTAG command: ["event", "conversion", {value: "3", currency: "USD", transaction_id: undefined, conversion_cookie_prefix: undefined, conversion_linker: true, allow_enhanced_conversions: false, ads_data_redaction: undefined, developer_id: undefined, send_to: "AW-17847406917/2QUzCK-Dt90bEMWip75C"}]
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 Processing GTAG command: ["event", "secret_code_unlock", {send_to: "G-4K01JPM2D8"}]
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 Processing commands (1)
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 Processing data layer push: {event: "secret_code_unlock", gtm.uniqueEventId: 8}
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 Processing GTAG command: ["event", "conversion", {value: "3", currency: "USD", transaction_id: undefined, conversion_cookie_prefix: undefined, conversion_linker: true, allow_enhanced_conversions: false, ads_data_redaction: undefined, developer_id: undefined, send_to: "AW-17847406917/2QUzCK-Dt90bEMWip75C"}]
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 Processing GTAG command: ["event", "secret_code_unlock", {send_to: "G-4K01JPM2D8"}]
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 Loaded existing client id: 513253871.1749964611
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 Event would be batched, but batching is disabled in debug mode.
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 Sending event "secret_code_unlock" to undefined
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 Request parameters:
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 v: 2
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 tid: G-4K01JPM2D8
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 gtm: 45je6191h2v9220642943z89239972064za20gzb9239972064zd9239972064
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 _p: 1768250424829
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 _dbg: 1
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 gcd: 13l3l3l3l1l1
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 npa: 0
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 dma: 0
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 cid: 513253871.1749964611
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 ul: en-us
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 sr: 1352x878
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 uaa: arm
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 uab: 64
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 uafvl: Google%20Chrome;143.0.7499.170|Chromium;143.0.7499.170|Not%20A(Brand;24.0.0.0
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 uamb: 0
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 uam: 
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 uap: macOS
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 uapv: 15.2.0
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 uaw: 0
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 are: 1
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 frm: 0
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 pscdl: noapi
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 _eu: AAAAAAQ
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 Event parameters:
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 en: secret_code_unlock
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 _et: 3652
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 Shared parameters:
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 tag_exp: 103116026~103200004~104527906~104528501~104684208~104684211~105391252~115938465~115938469~116514482~116682876~116988316
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 sid: 1768247262
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 sct: 9
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 seg: 1
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 dl: https://5ducks.ai/s
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 dt: 5Ducks - Sales Gamified | Find Prospects in 5 Minutes a Day
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6191h2:422 _tu: CA
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 Sending "Google Ads" hit.
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 Target ID: "AW-17847406917"
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 Hit URL: "https://www.googleadservices.com/pagead/conversion/17847406917/?random=1768250434785&cv=11&fst=1768250434785&fmt=3&bg=ffffff&guid=ON&async=1&en=conversion&gtm=45be6191h2v9239384306z89239972064za20gzb9239972064zd9239972064xea&gcd=13l3l3l3l1l1&dma=0&tag_exp=103116026~103200004~104527906~104528501~104684208~104684211~105391253~115616985~115938465~115938469~116514482~116682876&u_w=1352&u_h=878&url=https%3A%2F%2F5ducks.ai%2Fs&label=2QUzCK-Dt90bEMWip75C&capi=1&frm=0&tiba=5Ducks%20-%20Sales%20Gamified%20%7C%20Find%20Prospects%20in%205%20Minutes%20a%20Day&bttype=purchase&_dbg=1&value=3&currency_code=USD&hn=www.googleadservices.com&npa=0&pscdl=noapi&auid=2017448683.1767455625&uaa=arm&uab=64&uafvl=Google%2520Chrome%3B143.0.7499.170%7CChromium%3B143.0.7499.170%7CNot%2520A(Brand%3B24.0.0.0&uamb=0&uam=&uap=macOS&uapv=15.2.0&uaw=0&_tu=CA&gcl_ctr=36~0"
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 Hit Data:
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "cv": "11"
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "fst": 1768250434785
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "fmt": 3
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "bg": "ffffff"
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "guid": "ON"
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "async": "1"
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "en": "conversion"
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "gtm": "45be6191h2v9239384306z89239972064za20gzb9239972064zd9239972064xea"
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "gcd": "13l3l3l3l1l1"
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "dma": "0"
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "tag_exp": "103116026~103200004~104527906~104528501~104684208~104684211~105391253~115616985~115938465~115938469~116514482~116682876"
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "u_w": "1352"
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "u_h": "878"
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "url": "https://5ducks.ai/s"
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "label": "2QUzCK-Dt90bEMWip75C"
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "capi": "1"
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "frm": 0
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "tiba": "5Ducks - Sales Gamified | Find Prospects in 5 Minutes a Day"
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "bttype": "purchase"
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "_dbg": true
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "value": "3"
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "currency_code": "USD"
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "hn": "www.googleadservices.com"
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "npa": "0"
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "pscdl": "noapi"
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "auid": "2017448683.1767455625"
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "uaa": "arm"
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "uab": "64"
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "uafvl": "Google%20Chrome;143.0.7499.170|Chromium;143.0.7499.170|Not%20A(Brand;24.0.0.0"
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "uamb": "0"
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "uam": ""
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "uap": "macOS"
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "uapv": "15.2.0"
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "uaw": "0"
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "_tu": "CA"
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "gcl_ctr": "36~0"
+js?id=AW-17847406917&cx=c&gtm=4e6191h2:364 "data": ""
+index-DDzlodxh.js:315  GET https://5ducks.ai/api/user 401 (Unauthorized)
+YC @ index-DDzlodxh.js:315
+ic @ index-DDzlodxh.js:315
+_ @ index-DDzlodxh.js:328
+onKeyDown @ index-DDzlodxh.js:328
+qk @ index-DDzlodxh.js:38
+Xk @ index-DDzlodxh.js:38
+Zk @ index-DDzlodxh.js:38
+kg @ index-DDzlodxh.js:38
+Bx @ index-DDzlodxh.js:38
+(anonymous) @ index-DDzlodxh.js:38
+ep @ index-DDzlodxh.js:41
+ux @ index-DDzlodxh.js:38
+Tu @ index-DDzlodxh.js:38
+Ah @ index-DDzlodxh.js:38
+pP @ index-DDzlodxh.js:38
+index-DDzlodxh.js:315  GET https://5ducks.ai/api/user 401 (Unauthorized)
+YC @ index-DDzlodxh.js:315
+await in YC
+ic @ index-DDzlodxh.js:315
+_ @ index-DDzlodxh.js:328
+onKeyDown @ index-DDzlodxh.js:328
+qk @ index-DDzlodxh.js:38
+Xk @ index-DDzlodxh.js:38
+Zk @ index-DDzlodxh.js:38
+kg @ index-DDzlodxh.js:38
+Bx @ index-DDzlodxh.js:38
+(anonymous) @ index-DDzlodxh.js:38
+ep @ index-DDzlodxh.js:41
+ux @ index-DDzlodxh.js:38
+Tu @ index-DDzlodxh.js:38
+Ah @ index-DDzlodxh.js:38
+pP @ index-DDzlodxh.js:38
+index-DDzlodxh.js:315  GET https://5ducks.ai/api/user 401 (Unauthorized)
+YC @ index-DDzlodxh.js:315
+await in YC
+ic @ index-DDzlodxh.js:315
+_ @ index-DDzlodxh.js:328
+onKeyDown @ index-DDzlodxh.js:328
+qk @ index-DDzlodxh.js:38
+Xk @ index-DDzlodxh.js:38
+Zk @ index-DDzlodxh.js:38
+kg @ index-DDzlodxh.js:38
+Bx @ index-DDzlodxh.js:38
+(anonymous) @ index-DDzlodxh.js:38
+ep @ index-DDzlodxh.js:41
+ux @ index-DDzlodxh.js:38
+Tu @ index-DDzlodxh.js:38
+Ah @ index-DDzlodxh.js:38
+pP @ index-DDzlodxh.js:38
+index-DDzlodxh.js:315  GET https://5ducks.ai/api/user 401 (Unauthorized)
+YC @ index-DDzlodxh.js:315
+await in YC
+ic @ index-DDzlodxh.js:315
+_ @ index-DDzlodxh.js:328
+onKeyDown @ index-DDzlodxh.js:328
+qk @ index-DDzlodxh.js:38
+Xk @ index-DDzlodxh.js:38
+Zk @ index-DDzlodxh.js:38
+kg @ index-DDzlodxh.js:38
+Bx @ index-DDzlodxh.js:38
+(anonymous) @ index-DDzlodxh.js:38
+ep @ index-DDzlodxh.js:41
+ux @ index-DDzlodxh.js:38
+Tu @ index-DDzlodxh.js:38
+Ah @ index-DDzlodxh.js:38
+pP @ index-DDzlodxh.js:38
+index-DDzlodxh.js:315  GET https://5ducks.ai/api/user 401 (Unauthorized)
+YC @ index-DDzlodxh.js:315
+await in YC
+ic @ index-DDzlodxh.js:315
+_ @ index-DDzlodxh.js:328
+onKeyDown @ index-DDzlodxh.js:328
+qk @ index-DDzlodxh.js:38
+Xk @ index-DDzlodxh.js:38
+Zk @ index-DDzlodxh.js:38
+kg @ index-DDzlodxh.js:38
+Bx @ index-DDzlodxh.js:38
+(anonymous) @ index-DDzlodxh.js:38
+ep @ index-DDzlodxh.js:41
+ux @ index-DDzlodxh.js:38
+Tu @ index-DDzlodxh.js:38
+Ah @ index-DDzlodxh.js:38
+pP @ index-DDzlodxh.js:38
