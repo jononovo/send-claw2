@@ -137,6 +137,33 @@ export const userGuidanceProgress = pgTable("user_guidance_progress", {
   uniqueIndex('idx_user_guidance_progress_user_id').on(table.userId)
 ]);
 
+// Guidance Videos - stores video recordings for challenge tutorials with background removal
+export interface GuidanceVideoTimestamp {
+  stepIndex: number;
+  timestamp: number; // milliseconds from video start
+  action: string;
+}
+
+export const guidanceVideos = pgTable("guidance_videos", {
+  id: serial("id").primaryKey(),
+  challengeId: text("challenge_id").notNull(),
+  questId: text("quest_id").notNull(),
+  status: text("status").notNull().default('pending'), // 'pending', 'processing', 'completed', 'failed'
+  rawPath: text("raw_path"), // Path to uploaded raw video
+  processedPath: text("processed_path"), // Path to processed video with background removed
+  timestamps: jsonb("timestamps").$type<GuidanceVideoTimestamp[]>().default([]),
+  duration: real("duration"), // Duration in seconds
+  fileSize: integer("file_size"), // Size in bytes
+  errorMessage: text("error_message"),
+  createdBy: integer("created_by").references(() => users.id),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow()
+}, (table) => [
+  index('idx_guidance_videos_challenge').on(table.challengeId),
+  index('idx_guidance_videos_quest').on(table.questId),
+  index('idx_guidance_videos_status').on(table.status)
+]);
+
 // Unified User Progress - namespace-scoped progress for any feature (forms, challenges, etc.)
 // Replaces feature-specific progress tables with a single unified approach
 export const userProgress = pgTable("user_progress", {
@@ -1498,4 +1525,20 @@ export type InsertEmailSend = z.infer<typeof insertEmailSendSchema>;
 // Backward compatibility exports
 export const targetCustomerProfiles = customerProfiles;
 
+// Guidance Video schemas and types
+export const insertGuidanceVideoSchema = z.object({
+  challengeId: z.string().min(1, "Challenge ID is required"),
+  questId: z.string().min(1, "Quest ID is required"),
+  rawPath: z.string().optional(),
+  timestamps: z.array(z.object({
+    stepIndex: z.number(),
+    timestamp: z.number(),
+    action: z.string()
+  })).default([]),
+  status: z.enum(['pending', 'processing', 'completed', 'failed']).default('pending'),
+  createdBy: z.number().optional()
+});
+
+export type GuidanceVideo = typeof guidanceVideos.$inferSelect;
+export type InsertGuidanceVideo = z.infer<typeof insertGuidanceVideoSchema>;
 
