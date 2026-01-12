@@ -318,7 +318,9 @@ export default function LandingStealth() {
     const validCodes = ["quack", "charlie"];
     if (validCodes.includes(code.toLowerCase())) {
       // Push event to dataLayer for GTM to handle conversion tracking
+      console.log('[GTM DEBUG] Pushing secret_code_unlock to dataLayer', { dataLayerExists: !!window.dataLayer, length: window.dataLayer?.length });
       window.dataLayer?.push({ event: 'secret_code_unlock' });
+      console.log('[GTM DEBUG] After push - dataLayer length:', window.dataLayer?.length);
       // Log attribution event
       logConversionEvent('secret_code_unlock').catch(() => {});
       
@@ -423,7 +425,9 @@ export default function LandingStealth() {
       }
       
       // Push event to dataLayer for GTM to handle conversion tracking
+      console.log('[GTM DEBUG] Pushing access_code_requested to dataLayer', { dataLayerExists: !!window.dataLayer, length: window.dataLayer?.length });
       window.dataLayer?.push({ event: 'access_code_requested' });
+      console.log('[GTM DEBUG] After push - dataLayer length:', window.dataLayer?.length);
       // Log attribution event
       logConversionEvent('access_code_requested').catch(() => {});
       

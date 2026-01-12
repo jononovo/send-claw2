@@ -1,0 +1,54 @@
+console.log('Before push:', window.dataLayer.length);
+window.dataLayer.push({ event: 'search_performed' });
+console.log('After push:', window.dataLayer.length);
+VM1680:1 Before push: 4
+js?id=AW-17847406917&cx=c&gtm=4e6180:361 Processing commands (1)
+js?id=AW-17847406917&cx=c&gtm=4e6180:361 Processing data layer push: {event: "search_performed", gtm.uniqueEventId: 8}
+js?id=AW-17847406917&cx=c&gtm=4e6180:361 Processing GTAG command: ["event", "conversion", {value: "3", currency: "USD", transaction_id: undefined, conversion_cookie_prefix: undefined, conversion_linker: true, allow_enhanced_conversions: false, ads_data_redaction: undefined, developer_id: undefined, send_to: "AW-17847406917/2QUzCK-Dt90bEMWip75C"}]
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6180:418 Processing commands (1)
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6180:418 Processing data layer push: {event: "search_performed", gtm.uniqueEventId: 8}
+js?id=G-4K01JPM2D8&cx=c&gtm=4e6180:418 Processing GTAG command: ["event", "conversion", {value: "3", currency: "USD", transaction_id: undefined, conversion_cookie_prefix: undefined, conversion_linker: true, allow_enhanced_conversions: false, ads_data_redaction: undefined, developer_id: undefined, send_to: "AW-17847406917/2QUzCK-Dt90bEMWip75C"}]
+VM1680:3 After push: 5
+undefined
+js?id=AW-17847406917&cx=c&gtm=4e6180:361 Sending "Google Ads" hit.
+js?id=AW-17847406917&cx=c&gtm=4e6180:361 Target ID: "AW-17847406917"
+js?id=AW-17847406917&cx=c&gtm=4e6180:361 Hit URL: "https://www.googleadservices.com/pagead/conversion/17847406917/?random=1768248166703&cv=11&fst=1768248166703&fmt=3&bg=ffffff&guid=ON&async=1&en=conversion&gtm=45be6180v9239384306z89239972064za20gzb9239972064zd9239972064xea&gcd=13l3l3l3l1l1&dma=0&tag_exp=103116026~103200004~104527907~104528500~104573694~104684208~104684211~105391253~115938465~115938469~116514483~116682875&u_w=1352&u_h=878&url=https%3A%2F%2F5ducks.ai%2Fapp&ref=https%3A%2F%2F5ducks.ai%2F&label=2QUzCK-Dt90bEMWip75C&capi=1&frm=0&tiba=5Ducks%20-%20Sales%20Gamified%20%7C%20Find%20Prospects%20in%205%20Minutes%20a%20Day&bttype=purchase&_dbg=1&value=3&currency_code=USD&hn=www.googleadservices.com&npa=0&pscdl=noapi&auid=2017448683.1767455625&uaa=arm&uab=64&uafvl=Google%2520Chrome%3B143.0.7499.170%7CChromium%3B143.0.7499.170%7CNot%2520A(Brand%3B24.0.0.0&uamb=0&uam=&uap=macOS&uapv=15.2.0&uaw=0&_tu=CA&gcl_ctr=23~0"
+js?id=AW-17847406917&cx=c&gtm=4e6180:361 Hit Data:
+js?id=AW-17847406917&cx=c&gtm=4e6180:361 "cv": "11"
+js?id=AW-17847406917&cx=c&gtm=4e6180:361 "fst": 1768248166703
+js?id=AW-17847406917&cx=c&gtm=4e6180:361 "fmt": 3
+js?id=AW-17847406917&cx=c&gtm=4e6180:361 "bg": "ffffff"
+js?id=AW-17847406917&cx=c&gtm=4e6180:361 "guid": "ON"
+js?id=AW-17847406917&cx=c&gtm=4e6180:361 "async": "1"
+js?id=AW-17847406917&cx=c&gtm=4e6180:361 "en": "conversion"
+js?id=AW-17847406917&cx=c&gtm=4e6180:361 "gtm": "45be6180v9239384306z89239972064za20gzb9239972064zd9239972064xea"
+js?id=AW-17847406917&cx=c&gtm=4e6180:361 "gcd": "13l3l3l3l1l1"
+js?id=AW-17847406917&cx=c&gtm=4e6180:361 "dma": "0"
+js?id=AW-17847406917&cx=c&gtm=4e6180:361 "tag_exp": "103116026~103200004~104527907~104528500~104573694~104684208~104684211~105391253~115938465~115938469~116514483~116682875"
+js?id=AW-17847406917&cx=c&gtm=4e6180:361 "u_w": "1352"
+js?id=AW-17847406917&cx=c&gtm=4e6180:361 "u_h": "878"
+js?id=AW-17847406917&cx=c&gtm=4e6180:361 "url": "https://5ducks.ai/app"
+js?id=AW-17847406917&cx=c&gtm=4e6180:361 "ref": "https://5ducks.ai/"
+js?id=AW-17847406917&cx=c&gtm=4e6180:361 "label": "2QUzCK-Dt90bEMWip75C"
+js?id=AW-17847406917&cx=c&gtm=4e6180:361 "capi": "1"
+js?id=AW-17847406917&cx=c&gtm=4e6180:361 "frm": 0
+js?id=AW-17847406917&cx=c&gtm=4e6180:361 "tiba": "5Ducks - Sales Gamified | Find Prospects in 5 Minutes a Day"
+js?id=AW-17847406917&cx=c&gtm=4e6180:361 "bttype": "purchase"
+js?id=AW-17847406917&cx=c&gtm=4e6180:361 "_dbg": true
+js?id=AW-17847406917&cx=c&gtm=4e6180:361 "value": "3"
+js?id=AW-17847406917&cx=c&gtm=4e6180:361 "currency_code": "USD"
+js?id=AW-17847406917&cx=c&gtm=4e6180:361 "hn": "www.googleadservices.com"
+js?id=AW-17847406917&cx=c&gtm=4e6180:361 "npa": "0"
+js?id=AW-17847406917&cx=c&gtm=4e6180:361 "pscdl": "noapi"
+js?id=AW-17847406917&cx=c&gtm=4e6180:361 "auid": "2017448683.1767455625"
+js?id=AW-17847406917&cx=c&gtm=4e6180:361 "uaa": "arm"
+js?id=AW-17847406917&cx=c&gtm=4e6180:361 "uab": "64"
+js?id=AW-17847406917&cx=c&gtm=4e6180:361 "uafvl": "Google%20Chrome;143.0.7499.170|Chromium;143.0.7499.170|Not%20A(Brand;24.0.0.0"
+js?id=AW-17847406917&cx=c&gtm=4e6180:361 "uamb": "0"
+js?id=AW-17847406917&cx=c&gtm=4e6180:361 "uam": ""
+js?id=AW-17847406917&cx=c&gtm=4e6180:361 "uap": "macOS"
+js?id=AW-17847406917&cx=c&gtm=4e6180:361 "uapv": "15.2.0"
+js?id=AW-17847406917&cx=c&gtm=4e6180:361 "uaw": "0"
+js?id=AW-17847406917&cx=c&gtm=4e6180:361 "_tu": "CA"
+js?id=AW-17847406917&cx=c&gtm=4e6180:361 "gcl_ctr": "23~0"
+js?id=AW-17847406917&cx=c&gtm=4e6180:361 "data": ""

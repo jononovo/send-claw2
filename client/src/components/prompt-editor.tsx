@@ -1104,7 +1104,9 @@ export default function PromptEditor({
     });
     
     // Push event to dataLayer for GTM to handle conversion tracking
+    console.log('[GTM DEBUG] Pushing search_performed to dataLayer', { dataLayerExists: !!window.dataLayer, length: window.dataLayer?.length });
     window.dataLayer?.push({ event: 'search_performed' });
+    console.log('[GTM DEBUG] After push - dataLayer length:', window.dataLayer?.length);
     // Log attribution event
     logConversionEvent('search_performed').catch(() => {});
     
