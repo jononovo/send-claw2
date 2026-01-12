@@ -62,9 +62,7 @@ export function RegistrationModal() {
       
       // Push event to dataLayer for GTM to handle conversion tracking
       if (isNewUser) {
-        console.log('[GTM DEBUG] Pushing registration_complete to dataLayer (Google)', { dataLayerExists: !!window.dataLayer, length: window.dataLayer?.length });
         window.dataLayer?.push({ event: 'registration_complete' });
-        console.log('[GTM DEBUG] After push - dataLayer length:', window.dataLayer?.length);
         // Send attribution data and log conversion event
         sendAttributionToServer().catch(() => {});
         logConversionEvent('registration_complete').catch(() => {});
@@ -164,9 +162,7 @@ export function RegistrationModal() {
         await registerWithEmail(email, password, name);
         
         // Push event to dataLayer for GTM to handle conversion tracking
-        console.log('[GTM DEBUG] Pushing registration_complete to dataLayer (Email)', { dataLayerExists: !!window.dataLayer, length: window.dataLayer?.length });
         window.dataLayer?.push({ event: 'registration_complete' });
-        console.log('[GTM DEBUG] After push - dataLayer length:', window.dataLayer?.length);
         // Send attribution data and log conversion event
         sendAttributionToServer().catch(() => {});
         logConversionEvent('registration_complete').catch(() => {});
