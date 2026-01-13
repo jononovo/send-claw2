@@ -24,6 +24,7 @@ const defaultGuidanceValue: GuidanceContextValue = {
     completedQuests: [],
     completedChallenges: {},
     isHeaderVisible: false,
+    playbackMode: "guide",
   },
   currentQuest: null,
   currentChallenge: null,
@@ -43,6 +44,9 @@ const defaultGuidanceValue: GuidanceContextValue = {
   startChallenge: () => {},
   stopChallenge: () => {},
   isTestMode: false,
+  setPlaybackMode: () => {},
+  videoTimestamps: [],
+  setVideoTimestamps: () => {},
   recording: { isRecording: false, steps: [], selectedQuestId: null, startRoute: null, includeVideo: false, videoBlob: null, videoStartTime: null, videoUploadId: null, videoUploadStatus: 'idle' },
   startRecording: () => {},
   stopRecording: () => [],
@@ -115,6 +119,9 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
   // Video playback state
   const [videoUrl, setVideoUrl] = useState<string | null>(null);
   const [showVideo, setShowVideo] = useState(false);
+  const videoPlayerRef = useRef<HTMLVideoElement | null>(null);
+  const showModeTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const showModeStartTimeRef = useRef<number | null>(null);
   
   // Stable refs for engine functions to avoid effect re-runs when engine object changes
   const startQuestRef = useRef(engine.startQuest);
@@ -164,11 +171,12 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
     }
   }, []);
 
-  // Fetch guidance video for current challenge
+  // Fetch guidance video for current challenge and store timestamps
   useEffect(() => {
     if (!state.isActive || !currentChallenge?.id) {
       setVideoUrl(null);
       setShowVideo(false);
+      engine.setVideoTimestamps([]);
       return;
     }
 
@@ -179,23 +187,91 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
         if (video?.url) {
           setVideoUrl(video.url);
           setShowVideo(true);
+          if (video.timestamps && Array.isArray(video.timestamps)) {
+            engine.setVideoTimestamps(video.timestamps);
+          }
         } else {
           setVideoUrl(null);
           setShowVideo(false);
+          engine.setVideoTimestamps([]);
         }
       })
       .catch(() => {
         if (!cancelled) {
           setVideoUrl(null);
           setShowVideo(false);
+          engine.setVideoTimestamps([]);
         }
       });
 
     return () => { cancelled = true; };
-  }, [state.isActive, currentChallenge?.id]);
+  }, [state.isActive, currentChallenge?.id, engine]);
 
   // Auto-resume on navigation removed - guidance should only start via explicit triggers
   // Users can manually resume by clicking Fluffy if they want to continue a paused challenge
+
+  // Show-me mode: auto-advance through steps based on video timestamps or fixed delays
+  useEffect(() => {
+    if (!state.isActive || state.playbackMode !== "show" || !currentChallenge) {
+      if (showModeTimerRef.current) {
+        clearTimeout(showModeTimerRef.current);
+        showModeTimerRef.current = null;
+      }
+      showModeStartTimeRef.current = null;
+      return;
+    }
+
+    const { videoTimestamps } = engine;
+    const currentStepIdx = state.currentStepIndex;
+    const totalSteps = currentChallenge.steps.length;
+
+    // If we've completed all steps, don't set another timer
+    if (currentStepIdx >= totalSteps) {
+      return;
+    }
+
+    // Initialize start time on first step
+    if (showModeStartTimeRef.current === null) {
+      showModeStartTimeRef.current = Date.now();
+    }
+
+    // Calculate delay until next step
+    let delayMs: number;
+
+    if (videoTimestamps.length > 0) {
+      // Use recorded timestamps - they're in milliseconds relative to video start
+      const currentTimestamp = videoTimestamps.find(t => t.stepIndex === currentStepIdx);
+      const nextTimestamp = videoTimestamps.find(t => t.stepIndex === currentStepIdx + 1);
+
+      if (currentTimestamp && nextTimestamp) {
+        // Delay is the difference between this step's timestamp and next step's
+        delayMs = nextTimestamp.timestamp - currentTimestamp.timestamp;
+      } else if (nextTimestamp) {
+        // First step - use next timestamp as delay
+        delayMs = nextTimestamp.timestamp;
+      } else {
+        // Last step or no timestamp - use default
+        delayMs = 2000;
+      }
+    } else {
+      // No timestamps available - use fixed delay
+      delayMs = 2000;
+    }
+
+    // Ensure minimum delay
+    delayMs = Math.max(delayMs, 500);
+
+    showModeTimerRef.current = setTimeout(() => {
+      advanceStepRef.current();
+    }, delayMs);
+
+    return () => {
+      if (showModeTimerRef.current) {
+        clearTimeout(showModeTimerRef.current);
+        showModeTimerRef.current = null;
+      }
+    };
+  }, [state.isActive, state.playbackMode, state.currentStepIndex, currentChallenge, engine]);
 
   useEffect(() => {
     if (!autoStartForNewUsers) return;
