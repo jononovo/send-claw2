@@ -145,5 +145,38 @@ export const quest1: Quest = {
       steps: [],
       completionMessage: "Congratulations! You've mastered the complete search workflow! 🎉",
     },
+    {
+      "id": "search-restaurants-nyc",
+      "name": "Search for Restaurants",
+      "description": "Learn how to search for specific businesses using the search feature",
+      "emoji": "🔍",
+      "steps": [
+        {
+          "id": "click-search-input",
+          "selector": "[data-testid=\"search-input\"]",
+          "action": "click",
+          "instruction": "Click on the search input field to start your search",
+          "tooltipPosition": "bottom",
+          "route": "/app"
+        },
+        {
+          "id": "type-search-query",
+          "selector": "[data-testid=\"search-input\"]",
+          "action": "type",
+          "instruction": "Type 'hooters in nyc' to search for this restaurant chain in New York City",
+          "tooltipPosition": "bottom",
+          "route": "/app"
+        },
+        {
+          "id": "execute-search",
+          "selector": "[data-testid=\"search-button\"]",
+          "action": "click",
+          "instruction": "Click the search button to find results matching your query",
+          "tooltipPosition": "left",
+          "route": "/app"
+        }
+      ],
+      "completionMessage": "Great job! You've learned how to search for specific businesses by location. Try searching for other restaurants or businesses in different cities!"
+    }
   ],
 };
