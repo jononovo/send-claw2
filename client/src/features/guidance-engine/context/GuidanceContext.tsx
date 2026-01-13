@@ -292,6 +292,7 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
   }, [currentChallenge?.id]);
 
   // Show-me mode: Perform actions automatically (click, type, etc.)
+  // Actions are synced to video timestamps - they execute when video reaches the step's timestamp
   const lastPerformedStepRef = useRef<number>(-1);
   
   useEffect(() => {
@@ -306,8 +307,20 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
       return;
     }
 
-    // Small delay to let the tooltip appear first
-    const actionTimer = setTimeout(() => {
+    // If we have video timestamps, wait for the video to reach this step's timestamp
+    if (videoTimestamps.length > 0) {
+      const currentStepTimestamp = videoTimestamps.find(t => t.stepIndex === state.currentStepIndex);
+      
+      if (currentStepTimestamp) {
+        // Video hasn't reached this step's timestamp yet - don't perform action
+        if (videoCurrentTimeMs < currentStepTimestamp.timestamp) {
+          return;
+        }
+      }
+    }
+
+    // Perform the action (video has reached the timestamp, or no timestamps available)
+    const performAction = () => {
       try {
         const element = document.querySelector(currentStep.selector);
         if (!element) {
@@ -382,10 +395,13 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
       } catch (err) {
         console.error("[Show mode] Error performing action:", err);
       }
-    }, 300); // 300ms delay to let tooltip render first
+    };
+
+    // Small delay to let the tooltip appear first
+    const actionTimer = setTimeout(performAction, 300);
 
     return () => clearTimeout(actionTimer);
-  }, [state.isActive, state.playbackMode, state.currentStepIndex, currentStep]);
+  }, [state.isActive, state.playbackMode, state.currentStepIndex, currentStep, videoTimestamps, videoCurrentTimeMs]);
 
   useEffect(() => {
     if (!autoStartForNewUsers) return;
