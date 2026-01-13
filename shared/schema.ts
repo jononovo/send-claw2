@@ -150,7 +150,8 @@ export const guidanceVideos = pgTable("guidance_videos", {
   questId: text("quest_id").notNull(),
   status: text("status").notNull().default('pending'), // 'pending', 'processing', 'completed', 'failed'
   rawPath: text("raw_path"), // Path to uploaded raw video
-  processedPath: text("processed_path"), // Path to processed video with background removed
+  processedPath: text("processed_path"), // Path to processed video (legacy, local filesystem)
+  objectPath: text("object_path"), // Path in App Storage (e.g., guidance-videos/challenge-id.webm)
   timestamps: jsonb("timestamps").$type<GuidanceVideoTimestamp[]>().default([]),
   duration: real("duration"), // Duration in seconds
   fileSize: integer("file_size"), // Size in bytes
