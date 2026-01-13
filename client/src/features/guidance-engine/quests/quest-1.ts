@@ -333,6 +333,120 @@ export const quest1: Quest = {
         }
       ],
       "completionMessage": "Great job! You've learned how to access your profile menu and navigate the user interface options."
+    },
+    {
+      "id": "compose-email-with-templates",
+      "name": "Compose an Email",
+      "description": "Learn how to create and compose a new email using the email editor and templates",
+      "emoji": "✉️",
+      "steps": [
+        {
+          "id": "enter-recipient",
+          "selector": "input.flex.h-10.w-full",
+          "action": "click",
+          "instruction": "Click on the recipient email field to enter who you want to send the email to",
+          "tooltipPosition": "bottom",
+          "route": "/app"
+        },
+        {
+          "id": "add-subject",
+          "selector": "[data-testid=\"input-email-subject\"]",
+          "action": "click",
+          "instruction": "Click on the subject line field to add a subject for your email",
+          "tooltipPosition": "bottom",
+          "route": "/app"
+        },
+        {
+          "id": "write-content",
+          "selector": "[data-testid=\"textarea-email-content\"]",
+          "action": "click",
+          "instruction": "Click in the email content area to start writing your message",
+          "tooltipPosition": "top",
+          "route": "/app"
+        },
+        {
+          "id": "explore-templates",
+          "selector": "span",
+          "action": "click",
+          "instruction": "Click on Templates to explore pre-made email templates that can help you write faster",
+          "tooltipPosition": "auto",
+          "route": "/app"
+        }
+      ],
+      "completionMessage": "Great job! You've learned how to compose an email by filling in the recipient, subject, content, and exploring templates to make your writing easier."
+    },
+    {
+      "id": "email-automation-setup",
+      "name": "Set Up Email Automation",
+      "description": "Learn how to configure an AI-powered email automation tool and set up recipient details",
+      "emoji": "📧",
+      "steps": [
+        {
+          "id": "click-svg-icon",
+          "selector": "svg",
+          "action": "click",
+          "instruction": "Click on the icon to get started with the email automation tool",
+          "tooltipPosition": "bottom",
+          "route": "/app"
+        },
+        {
+          "id": "select-automation-tool",
+          "selector": "div.font-medium.truncate",
+          "action": "click",
+          "instruction": "Select the AI-powered email automation tool from the available options",
+          "tooltipPosition": "right",
+          "route": "/app"
+        },
+        {
+          "id": "focus-recipient-email",
+          "selector": "input.flex.h-10.w-full",
+          "action": "click",
+          "instruction": "Click on the recipient email field to start entering the email address",
+          "tooltipPosition": "top",
+          "route": "/app"
+        },
+        {
+          "id": "click-recipient-email-2",
+          "selector": "input.flex.h-10.w-full",
+          "action": "click",
+          "instruction": "Make sure the recipient email field is properly focused",
+          "tooltipPosition": "top",
+          "route": "/app"
+        },
+        {
+          "id": "click-recipient-email-3",
+          "selector": "input.flex.h-10.w-full",
+          "action": "click",
+          "instruction": "Continue working with the recipient email field",
+          "tooltipPosition": "top",
+          "route": "/app"
+        },
+        {
+          "id": "click-recipient-email-4",
+          "selector": "input.flex.h-10.w-full",
+          "action": "click",
+          "instruction": "Ensure the email field is ready for input",
+          "tooltipPosition": "top",
+          "route": "/app"
+        },
+        {
+          "id": "enter-recipient-email",
+          "selector": "input.flex.h-10.w-full",
+          "action": "type",
+          "instruction": "Type the recipient's email address in the field",
+          "tooltipPosition": "top",
+          "route": "/app"
+        },
+        {
+          "id": "access-templates",
+          "selector": "span",
+          "action": "click",
+          "instruction": "Click on 'Templates' to explore available email templates for your automation",
+          "tooltipPosition": "bottom",
+          "route": "/app"
+        }
+      ],
+      "completionMessage": "Great job! You've successfully set up the email automation tool and learned how to configure recipient details and access templates. You're ready to create effective email campaigns!"
     }
   ],
 };

@@ -8,6 +8,8 @@ import { processVideoSimple } from "./processor";
 import { VIDEO_CONFIG } from "./config";
 import * as fs from "fs/promises";
 
+const REPLIT_SIDECAR_ENDPOINT = "http://127.0.0.1:1106";
+
 const upload = multer({
   storage: multer.diskStorage({
     destination: async (req, file, cb) => {
@@ -38,9 +40,30 @@ function getBucketName(): string {
   return bucketId;
 }
 
-function getVideoPublicUrl(objectPath: string): string {
+async function getSignedVideoUrl(objectPath: string): Promise<string> {
   const bucketName = getBucketName();
-  return `https://storage.googleapis.com/${bucketName}/${objectPath}`;
+  const request = {
+    bucket_name: bucketName,
+    object_name: objectPath,
+    method: "GET",
+    expires_at: new Date(Date.now() + 3600 * 1000).toISOString(),
+  };
+  
+  const response = await fetch(
+    `${REPLIT_SIDECAR_ENDPOINT}/object-storage/signed-object-url`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(request),
+    }
+  );
+  
+  if (!response.ok) {
+    throw new Error(`Failed to sign video URL: ${response.status}`);
+  }
+  
+  const { signed_url } = await response.json();
+  return signed_url;
 }
 
 export function registerGuidanceVideoRoutes(app: Express) {
@@ -117,7 +140,7 @@ export function registerGuidanceVideoRoutes(app: Express) {
       let url: string | null = null;
       if (video.status === 'completed') {
         if (video.objectPath) {
-          url = getVideoPublicUrl(video.objectPath);
+          url = await getSignedVideoUrl(video.objectPath);
         } else if (video.processedPath) {
           url = `/static/guidance-videos/processed/${video.challengeId}.webm`;
         }
@@ -132,6 +155,7 @@ export function registerGuidanceVideoRoutes(app: Express) {
       });
 
     } catch (error) {
+      console.error("[GuidanceVideo] Get video error:", error);
       res.status(500).json({ message: "Failed to get video" });
     }
   });
@@ -146,7 +170,7 @@ export function registerGuidanceVideoRoutes(app: Express) {
 
       let url: string;
       if (video.objectPath) {
-        url = getVideoPublicUrl(video.objectPath);
+        url = await getSignedVideoUrl(video.objectPath);
       } else {
         url = `/static/guidance-videos/processed/${video.challengeId}.webm`;
       }
@@ -158,6 +182,7 @@ export function registerGuidanceVideoRoutes(app: Express) {
       });
 
     } catch (error) {
+      console.error("[GuidanceVideo] Get challenge video error:", error);
       res.status(500).json({ message: "Failed to get video" });
     }
   });
