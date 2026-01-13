@@ -855,6 +855,23 @@ export const quest1: Quest = {
         }
       ],
       "completionMessage": "Great job! You've learned how to navigate the app, use the search functionality, and apply multiple filters to find specific startup data. These skills will help you efficiently discover relevant business information."
+    },
+    {
+      "id": "search-startup-data",
+      "name": "Search for Startups",
+      "description": "Learn how to search for startup information using the search functionality",
+      "emoji": "🔍",
+      "steps": [
+        {
+          "id": "click-search-input",
+          "selector": "[data-testid=\"search-input\"]",
+          "action": "click",
+          "instruction": "Click on the search input field to start searching for startup data",
+          "tooltipPosition": "bottom",
+          "route": "/app"
+        }
+      ],
+      "completionMessage": "Great job! You've learned how to access the search feature to find startup information. Now you can search for companies by location, status, or other criteria."
     }
   ],
 };
