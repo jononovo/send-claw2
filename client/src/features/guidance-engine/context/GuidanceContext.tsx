@@ -307,15 +307,21 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
       return;
     }
 
-    // If we have video timestamps, wait for the video to reach this step's timestamp
-    if (videoTimestamps.length > 0) {
-      const currentStepTimestamp = videoTimestamps.find(t => t.stepIndex === state.currentStepIndex);
-      
-      if (currentStepTimestamp) {
-        // Video hasn't reached this step's timestamp yet - don't perform action
-        if (videoCurrentTimeMs < currentStepTimestamp.timestamp) {
-          return;
-        }
+    // In show mode, actions should be synced to video timestamps
+    // If timestamps are empty, they're either loading or there's no video - wait for them
+    if (videoTimestamps.length === 0) {
+      // Don't perform action yet - timestamps might still be loading
+      // The effect will re-run when timestamps are populated
+      return;
+    }
+    
+    // Check if video has reached this step's timestamp
+    const currentStepTimestamp = videoTimestamps.find(t => t.stepIndex === state.currentStepIndex);
+    
+    if (currentStepTimestamp) {
+      // Video hasn't reached this step's timestamp yet - don't perform action
+      if (videoCurrentTimeMs < currentStepTimestamp.timestamp) {
+        return;
       }
     }
 
