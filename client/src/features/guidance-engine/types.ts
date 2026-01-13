@@ -42,6 +42,14 @@ export interface Quest {
   challenges: Challenge[];
 }
 
+export type PlaybackMode = "guide" | "show";
+
+export interface VideoTimestamp {
+  stepIndex: number;
+  timestamp: number;
+  action: string;
+}
+
 export interface GuidanceState {
   isActive: boolean;
   currentQuestId: string | null;
@@ -50,6 +58,7 @@ export interface GuidanceState {
   completedQuests: string[];
   completedChallenges: Record<string, string[]>;
   isHeaderVisible: boolean;
+  playbackMode: PlaybackMode;
 }
 
 export interface GuidanceContextValue {
@@ -57,7 +66,7 @@ export interface GuidanceContextValue {
   currentQuest: Quest | null;
   currentChallenge: Challenge | null;
   currentStep: GuidanceStep | null;
-  startQuest: (questId: string) => void;
+  startQuest: (questId: string, mode?: PlaybackMode) => void;
   startNextChallenge: () => void;
   advanceStep: () => void;
   previousStep: () => void;
@@ -66,12 +75,15 @@ export interface GuidanceContextValue {
   resumeGuidance: () => void;
   toggleHeader: () => void;
   resetProgress: () => void;
-  restartChallenge: (questId: string, challengeIndex: number) => void;
+  restartChallenge: (questId: string, challengeIndex: number, mode?: PlaybackMode) => void;
   getChallengeProgress: () => { completed: number; total: number };
   getQuestProgress: () => { completed: number; total: number };
-  startChallenge: (challenge: Challenge, onComplete?: () => void) => void;
+  startChallenge: (challenge: Challenge, onComplete?: () => void, mode?: PlaybackMode) => void;
   stopChallenge: () => void;
   isTestMode: boolean;
+  setPlaybackMode: (mode: PlaybackMode) => void;
+  videoTimestamps: VideoTimestamp[];
+  setVideoTimestamps: (timestamps: VideoTimestamp[]) => void;
   recording: RecordingState;
   startRecording: (questId: string, startRoute: string, includeVideo?: boolean) => void;
   stopRecording: () => RecordedStep[];

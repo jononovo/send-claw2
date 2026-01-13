@@ -1,5 +1,5 @@
 import { useState, useCallback, useMemo, useEffect, useRef } from "react";
-import type { GuidanceState, GuidanceContextValue, Quest, Challenge, GuidanceStep, RecordingState, RecordedStep } from "../types";
+import type { GuidanceState, GuidanceContextValue, Quest, Challenge, GuidanceStep, RecordingState, RecordedStep, PlaybackMode, VideoTimestamp } from "../types";
 import { QUESTS, getQuestById, getFirstIncompleteQuest } from "../quests";
 
 const defaultRecordingState: RecordingState = {
@@ -24,6 +24,7 @@ const defaultState: GuidanceState = {
   completedQuests: [],
   completedChallenges: {},
   isHeaderVisible: false,
+  playbackMode: "guide",
 };
 
 function loadProgress(): GuidanceState {
@@ -132,6 +133,8 @@ export function useGuidanceEngine(options: UseGuidanceEngineOptions): GuidanceCo
   
   const [recording, setRecording] = useState<RecordingState>(defaultRecordingState);
   const recordingRef = useRef(false);
+  
+  const [videoTimestamps, setVideoTimestamps] = useState<VideoTimestamp[]>([]);
 
   // Initialize from server once auth is ready
   useEffect(() => {
@@ -225,7 +228,7 @@ export function useGuidanceEngine(options: UseGuidanceEngineOptions): GuidanceCo
     return currentChallenge.steps[state.currentStepIndex] || null;
   }, [currentChallenge, state.currentStepIndex]);
 
-  const startQuest = useCallback((questId: string) => {
+  const startQuest = useCallback((questId: string, mode: PlaybackMode = "guide") => {
     const quest = getQuestById(questId);
     if (!quest) return;
 
@@ -243,6 +246,7 @@ export function useGuidanceEngine(options: UseGuidanceEngineOptions): GuidanceCo
       currentChallengeIndex: firstIncompleteIndex,
       currentStepIndex: 0,
       isHeaderVisible: true,
+      playbackMode: mode,
     }));
   }, [state.completedChallenges]);
 
@@ -368,7 +372,7 @@ export function useGuidanceEngine(options: UseGuidanceEngineOptions): GuidanceCo
     syncToServer(defaultState);
   }, []);
 
-  const restartChallenge = useCallback((questId: string, challengeIndex: number) => {
+  const restartChallenge = useCallback((questId: string, challengeIndex: number, mode: PlaybackMode = "guide") => {
     const quest = getQuestById(questId);
     if (!quest) return;
     
@@ -385,6 +389,7 @@ export function useGuidanceEngine(options: UseGuidanceEngineOptions): GuidanceCo
       currentChallengeIndex: challengeIndex,
       currentStepIndex: 0,
       isHeaderVisible: true,
+      playbackMode: mode,
       completedChallenges: {
         ...prev.completedChallenges,
         [questId]: updatedCompleted,
@@ -408,7 +413,7 @@ export function useGuidanceEngine(options: UseGuidanceEngineOptions): GuidanceCo
     };
   }, [state.completedQuests]);
 
-  const startChallenge = useCallback((challenge: Challenge, onComplete?: () => void) => {
+  const startChallenge = useCallback((challenge: Challenge, onComplete?: () => void, mode: PlaybackMode = "guide") => {
     setTestChallenge(challenge);
     testCompleteCallbackRef.current = onComplete || null;
     setState((prev) => ({
@@ -418,6 +423,7 @@ export function useGuidanceEngine(options: UseGuidanceEngineOptions): GuidanceCo
       currentChallengeIndex: 0,
       currentStepIndex: 0,
       isHeaderVisible: true,
+      playbackMode: mode,
     }));
   }, []);
 
@@ -583,6 +589,13 @@ export function useGuidanceEngine(options: UseGuidanceEngineOptions): GuidanceCo
     }));
   }, []);
 
+  const setPlaybackMode = useCallback((mode: PlaybackMode) => {
+    setState((prev) => ({
+      ...prev,
+      playbackMode: mode,
+    }));
+  }, []);
+
   useEffect(() => {
     if (isTestMode && !state.isActive && testChallenge) {
       const callback = testCompleteCallbackRef.current;
@@ -618,6 +631,9 @@ export function useGuidanceEngine(options: UseGuidanceEngineOptions): GuidanceCo
     startChallenge,
     stopChallenge,
     isTestMode,
+    setPlaybackMode,
+    videoTimestamps,
+    setVideoTimestamps,
     recording,
     startRecording,
     stopRecording,
