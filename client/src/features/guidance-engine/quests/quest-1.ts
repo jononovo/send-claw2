@@ -210,6 +210,55 @@ export const quest1: Quest = {
         }
       ],
       "completionMessage": "Great job! You've learned how to navigate through the user profile menu and access different options. This is essential for managing your account and accessing various features."
+    },
+    {
+      "id": "generate-email-workflow",
+      "name": "Generate an Email",
+      "description": "Learn how to use the email generation feature to create personalized emails",
+      "emoji": "📧",
+      "steps": [
+        {
+          "id": "select-category",
+          "selector": "span.group.inline-flex.items-center",
+          "action": "click",
+          "instruction": "Click on the 'car' category to select it for your email",
+          "tooltipPosition": "bottom",
+          "route": "/app"
+        },
+        {
+          "id": "open-options",
+          "selector": "svg",
+          "action": "click",
+          "instruction": "Click on this icon to open additional options",
+          "tooltipPosition": "left",
+          "route": "/app"
+        },
+        {
+          "id": "cancel-options",
+          "selector": "button.inline-flex.items-center.justify-center",
+          "action": "click",
+          "instruction": "Click 'Cancel' to close the options menu",
+          "tooltipPosition": "top",
+          "route": "/app"
+        },
+        {
+          "id": "click-generate-button",
+          "selector": "[data-testid=\"button-generate-email\"]",
+          "action": "click",
+          "instruction": "Click the 'Generate Email' button to start creating your email",
+          "tooltipPosition": "top",
+          "route": "/app"
+        },
+        {
+          "id": "confirm-generation",
+          "selector": "button.inline-flex.items-center.justify-center",
+          "action": "click",
+          "instruction": "Click 'Generate Email' again to confirm and create your personalized email",
+          "tooltipPosition": "bottom",
+          "route": "/app"
+        }
+      ],
+      "completionMessage": "Great job! You've learned how to generate a personalized email using the category selection and generation tools."
     }
   ],
 };
