@@ -390,9 +390,8 @@ export function QuestsPage() {
   };
 
   const handleShowDemo = (questId: string, challengeIndex: number) => {
-    // Start the challenge in show mode
-    restartChallenge(questId, challengeIndex);
-    setPlaybackMode("show");
+    // Start the challenge in show mode (pass "show" as the mode parameter)
+    restartChallenge(questId, challengeIndex, "show");
     navigate("/app");
   };
 
