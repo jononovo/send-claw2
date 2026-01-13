@@ -7,9 +7,12 @@ export const VIDEO_CONFIG = {
   PROCESSED_DIR: path.join(BASE_DIR, 'processed'),
   FRAMES_DIR: path.join(BASE_DIR, 'frames'),
   
-  OUTPUT_WIDTH: 200,
-  OUTPUT_HEIGHT: 130,
-  OUTPUT_FPS: 12,
+  OUTPUT_WIDTH: 320,
+  OUTPUT_HEIGHT: 208,
+  OUTPUT_FPS: 15,
+  
+  VIDEO_CRF: 32,
+  AUDIO_BITRATE: '64k',
   
   MAX_DURATION_SECONDS: 180,
   MAX_FILE_SIZE_MB: 100,

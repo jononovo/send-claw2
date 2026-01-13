@@ -45,11 +45,12 @@ export async function processVideo(
       );
     }
 
-    console.log(`[VideoProcessor] Reassembling video with alpha...`);
+    console.log(`[VideoProcessor] Reassembling video with alpha and audio...`);
     await execAsync(
-      `ffmpeg -y -framerate ${VIDEO_CONFIG.OUTPUT_FPS} -i "${cleanFramesDir}/%04d.png" ` +
-      `-c:v libvpx-vp9 -pix_fmt yuva420p -crf 45 -b:v 0 ` +
-      `-deadline good -cpu-used 4 -an "${outputPath}"`,
+      `ffmpeg -y -framerate ${VIDEO_CONFIG.OUTPUT_FPS} -i "${cleanFramesDir}/%04d.png" -i "${inputPath}" ` +
+      `-c:v libvpx-vp9 -pix_fmt yuva420p -crf ${VIDEO_CONFIG.VIDEO_CRF} -b:v 0 ` +
+      `-map 0:v -map 1:a? -c:a libopus -b:a ${VIDEO_CONFIG.AUDIO_BITRATE} ` +
+      `-deadline good -cpu-used 4 "${outputPath}"`,
       { timeout: 300000 }
     );
 
@@ -90,8 +91,9 @@ export async function processVideoSimple(
     await execAsync(
       `ffmpeg -y -i "${inputPath}" ` +
       `-vf "fps=${VIDEO_CONFIG.OUTPUT_FPS},scale=${VIDEO_CONFIG.OUTPUT_WIDTH}:${VIDEO_CONFIG.OUTPUT_HEIGHT},chromakey=${VIDEO_CONFIG.CHROMA_KEY_COLOR}:${VIDEO_CONFIG.CHROMA_KEY_SIMILARITY}:${VIDEO_CONFIG.CHROMA_KEY_BLEND}" ` +
-      `-c:v libvpx-vp9 -pix_fmt yuva420p -crf 45 -b:v 0 ` +
-      `-deadline good -cpu-used 4 -an "${outputPath}"`,
+      `-c:v libvpx-vp9 -pix_fmt yuva420p -crf ${VIDEO_CONFIG.VIDEO_CRF} -b:v 0 ` +
+      `-c:a libopus -b:a ${VIDEO_CONFIG.AUDIO_BITRATE} ` +
+      `-deadline good -cpu-used 4 "${outputPath}"`,
       { timeout: 600000 }
     );
 
