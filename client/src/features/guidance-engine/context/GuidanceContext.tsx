@@ -291,6 +291,102 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
     setIsVideoPlaying(false);
   }, [currentChallenge?.id]);
 
+  // Show-me mode: Perform actions automatically (click, type, etc.)
+  const lastPerformedStepRef = useRef<number>(-1);
+  
+  useEffect(() => {
+    // Only perform actions in show mode
+    if (!state.isActive || state.playbackMode !== "show" || !currentStep) {
+      lastPerformedStepRef.current = -1;
+      return;
+    }
+
+    // Don't re-perform the same step
+    if (state.currentStepIndex === lastPerformedStepRef.current) {
+      return;
+    }
+
+    // Small delay to let the tooltip appear first
+    const actionTimer = setTimeout(() => {
+      try {
+        const element = document.querySelector(currentStep.selector);
+        if (!element) {
+          console.warn(`[Show mode] Element not found: ${currentStep.selector}`);
+          return;
+        }
+
+        lastPerformedStepRef.current = state.currentStepIndex;
+
+        switch (currentStep.action) {
+          case "click":
+            // Simulate a click
+            if (element instanceof HTMLElement) {
+              // Scroll element into view first
+              element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              
+              // Create and dispatch a click event
+              const clickEvent = new MouseEvent('click', {
+                bubbles: true,
+                cancelable: true,
+                view: window
+              });
+              element.dispatchEvent(clickEvent);
+            }
+            break;
+
+          case "type":
+            // Type text into the input
+            if (element instanceof HTMLInputElement || element instanceof HTMLTextAreaElement) {
+              // Scroll and focus
+              element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              element.focus();
+              
+              // Get the value to type
+              const valueToType = currentStep.value || '';
+              
+              // Clear existing value and set new value
+              element.value = '';
+              
+              // Simulate typing character by character for a realistic effect
+              let charIndex = 0;
+              const typeInterval = setInterval(() => {
+                if (charIndex < valueToType.length) {
+                  element.value += valueToType[charIndex];
+                  // Dispatch input event so React/form handlers update
+                  element.dispatchEvent(new Event('input', { bubbles: true }));
+                  charIndex++;
+                } else {
+                  clearInterval(typeInterval);
+                  // Dispatch change event at the end
+                  element.dispatchEvent(new Event('change', { bubbles: true }));
+                }
+              }, 50); // 50ms per character
+            }
+            break;
+
+          case "hover":
+            // Simulate hover
+            if (element instanceof HTMLElement) {
+              element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              element.dispatchEvent(new MouseEvent('mouseenter', { bubbles: true }));
+            }
+            break;
+
+          case "view":
+            // Just scroll into view
+            if (element instanceof HTMLElement) {
+              element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+            break;
+        }
+      } catch (err) {
+        console.error("[Show mode] Error performing action:", err);
+      }
+    }, 300); // 300ms delay to let tooltip render first
+
+    return () => clearTimeout(actionTimer);
+  }, [state.isActive, state.playbackMode, state.currentStepIndex, currentStep]);
+
   useEffect(() => {
     if (!autoStartForNewUsers) return;
     if (authLoading) return;
