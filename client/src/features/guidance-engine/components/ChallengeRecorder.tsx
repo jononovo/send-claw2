@@ -122,8 +122,8 @@ export function ChallengeRecorder({ isOpen, onClose }: ChallengeRecorderProps) {
   };
 
   const handleStopRecording = async () => {
-    // Capture recording state BEFORE stopRecording clears it
-    const hadVideo = recording.includeVideo;
+    // Use component's local includeVideo state (not recording.includeVideo which gets cleared)
+    const hadVideo = includeVideo;
     const videoStartTime = recording.videoStartTime;
     const questId = recording.selectedQuestId || selectedQuestId;
     const startRoute = recording.startRoute || location;
