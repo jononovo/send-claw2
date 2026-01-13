@@ -119,9 +119,10 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
   // Video playback state
   const [videoUrl, setVideoUrl] = useState<string | null>(null);
   const [showVideo, setShowVideo] = useState(false);
-  const videoPlayerRef = useRef<HTMLVideoElement | null>(null);
-  const showModeTimerRef = useRef<NodeJS.Timeout | null>(null);
-  const showModeStartTimeRef = useRef<number | null>(null);
+  const [isVideoPlaying, setIsVideoPlaying] = useState(false);
+  const [videoCurrentTimeMs, setVideoCurrentTimeMs] = useState(0);
+  const lastAdvancedStepRef = useRef<number>(-1);
+  const fallbackTimerRef = useRef<NodeJS.Timeout | null>(null);
   
   // Stable refs for engine functions to avoid effect re-runs when engine object changes
   const startQuestRef = useRef(engine.startQuest);
@@ -210,68 +211,86 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
   // Auto-resume on navigation removed - guidance should only start via explicit triggers
   // Users can manually resume by clicking Fluffy if they want to continue a paused challenge
 
-  // Show-me mode: auto-advance through steps based on video timestamps or fixed delays
+  // Show-me mode with timestamps: advance steps based on actual video playback time
   useEffect(() => {
+    // Only run when in show mode with timestamps
     if (!state.isActive || state.playbackMode !== "show" || !currentChallenge) {
-      if (showModeTimerRef.current) {
-        clearTimeout(showModeTimerRef.current);
-        showModeTimerRef.current = null;
-      }
-      showModeStartTimeRef.current = null;
       return;
     }
 
     const { videoTimestamps } = engine;
-    const currentStepIdx = state.currentStepIndex;
-    const totalSteps = currentChallenge.steps.length;
-
-    // If we've completed all steps, don't set another timer
-    if (currentStepIdx >= totalSteps) {
+    if (videoTimestamps.length === 0 || !isVideoPlaying) {
       return;
     }
 
-    // Initialize start time on first step
-    if (showModeStartTimeRef.current === null) {
-      showModeStartTimeRef.current = Date.now();
+    const currentStepIdx = state.currentStepIndex;
+    const totalSteps = currentChallenge.steps.length;
+
+    // Don't advance past the last step
+    if (currentStepIdx >= totalSteps - 1) {
+      return;
     }
 
-    // Calculate delay until next step
-    let delayMs: number;
+    // Find the timestamp for the next step
+    const nextStepTimestamp = videoTimestamps.find(t => t.stepIndex === currentStepIdx + 1);
 
-    if (videoTimestamps.length > 0) {
-      // Use recorded timestamps - they're in milliseconds relative to video start
-      const currentTimestamp = videoTimestamps.find(t => t.stepIndex === currentStepIdx);
-      const nextTimestamp = videoTimestamps.find(t => t.stepIndex === currentStepIdx + 1);
-
-      if (currentTimestamp && nextTimestamp) {
-        // Delay is the difference between this step's timestamp and next step's
-        delayMs = nextTimestamp.timestamp - currentTimestamp.timestamp;
-      } else if (nextTimestamp) {
-        // First step - use next timestamp as delay
-        delayMs = nextTimestamp.timestamp;
-      } else {
-        // Last step or no timestamp - use default
-        delayMs = 2000;
+    if (nextStepTimestamp) {
+      // Advance when video time reaches or exceeds the next step's timestamp
+      if (videoCurrentTimeMs >= nextStepTimestamp.timestamp && currentStepIdx > lastAdvancedStepRef.current) {
+        lastAdvancedStepRef.current = currentStepIdx;
+        advanceStepRef.current();
       }
-    } else {
-      // No timestamps available - use fixed delay
-      delayMs = 2000;
+    }
+  }, [state.isActive, state.playbackMode, state.currentStepIndex, currentChallenge, engine, isVideoPlaying, videoCurrentTimeMs]);
+
+  // Show-me mode fallback: Use fixed delay when no timestamps available
+  useEffect(() => {
+    // Clear any existing fallback timer
+    if (fallbackTimerRef.current) {
+      clearTimeout(fallbackTimerRef.current);
+      fallbackTimerRef.current = null;
     }
 
-    // Ensure minimum delay
-    delayMs = Math.max(delayMs, 500);
+    // Only run fallback when in show mode without timestamps
+    if (!state.isActive || state.playbackMode !== "show" || !currentChallenge) {
+      lastAdvancedStepRef.current = -1;
+      return;
+    }
 
-    showModeTimerRef.current = setTimeout(() => {
+    const { videoTimestamps } = engine;
+    
+    // If we have timestamps, let the video-based effect handle it
+    if (videoTimestamps.length > 0) {
+      return;
+    }
+
+    const currentStepIdx = state.currentStepIndex;
+    const totalSteps = currentChallenge.steps.length;
+
+    // Don't advance past the last step
+    if (currentStepIdx >= totalSteps - 1) {
+      return;
+    }
+
+    // Fallback: Use fixed 2s delay when no timestamps available
+    fallbackTimerRef.current = setTimeout(() => {
       advanceStepRef.current();
-    }, delayMs);
+    }, 2000);
 
     return () => {
-      if (showModeTimerRef.current) {
-        clearTimeout(showModeTimerRef.current);
-        showModeTimerRef.current = null;
+      if (fallbackTimerRef.current) {
+        clearTimeout(fallbackTimerRef.current);
+        fallbackTimerRef.current = null;
       }
     };
   }, [state.isActive, state.playbackMode, state.currentStepIndex, currentChallenge, engine]);
+
+  // Reset step tracking when challenge changes
+  useEffect(() => {
+    lastAdvancedStepRef.current = -1;
+    setVideoCurrentTimeMs(0);
+    setIsVideoPlaying(false);
+  }, [currentChallenge?.id]);
 
   useEffect(() => {
     if (!autoStartForNewUsers) return;
@@ -589,6 +608,8 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
             onClose={() => setShowVideo(false)}
             position="bottom-left"
             size="small"
+            onTimeUpdate={setVideoCurrentTimeMs}
+            onPlayStateChange={setIsVideoPlaying}
           />
 
           {state.isActive && currentStep && (
@@ -607,6 +628,11 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
                 onClose={() => engine.pauseGuidance()}
                 stepNumber={state.currentStepIndex + 1}
                 totalSteps={currentChallenge?.steps.length}
+                playbackMode={state.playbackMode}
+                hasVideo={!!videoUrl}
+                onModeToggle={() => {
+                  engine.setPlaybackMode(state.playbackMode === "guide" ? "show" : "guide");
+                }}
               />
             </>
           )}

@@ -8,6 +8,8 @@ interface GuidanceVideoPlayerProps {
   onClose?: () => void;
   position?: "bottom-right" | "bottom-left" | "top-right" | "top-left";
   size?: "small" | "medium" | "large";
+  onTimeUpdate?: (currentTimeMs: number) => void;
+  onPlayStateChange?: (isPlaying: boolean) => void;
 }
 
 export function GuidanceVideoPlayer({
@@ -16,6 +18,8 @@ export function GuidanceVideoPlayer({
   onClose,
   position = "bottom-right",
   size = "small",
+  onTimeUpdate,
+  onPlayStateChange,
 }: GuidanceVideoPlayerProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const constraintsRef = useRef<HTMLDivElement>(null);
@@ -122,8 +126,18 @@ export function GuidanceVideoPlayer({
                 onLoadedData={() => setIsLoaded(true)}
                 onError={() => setHasError(true)}
                 onEnded={handleVideoEnded}
-                onPlay={() => setIsPlaying(true)}
-                onPause={() => setIsPlaying(false)}
+                onPlay={() => {
+                  setIsPlaying(true);
+                  onPlayStateChange?.(true);
+                }}
+                onPause={() => {
+                  setIsPlaying(false);
+                  onPlayStateChange?.(false);
+                }}
+                onTimeUpdate={(e) => {
+                  const currentTimeMs = (e.target as HTMLVideoElement).currentTime * 1000;
+                  onTimeUpdate?.(currentTimeMs);
+                }}
               />
             )}
           </div>

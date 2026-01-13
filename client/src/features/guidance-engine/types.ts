@@ -122,6 +122,9 @@ export interface GuidanceTooltipProps {
   onClose?: () => void;
   stepNumber?: number;
   totalSteps?: number;
+  playbackMode?: PlaybackMode;
+  onModeToggle?: () => void;
+  hasVideo?: boolean;
 }
 
 export interface SpotlightOverlayProps {

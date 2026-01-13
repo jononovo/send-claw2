@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronLeft, ChevronRight, X } from "lucide-react";
+import { ChevronLeft, ChevronRight, X, Play, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { GuidanceTooltipProps } from "../types";
 import ducklingMascot from "@/assets/duckling-mascot.png";
@@ -16,6 +16,9 @@ export function GuidanceTooltip({
   onClose,
   stepNumber,
   totalSteps,
+  playbackMode = "guide",
+  onModeToggle,
+  hasVideo,
 }: GuidanceTooltipProps) {
   const [coords, setCoords] = useState<{ top: number; left: number; arrowPosition: string } | null>(null);
   const animationRef = useRef<number>();
@@ -199,9 +202,13 @@ export function GuidanceTooltip({
           <div className="p-3">
             <div className="flex items-start gap-2">
               <p className="text-sm text-gray-200 leading-snug flex-1">
-                {instruction}
+                {playbackMode === "show" ? (
+                  <span className="text-yellow-400 italic">Watching: {instruction}</span>
+                ) : (
+                  instruction
+                )}
                 <span className="inline-flex items-center align-middle ml-1">
-                  {stepNumber && stepNumber > 1 && onBack && (
+                  {stepNumber && stepNumber > 1 && onBack && playbackMode === "guide" && (
                     <button
                       className="text-gray-400 hover:text-yellow-400 h-5 w-5 p-0 inline-flex items-center justify-center transition-colors"
                       onClick={onBack}
@@ -215,13 +222,15 @@ export function GuidanceTooltip({
                       {stepNumber} / {totalSteps}
                     </span>
                   )}
-                  <button
-                    className="text-gray-400 hover:text-yellow-400 h-5 w-5 p-0 inline-flex items-center justify-center transition-colors"
-                    onClick={onDismiss}
-                    data-testid="tooltip-next"
-                  >
-                    <ChevronRight className="h-3.5 w-3.5" />
-                  </button>
+                  {playbackMode === "guide" && (
+                    <button
+                      className="text-gray-400 hover:text-yellow-400 h-5 w-5 p-0 inline-flex items-center justify-center transition-colors"
+                      onClick={onDismiss}
+                      data-testid="tooltip-next"
+                    >
+                      <ChevronRight className="h-3.5 w-3.5" />
+                    </button>
+                  )}
                   {onClose && (
                     <button
                       className="text-gray-400 hover:text-red-400 h-5 w-5 p-0 ml-1 inline-flex items-center justify-center transition-colors"
@@ -235,6 +244,25 @@ export function GuidanceTooltip({
                 </span>
               </p>
             </div>
+            {hasVideo && onModeToggle && (
+              <button
+                onClick={onModeToggle}
+                className="mt-2 w-full flex items-center justify-center gap-1.5 px-2 py-1 text-xs font-medium rounded bg-yellow-500/20 text-yellow-400 hover:bg-yellow-500/30 transition-colors"
+                data-testid="mode-toggle"
+              >
+                {playbackMode === "guide" ? (
+                  <>
+                    <Eye className="h-3 w-3" />
+                    Watch demo
+                  </>
+                ) : (
+                  <>
+                    <Play className="h-3 w-3" />
+                    Guide me
+                  </>
+                )}
+              </button>
+            )}
           </div>
           </motion.div>
         )}
