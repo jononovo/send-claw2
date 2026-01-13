@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Volume2, VolumeX, Minimize2, Maximize2 } from "lucide-react";
+import { X, Volume2, VolumeX, Minimize2, Maximize2, Play, Pause, RotateCcw } from "lucide-react";
 
 interface GuidanceVideoPlayerProps {
   videoUrl: string | null;
@@ -24,11 +24,16 @@ export function GuidanceVideoPlayer({
   const [isLoaded, setIsLoaded] = useState(false);
   const [hasError, setHasError] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [hasEnded, setHasEnded] = useState(false);
+  const [isHovering, setIsHovering] = useState(false);
 
   useEffect(() => {
     if (videoUrl && videoRef.current) {
       setIsLoaded(false);
       setHasError(false);
+      setHasEnded(false);
+      setIsPlaying(false);
       videoRef.current.load();
     }
   }, [videoUrl]);
@@ -36,8 +41,32 @@ export function GuidanceVideoPlayer({
   useEffect(() => {
     if (isVisible && videoRef.current && isLoaded && !hasError) {
       videoRef.current.play().catch(console.error);
+      setIsPlaying(true);
     }
   }, [isVisible, isLoaded, hasError]);
+
+  const handlePlayPause = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!videoRef.current) return;
+    
+    if (hasEnded) {
+      videoRef.current.currentTime = 0;
+      videoRef.current.play().catch(console.error);
+      setHasEnded(false);
+      setIsPlaying(true);
+    } else if (isPlaying) {
+      videoRef.current.pause();
+      setIsPlaying(false);
+    } else {
+      videoRef.current.play().catch(console.error);
+      setIsPlaying(true);
+    }
+  };
+
+  const handleVideoEnded = () => {
+    setIsPlaying(false);
+    setHasEnded(true);
+  };
 
   const positionClasses = {
     "bottom-right": "bottom-4 right-4",
@@ -53,6 +82,8 @@ export function GuidanceVideoPlayer({
   };
 
   if (!videoUrl || !isVisible) return null;
+
+  const showPlaybackOverlay = !isMinimized && !hasError && (hasEnded || !isPlaying || isHovering);
 
   return (
     <>
@@ -73,6 +104,8 @@ export function GuidanceVideoPlayer({
         >
           <div
             className={`relative ${sizeClasses[size]} transition-all duration-300 ease-out`}
+            onMouseEnter={() => setIsHovering(true)}
+            onMouseLeave={() => setIsHovering(false)}
           >
           <div className="absolute inset-0 rounded-xl overflow-hidden shadow-2xl ring-2 ring-amber-400/30">
             {hasError ? (
@@ -85,18 +118,37 @@ export function GuidanceVideoPlayer({
                 className="w-full h-full object-cover"
                 src={videoUrl}
                 muted={isMuted}
-                loop
                 playsInline
                 onLoadedData={() => setIsLoaded(true)}
                 onError={() => setHasError(true)}
+                onEnded={handleVideoEnded}
+                onPlay={() => setIsPlaying(true)}
+                onPause={() => setIsPlaying(false)}
               />
             )}
           </div>
 
+          {showPlaybackOverlay && (
+            <button
+              onClick={handlePlayPause}
+              className="absolute inset-0 flex items-center justify-center cursor-pointer"
+            >
+              <div className="w-12 h-12 rounded-full bg-black/50 hover:bg-black/70 flex items-center justify-center text-white transition-colors">
+                {hasEnded ? (
+                  <RotateCcw className="w-5 h-5" />
+                ) : isPlaying ? (
+                  <Pause className="w-5 h-5" />
+                ) : (
+                  <Play className="w-5 h-5 ml-0.5" />
+                )}
+              </div>
+            </button>
+          )}
+
           {!isMinimized && (
             <div className="absolute -top-1 -right-1 flex gap-1">
               <button
-                onClick={() => setIsMuted(!isMuted)}
+                onClick={(e) => { e.stopPropagation(); setIsMuted(!isMuted); }}
                 className="w-6 h-6 rounded-full bg-gray-900/80 hover:bg-gray-800 flex items-center justify-center text-white transition-colors"
               >
                 {isMuted ? (
@@ -106,14 +158,14 @@ export function GuidanceVideoPlayer({
                 )}
               </button>
               <button
-                onClick={() => setIsMinimized(true)}
+                onClick={(e) => { e.stopPropagation(); setIsMinimized(true); }}
                 className="w-6 h-6 rounded-full bg-gray-900/80 hover:bg-gray-800 flex items-center justify-center text-white transition-colors"
               >
                 <Minimize2 className="w-3 h-3" />
               </button>
               {onClose && (
                 <button
-                  onClick={onClose}
+                  onClick={(e) => { e.stopPropagation(); onClose(); }}
                   className="w-6 h-6 rounded-full bg-gray-900/80 hover:bg-red-600 flex items-center justify-center text-white transition-colors"
                 >
                   <X className="w-3 h-3" />
