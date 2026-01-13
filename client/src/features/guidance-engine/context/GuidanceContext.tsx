@@ -343,13 +343,55 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
 
     let hasAdvancedForType = false;
 
+    const isInteractiveElement = (el: Element): boolean => {
+      const tagName = el.tagName.toLowerCase();
+      const interactiveTags = ['button', 'a', 'input', 'select', 'textarea'];
+      if (interactiveTags.includes(tagName)) return true;
+      
+      const role = el.getAttribute('role');
+      if (role === 'button' || role === 'link' || role === 'menuitem' || role === 'tab') return true;
+      
+      if ((el as HTMLElement).isContentEditable) return true;
+      if (el.hasAttribute('onclick') || el.hasAttribute('tabindex')) return true;
+      
+      return false;
+    };
+
+    const isGuidanceUI = (el: Element): boolean => {
+      return el.closest('[data-recorder-ui="true"]') !== null ||
+             el.closest('[data-testid="guidance-tooltip"]') !== null ||
+             el.closest('[data-testid="fluffy-guide"]') !== null;
+    };
+
     const handleElementClick = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
-      const stepElement = document.querySelector(selector);
+      let stepElement: Element | null = null;
+      try {
+        stepElement = document.querySelector(selector);
+      } catch {
+        // Invalid selector
+      }
       
+      // Check if click is on the target element - advance step
       if (stepElement && (stepElement === target || stepElement.contains(target))) {
         if (action === "click") {
           hideAndAdvance();
+        }
+        return;
+      }
+
+      // Check if click is on guidance UI - ignore
+      if (isGuidanceUI(target)) {
+        return;
+      }
+
+      // Check if click is on an interactive element outside target - pause guidance
+      const clickPath = e.composedPath();
+      for (const el of clickPath) {
+        if (!(el instanceof Element)) continue;
+        if (isInteractiveElement(el)) {
+          pauseGuidanceRef.current();
+          return;
         }
       }
     };
@@ -486,6 +528,7 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
                 isVisible={state.isActive && !tooltipHiddenRef.current}
                 onDismiss={() => engine.advanceStep()}
                 onBack={() => engine.previousStep()}
+                onClose={() => engine.pauseGuidance()}
                 stepNumber={state.currentStepIndex + 1}
                 totalSteps={currentChallenge?.steps.length}
               />

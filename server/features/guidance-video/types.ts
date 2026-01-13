@@ -1,5 +1,6 @@
 export interface ProcessingResult {
   outputPath: string;
+  objectPath: string; // Path in App Storage
   duration: number;
   fileSize: number;
 }

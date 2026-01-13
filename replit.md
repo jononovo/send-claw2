@@ -1,7 +1,7 @@
 # 5Ducks B2B Prospecting Platform
 
 ## Overview
-5Ducks is an AI-powered B2B lead generation platform designed to transform simple queries into comprehensive prospect lists. It offers verified contacts, personalized outreach campaigns, and automated email campaign management with intelligent scheduling and spam prevention. The platform aims to streamline lead generation, enhance outreach effectiveness, and scale business development efforts.
+5Ducks is an AI-powered B2B lead generation platform that transforms simple queries into comprehensive prospect lists. It provides verified contacts, personalized outreach campaigns, and automated email campaign management with intelligent scheduling and spam prevention. The platform's core purpose is to streamline lead generation, enhance outreach effectiveness, and scale business development efforts for B2B sales teams.
 
 ## User Preferences
 - **Default Email Tone**: Professional with personalized intros
@@ -10,143 +10,40 @@
 - **Navigation Flow**: Search → Save List → Compose Email (via drawer) → Launch Campaign
 
 ## System Architecture
-The platform is built with a React SPA frontend (TypeScript, Vite, Tailwind, shadcn/ui, TanStack Query) and an Express.js backend (TypeScript) utilizing PostgreSQL for all persistent data. Authentication is handled by Firebase and Passport.js.
+The platform comprises a React SPA frontend (TypeScript, Vite, Tailwind, shadcn/ui, TanStack Query) and an Express.js backend (TypeScript) using PostgreSQL for data persistence. Authentication is managed by Firebase and Passport.js.
 
 **UI/UX Decisions:**
-- **Consolidated Email Workflow**: The standalone /outreach page was removed; all email composition now happens via the email drawer on /app. This streamlines the user flow by keeping users on a single page for search and outreach.
-- **Historic Searches Drawer**: Moved to a permanent header position for accessibility.
-- **Mobile Optimization**: Designed with an 80% drawer width and tap-outside-to-close functionality for better mobile experience.
-- **Improved Navigation**: Employs event-based communication between components for a smoother user experience.
-- **Better Table Layout**: Optimized column spacing for search results.
-- **SEO-Friendly URLs**: Company and contact pages use slug-based URLs for better SEO discoverability:
-  - Companies: `/company/:slug/:id` (e.g., `/company/acme-corp/4521`)
-  - Contacts: `/p/:slug/:id` (e.g., `/p/john-smith-acme-ceo/12847`)
-  - ID is the source of truth for lookups; slug is purely for SEO/readability
-  - Slugs are auto-generated on record creation and stored in `slug` column with indexes
-- **SEO Content Gating**: Public company/contact pages use server-side email masking for unauthenticated users:
-  - Emails are masked as `j***@acme.com` format (first character + *** + domain)
-  - All other contact info (name, role, company, phone, etc.) remains visible
-  - Utility: `server/utils/email-masker.ts` with `maskEmail()`, `maskContactEmails()`, `maskContactsEmails()`
-  - Auth helper: `server/utils/auth.ts` exports `isAuthenticated()` to check true auth vs demo fallback
-  - CTA banner on masked pages: "Sign up to see the full email address and run search prompts with AI - 100 credits included."
-  - Bots cannot scrape what isn't sent (server-side masking, not CSS blur)
+- **Consolidated Email Workflow**: All email composition is integrated into the /app page via an email drawer.
+- **Historic Searches Drawer**: Positioned in the header for easy access.
+- **Mobile Optimization**: Drawers are 80% width with tap-outside-to-close functionality.
+- **Improved Navigation**: Utilizes event-based communication between components.
+- **SEO-Friendly URLs**: Company and contact pages use slug-based URLs (`/company/:slug/:id`, `/p/:slug/:id`) where `id` is the primary lookup key and `slug` is for SEO.
+- **SEO Content Gating**: Public company/contact pages mask emails for unauthenticated users (e.g., `j***@acme.com`) via server-side processing, with other contact details visible. A CTA banner encourages sign-ups.
 
 **Technical Implementations:**
-- **Search System**: Features a progressive pipeline for companies, contacts, and emails, coordinated by `SearchOrchestrator` and processed asynchronously by `JobProcessor`.
-- **Contact Discovery**: Utilizes a multi-stage fallback with validation scoring via `ContactSearchService` and `findKeyDecisionMakers()`.
-- **Email Enrichment**: Employs a tiered provider approach (`parallelTieredEmailSearch`) integrating Apollo, Perplexity+Hunter, and AeroLeads.
-- **Email Campaign System**: Provides comprehensive outreach management with custom email creation, merge fields, quick templates, and AI-powered generation. It supports both **Human Review Mode** (default, requiring approval before sending) and **Auto-Send Mode** (template-based automatic sending). An `Autopilot Modal` enables automated scheduling with intelligent spacing and rate limiting.
-- **Individual Search**: Implemented via a structured modal input, leveraging Perplexity Search API and Claude for precise extraction and scoring of candidates.
-- **OAuth Token Storage**: Gmail OAuth tokens are stored exclusively in an encrypted `oauth_tokens` table in PostgreSQL using AES-256-CBC.
-- **Drip Email Engine**: Centralized system email scheduler at `server/email/` for template-based transactional emails (access confirmations, welcome sequences, registration welcome emails). Features 5-minute polling, working-day calculations, and sequence enrollment. Uses SendGrid for delivery. Includes `sendImmediate()` method for non-blocking immediate email sends (used for registration welcome emails).
-
-**Email System Architecture (Two Separate Systems):**
-- **Drip Engine** (`server/email/`): System-to-user transactional emails via SendGrid. Template-based, scheduled sequences (e.g., access code drip campaigns). Tables: `email_sequences`, `email_sequence_events`, `email_sends`.
-- **Daily Outreach** (`server/features/daily-outreach/`): User-to-prospect prospecting emails via Gmail OAuth. AI-generated personalized content, per-user scheduling, autopilot windows. Tables: `daily_outreach_jobs`, `daily_outreach_batches`, `daily_outreach_items`.
-- These systems are intentionally separate due to different delivery channels (SendGrid vs Gmail), content generation (templates vs AI), and compliance requirements (system notifications vs marketing outreach).
-
-**Generic Credit System (Billing API):**
-- **Location**: `server/features/billing/credits/`
-- **Core Service**: `CreditService` handles all credit operations (check balance, deduct, top-up)
-- **Usage Pattern**:
-  ```typescript
-  // 1. Check balance before action
-  const credits = await CreditService.getUserCredits(userId);
-  if (credits.isBlocked || credits.currentBalance < REQUIRED_AMOUNT) {
-    return res.status(402).json({ message: "Insufficient credits" });
-  }
-  
-  // 2. Perform the billable action...
-  
-  // 3. Deduct credits on success
-  await CreditService.deductCredits(userId, 'action_type', true);
-  ```
-- **Action Types**: Defined in `credits/types.ts` as `SearchType`. Use `ActionType` alias for non-search features.
-- **Credit Costs** (single source of truth in `CREDIT_COSTS`):
-  - `company_search`: 10 credits (Only Companies)
-  - `company_and_contacts`: 70 credits (Companies + Contacts)
-  - `email_search`: 160 credits (Full search: Companies + Contacts + Emails)
-  - `individual_search`: 100 credits (Find Individual)
-  - `individual_email`: 20 credits (Single email lookup)
-- **Adding New Billable Actions**: Add new value to `SearchType` union and cost to `CREDIT_COSTS` record.
-- **One-Time Rewards**: Use `CreditRewardService.awardOneTimeCredits(userId, amount, rewardKey, description)` for idempotent credit awards.
-- **Stripe Config**: Single source of truth in `server/features/billing/stripe/types.ts` (re-exported from credits/types.ts).
-
-**Credit Reward & Progress Tracking System:**
-- **Unified Progress Table**: `user_progress` stores all progress across features using namespace scoping (e.g., `form`, `challenge`, `easter-egg`). Fields: `userId`, `namespace`, `completedMilestones` (string array), `metadata` (JSON).
-- **Unified Service**: `CreditRewardService` (`server/features/billing/rewards/service.ts`) provides `awardOneTimeCredits()` for all credit rewards across features.
-- **Progress Routes**: Generic endpoints at `/api/progress/:namespace` (GET/PATCH) and `/api/progress/:namespace/milestone/:milestoneId` (POST) handle any namespace with automatic milestone diffing and credit awarding.
-- **Idempotency**: Uses `rewardKey` column in `credit_transactions` with unique index on (user_id, reward_key) to prevent duplicate claims.
-- **RewardKey Format**: `"namespace:milestoneId"` (e.g., `"registration:welcome-bonus"`, `"challenge:basic-company-contact-search"`, `"form:onboarding-section-a"`, `"easter-egg:5ducks"`).
-- **Registration Credits**: 250 credits awarded immediately at user creation (all 3 paths: Firebase auth, email/password, Google OAuth) using rewardKey `"registration:welcome-bonus"`. No lazy initialization.
-- **Namespace Configs**: Defined in `server/features/progress/routes.ts` with milestone-specific credits. Unknown namespaces fall back to 50 credits.
-- **Onboarding Credits**: Section A=50, Section B=75, Section C=100, Section D=120 credits (total 345, stacks on top of registration 250 = 595).
-- **Challenge Credits**: 110 credits per completed challenge (configurable via `completionCredits` field). Credits awarded server-side when guidance progress is saved.
-- **Storage Helper**: `storage.awardOneTimeCredits()` uses database transaction with conflict detection for race-safe credit attribution.
-- **Demo User Exclusion**: User id=1 (demo user) is excluded from progress saving and credit operations (enforced in CreditRewardService).
-
-**Attribution Tracking System:**
-- **Location**: `client/src/features/attribution/` and `server/features/attribution/`
-- **Purpose**: Track user acquisition sources (Reddit, Google, LinkedIn, organic) and conversion events
-- **First-Touch Model**: UTM parameters and click IDs are captured on first visit and stored in localStorage; never overwritten on subsequent visits
-- **Database Table**: `user_attribution` with source, attributionData (JSONB), conversionEvents (JSONB array)
-- **Tracked Parameters**: UTM params (source, medium, campaign, content, term) and platform click IDs (rdt_cid, gclid, li_fat_id)
-- **Conversion Events**: registration_complete, app_page_view, search_performed, subscription_purchase
-- **Auth Timing**: Uses waitForAuth() retry mechanism to ensure API calls only fire after user session is established
-- **Usage**:
-  ```typescript
-  import { sendAttributionToServer, logConversionEvent } from '@/features/attribution';
-  sendAttributionToServer().catch(() => {});  // Call after registration
-  logConversionEvent('search_performed').catch(() => {});  // Call on conversion
-  ```
-- **Expandability**: Add new ad platforms by extending CLICK_ID_PARAMS in attribution-tracker.ts
+- **Search System**: A progressive pipeline for companies, contacts, and emails orchestrated by `SearchOrchestrator` and processed by `JobProcessor`.
+- **Contact Discovery**: Multi-stage fallback with validation scoring via `ContactSearchService`.
+- **Email Enrichment**: Tiered provider approach (`parallelTieredEmailSearch`) integrating multiple services.
+- **Email Campaign System**: Supports custom email creation, merge fields, templates, and AI-powered generation. Includes **Human Review Mode** and **Auto-Send Mode**, with an `Autopilot Modal` for intelligent scheduling and rate limiting.
+- **Individual Search**: Uses Perplexity Search API and Claude for precise extraction.
+- **OAuth Token Storage**: Gmail OAuth tokens are stored encrypted in a PostgreSQL table (`oauth_tokens`).
+- **Drip Email Engine**: Handles system-to-user transactional emails (e.g., access confirmations) via SendGrid, with scheduled sequences and immediate send capabilities.
+- **Credit System**: A generic system (`CreditService`) manages credit checks, deductions, and top-ups, with defined costs for various actions (e.g., `company_search`: 10 credits, `email_search`: 160 credits).
+- **Credit Reward & Progress Tracking System**: Uses a `user_progress` table and `CreditRewardService` for awarding credits based on user milestones across different namespaces (e.g., registration, onboarding, challenges).
+- **Attribution Tracking System**: Captures first-touch UTM parameters and click IDs, storing them in `user_attribution` to track user acquisition sources and conversion events (e.g., `registration_complete`, `search_performed`).
 
 **System Design Choices:**
-- **Data Architecture**: PostgreSQL serves as the primary database for core entities (users, companies, contacts, campaigns) and analytics. Credits, subscriptions, and tokens are stored in PostgreSQL tables (`user_credits`, `credit_transactions`, `subscriptions`, `oauth_tokens`). A database-persistent job queue with retry logic manages background tasks.
-- **List ID Naming Convention**: Clarification provided for `lists.id` (DB primary key) and `lists.list_id` (user-facing display number), with a future plan to rename `lists.list_id` to `lists.display_id`.
-- **Authentication**: Firebase handles authentication, with Passport.js for session management. `requireAuth` middleware protects routes.
-- **Concurrency & Rate Limits**:
-    - Max 7 companies processed simultaneously.
-    - Max 10 parallel email sends.
-    - 10 searches/hour for demo users.
-    - 500 emails/day maximum per campaign with a 30s minimum spacing.
-- **Modular Code Architecture**: Features are organized using a module pattern (`server/features/[name]` and `client/src/features/[name]`) for improved maintainability and reusability.
+- **Data Architecture**: PostgreSQL is the primary database for all core entities, credits, subscriptions, and tokens. A database-persistent job queue handles background tasks.
+- **Authentication**: Firebase for authentication, Passport.js for session management.
+- **Concurrency & Rate Limits**: Limits apply to simultaneous company processing (7), parallel email sends (10), demo user searches (10/hour), and campaign emails (500/day with 30s spacing).
+- **Modular Code Architecture**: Features are organized into modules (`server/features/[name]`, `client/src/features/[name]`) for maintainability.
 
 ## External Dependencies
-- **Perplexity**: Used for company and contact discovery.
-- **Hunter.io**: Integrated for email verification.
-- **Apollo.io**: Utilized for contact database lookups.
-- **OpenAI**: Powers AI-driven email content generation based on tone and strategy.
-- **SendGrid**: Handles email delivery and tracking, including webhook management.
-- **Firebase**: Provides authentication services.
-- **PostgreSQL**: The primary relational database for all persistent data storage (users, companies, contacts, campaigns, credits, subscriptions, tokens).
-
-## LLMs.txt Maintenance
-
-**File Location**: `static/llms.txt`
-**Served At**: `https://5ducks.ai/llms.txt`
-
-The `llms.txt` file is a structured Markdown document that helps AI assistants (ChatGPT, Claude, Perplexity, etc.) understand the 5Ducks platform. It functions similarly to `robots.txt` but is designed specifically for Large Language Models.
-
-**When to Update**:
-- When adding new major features or pages
-- When changing pricing plans or credit costs
-- When updating company information or branding
-- When adding new integrations or data sources
-- When changing the core value proposition or target audience
-- Quarterly review recommended to ensure accuracy
-
-**Key Sections to Maintain**:
-1. Core Value Proposition - Keep aligned with marketing messaging
-2. Main Pages - Update when adding/removing public pages
-3. Application Features - Update when adding major app functionality
-4. Pricing Plans - Keep in sync with `/pricing` page
-5. Credit System - Update when credit costs change
-6. Target Users - Update if ICP changes
-7. Last Updated date - Always update when making changes
-
-**Best Practices**:
-- Keep descriptions concise but informative
-- Use consistent terminology with the rest of the site
-- Include links to relevant pages
-- Update the "Last updated" date at the bottom
+- **Perplexity**: For company and contact discovery.
+- **Hunter.io**: For email verification.
+- **Apollo.io**: For contact database lookups.
+- **OpenAI**: For AI-driven email content generation.
+- **SendGrid**: For transactional email delivery and tracking.
+- **Firebase**: For user authentication.
+- **PostgreSQL**: The primary relational database.
+- **Replit Object Storage**: GCS-backed storage for persistent file storage, used for guidance video uploads.

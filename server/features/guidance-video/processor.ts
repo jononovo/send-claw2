@@ -4,8 +4,33 @@ import * as fs from "fs/promises";
 import * as path from "path";
 import { VIDEO_CONFIG } from "./config";
 import type { ProcessingResult } from "./types";
+import { objectStorageClient } from "../../replit_integrations/object_storage";
 
 const execAsync = promisify(exec);
+
+function getBucketName(): string {
+  const bucketId = process.env.DEFAULT_OBJECT_STORAGE_BUCKET_ID;
+  if (!bucketId) {
+    throw new Error("DEFAULT_OBJECT_STORAGE_BUCKET_ID not set");
+  }
+  return bucketId;
+}
+
+async function uploadToObjectStorage(localPath: string, objectName: string): Promise<string> {
+  const bucketName = getBucketName();
+  const bucket = objectStorageClient.bucket(bucketName);
+  const file = bucket.file(objectName);
+  
+  await bucket.upload(localPath, {
+    destination: objectName,
+    contentType: 'video/webm',
+    metadata: {
+      cacheControl: 'public, max-age=31536000',
+    },
+  });
+  
+  return objectName;
+}
 
 export async function processVideo(
   videoId: number,
@@ -63,12 +88,18 @@ export async function processVideo(
     const stats = await fs.stat(outputPath);
     const fileSize = stats.size;
 
+    console.log(`[VideoProcessor] Uploading to App Storage...`);
+    const objectName = `guidance-videos/${challengeId}.webm`;
+    const objectPath = await uploadToObjectStorage(outputPath, objectName);
+    console.log(`[VideoProcessor] Uploaded to: ${objectPath}`);
+
     console.log(`[VideoProcessor] Completed: ${duration}s, ${(fileSize/1024/1024).toFixed(2)}MB`);
 
     await fs.rm(workDir, { recursive: true, force: true });
     await fs.rm(inputPath, { force: true });
+    await fs.rm(outputPath, { force: true });
 
-    return { outputPath, duration, fileSize };
+    return { outputPath, objectPath, duration, fileSize };
 
   } catch (error) {
     await fs.rm(workDir, { recursive: true, force: true }).catch(() => {});
@@ -88,10 +119,11 @@ export async function processVideoSimple(
 
     console.log(`[VideoProcessor] Starting simple processing for video ${videoId}`);
 
+    const aspectRatio = VIDEO_CONFIG.OUTPUT_WIDTH / VIDEO_CONFIG.OUTPUT_HEIGHT;
     await execAsync(
       `ffmpeg -y -i "${inputPath}" ` +
-      `-vf "fps=${VIDEO_CONFIG.OUTPUT_FPS},scale=${VIDEO_CONFIG.OUTPUT_WIDTH}:${VIDEO_CONFIG.OUTPUT_HEIGHT},chromakey=${VIDEO_CONFIG.CHROMA_KEY_COLOR}:${VIDEO_CONFIG.CHROMA_KEY_SIMILARITY}:${VIDEO_CONFIG.CHROMA_KEY_BLEND}" ` +
-      `-c:v libvpx-vp9 -pix_fmt yuva420p -crf ${VIDEO_CONFIG.VIDEO_CRF} -b:v 0 ` +
+      `-vf "fps=${VIDEO_CONFIG.OUTPUT_FPS},crop=ih*${aspectRatio}:ih,scale=${VIDEO_CONFIG.OUTPUT_WIDTH}:${VIDEO_CONFIG.OUTPUT_HEIGHT}" ` +
+      `-c:v libvpx-vp9 -pix_fmt yuv420p -crf ${VIDEO_CONFIG.VIDEO_CRF} -b:v 0 ` +
       `-c:a libopus -b:a ${VIDEO_CONFIG.AUDIO_BITRATE} ` +
       `-deadline good -cpu-used 4 "${outputPath}"`,
       { timeout: 600000 }
@@ -106,11 +138,17 @@ export async function processVideoSimple(
     const stats = await fs.stat(outputPath);
     const fileSize = stats.size;
 
+    console.log(`[VideoProcessor] Uploading to App Storage...`);
+    const objectName = `guidance-videos/${challengeId}.webm`;
+    const objectPath = await uploadToObjectStorage(outputPath, objectName);
+    console.log(`[VideoProcessor] Uploaded to: ${objectPath}`);
+
     console.log(`[VideoProcessor] Completed: ${duration}s, ${(fileSize/1024/1024).toFixed(2)}MB`);
 
     await fs.rm(inputPath, { force: true });
+    await fs.rm(outputPath, { force: true });
 
-    return { outputPath, duration, fileSize };
+    return { outputPath, objectPath, duration, fileSize };
 
   } catch (error) {
     console.error(`[VideoProcessor] Error:`, error);

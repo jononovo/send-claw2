@@ -13,6 +13,7 @@ export function GuidanceTooltip({
   isVisible,
   onDismiss,
   onBack,
+  onClose,
   stepNumber,
   totalSteps,
 }: GuidanceTooltipProps) {
@@ -221,6 +222,16 @@ export function GuidanceTooltip({
                   >
                     <ChevronRight className="h-3.5 w-3.5" />
                   </button>
+                  {onClose && (
+                    <button
+                      className="text-gray-400 hover:text-red-400 h-5 w-5 p-0 ml-1 inline-flex items-center justify-center transition-colors"
+                      onClick={onClose}
+                      data-testid="tooltip-close"
+                      title="Close guidance"
+                    >
+                      <X className="h-3.5 w-3.5" />
+                    </button>
+                  )}
                 </span>
               </p>
             </div>

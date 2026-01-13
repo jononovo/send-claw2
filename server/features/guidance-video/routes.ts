@@ -30,6 +30,19 @@ const upload = multer({
   },
 });
 
+function getBucketName(): string {
+  const bucketId = process.env.DEFAULT_OBJECT_STORAGE_BUCKET_ID;
+  if (!bucketId) {
+    throw new Error("DEFAULT_OBJECT_STORAGE_BUCKET_ID not set");
+  }
+  return bucketId;
+}
+
+function getVideoPublicUrl(objectPath: string): string {
+  const bucketName = getBucketName();
+  return `https://storage.googleapis.com/${bucketName}/${objectPath}`;
+}
+
 export function registerGuidanceVideoRoutes(app: Express) {
   
   app.post("/api/guidance/videos", upload.single('video'), async (req: Request, res: Response) => {
@@ -67,6 +80,7 @@ export function registerGuidanceVideoRoutes(app: Express) {
           await storage.updateGuidanceVideo(videoRecord.id, {
             status: 'completed',
             processedPath: result.outputPath,
+            objectPath: result.objectPath,
             duration: result.duration,
             fileSize: result.fileSize,
           });
@@ -100,12 +114,19 @@ export function registerGuidanceVideoRoutes(app: Express) {
         return res.status(404).json({ message: "Video not found" });
       }
 
+      let url: string | null = null;
+      if (video.status === 'completed') {
+        if (video.objectPath) {
+          url = getVideoPublicUrl(video.objectPath);
+        } else if (video.processedPath) {
+          url = `/static/guidance-videos/processed/${video.challengeId}.webm`;
+        }
+      }
+
       res.json({
         id: video.id,
         status: video.status,
-        url: video.status === 'completed' 
-          ? `/static/guidance-videos/processed/${video.challengeId}.webm`
-          : null,
+        url,
         duration: video.duration,
         timestamps: video.timestamps,
       });
@@ -123,8 +144,15 @@ export function registerGuidanceVideoRoutes(app: Express) {
         return res.status(404).json({ message: "No video available" });
       }
 
+      let url: string;
+      if (video.objectPath) {
+        url = getVideoPublicUrl(video.objectPath);
+      } else {
+        url = `/static/guidance-videos/processed/${video.challengeId}.webm`;
+      }
+
       res.json({
-        url: `/static/guidance-videos/processed/${video.challengeId}.webm`,
+        url,
         duration: video.duration,
         timestamps: video.timestamps,
       });
