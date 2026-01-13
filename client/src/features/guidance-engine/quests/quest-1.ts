@@ -177,6 +177,39 @@ export const quest1: Quest = {
         }
       ],
       "completionMessage": "Great job! You've learned how to search for specific businesses by location. Try searching for other restaurants or businesses in different cities!"
+    },
+    {
+      "id": "navigate-user-profile-menu",
+      "name": "Navigate User Profile Menu",
+      "description": "Learn how to access and navigate through user profile options and menu items",
+      "emoji": "👤",
+      "steps": [
+        {
+          "id": "click-user-name",
+          "selector": "div.font-medium.text-sm",
+          "action": "click",
+          "instruction": "Click on your name 'Pham Minh Tuan' to open the user menu",
+          "tooltipPosition": "bottom",
+          "route": "/app"
+        },
+        {
+          "id": "click-menu-icon",
+          "selector": "svg",
+          "action": "click",
+          "instruction": "Click on the menu icon to expand more options",
+          "tooltipPosition": "left",
+          "route": "/app"
+        },
+        {
+          "id": "select-car-option",
+          "selector": "div.font-medium.truncate",
+          "action": "click",
+          "instruction": "Click on the 'car' option from the menu",
+          "tooltipPosition": "top",
+          "route": "/app"
+        }
+      ],
+      "completionMessage": "Great job! You've learned how to navigate through the user profile menu and access different options. This is essential for managing your account and accessing various features."
     }
   ],
 };
