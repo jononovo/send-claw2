@@ -107,6 +107,7 @@ export interface GuidanceTooltipProps {
   isVisible: boolean;
   onDismiss?: () => void;
   onBack?: () => void;
+  onClose?: () => void;
   stepNumber?: number;
   totalSteps?: number;
 }
