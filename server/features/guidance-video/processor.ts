@@ -91,8 +91,8 @@ export async function processVideoSimple(
     const aspectRatio = VIDEO_CONFIG.OUTPUT_WIDTH / VIDEO_CONFIG.OUTPUT_HEIGHT;
     await execAsync(
       `ffmpeg -y -i "${inputPath}" ` +
-      `-vf "fps=${VIDEO_CONFIG.OUTPUT_FPS},crop=ih*${aspectRatio}:ih,scale=${VIDEO_CONFIG.OUTPUT_WIDTH}:${VIDEO_CONFIG.OUTPUT_HEIGHT},chromakey=${VIDEO_CONFIG.CHROMA_KEY_COLOR}:${VIDEO_CONFIG.CHROMA_KEY_SIMILARITY}:${VIDEO_CONFIG.CHROMA_KEY_BLEND}" ` +
-      `-c:v libvpx-vp9 -pix_fmt yuva420p -crf ${VIDEO_CONFIG.VIDEO_CRF} -b:v 0 ` +
+      `-vf "fps=${VIDEO_CONFIG.OUTPUT_FPS},crop=ih*${aspectRatio}:ih,scale=${VIDEO_CONFIG.OUTPUT_WIDTH}:${VIDEO_CONFIG.OUTPUT_HEIGHT}" ` +
+      `-c:v libvpx-vp9 -pix_fmt yuv420p -crf ${VIDEO_CONFIG.VIDEO_CRF} -b:v 0 ` +
       `-c:a libopus -b:a ${VIDEO_CONFIG.AUDIO_BITRATE} ` +
       `-deadline good -cpu-used 4 "${outputPath}"`,
       { timeout: 600000 }
