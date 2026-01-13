@@ -585,6 +585,39 @@ export const quest1: Quest = {
         }
       ],
       "completionMessage": "Great job! You've learned how to search for startup information and navigate to the campaigns section using the drawer menu."
+    },
+    {
+      "id": "business-search-tutorial",
+      "name": "Find Target Businesses",
+      "description": "Learn how to search for and discover target businesses using the search feature",
+      "emoji": "🔍",
+      "steps": [
+        {
+          "id": "open-navigation",
+          "selector": "[data-testid=\"button-open-drawer\"]",
+          "action": "click",
+          "instruction": "Click the menu button to open the navigation drawer",
+          "tooltipPosition": "bottom",
+          "route": "/app"
+        },
+        {
+          "id": "select-search-feature",
+          "selector": "div.flex.flex-col-reverse.md:flex-row",
+          "action": "click",
+          "instruction": "Click on the 'Search for target businesses' option to access the search functionality",
+          "tooltipPosition": "right",
+          "route": "/app"
+        },
+        {
+          "id": "enter-search-query",
+          "selector": "[data-testid=\"search-input\"]",
+          "action": "click",
+          "instruction": "Click on the search input field to start entering your search criteria",
+          "tooltipPosition": "top",
+          "route": "/app"
+        }
+      ],
+      "completionMessage": "Great job! You've learned how to navigate to the business search feature and access the search input. Now you can start discovering target businesses for your needs!"
     }
   ],
 };
