@@ -11,7 +11,8 @@ import {
   Target,
   Sparkles,
   ArrowLeft,
-  RotateCcw
+  RotateCcw,
+  Eye
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -90,6 +91,7 @@ interface QuestCardProps {
   onContinueChallenge: (questId: string, challengeIndex: number) => void;
   onRestartChallenge: (questId: string, challengeIndex: number, challengeName: string) => void;
   onStartLockedChallenge: (questId: string, challengeIndex: number) => void;
+  onShowDemo: (questId: string, challengeIndex: number) => void;
 }
 
 function QuestCard({
@@ -104,8 +106,10 @@ function QuestCard({
   onContinueChallenge,
   onRestartChallenge,
   onStartLockedChallenge,
+  onShowDemo,
 }: QuestCardProps) {
   const [isExpanded, setIsExpanded] = useState(status === "in-progress");
+  const [hoveredChallengeIndex, setHoveredChallengeIndex] = useState<number | null>(null);
   const questChallengesCompleted = (completedChallenges[quest.id] || []).length;
   const totalChallenges = quest.challenges.length;
   const progressPercent = (questChallengesCompleted / totalChallenges) * 100;
@@ -218,12 +222,17 @@ function QuestCard({
                   isActive
                 );
 
+                const isHovered = hoveredChallengeIndex === challengeIndex;
+                const hasSteps = challenge.steps.length > 0;
+
                 return (
                   <motion.div
                     key={challenge.id}
                     initial={{ opacity: 0, x: -10 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: challengeIndex * 0.05 }}
+                    onMouseEnter={() => setHoveredChallengeIndex(challengeIndex)}
+                    onMouseLeave={() => setHoveredChallengeIndex(null)}
                     onClick={() => {
                       if (challengeStatus === "completed") {
                         onRestartChallenge(quest.id, challengeIndex, challenge.name);
@@ -287,6 +296,22 @@ function QuestCard({
                       )}
                     </div>
 
+                    {/* Show demo button - appears on hover for all challenges with steps */}
+                    {isHovered && hasSteps && (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onShowDemo(quest.id, challengeIndex);
+                        }}
+                        className="border-amber-500/50 text-amber-400 hover:bg-amber-500/20 hover:text-amber-300 text-xs px-2 gap-1"
+                      >
+                        <Eye className="h-3 w-3" />
+                        Show demo
+                      </Button>
+                    )}
+
                     {(challengeStatus === "in-progress" || challengeStatus === "available") && (
                       <Button
                         size="sm"
@@ -317,7 +342,7 @@ function QuestCard({
 export function QuestsPage() {
   const [, navigate] = useLocation();
   const guidance = useGuidance();
-  const { state, startQuest, resumeGuidance, restartChallenge } = guidance;
+  const { state, startQuest, resumeGuidance, restartChallenge, setPlaybackMode } = guidance;
   const [restartConfirm, setRestartConfirm] = useState<{questId: string; challengeIndex: number; challengeName: string;} | null>(null);
 
   const handleRestartRequest = (questId: string, challengeIndex: number, challengeName: string) => {
@@ -361,6 +386,13 @@ export function QuestsPage() {
 
   const handleStartLockedChallenge = (questId: string, challengeIndex: number) => {
     restartChallenge(questId, challengeIndex);
+    navigate("/app");
+  };
+
+  const handleShowDemo = (questId: string, challengeIndex: number) => {
+    // Start the challenge in show mode
+    restartChallenge(questId, challengeIndex);
+    setPlaybackMode("show");
     navigate("/app");
   };
 
@@ -451,6 +483,7 @@ export function QuestsPage() {
                 onContinueChallenge={handleContinueChallenge}
                 onRestartChallenge={handleRestartRequest}
                 onStartLockedChallenge={handleStartLockedChallenge}
+                onShowDemo={handleShowDemo}
               />
             );
           })}
