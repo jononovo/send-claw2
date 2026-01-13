@@ -7,9 +7,10 @@ interface WebcamPreviewProps {
   isRecording: boolean;
   error?: string | null;
   onRetry?: () => void;
+  className?: string;
 }
 
-export function WebcamPreview({ stream, isRecording, error, onRetry }: WebcamPreviewProps) {
+export function WebcamPreview({ stream, isRecording, error, onRetry, className }: WebcamPreviewProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isLoaded, setIsLoaded] = useState(false);
 
@@ -43,7 +44,7 @@ export function WebcamPreview({ stream, isRecording, error, onRetry }: WebcamPre
   }
 
   return (
-    <div className="relative w-[200px] h-[130px] rounded-lg overflow-hidden bg-black shadow-lg">
+    <div className={`relative rounded-lg overflow-hidden bg-black shadow-lg ${className || 'w-[200px] h-[130px]'}`}>
       <video
         ref={videoRef}
         autoPlay
@@ -64,12 +65,6 @@ export function WebcamPreview({ stream, isRecording, error, onRetry }: WebcamPre
           <div className="w-6 h-6 border-2 border-amber-400 border-t-transparent rounded-full animate-spin" />
         </div>
       )}
-      
-      <div className="absolute bottom-2 left-2 right-2">
-        <p className="text-[10px] text-white/70 text-center">
-          Use a solid-color background for best results
-        </p>
-      </div>
     </div>
   );
 }
