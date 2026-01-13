@@ -213,7 +213,14 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
   // Auto-resume on navigation removed - guidance should only start via explicit triggers
   // Users can manually resume by clicking Fluffy if they want to continue a paused challenge
 
+  // Track when the last action completed (in video time ms) for the 1-second delay rule
+  const lastActionEndTimeRef = useRef<number>(0);
+  
   // Show-me mode with timestamps: advance steps based on actual video playback time
+  // Tooltips show 5 seconds before action, or 1 second after previous action ends
+  const TOOLTIP_LEAD_TIME_MS = 5000; // Show tooltip 5 seconds before action
+  const MIN_GAP_AFTER_ACTION_MS = 1000; // Wait at least 1 second after previous action
+  
   useEffect(() => {
     // Only run when in show mode with timestamps
     if (!state.isActive || state.playbackMode !== "show" || !currentChallenge) {
@@ -232,12 +239,22 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
       return;
     }
 
-    // Find the timestamp for the next step
+    // Find the timestamp for the next step's action
     const nextStepTimestamp = videoTimestamps.find(t => t.stepIndex === currentStepIdx + 1);
 
     if (nextStepTimestamp) {
-      // Advance when video time reaches or exceeds the next step's timestamp
-      if (videoCurrentTimeMs >= nextStepTimestamp.timestamp && currentStepIdx > lastAdvancedStepRef.current) {
+      // Calculate when to show the next step's tooltip:
+      // - 5 seconds before the action timestamp, OR
+      // - 1 second after the previous action ended
+      // Whichever is LATER (to avoid overlap)
+      const showTooltipAt = Math.max(
+        nextStepTimestamp.timestamp - TOOLTIP_LEAD_TIME_MS,
+        lastActionEndTimeRef.current + MIN_GAP_AFTER_ACTION_MS,
+        0 // Never negative
+      );
+      
+      // Advance to next step when video reaches the tooltip show time
+      if (videoCurrentTimeMs >= showTooltipAt && currentStepIdx > lastAdvancedStepRef.current) {
         lastAdvancedStepRef.current = currentStepIdx;
         advanceStepRef.current();
       }
@@ -287,6 +304,7 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
   // Reset step tracking when challenge changes
   useEffect(() => {
     lastAdvancedStepRef.current = -1;
+    lastActionEndTimeRef.current = 0;
     setVideoCurrentTimeMs(0);
     setIsVideoPlaying(false);
   }, [currentChallenge?.id]);
@@ -335,6 +353,7 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
         }
 
         lastPerformedStepRef.current = state.currentStepIndex;
+        const actionStartTime = videoCurrentTimeMs;
 
         switch (currentStep.action) {
           case "click":
@@ -350,6 +369,9 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
                 view: window
               });
               element.dispatchEvent(clickEvent);
+              
+              // Record action end time (clicks are instant, add small buffer)
+              lastActionEndTimeRef.current = actionStartTime + 100;
             }
             break;
 
@@ -378,6 +400,8 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
                   clearInterval(typeInterval);
                   // Dispatch change event at the end
                   element.dispatchEvent(new Event('change', { bubbles: true }));
+                  // Record action end time (typing takes time: 50ms per character)
+                  lastActionEndTimeRef.current = actionStartTime + (valueToType.length * 50);
                 }
               }, 50); // 50ms per character
             }
@@ -388,6 +412,8 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
             if (element instanceof HTMLElement) {
               element.scrollIntoView({ behavior: 'smooth', block: 'center' });
               element.dispatchEvent(new MouseEvent('mouseenter', { bubbles: true }));
+              // Record action end time
+              lastActionEndTimeRef.current = actionStartTime + 100;
             }
             break;
 
@@ -395,6 +421,8 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
             // Just scroll into view
             if (element instanceof HTMLElement) {
               element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              // Record action end time
+              lastActionEndTimeRef.current = actionStartTime + 100;
             }
             break;
         }
