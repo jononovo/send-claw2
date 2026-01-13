@@ -129,11 +129,10 @@ export function GuidanceVideoPlayer({
           </div>
 
           {showPlaybackOverlay && (
-            <button
-              onClick={handlePlayPause}
-              className="absolute inset-0 flex items-center justify-center cursor-pointer"
-            >
-              <div className="w-12 h-12 rounded-full bg-black/50 hover:bg-black/70 flex items-center justify-center text-white transition-colors">
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+              <button
+                onClick={handlePlayPause}
+                className="w-12 h-12 rounded-full bg-black/50 hover:bg-black/70 flex items-center justify-center text-white transition-colors cursor-pointer pointer-events-auto">
                 {hasEnded ? (
                   <RotateCcw className="w-5 h-5" />
                 ) : isPlaying ? (
@@ -141,8 +140,8 @@ export function GuidanceVideoPlayer({
                 ) : (
                   <Play className="w-5 h-5 ml-0.5" />
                 )}
-              </div>
-            </button>
+              </button>
+            </div>
           )}
 
           {!isMinimized && (
