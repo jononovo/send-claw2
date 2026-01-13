@@ -45,9 +45,9 @@ export function GuidanceVideoPlayer({
   };
 
   const sizeClasses = {
-    small: isMinimized ? "w-16 h-16" : "w-40 h-40",
-    medium: isMinimized ? "w-20 h-20" : "w-56 h-56",
-    large: isMinimized ? "w-24 h-24" : "w-72 h-72",
+    small: isMinimized ? "w-20 h-14" : "w-48 h-32",
+    medium: isMinimized ? "w-24 h-16" : "w-64 h-44",
+    large: isMinimized ? "w-28 h-20" : "w-80 h-56",
   };
 
   if (!videoUrl || !isVisible) return null;
@@ -63,7 +63,7 @@ export function GuidanceVideoPlayer({
         <div
           className={`relative ${sizeClasses[size]} transition-all duration-300 ease-out`}
         >
-          <div className="absolute inset-0 rounded-full overflow-hidden shadow-2xl ring-2 ring-amber-400/30">
+          <div className="absolute inset-0 rounded-xl overflow-hidden shadow-2xl ring-2 ring-amber-400/30">
             {hasError ? (
               <div className="w-full h-full bg-gray-800 flex items-center justify-center">
                 <span className="text-xs text-gray-500">Video unavailable</span>
@@ -114,7 +114,7 @@ export function GuidanceVideoPlayer({
           {isMinimized && (
             <button
               onClick={() => setIsMinimized(false)}
-              className="absolute inset-0 rounded-full bg-black/40 flex items-center justify-center text-white hover:bg-black/60 transition-colors"
+              className="absolute inset-0 rounded-xl bg-black/40 flex items-center justify-center text-white hover:bg-black/60 transition-colors"
             >
               <Maximize2 className="w-4 h-4" />
             </button>
