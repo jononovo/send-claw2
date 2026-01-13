@@ -708,6 +708,71 @@ export const quest1: Quest = {
         }
       ],
       "completionMessage": "Great job! You've successfully learned how to navigate the interface and select a medical practice. You're now ready to work with Manhattan Gastroenterology!"
+    },
+    {
+      "id": "navigate-and-search-interface",
+      "name": "Navigate and Search",
+      "description": "Learn how to open drawers, navigate the interface, and use search functionality",
+      "emoji": "🔍",
+      "steps": [
+        {
+          "id": "open-drawer",
+          "selector": "[data-testid=\"button-open-drawer\"]",
+          "action": "click",
+          "instruction": "Click the drawer button to open the navigation menu",
+          "tooltipPosition": "bottom",
+          "route": "/app"
+        },
+        {
+          "id": "close-overlay",
+          "selector": "div.fixed.inset-0.z-50",
+          "action": "click",
+          "instruction": "Click on the overlay area to close the drawer",
+          "tooltipPosition": "auto",
+          "route": "/app"
+        },
+        {
+          "id": "focus-search",
+          "selector": "[data-testid=\"search-input\"]",
+          "action": "click",
+          "instruction": "Click on the search input field to start searching",
+          "tooltipPosition": "bottom",
+          "route": "/app"
+        },
+        {
+          "id": "type-search",
+          "selector": "[data-testid=\"search-input\"]",
+          "action": "type",
+          "instruction": "Type 'Click' in the search field",
+          "tooltipPosition": "bottom",
+          "route": "/app"
+        },
+        {
+          "id": "select-leadership",
+          "selector": "span.font-medium",
+          "action": "click",
+          "instruction": "Click on the Leadership option to filter results",
+          "tooltipPosition": "top",
+          "route": "/app"
+        },
+        {
+          "id": "select-marketing",
+          "selector": "span.text-sm.font-medium.max-md:hidden",
+          "action": "click",
+          "instruction": "Click on the Marketing category to refine your search",
+          "tooltipPosition": "top",
+          "route": "/app"
+        },
+        {
+          "id": "return-to-search",
+          "selector": "[data-testid=\"search-input\"]",
+          "action": "click",
+          "instruction": "Click back on the search input to continue searching",
+          "tooltipPosition": "bottom",
+          "route": "/app"
+        }
+      ],
+      "completionMessage": "Great job! You've learned how to navigate the drawer menu, use the search functionality, and filter results by categories like Leadership and Marketing."
     }
   ],
 };
