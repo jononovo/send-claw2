@@ -52,6 +52,7 @@ import { registerContactListRoutes } from "./features/contact-lists/routes";
 import { registerOnboardingRoutes } from "./features/onboarding/routes";
 import { registerSearchQueueRoutes } from "./features/search-queues/routes";
 import { registerGuidanceRoutes } from "./features/guidance/routes";
+import { registerGuidanceVideoRoutes } from "./features/guidance-video";
 import { registerProgressRoutes } from "./features/progress/routes";
 import { registerAccessApplicationsRoutes } from "./features/access-applications/routes";
 import { registerFeedbackRoutes } from "./features/feedback/routes";
@@ -201,6 +202,9 @@ export function registerRoutes(app: Express) {
   
   // Register guidance engine routes
   registerGuidanceRoutes(app);
+  
+  // Register guidance video routes (video recording for challenges)
+  registerGuidanceVideoRoutes(app);
   
   // Register unified progress routes (namespace-scoped progress for any feature)
   registerProgressRoutes(app);

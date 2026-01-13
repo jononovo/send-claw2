@@ -7,6 +7,11 @@ const defaultRecordingState: RecordingState = {
   selectedQuestId: null,
   startRoute: null,
   steps: [],
+  includeVideo: false,
+  videoBlob: null,
+  videoStartTime: null,
+  videoUploadId: null,
+  videoUploadStatus: 'idle',
 };
 
 const STORAGE_KEY = "fluffy-guidance-progress";
@@ -536,12 +541,17 @@ export function useGuidanceEngine(options: UseGuidanceEngineOptions): GuidanceCo
     };
   }, [recording.isRecording, getBestSelector, getElementDescription]);
 
-  const startRecording = useCallback((questId: string, startRoute: string) => {
+  const startRecording = useCallback((questId: string, startRoute: string, includeVideo = false) => {
     setRecording({
       isRecording: true,
       selectedQuestId: questId,
       startRoute,
       steps: [],
+      includeVideo,
+      videoBlob: null,
+      videoStartTime: includeVideo ? Date.now() : null,
+      videoUploadId: null,
+      videoUploadStatus: 'idle',
     });
   }, []);
 
@@ -555,12 +565,22 @@ export function useGuidanceEngine(options: UseGuidanceEngineOptions): GuidanceCo
   }, [recording.steps]);
 
   const clearRecording = useCallback(() => {
-    setRecording({
-      isRecording: false,
-      selectedQuestId: null,
-      startRoute: null,
-      steps: [],
-    });
+    setRecording(defaultRecordingState);
+  }, []);
+
+  const setVideoBlob = useCallback((blob: Blob | null) => {
+    setRecording(prev => ({
+      ...prev,
+      videoBlob: blob,
+    }));
+  }, []);
+
+  const setVideoUploadStatus = useCallback((status: RecordingState['videoUploadStatus'], uploadId?: number | null) => {
+    setRecording(prev => ({
+      ...prev,
+      videoUploadStatus: status,
+      videoUploadId: uploadId !== undefined ? uploadId : prev.videoUploadId,
+    }));
   }, []);
 
   useEffect(() => {
@@ -602,5 +622,7 @@ export function useGuidanceEngine(options: UseGuidanceEngineOptions): GuidanceCo
     startRecording,
     stopRecording,
     clearRecording,
+    setVideoBlob,
+    setVideoUploadStatus,
   };
 }
