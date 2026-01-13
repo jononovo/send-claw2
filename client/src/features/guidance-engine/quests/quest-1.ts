@@ -618,6 +618,96 @@ export const quest1: Quest = {
         }
       ],
       "completionMessage": "Great job! You've learned how to navigate to the business search feature and access the search input. Now you can start discovering target businesses for your needs!"
+    },
+    {
+      "id": "navigate-and-add-product",
+      "name": "Navigate and Add Product",
+      "description": "Learn how to open the navigation drawer, explore company information, and add a product description",
+      "emoji": "🏢",
+      "steps": [
+        {
+          "id": "open-drawer",
+          "selector": "[data-testid=\"button-open-drawer\"]",
+          "action": "click",
+          "instruction": "Click the button to open the navigation drawer",
+          "tooltipPosition": "right",
+          "route": "/app"
+        },
+        {
+          "id": "select-company",
+          "selector": "span.cursor-pointer",
+          "action": "click",
+          "instruction": "Click on 'edtech stem in vietnam' to select this company",
+          "tooltipPosition": "right",
+          "route": "/app"
+        },
+        {
+          "id": "view-role",
+          "selector": "div.text-xs.text-muted-foreground.mt-0.5",
+          "action": "click",
+          "instruction": "Click on the 'Co-Founder' role to view more details",
+          "tooltipPosition": "right",
+          "route": "/app"
+        },
+        {
+          "id": "focus-textarea",
+          "selector": "textarea.flex.min-h-\\[80px\\].w-full",
+          "action": "click",
+          "instruction": "Click in the product description text area to start adding a product",
+          "tooltipPosition": "top",
+          "route": "/app"
+        },
+        {
+          "id": "type-product",
+          "selector": "textarea.flex.min-h-\\[80px\\].w-full",
+          "action": "type",
+          "instruction": "Type 'happy' in the text area to add your product description",
+          "tooltipPosition": "top",
+          "route": "/app"
+        }
+      ],
+      "completionMessage": "Great job! You've learned how to navigate the app drawer, explore company information, and add product descriptions. You're now ready to manage company products!"
+    },
+    {
+      "id": "navigate-practice-selection",
+      "name": "Select Your Practice",
+      "description": "Learn how to navigate the interface and select a medical practice",
+      "emoji": "🏥",
+      "steps": [
+        {
+          "id": "click-svg-icon",
+          "selector": "svg",
+          "action": "click",
+          "instruction": "Click on the SVG icon to begin navigation",
+          "tooltipPosition": "bottom",
+          "route": "/app"
+        },
+        {
+          "id": "open-drawer-menu",
+          "selector": "[data-testid=\"button-open-drawer\"]",
+          "action": "click",
+          "instruction": "Click the menu button to open the navigation drawer",
+          "tooltipPosition": "bottom",
+          "route": "/app"
+        },
+        {
+          "id": "interact-with-overlay",
+          "selector": "div.fixed.inset-0.z-50",
+          "action": "click",
+          "instruction": "Click on the overlay area to interact with the modal",
+          "tooltipPosition": "auto",
+          "route": "/app"
+        },
+        {
+          "id": "select-practice",
+          "selector": "h3.font-semibold.text-base.leading-tight",
+          "action": "click",
+          "instruction": "Click on 'Manhattan Gastroenterology' to select this practice",
+          "tooltipPosition": "top",
+          "route": "/app"
+        }
+      ],
+      "completionMessage": "Great job! You've successfully learned how to navigate the interface and select a medical practice. You're now ready to work with Manhattan Gastroenterology!"
     }
   ],
 };
