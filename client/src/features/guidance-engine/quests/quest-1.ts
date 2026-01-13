@@ -259,6 +259,47 @@ export const quest1: Quest = {
         }
       ],
       "completionMessage": "Great job! You've learned how to generate a personalized email using the category selection and generation tools."
+    },
+    {
+      "id": "filter-search-results-companies",
+      "name": "Filter Search Results",
+      "description": "Learn how to refine your search by filtering for specific types of results",
+      "emoji": "🔍",
+      "steps": [
+        {
+          "id": "click-path-element",
+          "selector": "path",
+          "action": "click",
+          "instruction": "Click on this navigation element to begin exploring the search interface",
+          "tooltipPosition": "bottom",
+          "route": "/app"
+        },
+        {
+          "id": "select-search-topic",
+          "selector": "span.text-sm.text-muted-foreground.truncate",
+          "action": "click",
+          "instruction": "Click on this search topic about 'edtech stem in vietnam' to see the current search results",
+          "tooltipPosition": "bottom",
+          "route": "/app"
+        },
+        {
+          "id": "open-search-options",
+          "selector": "[data-testid=\"search-options-button\"]",
+          "action": "click",
+          "instruction": "Click the search options button to open the filtering menu",
+          "tooltipPosition": "left",
+          "route": "/app"
+        },
+        {
+          "id": "apply-companies-filter",
+          "selector": "span.text-base.font-medium.text-gray-900",
+          "action": "click",
+          "instruction": "Select 'Only Companies' to filter your search results to show only company-related content",
+          "tooltipPosition": "left",
+          "route": "/app"
+        }
+      ],
+      "completionMessage": "Great job! You've learned how to use search filters to narrow down results and find exactly what you're looking for. This will help you find more relevant information faster!"
     }
   ],
 };
