@@ -300,6 +300,39 @@ export const quest1: Quest = {
         }
       ],
       "completionMessage": "Great job! You've learned how to use search filters to narrow down results and find exactly what you're looking for. This will help you find more relevant information faster!"
+    },
+    {
+      "id": "access-user-profile-menu",
+      "name": "Access User Profile",
+      "description": "Learn how to access your user profile and navigate the profile menu",
+      "emoji": "👤",
+      "steps": [
+        {
+          "id": "click-user-name",
+          "selector": "div.font-medium.text-sm",
+          "action": "click",
+          "instruction": "Click on your username to open the profile menu",
+          "tooltipPosition": "bottom",
+          "route": "/app"
+        },
+        {
+          "id": "interact-menu-icon",
+          "selector": "svg",
+          "action": "click",
+          "instruction": "Click on the menu icon to explore additional options",
+          "tooltipPosition": "left",
+          "route": "/app"
+        },
+        {
+          "id": "close-menu",
+          "selector": "html",
+          "action": "click",
+          "instruction": "Click outside the menu area to close it",
+          "tooltipPosition": "auto",
+          "route": "/app"
+        }
+      ],
+      "completionMessage": "Great job! You've learned how to access your profile menu and navigate the user interface options."
     }
   ],
 };
