@@ -333,6 +333,47 @@ export const quest1: Quest = {
         }
       ],
       "completionMessage": "Great job! You've learned how to access your profile menu and navigate the user interface options."
+    },
+    {
+      "id": "compose-email-with-templates",
+      "name": "Compose an Email",
+      "description": "Learn how to create and compose a new email using the email editor and templates",
+      "emoji": "✉️",
+      "steps": [
+        {
+          "id": "enter-recipient",
+          "selector": "input.flex.h-10.w-full",
+          "action": "click",
+          "instruction": "Click on the recipient email field to enter who you want to send the email to",
+          "tooltipPosition": "bottom",
+          "route": "/app"
+        },
+        {
+          "id": "add-subject",
+          "selector": "[data-testid=\"input-email-subject\"]",
+          "action": "click",
+          "instruction": "Click on the subject line field to add a subject for your email",
+          "tooltipPosition": "bottom",
+          "route": "/app"
+        },
+        {
+          "id": "write-content",
+          "selector": "[data-testid=\"textarea-email-content\"]",
+          "action": "click",
+          "instruction": "Click in the email content area to start writing your message",
+          "tooltipPosition": "top",
+          "route": "/app"
+        },
+        {
+          "id": "explore-templates",
+          "selector": "span",
+          "action": "click",
+          "instruction": "Click on Templates to explore pre-made email templates that can help you write faster",
+          "tooltipPosition": "auto",
+          "route": "/app"
+        }
+      ],
+      "completionMessage": "Great job! You've learned how to compose an email by filling in the recipient, subject, content, and exploring templates to make your writing easier."
     }
   ],
 };
