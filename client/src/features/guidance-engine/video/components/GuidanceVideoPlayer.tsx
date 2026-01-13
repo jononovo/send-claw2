@@ -18,10 +18,12 @@ export function GuidanceVideoPlayer({
   size = "small",
 }: GuidanceVideoPlayerProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const constraintsRef = useRef<HTMLDivElement>(null);
   const [isMuted, setIsMuted] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
   const [hasError, setHasError] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
 
   useEffect(() => {
     if (videoUrl && videoRef.current) {
@@ -45,25 +47,34 @@ export function GuidanceVideoPlayer({
   };
 
   const sizeClasses = {
-    small: isMinimized ? "w-16 h-16" : "w-40 h-40",
-    medium: isMinimized ? "w-20 h-20" : "w-56 h-56",
-    large: isMinimized ? "w-24 h-24" : "w-72 h-72",
+    small: isMinimized ? "w-14 h-20" : "w-32 h-48",
+    medium: isMinimized ? "w-16 h-24" : "w-44 h-64",
+    large: isMinimized ? "w-20 h-28" : "w-56 h-80",
   };
 
   if (!videoUrl || !isVisible) return null;
 
   return (
-    <AnimatePresence>
-      <motion.div
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 1, scale: 1 }}
-        exit={{ opacity: 0, scale: 0.8 }}
-        className={`fixed ${positionClasses[position]} z-50`}
-      >
-        <div
-          className={`relative ${sizeClasses[size]} transition-all duration-300 ease-out`}
+    <>
+      <div ref={constraintsRef} className="fixed inset-0 pointer-events-none z-40" />
+      <AnimatePresence>
+        <motion.div
+          drag
+          dragConstraints={constraintsRef}
+          dragElastic={0.1}
+          dragMomentum={false}
+          onDragStart={() => setIsDragging(true)}
+          onDragEnd={() => setIsDragging(false)}
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.8 }}
+          className={`fixed ${positionClasses[position]} z-50 ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
+          whileDrag={{ scale: 1.05 }}
         >
-          <div className="absolute inset-0 rounded-full overflow-hidden shadow-2xl ring-2 ring-amber-400/30">
+          <div
+            className={`relative ${sizeClasses[size]} transition-all duration-300 ease-out`}
+          >
+          <div className="absolute inset-0 rounded-xl overflow-hidden shadow-2xl ring-2 ring-amber-400/30">
             {hasError ? (
               <div className="w-full h-full bg-gray-800 flex items-center justify-center">
                 <span className="text-xs text-gray-500">Video unavailable</span>
@@ -114,7 +125,7 @@ export function GuidanceVideoPlayer({
           {isMinimized && (
             <button
               onClick={() => setIsMinimized(false)}
-              className="absolute inset-0 rounded-full bg-black/40 flex items-center justify-center text-white hover:bg-black/60 transition-colors"
+              className="absolute inset-0 rounded-xl bg-black/40 flex items-center justify-center text-white hover:bg-black/60 transition-colors"
             >
               <Maximize2 className="w-4 h-4" />
             </button>
@@ -132,5 +143,6 @@ export function GuidanceVideoPlayer({
         </div>
       </motion.div>
     </AnimatePresence>
+    </>
   );
 }

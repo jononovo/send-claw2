@@ -78,14 +78,8 @@ export function ChallengeRecorder({ isOpen, onClose }: ChallengeRecorderProps) {
     setError(null);
     setGeneratedChallenge(null);
     
-    if (includeVideo) {
-      try {
-        await videoRecorder.startPreview();
-        videoRecorder.startRecording();
-      } catch (err) {
-        setError("Failed to access camera. Please allow camera access.");
-        return;
-      }
+    if (includeVideo && videoRecorder.stream) {
+      videoRecorder.startRecording();
     }
     
     startRecording(selectedQuestId, location, includeVideo);
@@ -455,7 +449,20 @@ export function ChallengeRecorder({ isOpen, onClose }: ChallengeRecorderProps) {
                       <Checkbox
                         id="include-video"
                         checked={includeVideo}
-                        onCheckedChange={(checked) => setIncludeVideo(checked === true)}
+                        onCheckedChange={async (checked) => {
+                          const shouldInclude = checked === true;
+                          setIncludeVideo(shouldInclude);
+                          if (shouldInclude) {
+                            try {
+                              await videoRecorder.startPreview();
+                            } catch (err) {
+                              setError("Failed to access camera. Please allow camera access.");
+                              setIncludeVideo(false);
+                            }
+                          } else {
+                            videoRecorder.stopPreview();
+                          }
+                        }}
                       />
                       <label
                         htmlFor="include-video"
@@ -466,10 +473,17 @@ export function ChallengeRecorder({ isOpen, onClose }: ChallengeRecorderProps) {
                       </label>
                     </div>
                     
-                    {includeVideo && (
-                      <p className="text-xs text-gray-500">
-                        Use a solid green/blue background for best results
-                      </p>
+                    {includeVideo && videoRecorder.stream && (
+                      <div className="mb-2">
+                        <WebcamPreview
+                          stream={videoRecorder.stream}
+                          isRecording={false}
+                          className="w-full h-32 rounded-lg"
+                        />
+                        <p className="text-xs text-gray-500 mt-1">
+                          Use a solid green/blue background for best results
+                        </p>
+                      </div>
                     )}
 
                     <Button
