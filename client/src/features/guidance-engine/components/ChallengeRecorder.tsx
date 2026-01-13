@@ -1,15 +1,17 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, lazy, Suspense } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLocation } from "wouter";
-import { Circle, Square, Loader2, Check, Copy, X, ChevronDown, Upload, Play, Pencil, ArrowUp, ArrowDown, Trash2, Save, Plus } from "lucide-react";
+import { Circle, Square, Loader2, Check, Copy, X, ChevronDown, Upload, Play, Pencil, ArrowUp, ArrowDown, Trash2, Save, Plus, Video } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { QUESTS } from "../quests";
 import { useGuidance } from "../context/GuidanceContext";
 import type { GeneratedChallenge, Challenge, GuidanceStep } from "../types";
+import { useVideoRecorder, WebcamPreview, uploadGuidanceVideo, getVideoStatus } from "../video";
 
 interface ChallengeRecorderProps {
   isOpen: boolean;
@@ -35,7 +37,10 @@ export function ChallengeRecorder({ isOpen, onClose }: ChallengeRecorderProps) {
   const [stepCountBeforeAdd, setStepCountBeforeAdd] = useState(0);
   
   const guidance = useGuidance();
-  const { recording, startRecording, stopRecording, clearRecording } = guidance;
+  const { recording, startRecording, stopRecording, clearRecording, setVideoBlob, setVideoUploadStatus, refreshChallengeVideo } = guidance;
+  
+  const [includeVideo, setIncludeVideo] = useState(false);
+  const videoRecorder = useVideoRecorder();
 
   useEffect(() => {
     // Don't switch to recording UI if we're just adding a single step
@@ -50,19 +55,101 @@ export function ChallengeRecorder({ isOpen, onClose }: ChallengeRecorderProps) {
     }
   }, [recording.selectedQuestId, selectedQuestId]);
 
-  const handleStartRecording = () => {
+  const stopPreviewRef = useRef(videoRecorder.stopPreview);
+  stopPreviewRef.current = videoRecorder.stopPreview;
+  const getStreamRef = useRef(videoRecorder.getStream);
+  getStreamRef.current = videoRecorder.getStream;
+  
+  useEffect(() => {
+    if (!isOpen) {
+      const stream = getStreamRef.current();
+      if (stream) {
+        stopPreviewRef.current();
+      }
+      setIncludeVideo(false);
+    }
+  }, [isOpen]);
+
+  const handleStartRecording = async () => {
     if (!selectedQuestId) {
       setError("Please select a quest before recording");
       return;
     }
     setError(null);
     setGeneratedChallenge(null);
-    startRecording(selectedQuestId, location);
+    
+    if (includeVideo) {
+      try {
+        await videoRecorder.startPreview();
+        videoRecorder.startRecording();
+      } catch (err) {
+        setError("Failed to access camera. Please allow camera access.");
+        return;
+      }
+    }
+    
+    startRecording(selectedQuestId, location, includeVideo);
     setUIState("recording");
   };
 
+  const pollingAbortRef = useRef<boolean>(false);
+  
+  useEffect(() => {
+    return () => {
+      pollingAbortRef.current = true;
+    };
+  }, []);
+  
+  const pollVideoStatus = async (videoId: number, challengeId: string, maxAttempts = 30) => {
+    pollingAbortRef.current = false;
+    for (let i = 0; i < maxAttempts; i++) {
+      if (pollingAbortRef.current) return;
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      if (pollingAbortRef.current) return;
+      try {
+        const status = await getVideoStatus(videoId);
+        if (pollingAbortRef.current) return;
+        if (status.status === 'completed') {
+          setVideoUploadStatus('completed', videoId);
+          refreshChallengeVideo(challengeId);
+          return;
+        } else if (status.status === 'failed') {
+          setVideoUploadStatus('failed', videoId);
+          return;
+        }
+      } catch (err) {
+        if (pollingAbortRef.current) return;
+        console.error("Failed to poll video status:", err);
+      }
+    }
+    if (!pollingAbortRef.current) {
+      setVideoUploadStatus('failed', videoId);
+    }
+  };
+
   const handleStopRecording = async () => {
+    // Capture recording state BEFORE stopRecording clears it
+    const hadVideo = recording.includeVideo;
+    const videoStartTime = recording.videoStartTime;
+    const questId = recording.selectedQuestId || selectedQuestId;
+    const startRoute = recording.startRoute || location;
+    
+    // Stop video recording FIRST (before stopRecording clears state)
+    let videoBlob: Blob | null = null;
+    const stream = videoRecorder.getStream();
+    if (hadVideo && stream) {
+      try {
+        videoBlob = await videoRecorder.stopRecording();
+        setVideoBlob(videoBlob);
+      } catch (err) {
+        console.error("Failed to stop video recording:", err);
+      }
+      videoRecorder.stopPreview();
+    }
+    
+    // Now stop step recording (this clears recording state)
     const steps = stopRecording();
+    
     setUIState("processing");
     
     try {
@@ -70,8 +157,8 @@ export function ChallengeRecorder({ isOpen, onClose }: ChallengeRecorderProps) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          questId: recording.selectedQuestId || selectedQuestId,
-          startRoute: recording.startRoute || location,
+          questId,
+          startRoute,
           steps,
         }),
       });
@@ -83,6 +170,29 @@ export function ChallengeRecorder({ isOpen, onClose }: ChallengeRecorderProps) {
       const data = await response.json();
       setGeneratedChallenge(data.challenge);
       setUIState("complete");
+      
+      if (videoBlob && data.challenge?.id) {
+        setVideoUploadStatus('uploading');
+        try {
+          const timestamps = steps.map((step, idx) => ({
+            stepIndex: idx,
+            timestamp: step.timestamp - (videoStartTime || steps[0]?.timestamp || 0),
+            action: step.action,
+          }));
+          
+          const uploadResult = await uploadGuidanceVideo({
+            videoBlob,
+            challengeId: data.challenge.id,
+            questId,
+            timestamps,
+          });
+          setVideoUploadStatus('processing', uploadResult.id);
+          pollVideoStatus(uploadResult.id, data.challenge.id);
+        } catch (uploadErr) {
+          console.error("Failed to upload video:", uploadErr);
+          setVideoUploadStatus('failed');
+        }
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to generate challenge");
       setUIState("idle");
@@ -341,6 +451,27 @@ export function ChallengeRecorder({ isOpen, onClose }: ChallengeRecorderProps) {
                       </div>
                     </div>
 
+                    <div className="flex items-center space-x-2 py-2">
+                      <Checkbox
+                        id="include-video"
+                        checked={includeVideo}
+                        onCheckedChange={(checked) => setIncludeVideo(checked === true)}
+                      />
+                      <label
+                        htmlFor="include-video"
+                        className="text-sm text-gray-300 flex items-center gap-2 cursor-pointer"
+                      >
+                        <Video className="h-4 w-4 text-amber-400" />
+                        Include video recording
+                      </label>
+                    </div>
+                    
+                    {includeVideo && (
+                      <p className="text-xs text-gray-500">
+                        Use a solid green/blue background for best results
+                      </p>
+                    )}
+
                     <Button
                       onClick={handleStartRecording}
                       disabled={!selectedQuestId}
@@ -361,6 +492,16 @@ export function ChallengeRecorder({ isOpen, onClose }: ChallengeRecorderProps) {
 
             {uiState === "recording" && (
               <>
+                {recording.includeVideo && videoRecorder.stream && (
+                  <div className="mb-2">
+                    <WebcamPreview
+                      stream={videoRecorder.stream}
+                      isRecording={videoRecorder.isRecording}
+                      className="w-full h-24"
+                    />
+                  </div>
+                )}
+                
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
                     <span className="text-xs text-gray-400 uppercase tracking-wide">Recording Steps</span>

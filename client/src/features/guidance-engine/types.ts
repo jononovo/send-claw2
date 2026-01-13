@@ -73,9 +73,12 @@ export interface GuidanceContextValue {
   stopChallenge: () => void;
   isTestMode: boolean;
   recording: RecordingState;
-  startRecording: (questId: string, startRoute: string) => void;
+  startRecording: (questId: string, startRoute: string, includeVideo?: boolean) => void;
   stopRecording: () => RecordedStep[];
   clearRecording: () => void;
+  setVideoBlob: (blob: Blob | null) => void;
+  setVideoUploadStatus: (status: RecordingState['videoUploadStatus'], uploadId?: number | null) => void;
+  refreshChallengeVideo: (challengeId: string) => Promise<void>;
 }
 
 export interface FluffyGuideProps {
@@ -128,6 +131,11 @@ export interface RecordingState {
   selectedQuestId: string | null;
   startRoute: string | null;
   steps: RecordedStep[];
+  includeVideo: boolean;
+  videoBlob: Blob | null;
+  videoStartTime: number | null;
+  videoUploadId: number | null;
+  videoUploadStatus: 'idle' | 'uploading' | 'processing' | 'completed' | 'failed';
 }
 
 export interface GeneratedChallenge {

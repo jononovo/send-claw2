@@ -11,6 +11,7 @@ import {
   QuestProgressHeader,
   ChallengeComplete,
 } from "../components";
+import { GuidanceVideoPlayer, getChallengeVideo } from "../video";
 
 const GuidanceContext = createContext<GuidanceContextValue | null>(null);
 
@@ -42,10 +43,13 @@ const defaultGuidanceValue: GuidanceContextValue = {
   startChallenge: () => {},
   stopChallenge: () => {},
   isTestMode: false,
-  recording: { isRecording: false, steps: [], selectedQuestId: null, startRoute: null },
+  recording: { isRecording: false, steps: [], selectedQuestId: null, startRoute: null, includeVideo: false, videoBlob: null, videoStartTime: null, videoUploadId: null, videoUploadStatus: 'idle' },
   startRecording: () => {},
   stopRecording: () => [],
   clearRecording: () => {},
+  setVideoBlob: () => {},
+  setVideoUploadStatus: () => {},
+  refreshChallengeVideo: async () => {},
 };
 
 /**
@@ -108,6 +112,10 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
   const tooltipHiddenRef = useRef(false);
   const [, setVisibilityTick] = useState(0);
   
+  // Video playback state
+  const [videoUrl, setVideoUrl] = useState<string | null>(null);
+  const [showVideo, setShowVideo] = useState(false);
+  
   // Stable refs for engine functions to avoid effect re-runs when engine object changes
   const startQuestRef = useRef(engine.startQuest);
   startQuestRef.current = engine.startQuest;
@@ -144,6 +152,47 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
       }
     }
   }, [state.isActive, currentStep, state.currentQuestId, state.currentChallengeIndex, state.currentStepIndex, location, navigate]);
+
+  const refreshChallengeVideo = useCallback(async (challengeId: string) => {
+    try {
+      const video = await getChallengeVideo(challengeId);
+      if (video?.url) {
+        setVideoUrl(video.url);
+        setShowVideo(true);
+      }
+    } catch {
+    }
+  }, []);
+
+  // Fetch guidance video for current challenge
+  useEffect(() => {
+    if (!state.isActive || !currentChallenge?.id) {
+      setVideoUrl(null);
+      setShowVideo(false);
+      return;
+    }
+
+    let cancelled = false;
+    getChallengeVideo(currentChallenge.id)
+      .then((video) => {
+        if (cancelled) return;
+        if (video?.url) {
+          setVideoUrl(video.url);
+          setShowVideo(true);
+        } else {
+          setVideoUrl(null);
+          setShowVideo(false);
+        }
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setVideoUrl(null);
+          setShowVideo(false);
+        }
+      });
+
+    return () => { cancelled = true; };
+  }, [state.isActive, currentChallenge?.id]);
 
   // Auto-resume on navigation removed - guidance should only start via explicit triggers
   // Users can manually resume by clicking Fluffy if they want to continue a paused challenge
@@ -385,9 +434,14 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
   }, [engine]);
 
   const challengeProgress = getChallengeProgress();
+  
+  const contextValue = {
+    ...engine,
+    refreshChallengeVideo,
+  };
 
   return (
-    <GuidanceContext.Provider value={engine}>
+    <GuidanceContext.Provider value={contextValue}>
       {/* Quest progress header renders before children to push content down */}
       {isOnEnabledRoute && (
         <QuestProgressHeader
@@ -409,6 +463,14 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
             onClick={handleFluffyClick}
             isActive={state.isActive}
             onCloseGuide={engine.pauseGuidance}
+          />
+
+          <GuidanceVideoPlayer
+            videoUrl={videoUrl}
+            isVisible={showVideo && state.isActive}
+            onClose={() => setShowVideo(false)}
+            position="bottom-left"
+            size="small"
           />
 
           {state.isActive && currentStep && (
