@@ -773,6 +773,88 @@ export const quest1: Quest = {
         }
       ],
       "completionMessage": "Great job! You've learned how to navigate the drawer menu, use the search functionality, and filter results by categories like Leadership and Marketing."
+    },
+    {
+      "id": "search-filtered-startups",
+      "name": "Search and Filter Startups",
+      "description": "Learn how to search for specific startups and apply category filters",
+      "emoji": "🔍",
+      "steps": [
+        {
+          "id": "open-drawer",
+          "selector": "[data-testid=\"button-open-drawer\"]",
+          "action": "click",
+          "instruction": "Click the drawer button to open the navigation panel",
+          "tooltipPosition": "bottom",
+          "route": "/app"
+        },
+        {
+          "id": "enter-search",
+          "selector": "[data-testid=\"search-input\"]",
+          "action": "click",
+          "instruction": "Click on the search input to start searching for startups",
+          "tooltipPosition": "bottom",
+          "route": "/app"
+        },
+        {
+          "id": "apply-filter",
+          "selector": "button.flex.items-center.gap-1.5",
+          "action": "click",
+          "instruction": "Click the Marketing filter to narrow down your search results",
+          "tooltipPosition": "top",
+          "route": "/app"
+        }
+      ],
+      "completionMessage": "Great job! You've learned how to use the search functionality and apply category filters to find specific startups that match your criteria."
+    },
+    {
+      "id": "navigate-search-and-filter-startup-data",
+      "name": "Navigate & Filter Startup Data",
+      "description": "Learn how to open the navigation drawer, search for startups, and apply filters to find specific data",
+      "emoji": "🔍",
+      "steps": [
+        {
+          "id": "open-drawer",
+          "selector": "[data-testid=\"button-open-drawer\"]",
+          "action": "click",
+          "instruction": "Click the drawer button to open the navigation menu",
+          "tooltipPosition": "right",
+          "route": "/app"
+        },
+        {
+          "id": "access-navigation",
+          "selector": "nav.flex.items-center.justify-between",
+          "action": "click",
+          "instruction": "Click on the navigation bar to access the main menu options",
+          "tooltipPosition": "bottom",
+          "route": "/app"
+        },
+        {
+          "id": "use-search",
+          "selector": "[data-testid=\"search-input\"]",
+          "action": "click",
+          "instruction": "Click on the search input to look for specific startup data",
+          "tooltipPosition": "bottom",
+          "route": "/app"
+        },
+        {
+          "id": "apply-marketing-filter",
+          "selector": "span.font-medium",
+          "action": "click",
+          "instruction": "Click on 'Marketing' to filter results by this category",
+          "tooltipPosition": "top",
+          "route": "/app"
+        },
+        {
+          "id": "apply-leadership-filter",
+          "selector": "span.text-sm.font-medium.max-md:hidden",
+          "action": "click",
+          "instruction": "Click on 'Leadership' to add another filter to your search results",
+          "tooltipPosition": "top",
+          "route": "/app"
+        }
+      ],
+      "completionMessage": "Great job! You've learned how to navigate the app, use the search functionality, and apply multiple filters to find specific startup data. These skills will help you efficiently discover relevant business information."
     }
   ],
 };

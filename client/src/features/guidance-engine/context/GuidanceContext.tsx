@@ -240,7 +240,9 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
     }
 
     // Find the timestamp for the next step's action
-    const nextStepTimestamp = videoTimestamps.find(t => t.stepIndex === currentStepIdx + 1);
+    // For step -1 (initial state in show mode), the next step is 0
+    const nextStepIdx = currentStepIdx + 1;
+    const nextStepTimestamp = videoTimestamps.find(t => t.stepIndex === nextStepIdx);
 
     if (nextStepTimestamp) {
       // Calculate when to show the next step's tooltip:
@@ -303,7 +305,8 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
 
   // Reset step tracking when challenge changes
   useEffect(() => {
-    lastAdvancedStepRef.current = -1;
+    // Reset to -2 so that advancing from -1 to 0 works correctly
+    lastAdvancedStepRef.current = -2;
     lastActionEndTimeRef.current = 0;
     setVideoCurrentTimeMs(0);
     setIsVideoPlaying(false);

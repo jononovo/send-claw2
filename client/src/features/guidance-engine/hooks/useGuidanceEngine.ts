@@ -239,12 +239,16 @@ export function useGuidanceEngine(options: UseGuidanceEngineOptions): GuidanceCo
 
     if (firstIncompleteIndex < 0) return;
 
+    // In "show" mode, start at step -1 so the first tooltip waits for video timing
+    // In "guide" mode, start at step 0 immediately
+    const initialStepIndex = mode === "show" ? -1 : 0;
+
     setState((prev) => ({
       ...prev,
       isActive: true,
       currentQuestId: questId,
       currentChallengeIndex: firstIncompleteIndex,
-      currentStepIndex: 0,
+      currentStepIndex: initialStepIndex,
       isHeaderVisible: true,
       playbackMode: mode,
     }));
