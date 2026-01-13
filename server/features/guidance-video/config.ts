@@ -1,6 +1,7 @@
 import path from "path";
+import os from "os";
 
-const BASE_DIR = path.join(process.cwd(), 'static', 'guidance-videos');
+const BASE_DIR = path.join(os.tmpdir(), 'guidance-videos');
 
 export const VIDEO_CONFIG = {
   RAW_DIR: path.join(BASE_DIR, 'raw'),
