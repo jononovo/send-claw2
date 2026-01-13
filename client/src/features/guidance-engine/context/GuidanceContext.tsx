@@ -131,8 +131,10 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
   advanceStepRef.current = engine.advanceStep;
   const pauseGuidanceRef = useRef(engine.pauseGuidance);
   pauseGuidanceRef.current = engine.pauseGuidance;
+  const setVideoTimestampsRef = useRef(engine.setVideoTimestamps);
+  setVideoTimestampsRef.current = engine.setVideoTimestamps;
 
-  const { state, currentQuest, currentChallenge, currentStep, getChallengeProgress } = engine;
+  const { state, currentQuest, currentChallenge, currentStep, getChallengeProgress, videoTimestamps } = engine;
 
   const isOnEnabledRoute = isGuidanceEnabledRoute(location);
   const isOnAppRoute = location === "/app" || location.startsWith("/app/");
@@ -177,7 +179,7 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
     if (!state.isActive || !currentChallenge?.id) {
       setVideoUrl(null);
       setShowVideo(false);
-      engine.setVideoTimestamps([]);
+      setVideoTimestampsRef.current([]);
       return;
     }
 
@@ -189,24 +191,24 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
           setVideoUrl(video.url);
           setShowVideo(true);
           if (video.timestamps && Array.isArray(video.timestamps)) {
-            engine.setVideoTimestamps(video.timestamps);
+            setVideoTimestampsRef.current(video.timestamps);
           }
         } else {
           setVideoUrl(null);
           setShowVideo(false);
-          engine.setVideoTimestamps([]);
+          setVideoTimestampsRef.current([]);
         }
       })
       .catch(() => {
         if (!cancelled) {
           setVideoUrl(null);
           setShowVideo(false);
-          engine.setVideoTimestamps([]);
+          setVideoTimestampsRef.current([]);
         }
       });
 
     return () => { cancelled = true; };
-  }, [state.isActive, currentChallenge?.id, engine]);
+  }, [state.isActive, currentChallenge?.id]);
 
   // Auto-resume on navigation removed - guidance should only start via explicit triggers
   // Users can manually resume by clicking Fluffy if they want to continue a paused challenge
@@ -218,7 +220,6 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
       return;
     }
 
-    const { videoTimestamps } = engine;
     if (videoTimestamps.length === 0 || !isVideoPlaying) {
       return;
     }
@@ -241,7 +242,7 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
         advanceStepRef.current();
       }
     }
-  }, [state.isActive, state.playbackMode, state.currentStepIndex, currentChallenge, engine, isVideoPlaying, videoCurrentTimeMs]);
+  }, [state.isActive, state.playbackMode, state.currentStepIndex, currentChallenge, videoTimestamps, isVideoPlaying, videoCurrentTimeMs]);
 
   // Show-me mode fallback: Use fixed delay when no timestamps available
   useEffect(() => {
@@ -257,8 +258,6 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
       return;
     }
 
-    const { videoTimestamps } = engine;
-    
     // If we have timestamps, let the video-based effect handle it
     if (videoTimestamps.length > 0) {
       return;
@@ -283,7 +282,7 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
         fallbackTimerRef.current = null;
       }
     };
-  }, [state.isActive, state.playbackMode, state.currentStepIndex, currentChallenge, engine]);
+  }, [state.isActive, state.playbackMode, state.currentStepIndex, currentChallenge, videoTimestamps]);
 
   // Reset step tracking when challenge changes
   useEffect(() => {

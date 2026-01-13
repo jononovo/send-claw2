@@ -447,6 +447,144 @@ export const quest1: Quest = {
         }
       ],
       "completionMessage": "Great job! You've successfully set up the email automation tool and learned how to configure recipient details and access templates. You're ready to create effective email campaigns!"
+    },
+    {
+      "id": "search-startup-suggestions",
+      "name": "Search with Smart Suggestions",
+      "description": "Learn how to use the search feature with AI-powered suggestions to find startup information",
+      "emoji": "🔍",
+      "steps": [
+        {
+          "id": "open-drawer",
+          "selector": "[data-testid=\"button-open-drawer\"]",
+          "action": "click",
+          "instruction": "Click the drawer button to open the navigation menu",
+          "tooltipPosition": "bottom",
+          "route": "/app"
+        },
+        {
+          "id": "close-drawer",
+          "selector": "html",
+          "action": "click",
+          "instruction": "Click anywhere outside the drawer to close it and return to the main interface",
+          "tooltipPosition": "auto",
+          "route": "/app"
+        },
+        {
+          "id": "focus-search",
+          "selector": "[data-testid=\"search-input\"]",
+          "action": "click",
+          "instruction": "Click on the search input field to start searching for startups",
+          "tooltipPosition": "bottom",
+          "route": "/app"
+        },
+        {
+          "id": "select-suggestion",
+          "selector": "[data-testid=\"button-suggestion-recently-exited-startups-in-mi\"]",
+          "action": "click",
+          "instruction": "Click on the suggested search for 'Recently exited startups in Miami' to see relevant results",
+          "tooltipPosition": "top",
+          "route": "/app"
+        }
+      ],
+      "completionMessage": "Great job! You've learned how to navigate the interface and use smart search suggestions to quickly find startup information. The AI-powered suggestions help you discover relevant data faster!"
+    },
+    {
+      "id": "search-and-navigate-campaigns",
+      "name": "Search and Navigate to Campaigns",
+      "description": "Learn how to search for startup information and navigate to the campaigns section",
+      "emoji": "🔍",
+      "steps": [
+        {
+          "id": "click-search-input",
+          "selector": "[data-testid=\"search-input\"]",
+          "action": "click",
+          "instruction": "Click on the search input field to start your search",
+          "tooltipPosition": "bottom",
+          "route": "/app"
+        },
+        {
+          "id": "type-search-query",
+          "selector": "[data-testid=\"search-input\"]",
+          "action": "type",
+          "instruction": "Type your search query for recently exited startups in Miami",
+          "tooltipPosition": "bottom",
+          "route": "/app"
+        },
+        {
+          "id": "refocus-search",
+          "selector": "[data-testid=\"search-input\"]",
+          "action": "click",
+          "instruction": "Click the search input again to ensure it's focused",
+          "tooltipPosition": "bottom",
+          "route": "/app"
+        },
+        {
+          "id": "continue-search-focus",
+          "selector": "[data-testid=\"search-input\"]",
+          "action": "click",
+          "instruction": "Keep the search field active by clicking on it",
+          "tooltipPosition": "bottom",
+          "route": "/app"
+        },
+        {
+          "id": "maintain-search-focus",
+          "selector": "[data-testid=\"search-input\"]",
+          "action": "click",
+          "instruction": "Click the search input to maintain focus",
+          "tooltipPosition": "bottom",
+          "route": "/app"
+        },
+        {
+          "id": "ensure-search-active",
+          "selector": "[data-testid=\"search-input\"]",
+          "action": "click",
+          "instruction": "Click on the search field once more",
+          "tooltipPosition": "bottom",
+          "route": "/app"
+        },
+        {
+          "id": "activate-search-field",
+          "selector": "[data-testid=\"search-input\"]",
+          "action": "click",
+          "instruction": "Click the search input to keep it selected",
+          "tooltipPosition": "bottom",
+          "route": "/app"
+        },
+        {
+          "id": "final-search-click",
+          "selector": "[data-testid=\"search-input\"]",
+          "action": "click",
+          "instruction": "Click on the search field one final time",
+          "tooltipPosition": "bottom",
+          "route": "/app"
+        },
+        {
+          "id": "complete-search-entry",
+          "selector": "[data-testid=\"search-input\"]",
+          "action": "type",
+          "instruction": "Complete your search by typing your query",
+          "tooltipPosition": "bottom",
+          "route": "/app"
+        },
+        {
+          "id": "open-drawer",
+          "selector": "[data-testid=\"button-open-drawer\"]",
+          "action": "click",
+          "instruction": "Click the drawer button to open the navigation menu",
+          "tooltipPosition": "left",
+          "route": "/app"
+        },
+        {
+          "id": "navigate-campaigns",
+          "selector": "span.text-sm.font-medium.text-gray-700",
+          "action": "click",
+          "instruction": "Click on 'Campaigns' to navigate to the campaigns section",
+          "tooltipPosition": "right",
+          "route": "/app"
+        }
+      ],
+      "completionMessage": "Great job! You've learned how to search for startup information and navigate to the campaigns section using the drawer menu."
     }
   ],
 };
