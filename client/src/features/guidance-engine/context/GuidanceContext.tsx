@@ -123,6 +123,7 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
   const [videoCurrentTimeMs, setVideoCurrentTimeMs] = useState(0);
   const lastAdvancedStepRef = useRef<number>(-1);
   const fallbackTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const typingInProgressRef = useRef<boolean>(false);
   
   // Stable refs for engine functions to avoid effect re-runs when engine object changes
   const startQuestRef = useRef(engine.startQuest);
@@ -219,14 +220,8 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
   // Auto-resume on navigation removed - guidance should only start via explicit triggers
   // Users can manually resume by clicking Fluffy if they want to continue a paused challenge
 
-  // Track when the last action completed (in video time ms) for the 1-second delay rule
-  const lastActionEndTimeRef = useRef<number>(0);
-  
   // Show-me mode with timestamps: advance steps based on actual video playback time
-  // Tooltips show 5 seconds before action, or 1 second after previous action ends
-  const TOOLTIP_LEAD_TIME_MS = 5000; // Show tooltip 5 seconds before action
-  const MIN_GAP_AFTER_ACTION_MS = 1000; // Wait at least 1 second after previous action
-  
+  // Steps show at their exact recorded timestamp - simple and direct
   useEffect(() => {
     const now = Date.now();
     // Only run when in show mode with timestamps
@@ -234,11 +229,7 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
       return;
     }
 
-    // Log every time this effect runs to see if it's being called during video playback
-    console.log(`[TIMING ${now}] STEP ADVANCE effect - isVideoPlaying: ${isVideoPlaying}, timestampsCount: ${videoTimestamps.length}, videoTime: ${videoCurrentTimeMs}ms, currentStepIdx: ${state.currentStepIndex}`);
-
     if (videoTimestamps.length === 0 || !isVideoPlaying) {
-      console.log(`[TIMING ${now}] STEP ADVANCE blocked - isVideoPlaying: ${isVideoPlaying}, hasTimestamps: ${videoTimestamps.length > 0}`);
       return;
     }
 
@@ -256,32 +247,19 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
     const nextStepTimestamp = videoTimestamps.find(t => t.stepIndex === nextStepIdx);
 
     if (nextStepTimestamp) {
-      const now = Date.now();
-      // Calculate when to show the next step's tooltip:
-      // - 5 seconds before the action timestamp, OR
-      // - 1 second after the previous action ended
-      // Whichever is LATER (to avoid overlap)
-      const showTooltipAt = Math.max(
-        nextStepTimestamp.timestamp - TOOLTIP_LEAD_TIME_MS,
-        lastActionEndTimeRef.current + MIN_GAP_AFTER_ACTION_MS,
-        0 // Never negative
-      );
-      
-      // For step -1 (initial state), advance immediately to step 0 when time is right
-      // For other steps, wait until the current step's action has been performed
-      const canAdvance = currentStepIdx === -1 || lastPerformedStepRef.current >= currentStepIdx;
-      
-      console.log(`[TIMING ${now}] STEP ADVANCE check - currStep: ${currentStepIdx}, nextStep: ${nextStepIdx}, videoTime: ${videoCurrentTimeMs}ms, tooltipShowAt: ${showTooltipAt}ms, actionAt: ${nextStepTimestamp.timestamp}ms, canAdvance: ${canAdvance}, lastAdvanced: ${lastAdvancedStepRef.current}, lastPerformed: ${lastPerformedStepRef.current}`);
-      
-      // Advance to next step when video reaches the tooltip show time
-      // Track by nextStepIdx since we're advancing TO that step (not FROM currentStepIdx)
-      if (videoCurrentTimeMs >= showTooltipAt && nextStepIdx > lastAdvancedStepRef.current && canAdvance) {
-        console.log(`[TIMING ${now}] STEP ADVANCING to step ${nextStepIdx} - showing tooltip now, action will execute at ${nextStepTimestamp.timestamp}ms (in ${nextStepTimestamp.timestamp - videoCurrentTimeMs}ms)`);
+      // Advance to next step when video reaches the step's timestamp
+      // BUT wait for typing to complete if typing is in progress
+      if (videoCurrentTimeMs >= nextStepTimestamp.timestamp && nextStepIdx > lastAdvancedStepRef.current) {
+        if (typingInProgressRef.current) {
+          console.log(`[TIMING ${now}] WAITING for typing to complete before advancing to step ${nextStepIdx}`);
+          return;
+        }
+        console.log(`[TIMING ${now}] STEP ADVANCING to step ${nextStepIdx} at videoTime ${videoCurrentTimeMs}ms (timestamp: ${nextStepTimestamp.timestamp}ms)`);
         lastAdvancedStepRef.current = nextStepIdx;
         advanceStepRef.current();
       }
     } else {
-      console.log(`[TIMING ${Date.now()}] No timestamp found for next step ${nextStepIdx}`);
+      console.log(`[TIMING ${now}] No timestamp found for next step ${nextStepIdx}`);
     }
   }, [state.isActive, state.playbackMode, state.currentStepIndex, currentChallenge, videoTimestamps, isVideoPlaying, videoCurrentTimeMs]);
 
@@ -346,7 +324,7 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
   useEffect(() => {
     // Reset to -2 so that advancing from -1 to 0 works correctly
     lastAdvancedStepRef.current = -2;
-    lastActionEndTimeRef.current = 0;
+    typingInProgressRef.current = false;
     setVideoCurrentTimeMs(0);
     setIsVideoPlaying(false);
   }, [currentChallenge?.id]);
@@ -406,8 +384,7 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
         }
 
         lastPerformedStepRef.current = state.currentStepIndex;
-        const actionStartTime = videoCurrentTimeMs;
-        console.log(`[TIMING ${execTime}] Marked step ${state.currentStepIndex} as performed, actionStartTime: ${actionStartTime}ms`);
+        console.log(`[TIMING ${execTime}] Marked step ${state.currentStepIndex} as performed`);
 
         switch (currentStep.action) {
           case "click":
@@ -425,9 +402,6 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
               });
               element.dispatchEvent(clickEvent);
               console.log(`[TIMING ${Date.now()}] CLICK dispatched`);
-              
-              // Record action end time (clicks are instant, add small buffer)
-              lastActionEndTimeRef.current = actionStartTime + 100;
             }
             break;
 
@@ -441,29 +415,70 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
               
               // Get the value to type
               const valueToType = currentStep.value || '';
-              const typeDuration = valueToType.length * 50;
-              console.log(`[TIMING ${execTime}] TYPE starting - "${valueToType}" (${valueToType.length} chars, will take ${typeDuration}ms)`);
               
-              // Clear existing value and set new value
-              element.value = '';
+              // Calculate typing speed based on time until next step
+              // This ensures typing finishes just before the next step's timestamp
+              const currentStepTimestamp = videoTimestamps.find(t => t.stepIndex === state.currentStepIndex);
+              const nextStepTimestamp = videoTimestamps.find(t => t.stepIndex === state.currentStepIndex + 1);
+              
+              let typingIntervalMs = 100; // Default: 100ms per character
+              if (currentStepTimestamp && nextStepTimestamp && valueToType.length > 0) {
+                const availableTimeMs = nextStepTimestamp.timestamp - currentStepTimestamp.timestamp;
+                // Leave 500ms buffer before next step, divide remaining time by character count
+                const calculatedInterval = Math.floor((availableTimeMs - 500) / valueToType.length);
+                // Clamp between 50ms (fast) and 150ms (slow) per character
+                typingIntervalMs = Math.max(50, Math.min(150, calculatedInterval));
+                console.log(`[TIMING ${execTime}] TYPE - calculated interval: ${calculatedInterval}ms, using: ${typingIntervalMs}ms (available: ${availableTimeMs}ms for ${valueToType.length} chars)`);
+              }
+              
+              console.log(`[TIMING ${execTime}] TYPE starting - "${valueToType}" (${valueToType.length} chars, ${typingIntervalMs}ms/char)`);
+              
+              // Get the native value setter to properly trigger React's state updates
+              // React overrides the value setter, so we need to use the native one
+              const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
+                element instanceof HTMLTextAreaElement 
+                  ? window.HTMLTextAreaElement.prototype 
+                  : window.HTMLInputElement.prototype, 
+                'value'
+              )?.set;
+              
+              if (!nativeInputValueSetter) {
+                console.error('[TIMING] Could not get native value setter');
+                return;
+              }
+              
+              // Clear existing value using native setter
+              nativeInputValueSetter.call(element, '');
+              element.dispatchEvent(new Event('input', { bubbles: true }));
+              
+              // Mark typing as in progress (prevents step advancement until done)
+              typingInProgressRef.current = true;
               
               // Simulate typing character by character for a realistic effect
               let charIndex = 0;
+              let currentValue = '';
               const typeInterval = setInterval(() => {
                 if (charIndex < valueToType.length) {
-                  element.value += valueToType[charIndex];
-                  // Dispatch input event so React/form handlers update
-                  element.dispatchEvent(new Event('input', { bubbles: true }));
+                  currentValue += valueToType[charIndex];
+                  // Use native setter to bypass React's synthetic event system
+                  nativeInputValueSetter.call(element, currentValue);
+                  // Dispatch input event - React listens for this to update state
+                  const inputEvent = new Event('input', { bubbles: true });
+                  element.dispatchEvent(inputEvent);
                   charIndex++;
                 } else {
                   clearInterval(typeInterval);
-                  // Dispatch change event at the end
-                  element.dispatchEvent(new Event('change', { bubbles: true }));
-                  // Record action end time (typing takes time: 50ms per character)
-                  lastActionEndTimeRef.current = actionStartTime + typeDuration;
-                  console.log(`[TIMING ${Date.now()}] TYPE completed - "${valueToType}"`);
+                  // Final dispatch to ensure React state is updated
+                  const changeEvent = new Event('change', { bubbles: true });
+                  element.dispatchEvent(changeEvent);
+                  // Also trigger blur/focus cycle to ensure form validation picks up the value
+                  element.blur();
+                  element.focus();
+                  // Mark typing as complete
+                  typingInProgressRef.current = false;
+                  console.log(`[TIMING ${Date.now()}] TYPE completed - "${valueToType}", element.value="${element.value}"`);
                 }
-              }, 50); // 50ms per character
+              }, typingIntervalMs);
             }
             break;
 
@@ -472,8 +487,6 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
             if (element instanceof HTMLElement) {
               element.scrollIntoView({ behavior: 'smooth', block: 'center' });
               element.dispatchEvent(new MouseEvent('mouseenter', { bubbles: true }));
-              // Record action end time
-              lastActionEndTimeRef.current = actionStartTime + 100;
             }
             break;
 
@@ -481,8 +494,6 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
             // Just scroll into view
             if (element instanceof HTMLElement) {
               element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-              // Record action end time
-              lastActionEndTimeRef.current = actionStartTime + 100;
             }
             break;
         }
@@ -491,13 +502,8 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
       }
     };
 
-    // Execute action immediately - actions should happen at their exact recorded timestamp
-    // NOTE: Previously had 300ms delay "to let tooltip appear first" but this was WRONG
-    // Tooltips are independent of action timing - actions must be precise
-    console.log(`[TIMING ${now}] Scheduling performAction() with 300ms delay (this may be the problem!)`);
-    const actionTimer = setTimeout(performAction, 300);
-
-    return () => clearTimeout(actionTimer);
+    // Execute action immediately - actions happen at their exact recorded timestamp
+    performAction();
   }, [state.isActive, state.playbackMode, state.currentStepIndex, currentStep, videoTimestamps, videoCurrentTimeMs]);
 
   useEffect(() => {
