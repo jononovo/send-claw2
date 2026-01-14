@@ -123,6 +123,7 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
   const [videoCurrentTimeMs, setVideoCurrentTimeMs] = useState(0);
   const lastAdvancedStepRef = useRef<number>(-1);
   const fallbackTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const typingInProgressRef = useRef<boolean>(false);
   
   // Stable refs for engine functions to avoid effect re-runs when engine object changes
   const startQuestRef = useRef(engine.startQuest);
@@ -247,7 +248,12 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
 
     if (nextStepTimestamp) {
       // Advance to next step when video reaches the step's timestamp
+      // BUT wait for typing to complete if typing is in progress
       if (videoCurrentTimeMs >= nextStepTimestamp.timestamp && nextStepIdx > lastAdvancedStepRef.current) {
+        if (typingInProgressRef.current) {
+          console.log(`[TIMING ${now}] WAITING for typing to complete before advancing to step ${nextStepIdx}`);
+          return;
+        }
         console.log(`[TIMING ${now}] STEP ADVANCING to step ${nextStepIdx} at videoTime ${videoCurrentTimeMs}ms (timestamp: ${nextStepTimestamp.timestamp}ms)`);
         lastAdvancedStepRef.current = nextStepIdx;
         advanceStepRef.current();
@@ -318,6 +324,7 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
   useEffect(() => {
     // Reset to -2 so that advancing from -1 to 0 works correctly
     lastAdvancedStepRef.current = -2;
+    typingInProgressRef.current = false;
     setVideoCurrentTimeMs(0);
     setIsVideoPlaying(false);
   }, [currentChallenge?.id]);
@@ -413,6 +420,9 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
               // Clear existing value and set new value
               element.value = '';
               
+              // Mark typing as in progress (prevents step advancement until done)
+              typingInProgressRef.current = true;
+              
               // Simulate typing character by character for a realistic effect
               let charIndex = 0;
               const typeInterval = setInterval(() => {
@@ -425,9 +435,11 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
                   clearInterval(typeInterval);
                   // Dispatch change event at the end
                   element.dispatchEvent(new Event('change', { bubbles: true }));
+                  // Mark typing as complete
+                  typingInProgressRef.current = false;
                   console.log(`[TIMING ${Date.now()}] TYPE completed - "${valueToType}"`);
                 }
-              }, 50); // 50ms per character
+              }, 100); // 100ms per character for realistic typing speed
             }
             break;
 
