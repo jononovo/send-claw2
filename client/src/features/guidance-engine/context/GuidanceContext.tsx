@@ -415,7 +415,23 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
               
               // Get the value to type
               const valueToType = currentStep.value || '';
-              console.log(`[TIMING ${execTime}] TYPE starting - "${valueToType}" (${valueToType.length} chars)`);
+              
+              // Calculate typing speed based on time until next step
+              // This ensures typing finishes just before the next step's timestamp
+              const currentStepTimestamp = videoTimestamps.find(t => t.stepIndex === state.currentStepIndex);
+              const nextStepTimestamp = videoTimestamps.find(t => t.stepIndex === state.currentStepIndex + 1);
+              
+              let typingIntervalMs = 100; // Default: 100ms per character
+              if (currentStepTimestamp && nextStepTimestamp && valueToType.length > 0) {
+                const availableTimeMs = nextStepTimestamp.timestamp - currentStepTimestamp.timestamp;
+                // Leave 500ms buffer before next step, divide remaining time by character count
+                const calculatedInterval = Math.floor((availableTimeMs - 500) / valueToType.length);
+                // Clamp between 50ms (fast) and 150ms (slow) per character
+                typingIntervalMs = Math.max(50, Math.min(150, calculatedInterval));
+                console.log(`[TIMING ${execTime}] TYPE - calculated interval: ${calculatedInterval}ms, using: ${typingIntervalMs}ms (available: ${availableTimeMs}ms for ${valueToType.length} chars)`);
+              }
+              
+              console.log(`[TIMING ${execTime}] TYPE starting - "${valueToType}" (${valueToType.length} chars, ${typingIntervalMs}ms/char)`);
               
               // Clear existing value and set new value
               element.value = '';
@@ -439,7 +455,7 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
                   typingInProgressRef.current = false;
                   console.log(`[TIMING ${Date.now()}] TYPE completed - "${valueToType}"`);
                 }
-              }, 100); // 100ms per character for realistic typing speed
+              }, typingIntervalMs);
             }
             break;
 

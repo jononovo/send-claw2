@@ -1117,10 +1117,10 @@ export const quest1: Quest = {
         },
         {
           "id": "execute-search",
-          "selector": "span",
+          "selector": "[data-testid=\"search-button\"]",
           "action": "click",
           "instruction": "Click the Search button to execute your search",
-          "tooltipPosition": "bottom",
+          "tooltipPosition": "left",
           "route": "/app"
         }
       ],
