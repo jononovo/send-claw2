@@ -872,6 +872,39 @@ export const quest1: Quest = {
         }
       ],
       "completionMessage": "Great job! You've learned how to access the search feature to find startup information. Now you can search for companies by location, status, or other criteria."
+    },
+    {
+      "id": "search-for-businesses",
+      "name": "Search for Businesses",
+      "description": "Learn how to find businesses using the search functionality",
+      "emoji": "🔍",
+      "steps": [
+        {
+          "id": "click-search-input",
+          "selector": "[data-testid=\"search-input\"]",
+          "action": "click",
+          "instruction": "Click on the search input field to start your search",
+          "tooltipPosition": "bottom",
+          "route": "/app"
+        },
+        {
+          "id": "type-search-query",
+          "selector": "[data-testid=\"search-input\"]",
+          "action": "type",
+          "instruction": "Type 'fast food restaurants in hell's kitchen' to search for nearby restaurants",
+          "tooltipPosition": "bottom",
+          "route": "/app"
+        },
+        {
+          "id": "submit-search",
+          "selector": "[data-testid=\"search-button\"]",
+          "action": "click",
+          "instruction": "Click the search button to find matching businesses",
+          "tooltipPosition": "bottom",
+          "route": "/app"
+        }
+      ],
+      "completionMessage": "Great job! You've learned how to search for businesses by typing your query and clicking search. Try searching for other types of businesses in different locations!"
     }
   ],
 };

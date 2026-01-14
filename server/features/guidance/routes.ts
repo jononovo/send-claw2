@@ -225,7 +225,9 @@ Generate a challenge object with:
 6. Determine the best tooltip position for each step based on typical UI layouts
 7. A completion message celebrating what they learned
 
-IMPORTANT: The steps array must preserve the exact selectors from the input.
+IMPORTANT RULES:
+- The steps array must preserve the exact selectors from the input
+- For "type" actions, you MUST include the "value" field with the exact typedValue from the input (this is the text that will be typed during demos)
 
 Respond ONLY with valid JSON in this exact format:
 {
@@ -240,7 +242,8 @@ Respond ONLY with valid JSON in this exact format:
       "action": "click|type|view|hover",
       "instruction": "Friendly instruction for user",
       "tooltipPosition": "top|bottom|left|right|auto",
-      "route": "/route"
+      "route": "/route",
+      "value": "[for type actions only: the typedValue from input]"
     }
   ],
   "completionMessage": "Great job! You've learned..."
