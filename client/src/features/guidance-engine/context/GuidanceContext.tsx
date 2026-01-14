@@ -228,12 +228,17 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
   const MIN_GAP_AFTER_ACTION_MS = 1000; // Wait at least 1 second after previous action
   
   useEffect(() => {
+    const now = Date.now();
     // Only run when in show mode with timestamps
     if (!state.isActive || state.playbackMode !== "show" || !currentChallenge) {
       return;
     }
 
+    // Log every time this effect runs to see if it's being called during video playback
+    console.log(`[TIMING ${now}] STEP ADVANCE effect - isVideoPlaying: ${isVideoPlaying}, timestampsCount: ${videoTimestamps.length}, videoTime: ${videoCurrentTimeMs}ms, currentStepIdx: ${state.currentStepIndex}`);
+
     if (videoTimestamps.length === 0 || !isVideoPlaying) {
+      console.log(`[TIMING ${now}] STEP ADVANCE blocked - isVideoPlaying: ${isVideoPlaying}, hasTimestamps: ${videoTimestamps.length > 0}`);
       return;
     }
 
