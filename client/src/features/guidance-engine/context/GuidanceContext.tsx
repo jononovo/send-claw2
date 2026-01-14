@@ -433,27 +433,50 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
               
               console.log(`[TIMING ${execTime}] TYPE starting - "${valueToType}" (${valueToType.length} chars, ${typingIntervalMs}ms/char)`);
               
-              // Clear existing value and set new value
-              element.value = '';
+              // Get the native value setter to properly trigger React's state updates
+              // React overrides the value setter, so we need to use the native one
+              const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
+                element instanceof HTMLTextAreaElement 
+                  ? window.HTMLTextAreaElement.prototype 
+                  : window.HTMLInputElement.prototype, 
+                'value'
+              )?.set;
+              
+              if (!nativeInputValueSetter) {
+                console.error('[TIMING] Could not get native value setter');
+                return;
+              }
+              
+              // Clear existing value using native setter
+              nativeInputValueSetter.call(element, '');
+              element.dispatchEvent(new Event('input', { bubbles: true }));
               
               // Mark typing as in progress (prevents step advancement until done)
               typingInProgressRef.current = true;
               
               // Simulate typing character by character for a realistic effect
               let charIndex = 0;
+              let currentValue = '';
               const typeInterval = setInterval(() => {
                 if (charIndex < valueToType.length) {
-                  element.value += valueToType[charIndex];
-                  // Dispatch input event so React/form handlers update
-                  element.dispatchEvent(new Event('input', { bubbles: true }));
+                  currentValue += valueToType[charIndex];
+                  // Use native setter to bypass React's synthetic event system
+                  nativeInputValueSetter.call(element, currentValue);
+                  // Dispatch input event - React listens for this to update state
+                  const inputEvent = new Event('input', { bubbles: true });
+                  element.dispatchEvent(inputEvent);
                   charIndex++;
                 } else {
                   clearInterval(typeInterval);
-                  // Dispatch change event at the end
-                  element.dispatchEvent(new Event('change', { bubbles: true }));
+                  // Final dispatch to ensure React state is updated
+                  const changeEvent = new Event('change', { bubbles: true });
+                  element.dispatchEvent(changeEvent);
+                  // Also trigger blur/focus cycle to ensure form validation picks up the value
+                  element.blur();
+                  element.focus();
                   // Mark typing as complete
                   typingInProgressRef.current = false;
-                  console.log(`[TIMING ${Date.now()}] TYPE completed - "${valueToType}"`);
+                  console.log(`[TIMING ${Date.now()}] TYPE completed - "${valueToType}", element.value="${element.value}"`);
                 }
               }, typingIntervalMs);
             }
