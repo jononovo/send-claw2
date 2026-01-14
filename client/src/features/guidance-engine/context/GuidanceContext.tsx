@@ -706,6 +706,8 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
     };
 
     const handleInput = (e: Event) => {
+      // In "show" mode, step advancement is controlled by video timestamps, not user input
+      if (state.playbackMode === "show") return;
       if (action !== "type" || hasAdvancedForType) return;
       
       const target = e.target as HTMLElement;
@@ -736,7 +738,7 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
         advanceDelayTimerRef.current = null;
       }
     };
-  }, [isOnEnabledRoute, state.isActive, currentStep?.selector, currentStep?.action, currentStep?.advanceDelay]);
+  }, [isOnEnabledRoute, state.isActive, state.playbackMode, currentStep?.selector, currentStep?.action, currentStep?.advanceDelay]);
 
   const prevCompletedChallengesRef = useRef<Record<string, string[]>>(
     JSON.parse(JSON.stringify(state.completedChallenges))
