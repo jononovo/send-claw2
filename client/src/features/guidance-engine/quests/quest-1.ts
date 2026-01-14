@@ -1058,6 +1058,39 @@ export const quest1: Quest = {
         }
       ],
       "completionMessage": "Great job! You've learned how to search for startup data using the search feature. Now you can easily find the information you're looking for!"
+    },
+    {
+      "id": "search-and-navigate-drawer",
+      "name": "Search and Navigate",
+      "description": "Learn how to use the search functionality and access the navigation drawer",
+      "emoji": "🔍",
+      "steps": [
+        {
+          "id": "click-search-input",
+          "selector": "[data-testid=\"search-input\"]",
+          "action": "click",
+          "instruction": "Click on the search input field to start searching",
+          "tooltipPosition": "bottom",
+          "route": "/app"
+        },
+        {
+          "id": "open-drawer",
+          "selector": "[data-testid=\"button-open-drawer\"]",
+          "action": "click",
+          "instruction": "Click the drawer button to open the navigation menu",
+          "tooltipPosition": "right",
+          "route": "/app"
+        },
+        {
+          "id": "return-to-search",
+          "selector": "[data-testid=\"search-input\"]",
+          "action": "click",
+          "instruction": "Click on the search input again to continue your search",
+          "tooltipPosition": "bottom",
+          "route": "/app"
+        }
+      ],
+      "completionMessage": "Great job! You've learned how to navigate between the search functionality and the drawer menu. This workflow will help you efficiently search and access different sections of the app."
     }
   ],
 };
