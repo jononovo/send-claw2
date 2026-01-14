@@ -47,7 +47,8 @@ export function GuidanceVideoPlayer({
 
   useEffect(() => {
     if (isVisible && videoRef.current && isLoaded && !hasError && canAutoPlay) {
-      console.log(`[VideoPlayer] Auto-playing video - canAutoPlay: ${canAutoPlay}`);
+      const now = Date.now();
+      console.log(`[TIMING ${now}] VideoPlayer AUTO-PLAY starting - canAutoPlay: ${canAutoPlay}, currentTime: ${videoRef.current.currentTime}s`);
       videoRef.current.play().catch(console.error);
       setIsPlaying(true);
     }

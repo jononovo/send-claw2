@@ -184,14 +184,20 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
     }
 
     let cancelled = false;
+    const fetchStart = Date.now();
+    console.log(`[TIMING ${fetchStart}] Fetching video for challenge: ${currentChallenge.id}`);
     getChallengeVideo(currentChallenge.id)
       .then((video) => {
         if (cancelled) return;
+        const now = Date.now();
         if (video?.url) {
           setVideoUrl(video.url);
           setShowVideo(true);
           if (video.timestamps && Array.isArray(video.timestamps)) {
+            console.log(`[TIMING ${now}] Timestamps LOADED (took ${now - fetchStart}ms): ${JSON.stringify(video.timestamps)}`);
             setVideoTimestampsRef.current(video.timestamps);
+          } else {
+            console.log(`[TIMING ${now}] Video loaded but NO timestamps`);
           }
         } else {
           setVideoUrl(null);
