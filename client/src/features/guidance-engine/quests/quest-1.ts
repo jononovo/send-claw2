@@ -1091,6 +1091,40 @@ export const quest1: Quest = {
         }
       ],
       "completionMessage": "Great job! You've learned how to navigate between the search functionality and the drawer menu. This workflow will help you efficiently search and access different sections of the app."
+    },
+    {
+      "id": "search-startups-miami",
+      "name": "Search for Startup Information",
+      "description": "Learn how to search for specific startup data using the search functionality",
+      "emoji": "🔍",
+      "steps": [
+        {
+          "id": "click-search-input",
+          "selector": "[data-testid=\"search-input\"]",
+          "action": "click",
+          "instruction": "Click on the search input field to start your search",
+          "tooltipPosition": "bottom",
+          "route": "/app"
+        },
+        {
+          "id": "type-search-query",
+          "selector": "[data-testid=\"search-input\"]",
+          "action": "type",
+          "instruction": "Type your search query in the input field",
+          "tooltipPosition": "bottom",
+          "route": "/app",
+          "value": "1234557"
+        },
+        {
+          "id": "execute-search",
+          "selector": "span",
+          "action": "click",
+          "instruction": "Click the Search button to execute your search",
+          "tooltipPosition": "bottom",
+          "route": "/app"
+        }
+      ],
+      "completionMessage": "Great job! You've learned how to use the search feature to find startup information. You can now search for any startup data you need!"
     }
   ],
 };
