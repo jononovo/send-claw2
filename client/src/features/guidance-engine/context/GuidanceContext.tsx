@@ -677,6 +677,12 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
   );
 
   useEffect(() => {
+    // Don't show completion modal in "show" mode - users are just watching a demo
+    if (state.playbackMode === "show") {
+      prevCompletedChallengesRef.current = JSON.parse(JSON.stringify(state.completedChallenges));
+      return;
+    }
+    
     if (!state.isActive && currentChallenge && currentQuest) {
       const completedForQuest = state.completedChallenges[currentQuest.id] || [];
       const prevCompletedForQuest = prevCompletedChallengesRef.current[currentQuest.id] || [];
@@ -693,7 +699,7 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
     }
     
     prevCompletedChallengesRef.current = JSON.parse(JSON.stringify(state.completedChallenges));
-  }, [state.isActive, state.completedChallenges, currentChallenge, currentQuest, showChallengeComplete]);
+  }, [state.isActive, state.completedChallenges, currentChallenge, currentQuest, showChallengeComplete, state.playbackMode]);
 
   const handleChallengeCompleteClose = useCallback(() => {
     setShowChallengeComplete(false);

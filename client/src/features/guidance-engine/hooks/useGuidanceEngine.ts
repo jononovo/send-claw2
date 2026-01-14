@@ -301,20 +301,30 @@ export function useGuidanceEngine(options: UseGuidanceEngineOptions): GuidanceCo
         currentStepIndex: nextStepIndex,
       }));
     } else {
-      const questId = state.currentQuestId;
-      if (questId) {
-        const completedForQuest = state.completedChallenges[questId] || [];
+      // Challenge finished - handle differently for show vs guide mode
+      if (state.playbackMode === "show") {
+        // In show mode: just end the demo without marking as completed (no credits)
         setState((prev) => ({
           ...prev,
-          completedChallenges: {
-            ...prev.completedChallenges,
-            [questId]: [...completedForQuest, currentChallenge.id],
-          },
           isActive: false,
         }));
+      } else {
+        // In guide mode: mark challenge as completed (awards credits)
+        const questId = state.currentQuestId;
+        if (questId) {
+          const completedForQuest = state.completedChallenges[questId] || [];
+          setState((prev) => ({
+            ...prev,
+            completedChallenges: {
+              ...prev.completedChallenges,
+              [questId]: [...completedForQuest, currentChallenge.id],
+            },
+            isActive: false,
+          }));
+        }
       }
     }
-  }, [currentChallenge, state.currentStepIndex, state.currentQuestId, state.completedChallenges]);
+  }, [currentChallenge, state.currentStepIndex, state.currentQuestId, state.completedChallenges, state.playbackMode]);
 
   const previousStep = useCallback(() => {
     if (state.currentStepIndex > 0) {
