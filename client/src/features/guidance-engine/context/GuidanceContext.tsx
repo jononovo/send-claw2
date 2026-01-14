@@ -300,10 +300,27 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
       return;
     }
 
-    // Fallback: Use fixed 2s delay when no timestamps available
-    fallbackTimerRef.current = setTimeout(() => {
-      advanceStepRef.current();
-    }, 2000);
+    // Fallback: Use fixed delay + wait for action completion when no timestamps available
+    // For step -1, advance immediately to show first step; for other steps wait for action
+    const baseDelay = currentStepIdx === -1 ? 500 : 2000;
+    
+    const checkAndAdvance = () => {
+      // For step -1, can always advance (no action to wait for)
+      // For other steps, wait for the action to be performed
+      const canAdvance = currentStepIdx === -1 || lastPerformedStepRef.current >= currentStepIdx;
+      
+      console.log(`[Show mode fallback] Check advance - step: ${currentStepIdx}, lastPerformed: ${lastPerformedStepRef.current}, canAdvance: ${canAdvance}`);
+      
+      if (canAdvance) {
+        console.log(`[Show mode fallback] Advancing to next step after step ${currentStepIdx}`);
+        advanceStepRef.current();
+      } else {
+        // Action not performed yet - check again after a short delay
+        fallbackTimerRef.current = setTimeout(checkAndAdvance, 200);
+      }
+    };
+    
+    fallbackTimerRef.current = setTimeout(checkAndAdvance, baseDelay);
 
     return () => {
       if (fallbackTimerRef.current) {
@@ -341,26 +358,25 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
       return;
     }
 
-    // In show mode, actions should be synced to video timestamps
-    // If timestamps are empty, they're either loading or there's no video - wait for them
-    if (videoTimestamps.length === 0) {
-      console.log(`[Show mode] Waiting - no timestamps yet`);
-      // Don't perform action yet - timestamps might still be loading
-      // The effect will re-run when timestamps are populated
-      return;
-    }
+    // Check if we have video timestamps to sync with
+    const hasTimestamps = videoTimestamps.length > 0;
     
-    // Check if video has reached this step's timestamp
-    const currentStepTimestamp = videoTimestamps.find(t => t.stepIndex === state.currentStepIndex);
-    
-    console.log(`[Show mode] Timestamp check - stepTimestamp: ${JSON.stringify(currentStepTimestamp)}, videoTime: ${videoCurrentTimeMs}`);
-    
-    if (currentStepTimestamp) {
-      // Video hasn't reached this step's timestamp yet - don't perform action
-      if (videoCurrentTimeMs < currentStepTimestamp.timestamp) {
-        console.log(`[Show mode] Waiting for video to reach timestamp ${currentStepTimestamp.timestamp}`);
-        return;
+    if (hasTimestamps) {
+      // Check if video has reached this step's timestamp
+      const currentStepTimestamp = videoTimestamps.find(t => t.stepIndex === state.currentStepIndex);
+      
+      console.log(`[Show mode] Timestamp check - stepTimestamp: ${JSON.stringify(currentStepTimestamp)}, videoTime: ${videoCurrentTimeMs}`);
+      
+      if (currentStepTimestamp) {
+        // Video hasn't reached this step's timestamp yet - don't perform action
+        if (videoCurrentTimeMs < currentStepTimestamp.timestamp) {
+          console.log(`[Show mode] Waiting for video to reach timestamp ${currentStepTimestamp.timestamp}`);
+          return;
+        }
       }
+    } else {
+      // No timestamps - execute action immediately (fallback mode)
+      console.log(`[Show mode] No timestamps - executing action immediately for step ${state.currentStepIndex}`);
     }
 
     console.log(`[Show mode] Executing action: ${currentStep.action} for step ${state.currentStepIndex}`);

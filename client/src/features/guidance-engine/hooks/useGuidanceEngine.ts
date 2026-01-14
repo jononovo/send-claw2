@@ -614,6 +614,11 @@ export function useGuidanceEngine(options: UseGuidanceEngineOptions): GuidanceCo
     }));
   }, []);
 
+  // Placeholder - actual implementation is in GuidanceContext
+  const refreshChallengeVideo = useCallback(async (_challengeId: string) => {
+    // This is implemented in GuidanceContext.tsx since it needs access to getChallengeVideo
+  }, []);
+
   useEffect(() => {
     if (isTestMode && !state.isActive && testChallenge) {
       const callback = testCompleteCallbackRef.current;
@@ -658,5 +663,6 @@ export function useGuidanceEngine(options: UseGuidanceEngineOptions): GuidanceCo
     clearRecording,
     setVideoBlob,
     setVideoUploadStatus,
+    refreshChallengeVideo,
   };
 }
