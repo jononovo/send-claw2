@@ -905,6 +905,57 @@ export const quest1: Quest = {
         }
       ],
       "completionMessage": "Great job! You've learned how to search for businesses by typing your query and clicking search. Try searching for other types of businesses in different locations!"
+    },
+    {
+      "id": "search-thai-restaurants",
+      "name": "Search for Thai Restaurants",
+      "description": "Learn how to refine your search query and find specific restaurants",
+      "emoji": "🍜",
+      "steps": [
+        {
+          "id": "click-search-input",
+          "selector": "[data-testid=\"search-input\"]",
+          "action": "click",
+          "instruction": "Click on the search input field to start your search",
+          "tooltipPosition": "bottom",
+          "route": "/app"
+        },
+        {
+          "id": "type-initial-search",
+          "selector": "[data-testid=\"search-input\"]",
+          "action": "type",
+          "instruction": "Type your search query for Thai restaurants",
+          "tooltipPosition": "bottom",
+          "route": "/app",
+          "value": "thai restaurants in hells kitchen"
+        },
+        {
+          "id": "click-to-refine",
+          "selector": "[data-testid=\"search-input\"]",
+          "action": "click",
+          "instruction": "Click in the search field again to refine your query",
+          "tooltipPosition": "bottom",
+          "route": "/app"
+        },
+        {
+          "id": "type-refined-search",
+          "selector": "[data-testid=\"search-input\"]",
+          "action": "type",
+          "instruction": "Add 'highly rated' to find the best Thai restaurants",
+          "tooltipPosition": "bottom",
+          "route": "/app",
+          "value": "highly rated, thai restaurants in hells kitchen"
+        },
+        {
+          "id": "execute-search",
+          "selector": "span",
+          "action": "click",
+          "instruction": "Click the Search button to find your restaurants",
+          "tooltipPosition": "top",
+          "route": "/app"
+        }
+      ],
+      "completionMessage": "Great job! You've learned how to search and refine your queries to find exactly what you're looking for. Try searching for other types of cuisine or locations!"
     }
   ],
 };

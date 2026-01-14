@@ -256,8 +256,9 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
       );
       
       // Advance to next step when video reaches the tooltip show time
-      if (videoCurrentTimeMs >= showTooltipAt && currentStepIdx > lastAdvancedStepRef.current) {
-        lastAdvancedStepRef.current = currentStepIdx;
+      // Track by nextStepIdx since we're advancing TO that step (not FROM currentStepIdx)
+      if (videoCurrentTimeMs >= showTooltipAt && nextStepIdx > lastAdvancedStepRef.current) {
+        lastAdvancedStepRef.current = nextStepIdx;
         advanceStepRef.current();
       }
     }
