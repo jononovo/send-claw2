@@ -219,14 +219,8 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
   // Auto-resume on navigation removed - guidance should only start via explicit triggers
   // Users can manually resume by clicking Fluffy if they want to continue a paused challenge
 
-  // Track when the last action completed (in video time ms) for the 1-second delay rule
-  const lastActionEndTimeRef = useRef<number>(0);
-  
   // Show-me mode with timestamps: advance steps based on actual video playback time
-  // Tooltips show 5 seconds before action, or 1 second after previous action ends
-  const TOOLTIP_LEAD_TIME_MS = 5000; // Show tooltip 5 seconds before action
-  const MIN_GAP_AFTER_ACTION_MS = 1000; // Wait at least 1 second after previous action
-  
+  // Steps show at their exact recorded timestamp - simple and direct
   useEffect(() => {
     const now = Date.now();
     // Only run when in show mode with timestamps
@@ -234,11 +228,7 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
       return;
     }
 
-    // Log every time this effect runs to see if it's being called during video playback
-    console.log(`[TIMING ${now}] STEP ADVANCE effect - isVideoPlaying: ${isVideoPlaying}, timestampsCount: ${videoTimestamps.length}, videoTime: ${videoCurrentTimeMs}ms, currentStepIdx: ${state.currentStepIndex}`);
-
     if (videoTimestamps.length === 0 || !isVideoPlaying) {
-      console.log(`[TIMING ${now}] STEP ADVANCE blocked - isVideoPlaying: ${isVideoPlaying}, hasTimestamps: ${videoTimestamps.length > 0}`);
       return;
     }
 
@@ -256,28 +246,14 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
     const nextStepTimestamp = videoTimestamps.find(t => t.stepIndex === nextStepIdx);
 
     if (nextStepTimestamp) {
-      const now = Date.now();
-      // Calculate when to show the next step's tooltip:
-      // - 5 seconds before the action timestamp, OR
-      // - 1 second after the previous action ended
-      // Whichever is LATER (to avoid overlap)
-      const showTooltipAt = Math.max(
-        nextStepTimestamp.timestamp - TOOLTIP_LEAD_TIME_MS,
-        lastActionEndTimeRef.current + MIN_GAP_AFTER_ACTION_MS,
-        0 // Never negative
-      );
-      
-      console.log(`[TIMING ${now}] STEP ADVANCE check - currStep: ${currentStepIdx}, nextStep: ${nextStepIdx}, videoTime: ${videoCurrentTimeMs}ms, tooltipShowAt: ${showTooltipAt}ms, actionAt: ${nextStepTimestamp.timestamp}ms, lastAdvanced: ${lastAdvancedStepRef.current}`);
-      
-      // Advance to next step when video reaches the tooltip show time
-      // Steps advance based purely on video timing, independent of action execution
-      if (videoCurrentTimeMs >= showTooltipAt && nextStepIdx > lastAdvancedStepRef.current) {
-        console.log(`[TIMING ${now}] STEP ADVANCING to step ${nextStepIdx} - showing tooltip now, action will execute at ${nextStepTimestamp.timestamp}ms (in ${nextStepTimestamp.timestamp - videoCurrentTimeMs}ms)`);
+      // Advance to next step when video reaches the step's timestamp
+      if (videoCurrentTimeMs >= nextStepTimestamp.timestamp && nextStepIdx > lastAdvancedStepRef.current) {
+        console.log(`[TIMING ${now}] STEP ADVANCING to step ${nextStepIdx} at videoTime ${videoCurrentTimeMs}ms (timestamp: ${nextStepTimestamp.timestamp}ms)`);
         lastAdvancedStepRef.current = nextStepIdx;
         advanceStepRef.current();
       }
     } else {
-      console.log(`[TIMING ${Date.now()}] No timestamp found for next step ${nextStepIdx}`);
+      console.log(`[TIMING ${now}] No timestamp found for next step ${nextStepIdx}`);
     }
   }, [state.isActive, state.playbackMode, state.currentStepIndex, currentChallenge, videoTimestamps, isVideoPlaying, videoCurrentTimeMs]);
 
@@ -342,7 +318,6 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
   useEffect(() => {
     // Reset to -2 so that advancing from -1 to 0 works correctly
     lastAdvancedStepRef.current = -2;
-    lastActionEndTimeRef.current = 0;
     setVideoCurrentTimeMs(0);
     setIsVideoPlaying(false);
   }, [currentChallenge?.id]);
@@ -402,8 +377,7 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
         }
 
         lastPerformedStepRef.current = state.currentStepIndex;
-        const actionStartTime = videoCurrentTimeMs;
-        console.log(`[TIMING ${execTime}] Marked step ${state.currentStepIndex} as performed, actionStartTime: ${actionStartTime}ms`);
+        console.log(`[TIMING ${execTime}] Marked step ${state.currentStepIndex} as performed`);
 
         switch (currentStep.action) {
           case "click":
@@ -421,9 +395,6 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
               });
               element.dispatchEvent(clickEvent);
               console.log(`[TIMING ${Date.now()}] CLICK dispatched`);
-              
-              // Record action end time (clicks are instant, add small buffer)
-              lastActionEndTimeRef.current = actionStartTime + 100;
             }
             break;
 
@@ -437,8 +408,7 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
               
               // Get the value to type
               const valueToType = currentStep.value || '';
-              const typeDuration = valueToType.length * 50;
-              console.log(`[TIMING ${execTime}] TYPE starting - "${valueToType}" (${valueToType.length} chars, will take ${typeDuration}ms)`);
+              console.log(`[TIMING ${execTime}] TYPE starting - "${valueToType}" (${valueToType.length} chars)`);
               
               // Clear existing value and set new value
               element.value = '';
@@ -455,8 +425,6 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
                   clearInterval(typeInterval);
                   // Dispatch change event at the end
                   element.dispatchEvent(new Event('change', { bubbles: true }));
-                  // Record action end time (typing takes time: 50ms per character)
-                  lastActionEndTimeRef.current = actionStartTime + typeDuration;
                   console.log(`[TIMING ${Date.now()}] TYPE completed - "${valueToType}"`);
                 }
               }, 50); // 50ms per character
@@ -468,8 +436,6 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
             if (element instanceof HTMLElement) {
               element.scrollIntoView({ behavior: 'smooth', block: 'center' });
               element.dispatchEvent(new MouseEvent('mouseenter', { bubbles: true }));
-              // Record action end time
-              lastActionEndTimeRef.current = actionStartTime + 100;
             }
             break;
 
@@ -477,8 +443,6 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
             // Just scroll into view
             if (element instanceof HTMLElement) {
               element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-              // Record action end time
-              lastActionEndTimeRef.current = actionStartTime + 100;
             }
             break;
         }
@@ -487,13 +451,8 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
       }
     };
 
-    // Execute action immediately - actions should happen at their exact recorded timestamp
-    // NOTE: Previously had 300ms delay "to let tooltip appear first" but this was WRONG
-    // Tooltips are independent of action timing - actions must be precise
-    console.log(`[TIMING ${now}] Scheduling performAction() with 300ms delay (this may be the problem!)`);
-    const actionTimer = setTimeout(performAction, 300);
-
-    return () => clearTimeout(actionTimer);
+    // Execute action immediately - actions happen at their exact recorded timestamp
+    performAction();
   }, [state.isActive, state.playbackMode, state.currentStepIndex, currentStep, videoTimestamps, videoCurrentTimeMs]);
 
   useEffect(() => {
