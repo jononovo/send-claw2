@@ -267,15 +267,11 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
         0 // Never negative
       );
       
-      // For step -1 (initial state), advance immediately to step 0 when time is right
-      // For other steps, wait until the current step's action has been performed
-      const canAdvance = currentStepIdx === -1 || lastPerformedStepRef.current >= currentStepIdx;
-      
-      console.log(`[TIMING ${now}] STEP ADVANCE check - currStep: ${currentStepIdx}, nextStep: ${nextStepIdx}, videoTime: ${videoCurrentTimeMs}ms, tooltipShowAt: ${showTooltipAt}ms, actionAt: ${nextStepTimestamp.timestamp}ms, canAdvance: ${canAdvance}, lastAdvanced: ${lastAdvancedStepRef.current}, lastPerformed: ${lastPerformedStepRef.current}`);
+      console.log(`[TIMING ${now}] STEP ADVANCE check - currStep: ${currentStepIdx}, nextStep: ${nextStepIdx}, videoTime: ${videoCurrentTimeMs}ms, tooltipShowAt: ${showTooltipAt}ms, actionAt: ${nextStepTimestamp.timestamp}ms, lastAdvanced: ${lastAdvancedStepRef.current}`);
       
       // Advance to next step when video reaches the tooltip show time
-      // Track by nextStepIdx since we're advancing TO that step (not FROM currentStepIdx)
-      if (videoCurrentTimeMs >= showTooltipAt && nextStepIdx > lastAdvancedStepRef.current && canAdvance) {
+      // Steps advance based purely on video timing, independent of action execution
+      if (videoCurrentTimeMs >= showTooltipAt && nextStepIdx > lastAdvancedStepRef.current) {
         console.log(`[TIMING ${now}] STEP ADVANCING to step ${nextStepIdx} - showing tooltip now, action will execute at ${nextStepTimestamp.timestamp}ms (in ${nextStepTimestamp.timestamp - videoCurrentTimeMs}ms)`);
         lastAdvancedStepRef.current = nextStepIdx;
         advanceStepRef.current();
