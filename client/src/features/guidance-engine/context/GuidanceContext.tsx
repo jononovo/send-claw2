@@ -184,14 +184,20 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
     }
 
     let cancelled = false;
+    const fetchStart = Date.now();
+    console.log(`[TIMING ${fetchStart}] Fetching video for challenge: ${currentChallenge.id}`);
     getChallengeVideo(currentChallenge.id)
       .then((video) => {
         if (cancelled) return;
+        const now = Date.now();
         if (video?.url) {
           setVideoUrl(video.url);
           setShowVideo(true);
           if (video.timestamps && Array.isArray(video.timestamps)) {
+            console.log(`[TIMING ${now}] Timestamps LOADED (took ${now - fetchStart}ms): ${JSON.stringify(video.timestamps)}`);
             setVideoTimestampsRef.current(video.timestamps);
+          } else {
+            console.log(`[TIMING ${now}] Video loaded but NO timestamps`);
           }
         } else {
           setVideoUrl(null);
@@ -222,12 +228,17 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
   const MIN_GAP_AFTER_ACTION_MS = 1000; // Wait at least 1 second after previous action
   
   useEffect(() => {
+    const now = Date.now();
     // Only run when in show mode with timestamps
     if (!state.isActive || state.playbackMode !== "show" || !currentChallenge) {
       return;
     }
 
+    // Log every time this effect runs to see if it's being called during video playback
+    console.log(`[TIMING ${now}] STEP ADVANCE effect - isVideoPlaying: ${isVideoPlaying}, timestampsCount: ${videoTimestamps.length}, videoTime: ${videoCurrentTimeMs}ms, currentStepIdx: ${state.currentStepIndex}`);
+
     if (videoTimestamps.length === 0 || !isVideoPlaying) {
+      console.log(`[TIMING ${now}] STEP ADVANCE blocked - isVideoPlaying: ${isVideoPlaying}, hasTimestamps: ${videoTimestamps.length > 0}`);
       return;
     }
 
@@ -245,6 +256,7 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
     const nextStepTimestamp = videoTimestamps.find(t => t.stepIndex === nextStepIdx);
 
     if (nextStepTimestamp) {
+      const now = Date.now();
       // Calculate when to show the next step's tooltip:
       // - 5 seconds before the action timestamp, OR
       // - 1 second after the previous action ended
@@ -255,11 +267,21 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
         0 // Never negative
       );
       
+      // For step -1 (initial state), advance immediately to step 0 when time is right
+      // For other steps, wait until the current step's action has been performed
+      const canAdvance = currentStepIdx === -1 || lastPerformedStepRef.current >= currentStepIdx;
+      
+      console.log(`[TIMING ${now}] STEP ADVANCE check - currStep: ${currentStepIdx}, nextStep: ${nextStepIdx}, videoTime: ${videoCurrentTimeMs}ms, tooltipShowAt: ${showTooltipAt}ms, actionAt: ${nextStepTimestamp.timestamp}ms, canAdvance: ${canAdvance}, lastAdvanced: ${lastAdvancedStepRef.current}, lastPerformed: ${lastPerformedStepRef.current}`);
+      
       // Advance to next step when video reaches the tooltip show time
-      if (videoCurrentTimeMs >= showTooltipAt && currentStepIdx > lastAdvancedStepRef.current) {
-        lastAdvancedStepRef.current = currentStepIdx;
+      // Track by nextStepIdx since we're advancing TO that step (not FROM currentStepIdx)
+      if (videoCurrentTimeMs >= showTooltipAt && nextStepIdx > lastAdvancedStepRef.current && canAdvance) {
+        console.log(`[TIMING ${now}] STEP ADVANCING to step ${nextStepIdx} - showing tooltip now, action will execute at ${nextStepTimestamp.timestamp}ms (in ${nextStepTimestamp.timestamp - videoCurrentTimeMs}ms)`);
+        lastAdvancedStepRef.current = nextStepIdx;
         advanceStepRef.current();
       }
+    } else {
+      console.log(`[TIMING ${Date.now()}] No timestamp found for next step ${nextStepIdx}`);
     }
   }, [state.isActive, state.playbackMode, state.currentStepIndex, currentChallenge, videoTimestamps, isVideoPlaying, videoCurrentTimeMs]);
 
@@ -290,10 +312,27 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
       return;
     }
 
-    // Fallback: Use fixed 2s delay when no timestamps available
-    fallbackTimerRef.current = setTimeout(() => {
-      advanceStepRef.current();
-    }, 2000);
+    // Fallback: Use fixed delay + wait for action completion when no timestamps available
+    // For step -1, advance immediately to show first step; for other steps wait for action
+    const baseDelay = currentStepIdx === -1 ? 500 : 2000;
+    
+    const checkAndAdvance = () => {
+      // For step -1, can always advance (no action to wait for)
+      // For other steps, wait for the action to be performed
+      const canAdvance = currentStepIdx === -1 || lastPerformedStepRef.current >= currentStepIdx;
+      
+      console.log(`[Show mode fallback] Check advance - step: ${currentStepIdx}, lastPerformed: ${lastPerformedStepRef.current}, canAdvance: ${canAdvance}`);
+      
+      if (canAdvance) {
+        console.log(`[Show mode fallback] Advancing to next step after step ${currentStepIdx}`);
+        advanceStepRef.current();
+      } else {
+        // Action not performed yet - check again after a short delay
+        fallbackTimerRef.current = setTimeout(checkAndAdvance, 200);
+      }
+    };
+    
+    fallbackTimerRef.current = setTimeout(checkAndAdvance, baseDelay);
 
     return () => {
       if (fallbackTimerRef.current) {
@@ -314,6 +353,7 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
 
   // Show-me mode: Perform actions automatically (click, type, etc.)
   // Actions are synced to video timestamps - they execute when video reaches the step's timestamp
+  // IMPORTANT: Actions execute at their EXACT recorded timestamp, independent of tooltip timing
   const lastPerformedStepRef = useRef<number>(-1);
   
   useEffect(() => {
@@ -323,45 +363,57 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
       return;
     }
 
+    const now = Date.now();
+    console.log(`[TIMING ${now}] Action effect triggered - stepIdx: ${state.currentStepIndex}, lastPerformed: ${lastPerformedStepRef.current}, action: ${currentStep.action}, value: ${currentStep.value}, videoTime: ${videoCurrentTimeMs}ms`);
+
     // Don't re-perform the same step
     if (state.currentStepIndex === lastPerformedStepRef.current) {
+      console.log(`[TIMING ${now}] Skipping - already performed step ${state.currentStepIndex}`);
       return;
     }
 
-    // In show mode, actions should be synced to video timestamps
-    // If timestamps are empty, they're either loading or there's no video - wait for them
-    if (videoTimestamps.length === 0) {
-      // Don't perform action yet - timestamps might still be loading
-      // The effect will re-run when timestamps are populated
-      return;
-    }
-    
-    // Check if video has reached this step's timestamp
+    // Check if we have video timestamps to sync with
+    const hasTimestamps = videoTimestamps.length > 0;
     const currentStepTimestamp = videoTimestamps.find(t => t.stepIndex === state.currentStepIndex);
     
-    if (currentStepTimestamp) {
+    console.log(`[TIMING ${now}] Timestamp lookup - stepIdx: ${state.currentStepIndex}, found: ${JSON.stringify(currentStepTimestamp)}, videoTime: ${videoCurrentTimeMs}ms, hasTimestamps: ${hasTimestamps}`);
+    
+    if (hasTimestamps && currentStepTimestamp) {
       // Video hasn't reached this step's timestamp yet - don't perform action
       if (videoCurrentTimeMs < currentStepTimestamp.timestamp) {
+        const waitTime = currentStepTimestamp.timestamp - videoCurrentTimeMs;
+        console.log(`[TIMING ${now}] WAITING - video at ${videoCurrentTimeMs}ms, action scheduled at ${currentStepTimestamp.timestamp}ms, need to wait ${waitTime}ms more`);
         return;
       }
+      const delay = videoCurrentTimeMs - currentStepTimestamp.timestamp;
+      console.log(`[TIMING ${now}] READY to execute - video at ${videoCurrentTimeMs}ms, action timestamp was ${currentStepTimestamp.timestamp}ms (${delay}ms late)`);
+    } else if (!hasTimestamps) {
+      // No timestamps - execute action immediately (fallback mode)
+      console.log(`[TIMING ${now}] No timestamps - executing action immediately for step ${state.currentStepIndex}`);
     }
+
+    console.log(`[TIMING ${now}] EXECUTING action: ${currentStep.action} for step ${state.currentStepIndex}`);
 
     // Perform the action (video has reached the timestamp, or no timestamps available)
     const performAction = () => {
+      const execTime = Date.now();
       try {
         const element = document.querySelector(currentStep.selector);
+        console.log(`[TIMING ${execTime}] performAction() called - selector: "${currentStep.selector}", element found: ${!!element}`);
         if (!element) {
-          console.warn(`[Show mode] Element not found: ${currentStep.selector}`);
+          console.warn(`[TIMING ${execTime}] Element NOT found: ${currentStep.selector}`);
           return;
         }
 
         lastPerformedStepRef.current = state.currentStepIndex;
         const actionStartTime = videoCurrentTimeMs;
+        console.log(`[TIMING ${execTime}] Marked step ${state.currentStepIndex} as performed, actionStartTime: ${actionStartTime}ms`);
 
         switch (currentStep.action) {
           case "click":
             // Simulate a click
             if (element instanceof HTMLElement) {
+              console.log(`[TIMING ${execTime}] CLICK action - scrolling and clicking element`);
               // Scroll element into view first
               element.scrollIntoView({ behavior: 'smooth', block: 'center' });
               
@@ -372,6 +424,7 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
                 view: window
               });
               element.dispatchEvent(clickEvent);
+              console.log(`[TIMING ${Date.now()}] CLICK dispatched`);
               
               // Record action end time (clicks are instant, add small buffer)
               lastActionEndTimeRef.current = actionStartTime + 100;
@@ -380,6 +433,7 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
 
           case "type":
             // Type text into the input
+            console.log(`[TIMING ${execTime}] TYPE action - element is input/textarea: ${element instanceof HTMLInputElement || element instanceof HTMLTextAreaElement}, value: "${currentStep.value}"`);
             if (element instanceof HTMLInputElement || element instanceof HTMLTextAreaElement) {
               // Scroll and focus
               element.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -387,6 +441,8 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
               
               // Get the value to type
               const valueToType = currentStep.value || '';
+              const typeDuration = valueToType.length * 50;
+              console.log(`[TIMING ${execTime}] TYPE starting - "${valueToType}" (${valueToType.length} chars, will take ${typeDuration}ms)`);
               
               // Clear existing value and set new value
               element.value = '';
@@ -404,7 +460,8 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
                   // Dispatch change event at the end
                   element.dispatchEvent(new Event('change', { bubbles: true }));
                   // Record action end time (typing takes time: 50ms per character)
-                  lastActionEndTimeRef.current = actionStartTime + (valueToType.length * 50);
+                  lastActionEndTimeRef.current = actionStartTime + typeDuration;
+                  console.log(`[TIMING ${Date.now()}] TYPE completed - "${valueToType}"`);
                 }
               }, 50); // 50ms per character
             }
@@ -434,7 +491,10 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
       }
     };
 
-    // Small delay to let the tooltip appear first
+    // Execute action immediately - actions should happen at their exact recorded timestamp
+    // NOTE: Previously had 300ms delay "to let tooltip appear first" but this was WRONG
+    // Tooltips are independent of action timing - actions must be precise
+    console.log(`[TIMING ${now}] Scheduling performAction() with 300ms delay (this may be the problem!)`);
     const actionTimer = setTimeout(performAction, 300);
 
     return () => clearTimeout(actionTimer);
@@ -764,6 +824,7 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
             size="small"
             onTimeUpdate={setVideoCurrentTimeMs}
             onPlayStateChange={setIsVideoPlaying}
+            canAutoPlay={state.playbackMode !== "show" || videoTimestamps.length > 0}
           />
 
           {state.isActive && currentStep && (
@@ -771,6 +832,7 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
               <ElementHighlight
                 targetSelector={currentStep.selector}
                 isVisible={state.isActive && !tooltipHiddenRef.current}
+                actionType={currentStep.action}
               />
               <GuidanceTooltip
                 targetSelector={currentStep.selector}

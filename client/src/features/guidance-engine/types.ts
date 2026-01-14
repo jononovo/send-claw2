@@ -110,6 +110,7 @@ export interface QuestProgressHeaderProps {
 export interface ElementHighlightProps {
   targetSelector: string;
   isVisible: boolean;
+  actionType?: "click" | "type" | "view" | "hover";
 }
 
 export interface GuidanceTooltipProps {

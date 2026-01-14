@@ -10,6 +10,8 @@ interface GuidanceVideoPlayerProps {
   size?: "small" | "medium" | "large";
   onTimeUpdate?: (currentTimeMs: number) => void;
   onPlayStateChange?: (isPlaying: boolean) => void;
+  /** If true, video won't auto-play until this becomes true. Used to wait for timestamps. */
+  canAutoPlay?: boolean;
 }
 
 export function GuidanceVideoPlayer({
@@ -20,6 +22,7 @@ export function GuidanceVideoPlayer({
   size = "small",
   onTimeUpdate,
   onPlayStateChange,
+  canAutoPlay = true,
 }: GuidanceVideoPlayerProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const constraintsRef = useRef<HTMLDivElement>(null);
@@ -43,11 +46,13 @@ export function GuidanceVideoPlayer({
   }, [videoUrl]);
 
   useEffect(() => {
-    if (isVisible && videoRef.current && isLoaded && !hasError) {
+    if (isVisible && videoRef.current && isLoaded && !hasError && canAutoPlay) {
+      const now = Date.now();
+      console.log(`[TIMING ${now}] VideoPlayer AUTO-PLAY starting - canAutoPlay: ${canAutoPlay}, currentTime: ${videoRef.current.currentTime}s`);
       videoRef.current.play().catch(console.error);
       setIsPlaying(true);
     }
-  }, [isVisible, isLoaded, hasError]);
+  }, [isVisible, isLoaded, hasError, canAutoPlay]);
 
   const handlePlayPause = (e: React.MouseEvent) => {
     e.stopPropagation();

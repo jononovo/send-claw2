@@ -872,6 +872,192 @@ export const quest1: Quest = {
         }
       ],
       "completionMessage": "Great job! You've learned how to access the search feature to find startup information. Now you can search for companies by location, status, or other criteria."
+    },
+    {
+      "id": "search-for-businesses",
+      "name": "Search for Businesses",
+      "description": "Learn how to find businesses using the search functionality",
+      "emoji": "🔍",
+      "steps": [
+        {
+          "id": "click-search-input",
+          "selector": "[data-testid=\"search-input\"]",
+          "action": "click",
+          "instruction": "Click on the search input field to start your search",
+          "tooltipPosition": "bottom",
+          "route": "/app"
+        },
+        {
+          "id": "type-search-query",
+          "selector": "[data-testid=\"search-input\"]",
+          "action": "type",
+          "instruction": "Type 'fast food restaurants in hell's kitchen' to search for nearby restaurants",
+          "tooltipPosition": "bottom",
+          "route": "/app"
+        },
+        {
+          "id": "submit-search",
+          "selector": "[data-testid=\"search-button\"]",
+          "action": "click",
+          "instruction": "Click the search button to find matching businesses",
+          "tooltipPosition": "bottom",
+          "route": "/app"
+        }
+      ],
+      "completionMessage": "Great job! You've learned how to search for businesses by typing your query and clicking search. Try searching for other types of businesses in different locations!"
+    },
+    {
+      "id": "search-thai-restaurants",
+      "name": "Search for Thai Restaurants",
+      "description": "Learn how to refine your search query and find specific restaurants",
+      "emoji": "🍜",
+      "steps": [
+        {
+          "id": "click-search-input",
+          "selector": "[data-testid=\"search-input\"]",
+          "action": "click",
+          "instruction": "Click on the search input field to start your search",
+          "tooltipPosition": "bottom",
+          "route": "/app"
+        },
+        {
+          "id": "type-initial-search",
+          "selector": "[data-testid=\"search-input\"]",
+          "action": "type",
+          "instruction": "Type your search query for Thai restaurants",
+          "tooltipPosition": "bottom",
+          "route": "/app",
+          "value": "thai restaurants in hells kitchen"
+        },
+        {
+          "id": "click-to-refine",
+          "selector": "[data-testid=\"search-input\"]",
+          "action": "click",
+          "instruction": "Click in the search field again to refine your query",
+          "tooltipPosition": "bottom",
+          "route": "/app"
+        },
+        {
+          "id": "type-refined-search",
+          "selector": "[data-testid=\"search-input\"]",
+          "action": "type",
+          "instruction": "Add 'highly rated' to find the best Thai restaurants",
+          "tooltipPosition": "bottom",
+          "route": "/app",
+          "value": "highly rated, thai restaurants in hells kitchen"
+        },
+        {
+          "id": "execute-search",
+          "selector": "span",
+          "action": "click",
+          "instruction": "Click the Search button to find your restaurants",
+          "tooltipPosition": "top",
+          "route": "/app"
+        }
+      ],
+      "completionMessage": "Great job! You've learned how to search and refine your queries to find exactly what you're looking for. Try searching for other types of cuisine or locations!"
+    },
+    {
+      "id": "search-startup-data",
+      "name": "Search for Startup Information",
+      "description": "Learn how to search for specific startup data using the search functionality",
+      "emoji": "🔍",
+      "steps": [
+        {
+          "id": "click-search-input",
+          "selector": "[data-testid=\"search-input\"]",
+          "action": "click",
+          "instruction": "Click on the search input field to start searching for startup data",
+          "tooltipPosition": "bottom",
+          "route": "/app"
+        },
+        {
+          "id": "type-search-query",
+          "selector": "[data-testid=\"search-input\"]",
+          "action": "type",
+          "instruction": "Type your search query in the input field",
+          "tooltipPosition": "bottom",
+          "route": "/app",
+          "value": "123"
+        },
+        {
+          "id": "execute-search",
+          "selector": "span",
+          "action": "click",
+          "instruction": "Click the Search button to execute your query",
+          "tooltipPosition": "left",
+          "route": "/app"
+        }
+      ],
+      "completionMessage": "Great job! You've learned how to use the search feature to find startup information. Now you can easily search for any startup data you need!"
+    },
+    {
+      "id": "search-startups-tutorial",
+      "name": "Search for Startups",
+      "description": "Learn how to search for startup information using the search functionality",
+      "emoji": "🔍",
+      "steps": [
+        {
+          "id": "click-search-input",
+          "selector": "[data-testid=\"search-input\"]",
+          "action": "click",
+          "instruction": "Click on the search input field to start searching",
+          "tooltipPosition": "bottom",
+          "route": "/app"
+        },
+        {
+          "id": "type-search-query",
+          "selector": "[data-testid=\"search-input\"]",
+          "action": "type",
+          "instruction": "Type your search query in the input field",
+          "tooltipPosition": "bottom",
+          "route": "/app",
+          "value": "123"
+        },
+        {
+          "id": "click-search-button",
+          "selector": "[data-testid=\"search-button\"]",
+          "action": "click",
+          "instruction": "Click the search button to execute your search",
+          "tooltipPosition": "bottom",
+          "route": "/app"
+        }
+      ],
+      "completionMessage": "Great job! You've learned how to search for startups using the search functionality. You can now find specific companies and information quickly!"
+    },
+    {
+      "id": "search-startup-data",
+      "name": "Search for Startup Data",
+      "description": "Learn how to search for specific startup information using the search functionality",
+      "emoji": "🔍",
+      "steps": [
+        {
+          "id": "click-search-input",
+          "selector": "[data-testid=\"search-input\"]",
+          "action": "click",
+          "instruction": "Click on the search input field to start your search",
+          "tooltipPosition": "bottom",
+          "route": "/app"
+        },
+        {
+          "id": "type-search-query",
+          "selector": "[data-testid=\"search-input\"]",
+          "action": "type",
+          "instruction": "Type your search query in the input field",
+          "tooltipPosition": "bottom",
+          "route": "/app",
+          "value": "1234"
+        },
+        {
+          "id": "execute-search",
+          "selector": "span",
+          "action": "click",
+          "instruction": "Click the Search button to find your results",
+          "tooltipPosition": "left",
+          "route": "/app"
+        }
+      ],
+      "completionMessage": "Great job! You've learned how to search for startup data using the search feature. Now you can easily find the information you're looking for!"
     }
   ],
 };
