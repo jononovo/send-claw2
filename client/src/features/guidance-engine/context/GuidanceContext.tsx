@@ -255,12 +255,17 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
         0 // Never negative
       );
       
+      console.log(`[Show mode] Step advance check - currentStep: ${currentStepIdx}, nextStep: ${nextStepIdx}, videoTime: ${videoCurrentTimeMs}, showAt: ${showTooltipAt}, lastAdvanced: ${lastAdvancedStepRef.current}`);
+      
       // Advance to next step when video reaches the tooltip show time
       // Track by nextStepIdx since we're advancing TO that step (not FROM currentStepIdx)
       if (videoCurrentTimeMs >= showTooltipAt && nextStepIdx > lastAdvancedStepRef.current) {
+        console.log(`[Show mode] Advancing to step ${nextStepIdx}`);
         lastAdvancedStepRef.current = nextStepIdx;
         advanceStepRef.current();
       }
+    } else {
+      console.log(`[Show mode] No timestamp found for next step ${nextStepIdx}`);
     }
   }, [state.isActive, state.playbackMode, state.currentStepIndex, currentChallenge, videoTimestamps, isVideoPlaying, videoCurrentTimeMs]);
 
@@ -324,14 +329,18 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
       return;
     }
 
+    console.log(`[Show mode] Action check - stepIdx: ${state.currentStepIndex}, lastPerformed: ${lastPerformedStepRef.current}, action: ${currentStep.action}, value: ${currentStep.value}`);
+
     // Don't re-perform the same step
     if (state.currentStepIndex === lastPerformedStepRef.current) {
+      console.log(`[Show mode] Skipping - already performed step ${state.currentStepIndex}`);
       return;
     }
 
     // In show mode, actions should be synced to video timestamps
     // If timestamps are empty, they're either loading or there's no video - wait for them
     if (videoTimestamps.length === 0) {
+      console.log(`[Show mode] Waiting - no timestamps yet`);
       // Don't perform action yet - timestamps might still be loading
       // The effect will re-run when timestamps are populated
       return;
@@ -340,17 +349,23 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
     // Check if video has reached this step's timestamp
     const currentStepTimestamp = videoTimestamps.find(t => t.stepIndex === state.currentStepIndex);
     
+    console.log(`[Show mode] Timestamp check - stepTimestamp: ${JSON.stringify(currentStepTimestamp)}, videoTime: ${videoCurrentTimeMs}`);
+    
     if (currentStepTimestamp) {
       // Video hasn't reached this step's timestamp yet - don't perform action
       if (videoCurrentTimeMs < currentStepTimestamp.timestamp) {
+        console.log(`[Show mode] Waiting for video to reach timestamp ${currentStepTimestamp.timestamp}`);
         return;
       }
     }
+
+    console.log(`[Show mode] Executing action: ${currentStep.action} for step ${state.currentStepIndex}`);
 
     // Perform the action (video has reached the timestamp, or no timestamps available)
     const performAction = () => {
       try {
         const element = document.querySelector(currentStep.selector);
+        console.log(`[Show mode] Found element for selector "${currentStep.selector}":`, element);
         if (!element) {
           console.warn(`[Show mode] Element not found: ${currentStep.selector}`);
           return;
@@ -381,6 +396,7 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
 
           case "type":
             // Type text into the input
+            console.log(`[Show mode] Type action - element is input/textarea: ${element instanceof HTMLInputElement || element instanceof HTMLTextAreaElement}, value to type: "${currentStep.value}"`);
             if (element instanceof HTMLInputElement || element instanceof HTMLTextAreaElement) {
               // Scroll and focus
               element.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -388,6 +404,7 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
               
               // Get the value to type
               const valueToType = currentStep.value || '';
+              console.log(`[Show mode] Starting to type "${valueToType}" (${valueToType.length} chars)`);
               
               // Clear existing value and set new value
               element.value = '';
