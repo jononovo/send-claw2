@@ -447,6 +447,431 @@ export const quest1: Quest = {
         }
       ],
       "completionMessage": "Great job! You've successfully set up the email automation tool and learned how to configure recipient details and access templates. You're ready to create effective email campaigns!"
+    },
+    {
+      "id": "search-startup-suggestions",
+      "name": "Search with Smart Suggestions",
+      "description": "Learn how to use the search feature with AI-powered suggestions to find startup information",
+      "emoji": "🔍",
+      "steps": [
+        {
+          "id": "open-drawer",
+          "selector": "[data-testid=\"button-open-drawer\"]",
+          "action": "click",
+          "instruction": "Click the drawer button to open the navigation menu",
+          "tooltipPosition": "bottom",
+          "route": "/app"
+        },
+        {
+          "id": "close-drawer",
+          "selector": "html",
+          "action": "click",
+          "instruction": "Click anywhere outside the drawer to close it and return to the main interface",
+          "tooltipPosition": "auto",
+          "route": "/app"
+        },
+        {
+          "id": "focus-search",
+          "selector": "[data-testid=\"search-input\"]",
+          "action": "click",
+          "instruction": "Click on the search input field to start searching for startups",
+          "tooltipPosition": "bottom",
+          "route": "/app"
+        },
+        {
+          "id": "select-suggestion",
+          "selector": "[data-testid=\"button-suggestion-recently-exited-startups-in-mi\"]",
+          "action": "click",
+          "instruction": "Click on the suggested search for 'Recently exited startups in Miami' to see relevant results",
+          "tooltipPosition": "top",
+          "route": "/app"
+        }
+      ],
+      "completionMessage": "Great job! You've learned how to navigate the interface and use smart search suggestions to quickly find startup information. The AI-powered suggestions help you discover relevant data faster!"
+    },
+    {
+      "id": "search-and-navigate-campaigns",
+      "name": "Search and Navigate to Campaigns",
+      "description": "Learn how to search for startup information and navigate to the campaigns section",
+      "emoji": "🔍",
+      "steps": [
+        {
+          "id": "click-search-input",
+          "selector": "[data-testid=\"search-input\"]",
+          "action": "click",
+          "instruction": "Click on the search input field to start your search",
+          "tooltipPosition": "bottom",
+          "route": "/app"
+        },
+        {
+          "id": "type-search-query",
+          "selector": "[data-testid=\"search-input\"]",
+          "action": "type",
+          "instruction": "Type your search query for recently exited startups in Miami",
+          "tooltipPosition": "bottom",
+          "route": "/app"
+        },
+        {
+          "id": "refocus-search",
+          "selector": "[data-testid=\"search-input\"]",
+          "action": "click",
+          "instruction": "Click the search input again to ensure it's focused",
+          "tooltipPosition": "bottom",
+          "route": "/app"
+        },
+        {
+          "id": "continue-search-focus",
+          "selector": "[data-testid=\"search-input\"]",
+          "action": "click",
+          "instruction": "Keep the search field active by clicking on it",
+          "tooltipPosition": "bottom",
+          "route": "/app"
+        },
+        {
+          "id": "maintain-search-focus",
+          "selector": "[data-testid=\"search-input\"]",
+          "action": "click",
+          "instruction": "Click the search input to maintain focus",
+          "tooltipPosition": "bottom",
+          "route": "/app"
+        },
+        {
+          "id": "ensure-search-active",
+          "selector": "[data-testid=\"search-input\"]",
+          "action": "click",
+          "instruction": "Click on the search field once more",
+          "tooltipPosition": "bottom",
+          "route": "/app"
+        },
+        {
+          "id": "activate-search-field",
+          "selector": "[data-testid=\"search-input\"]",
+          "action": "click",
+          "instruction": "Click the search input to keep it selected",
+          "tooltipPosition": "bottom",
+          "route": "/app"
+        },
+        {
+          "id": "final-search-click",
+          "selector": "[data-testid=\"search-input\"]",
+          "action": "click",
+          "instruction": "Click on the search field one final time",
+          "tooltipPosition": "bottom",
+          "route": "/app"
+        },
+        {
+          "id": "complete-search-entry",
+          "selector": "[data-testid=\"search-input\"]",
+          "action": "type",
+          "instruction": "Complete your search by typing your query",
+          "tooltipPosition": "bottom",
+          "route": "/app"
+        },
+        {
+          "id": "open-drawer",
+          "selector": "[data-testid=\"button-open-drawer\"]",
+          "action": "click",
+          "instruction": "Click the drawer button to open the navigation menu",
+          "tooltipPosition": "left",
+          "route": "/app"
+        },
+        {
+          "id": "navigate-campaigns",
+          "selector": "span.text-sm.font-medium.text-gray-700",
+          "action": "click",
+          "instruction": "Click on 'Campaigns' to navigate to the campaigns section",
+          "tooltipPosition": "right",
+          "route": "/app"
+        }
+      ],
+      "completionMessage": "Great job! You've learned how to search for startup information and navigate to the campaigns section using the drawer menu."
+    },
+    {
+      "id": "business-search-tutorial",
+      "name": "Find Target Businesses",
+      "description": "Learn how to search for and discover target businesses using the search feature",
+      "emoji": "🔍",
+      "steps": [
+        {
+          "id": "open-navigation",
+          "selector": "[data-testid=\"button-open-drawer\"]",
+          "action": "click",
+          "instruction": "Click the menu button to open the navigation drawer",
+          "tooltipPosition": "bottom",
+          "route": "/app"
+        },
+        {
+          "id": "select-search-feature",
+          "selector": "div.flex.flex-col-reverse.md:flex-row",
+          "action": "click",
+          "instruction": "Click on the 'Search for target businesses' option to access the search functionality",
+          "tooltipPosition": "right",
+          "route": "/app"
+        },
+        {
+          "id": "enter-search-query",
+          "selector": "[data-testid=\"search-input\"]",
+          "action": "click",
+          "instruction": "Click on the search input field to start entering your search criteria",
+          "tooltipPosition": "top",
+          "route": "/app"
+        }
+      ],
+      "completionMessage": "Great job! You've learned how to navigate to the business search feature and access the search input. Now you can start discovering target businesses for your needs!"
+    },
+    {
+      "id": "navigate-and-add-product",
+      "name": "Navigate and Add Product",
+      "description": "Learn how to open the navigation drawer, explore company information, and add a product description",
+      "emoji": "🏢",
+      "steps": [
+        {
+          "id": "open-drawer",
+          "selector": "[data-testid=\"button-open-drawer\"]",
+          "action": "click",
+          "instruction": "Click the button to open the navigation drawer",
+          "tooltipPosition": "right",
+          "route": "/app"
+        },
+        {
+          "id": "select-company",
+          "selector": "span.cursor-pointer",
+          "action": "click",
+          "instruction": "Click on 'edtech stem in vietnam' to select this company",
+          "tooltipPosition": "right",
+          "route": "/app"
+        },
+        {
+          "id": "view-role",
+          "selector": "div.text-xs.text-muted-foreground.mt-0.5",
+          "action": "click",
+          "instruction": "Click on the 'Co-Founder' role to view more details",
+          "tooltipPosition": "right",
+          "route": "/app"
+        },
+        {
+          "id": "focus-textarea",
+          "selector": "textarea.flex.min-h-\\[80px\\].w-full",
+          "action": "click",
+          "instruction": "Click in the product description text area to start adding a product",
+          "tooltipPosition": "top",
+          "route": "/app"
+        },
+        {
+          "id": "type-product",
+          "selector": "textarea.flex.min-h-\\[80px\\].w-full",
+          "action": "type",
+          "instruction": "Type 'happy' in the text area to add your product description",
+          "tooltipPosition": "top",
+          "route": "/app"
+        }
+      ],
+      "completionMessage": "Great job! You've learned how to navigate the app drawer, explore company information, and add product descriptions. You're now ready to manage company products!"
+    },
+    {
+      "id": "navigate-practice-selection",
+      "name": "Select Your Practice",
+      "description": "Learn how to navigate the interface and select a medical practice",
+      "emoji": "🏥",
+      "steps": [
+        {
+          "id": "click-svg-icon",
+          "selector": "svg",
+          "action": "click",
+          "instruction": "Click on the SVG icon to begin navigation",
+          "tooltipPosition": "bottom",
+          "route": "/app"
+        },
+        {
+          "id": "open-drawer-menu",
+          "selector": "[data-testid=\"button-open-drawer\"]",
+          "action": "click",
+          "instruction": "Click the menu button to open the navigation drawer",
+          "tooltipPosition": "bottom",
+          "route": "/app"
+        },
+        {
+          "id": "interact-with-overlay",
+          "selector": "div.fixed.inset-0.z-50",
+          "action": "click",
+          "instruction": "Click on the overlay area to interact with the modal",
+          "tooltipPosition": "auto",
+          "route": "/app"
+        },
+        {
+          "id": "select-practice",
+          "selector": "h3.font-semibold.text-base.leading-tight",
+          "action": "click",
+          "instruction": "Click on 'Manhattan Gastroenterology' to select this practice",
+          "tooltipPosition": "top",
+          "route": "/app"
+        }
+      ],
+      "completionMessage": "Great job! You've successfully learned how to navigate the interface and select a medical practice. You're now ready to work with Manhattan Gastroenterology!"
+    },
+    {
+      "id": "navigate-and-search-interface",
+      "name": "Navigate and Search",
+      "description": "Learn how to open drawers, navigate the interface, and use search functionality",
+      "emoji": "🔍",
+      "steps": [
+        {
+          "id": "open-drawer",
+          "selector": "[data-testid=\"button-open-drawer\"]",
+          "action": "click",
+          "instruction": "Click the drawer button to open the navigation menu",
+          "tooltipPosition": "bottom",
+          "route": "/app"
+        },
+        {
+          "id": "close-overlay",
+          "selector": "div.fixed.inset-0.z-50",
+          "action": "click",
+          "instruction": "Click on the overlay area to close the drawer",
+          "tooltipPosition": "auto",
+          "route": "/app"
+        },
+        {
+          "id": "focus-search",
+          "selector": "[data-testid=\"search-input\"]",
+          "action": "click",
+          "instruction": "Click on the search input field to start searching",
+          "tooltipPosition": "bottom",
+          "route": "/app"
+        },
+        {
+          "id": "type-search",
+          "selector": "[data-testid=\"search-input\"]",
+          "action": "type",
+          "instruction": "Type 'Click' in the search field",
+          "tooltipPosition": "bottom",
+          "route": "/app"
+        },
+        {
+          "id": "select-leadership",
+          "selector": "span.font-medium",
+          "action": "click",
+          "instruction": "Click on the Leadership option to filter results",
+          "tooltipPosition": "top",
+          "route": "/app"
+        },
+        {
+          "id": "select-marketing",
+          "selector": "span.text-sm.font-medium.max-md:hidden",
+          "action": "click",
+          "instruction": "Click on the Marketing category to refine your search",
+          "tooltipPosition": "top",
+          "route": "/app"
+        },
+        {
+          "id": "return-to-search",
+          "selector": "[data-testid=\"search-input\"]",
+          "action": "click",
+          "instruction": "Click back on the search input to continue searching",
+          "tooltipPosition": "bottom",
+          "route": "/app"
+        }
+      ],
+      "completionMessage": "Great job! You've learned how to navigate the drawer menu, use the search functionality, and filter results by categories like Leadership and Marketing."
+    },
+    {
+      "id": "search-filtered-startups",
+      "name": "Search and Filter Startups",
+      "description": "Learn how to search for specific startups and apply category filters",
+      "emoji": "🔍",
+      "steps": [
+        {
+          "id": "open-drawer",
+          "selector": "[data-testid=\"button-open-drawer\"]",
+          "action": "click",
+          "instruction": "Click the drawer button to open the navigation panel",
+          "tooltipPosition": "bottom",
+          "route": "/app"
+        },
+        {
+          "id": "enter-search",
+          "selector": "[data-testid=\"search-input\"]",
+          "action": "click",
+          "instruction": "Click on the search input to start searching for startups",
+          "tooltipPosition": "bottom",
+          "route": "/app"
+        },
+        {
+          "id": "apply-filter",
+          "selector": "button.flex.items-center.gap-1.5",
+          "action": "click",
+          "instruction": "Click the Marketing filter to narrow down your search results",
+          "tooltipPosition": "top",
+          "route": "/app"
+        }
+      ],
+      "completionMessage": "Great job! You've learned how to use the search functionality and apply category filters to find specific startups that match your criteria."
+    },
+    {
+      "id": "navigate-search-and-filter-startup-data",
+      "name": "Navigate & Filter Startup Data",
+      "description": "Learn how to open the navigation drawer, search for startups, and apply filters to find specific data",
+      "emoji": "🔍",
+      "steps": [
+        {
+          "id": "open-drawer",
+          "selector": "[data-testid=\"button-open-drawer\"]",
+          "action": "click",
+          "instruction": "Click the drawer button to open the navigation menu",
+          "tooltipPosition": "right",
+          "route": "/app"
+        },
+        {
+          "id": "access-navigation",
+          "selector": "nav.flex.items-center.justify-between",
+          "action": "click",
+          "instruction": "Click on the navigation bar to access the main menu options",
+          "tooltipPosition": "bottom",
+          "route": "/app"
+        },
+        {
+          "id": "use-search",
+          "selector": "[data-testid=\"search-input\"]",
+          "action": "click",
+          "instruction": "Click on the search input to look for specific startup data",
+          "tooltipPosition": "bottom",
+          "route": "/app"
+        },
+        {
+          "id": "apply-marketing-filter",
+          "selector": "span.font-medium",
+          "action": "click",
+          "instruction": "Click on 'Marketing' to filter results by this category",
+          "tooltipPosition": "top",
+          "route": "/app"
+        },
+        {
+          "id": "apply-leadership-filter",
+          "selector": "span.text-sm.font-medium.max-md:hidden",
+          "action": "click",
+          "instruction": "Click on 'Leadership' to add another filter to your search results",
+          "tooltipPosition": "top",
+          "route": "/app"
+        }
+      ],
+      "completionMessage": "Great job! You've learned how to navigate the app, use the search functionality, and apply multiple filters to find specific startup data. These skills will help you efficiently discover relevant business information."
+    },
+    {
+      "id": "search-startup-data",
+      "name": "Search for Startups",
+      "description": "Learn how to search for startup information using the search functionality",
+      "emoji": "🔍",
+      "steps": [
+        {
+          "id": "click-search-input",
+          "selector": "[data-testid=\"search-input\"]",
+          "action": "click",
+          "instruction": "Click on the search input field to start searching for startup data",
+          "tooltipPosition": "bottom",
+          "route": "/app"
+        }
+      ],
+      "completionMessage": "Great job! You've learned how to access the search feature to find startup information. Now you can search for companies by location, status, or other criteria."
     }
   ],
 };
