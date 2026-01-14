@@ -504,7 +504,17 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
 
     // Execute action immediately - actions happen at their exact recorded timestamp
     performAction();
-  }, [state.isActive, state.playbackMode, state.currentStepIndex, currentStep, videoTimestamps, videoCurrentTimeMs]);
+    
+    // Check if this is the last step - if so, complete the challenge after a delay
+    if (currentChallenge && state.currentStepIndex === currentChallenge.steps.length - 1) {
+      // Wait 1.5 seconds after performing the last action, then complete the challenge
+      const completionTimer = setTimeout(() => {
+        console.log(`[TIMING ${Date.now()}] Last step completed - ending show mode demo`);
+        advanceStepRef.current(); // This will set isActive: false and hide the highlight
+      }, 1500);
+      return () => clearTimeout(completionTimer);
+    }
+  }, [state.isActive, state.playbackMode, state.currentStepIndex, currentStep, currentChallenge, videoTimestamps, videoCurrentTimeMs]);
 
   useEffect(() => {
     if (!autoStartForNewUsers) return;
