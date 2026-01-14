@@ -990,6 +990,40 @@ export const quest1: Quest = {
         }
       ],
       "completionMessage": "Great job! You've learned how to use the search feature to find startup information. Now you can easily search for any startup data you need!"
+    },
+    {
+      "id": "search-startups-tutorial",
+      "name": "Search for Startups",
+      "description": "Learn how to search for startup information using the search functionality",
+      "emoji": "🔍",
+      "steps": [
+        {
+          "id": "click-search-input",
+          "selector": "[data-testid=\"search-input\"]",
+          "action": "click",
+          "instruction": "Click on the search input field to start searching",
+          "tooltipPosition": "bottom",
+          "route": "/app"
+        },
+        {
+          "id": "type-search-query",
+          "selector": "[data-testid=\"search-input\"]",
+          "action": "type",
+          "instruction": "Type your search query in the input field",
+          "tooltipPosition": "bottom",
+          "route": "/app",
+          "value": "123"
+        },
+        {
+          "id": "click-search-button",
+          "selector": "[data-testid=\"search-button\"]",
+          "action": "click",
+          "instruction": "Click the search button to execute your search",
+          "tooltipPosition": "bottom",
+          "route": "/app"
+        }
+      ],
+      "completionMessage": "Great job! You've learned how to search for startups using the search functionality. You can now find specific companies and information quickly!"
     }
   ],
 };

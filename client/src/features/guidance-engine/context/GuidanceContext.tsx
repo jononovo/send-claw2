@@ -255,11 +255,15 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
         0 // Never negative
       );
       
-      console.log(`[Show mode] Step advance check - currentStep: ${currentStepIdx}, nextStep: ${nextStepIdx}, videoTime: ${videoCurrentTimeMs}, showAt: ${showTooltipAt}, lastAdvanced: ${lastAdvancedStepRef.current}`);
+      console.log(`[Show mode] Step advance check - currentStep: ${currentStepIdx}, nextStep: ${nextStepIdx}, videoTime: ${videoCurrentTimeMs}, showAt: ${showTooltipAt}, lastAdvanced: ${lastAdvancedStepRef.current}, lastPerformed: ${lastPerformedStepRef.current}`);
+      
+      // For step -1 (initial state), advance immediately to step 0 when time is right
+      // For other steps, wait until the current step's action has been performed
+      const canAdvance = currentStepIdx === -1 || lastPerformedStepRef.current >= currentStepIdx;
       
       // Advance to next step when video reaches the tooltip show time
       // Track by nextStepIdx since we're advancing TO that step (not FROM currentStepIdx)
-      if (videoCurrentTimeMs >= showTooltipAt && nextStepIdx > lastAdvancedStepRef.current) {
+      if (videoCurrentTimeMs >= showTooltipAt && nextStepIdx > lastAdvancedStepRef.current && canAdvance) {
         console.log(`[Show mode] Advancing to step ${nextStepIdx}`);
         lastAdvancedStepRef.current = nextStepIdx;
         advanceStepRef.current();
@@ -789,6 +793,7 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
               <ElementHighlight
                 targetSelector={currentStep.selector}
                 isVisible={state.isActive && !tooltipHiddenRef.current}
+                actionType={currentStep.action}
               />
               <GuidanceTooltip
                 targetSelector={currentStep.selector}
