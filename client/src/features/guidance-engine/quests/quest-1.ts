@@ -956,6 +956,40 @@ export const quest1: Quest = {
         }
       ],
       "completionMessage": "Great job! You've learned how to search and refine your queries to find exactly what you're looking for. Try searching for other types of cuisine or locations!"
+    },
+    {
+      "id": "search-startup-data",
+      "name": "Search for Startup Information",
+      "description": "Learn how to search for specific startup data using the search functionality",
+      "emoji": "🔍",
+      "steps": [
+        {
+          "id": "click-search-input",
+          "selector": "[data-testid=\"search-input\"]",
+          "action": "click",
+          "instruction": "Click on the search input field to start searching for startup data",
+          "tooltipPosition": "bottom",
+          "route": "/app"
+        },
+        {
+          "id": "type-search-query",
+          "selector": "[data-testid=\"search-input\"]",
+          "action": "type",
+          "instruction": "Type your search query in the input field",
+          "tooltipPosition": "bottom",
+          "route": "/app",
+          "value": "123"
+        },
+        {
+          "id": "execute-search",
+          "selector": "span",
+          "action": "click",
+          "instruction": "Click the Search button to execute your query",
+          "tooltipPosition": "left",
+          "route": "/app"
+        }
+      ],
+      "completionMessage": "Great job! You've learned how to use the search feature to find startup information. Now you can easily search for any startup data you need!"
     }
   ],
 };
