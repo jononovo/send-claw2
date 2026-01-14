@@ -341,17 +341,33 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
   }, [currentChallenge?.id]);
   
   // Show-me mode: Show tooltip 1.2 seconds before action executes
+  // Also hide current step's highlight 1.2 seconds before NEXT step's action
   useEffect(() => {
-    if (!state.isActive || state.playbackMode !== "show" || !currentStep) {
+    if (!state.isActive || state.playbackMode !== "show" || !currentStep || !currentChallenge) {
       setShowTooltipEarly(false);
       return;
     }
     
     const hasTimestamps = videoTimestamps.length > 0;
     const currentStepTimestamp = videoTimestamps.find(t => t.stepIndex === state.currentStepIndex);
+    const nextStepTimestamp = videoTimestamps.find(t => t.stepIndex === state.currentStepIndex + 1);
+    const isLastStep = state.currentStepIndex === currentChallenge.steps.length - 1;
     
     if (hasTimestamps && currentStepTimestamp) {
       const tooltipShowTime = currentStepTimestamp.timestamp - 1200; // 1.2 seconds before action
+      
+      // Check if we're approaching the NEXT step - if so, hide current step's highlight
+      if (!isLastStep && nextStepTimestamp) {
+        const nextStepPreviewTime = nextStepTimestamp.timestamp - 1200;
+        if (videoCurrentTimeMs >= nextStepPreviewTime) {
+          // We're within 1.2 seconds of next step - hide current highlight to prepare for transition
+          if (showTooltipEarly) {
+            console.log(`[TOOLTIP] Hiding current step highlight - approaching next step at ${nextStepTimestamp.timestamp}ms`);
+            setShowTooltipEarly(false);
+          }
+          return;
+        }
+      }
       
       if (videoCurrentTimeMs >= tooltipShowTime && videoCurrentTimeMs < currentStepTimestamp.timestamp) {
         // We're in the tooltip preview window - show tooltip
@@ -374,7 +390,7 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
       // No timestamps - always show tooltip
       setShowTooltipEarly(true);
     }
-  }, [state.isActive, state.playbackMode, state.currentStepIndex, currentStep, videoTimestamps, videoCurrentTimeMs, showTooltipEarly]);
+  }, [state.isActive, state.playbackMode, state.currentStepIndex, currentStep, currentChallenge, videoTimestamps, videoCurrentTimeMs, showTooltipEarly]);
   
   // Reset completion state when show mode is exited
   useEffect(() => {
