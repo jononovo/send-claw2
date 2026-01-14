@@ -802,6 +802,7 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
             size="small"
             onTimeUpdate={setVideoCurrentTimeMs}
             onPlayStateChange={setIsVideoPlaying}
+            canAutoPlay={state.playbackMode !== "show" || videoTimestamps.length > 0}
           />
 
           {state.isActive && currentStep && (
