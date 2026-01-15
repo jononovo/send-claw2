@@ -1,6 +1,7 @@
 import { useState, useCallback, useMemo, useEffect, useRef } from "react";
 import type { GuidanceState, GuidanceContextValue, Quest, Challenge, GuidanceStep, RecordingState, RecordedStep, PlaybackMode, VideoTimestamp } from "../types";
 import { QUESTS, getQuestById, getFirstIncompleteQuest } from "../quests";
+import { getBestSelector, getElementDescription } from "../utils/elementSelector";
 
 const defaultRecordingState: RecordingState = {
   isRecording: false,
@@ -457,38 +458,6 @@ export function useGuidanceEngine(options: UseGuidanceEngineOptions): GuidanceCo
     }));
   }, []);
 
-  // Recording functions
-  const getBestSelector = useCallback((element: HTMLElement): string => {
-    if (element.dataset.testid) {
-      return `[data-testid="${element.dataset.testid}"]`;
-    }
-    if (element.id) {
-      return `#${element.id}`;
-    }
-    if (element.className && typeof element.className === 'string') {
-      const classes = element.className
-        .split(' ')
-        .filter(c => c && !c.startsWith('hover:') && !c.startsWith('focus:'))
-        .map(c => c.replace(/\[/g, '\\[').replace(/\]/g, '\\]')); // Escape brackets in Tailwind arbitrary value classes
-      if (classes.length > 0) {
-        const uniqueClasses = classes.slice(0, 3).join('.');
-        return `${element.tagName.toLowerCase()}.${uniqueClasses}`;
-      }
-    }
-    return element.tagName.toLowerCase();
-  }, []);
-
-  const getElementDescription = useCallback((element: HTMLElement): string => {
-    const text = element.textContent?.trim().slice(0, 50);
-    if (text) return text;
-    if (element.getAttribute('placeholder')) {
-      return element.getAttribute('placeholder') || '';
-    }
-    if (element.getAttribute('aria-label')) {
-      return element.getAttribute('aria-label') || '';
-    }
-    return element.tagName.toLowerCase();
-  }, []);
 
   // Global recording event listeners - these persist across page navigations
   useEffect(() => {
@@ -505,9 +474,10 @@ export function useGuidanceEngine(options: UseGuidanceEngineOptions): GuidanceCo
       const target = e.target as HTMLElement;
       if (target.closest('[data-recorder-ui]')) return;
       
-      const selector = getBestSelector(target);
+      const selectorResult = getBestSelector(target);
       const step: RecordedStep = {
-        selector,
+        selector: selectorResult.selector,
+        contentMatch: selectorResult.contentMatch,
         action: "click",
         tagName: target.tagName.toLowerCase(),
         textContent: getElementDescription(target),
@@ -528,11 +498,11 @@ export function useGuidanceEngine(options: UseGuidanceEngineOptions): GuidanceCo
       if (!target.tagName || !['INPUT', 'TEXTAREA'].includes(target.tagName)) return;
       if (target.closest('[data-recorder-ui]')) return;
       
-      const selector = getBestSelector(target);
+      const selectorResult = getBestSelector(target);
       
       setRecording(prev => {
         const lastStep = prev.steps[prev.steps.length - 1];
-        if (lastStep && lastStep.selector === selector && lastStep.action === "type") {
+        if (lastStep && lastStep.selector === selectorResult.selector && lastStep.action === "type") {
           const updated = [...prev.steps];
           updated[updated.length - 1] = {
             ...lastStep,
@@ -544,7 +514,8 @@ export function useGuidanceEngine(options: UseGuidanceEngineOptions): GuidanceCo
         return {
           ...prev,
           steps: [...prev.steps, {
-            selector,
+            selector: selectorResult.selector,
+            contentMatch: selectorResult.contentMatch,
             action: "type" as const,
             tagName: target.tagName.toLowerCase(),
             textContent: target.placeholder || "input field",
@@ -563,7 +534,7 @@ export function useGuidanceEngine(options: UseGuidanceEngineOptions): GuidanceCo
       document.removeEventListener("click", handleClick, true);
       document.removeEventListener("input", handleInput, true);
     };
-  }, [recording.isRecording, getBestSelector, getElementDescription]);
+  }, [recording.isRecording]);
 
   const startRecording = useCallback((questId: string, startRoute: string, includeVideo = false) => {
     setRecording({
