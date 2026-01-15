@@ -58,10 +58,10 @@ export function AppLayout({ children }: LayoutProps) {
     setSavedSearchesDrawerOpen(false);
   };
   
-  // Handle new search action - navigate to /app/new-search
+  // Handle new search action - navigate to /app
   const handleNewSearch = () => {
-    // Navigate to /app/new-search - the route handles the new search state
-    setLocation('/app/new-search');
+    // Navigate to /app - it's always a fresh new search now
+    setLocation('/app');
     setSavedSearchesDrawerOpen(false);
   };
   
