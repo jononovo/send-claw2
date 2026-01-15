@@ -1476,13 +1476,7 @@ export default function Home() {
             {/* Collapsed Header - Only visible when collapsed */}
             {searchSectionCollapsed && (
               <button
-                onClick={() => {
-                  // Add #new-search hash to URL for consistent state tracking
-                  window.history.replaceState(null, '', `${window.location.pathname}#new-search`);
-                  setSearchSectionCollapsed(false);
-                  // Clear results to show expanded search view
-                  handleNewSearch();
-                }}
+                onClick={() => setSearchSectionCollapsed(false)}
                 className="w-full px-3 md:px-6 py-2 bg-background border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors flex items-center justify-between group mb-2"
                 data-testid="button-expand-search"
               >
