@@ -1193,6 +1193,40 @@ export const quest1: Quest = {
         }
       ],
       "completionMessage": "Great job! You've learned how to search for companies by name and location. This is essential for finding specific businesses in your target markets."
+    },
+    {
+      "id": "search-thai-restaurants",
+      "name": "Search for Thai Restaurants",
+      "description": "Learn how to search for local businesses using the search functionality",
+      "emoji": "🍜",
+      "steps": [
+        {
+          "id": "click-search-input",
+          "selector": "[data-testid=\"search-input\"]",
+          "action": "click",
+          "instruction": "Click on the search input field to start typing your search query",
+          "tooltipPosition": "bottom",
+          "route": "/app"
+        },
+        {
+          "id": "type-search-query",
+          "selector": "[data-testid=\"search-input\"]",
+          "action": "type",
+          "instruction": "Type your search query for Thai restaurants in LA",
+          "tooltipPosition": "bottom",
+          "route": "/app",
+          "value": "thai restaurants in LA"
+        },
+        {
+          "id": "click-search-button",
+          "selector": "[data-testid=\"search-button\"]",
+          "action": "click",
+          "instruction": "Click the search button to find Thai restaurants in your area",
+          "tooltipPosition": "left",
+          "route": "/app"
+        }
+      ],
+      "completionMessage": "Great job! You've learned how to search for local businesses. Now you can find any type of restaurant or service in your area!"
     }
   ],
 };
