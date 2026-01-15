@@ -67,7 +67,7 @@ const Changelog = lazy(() => import("@/pages/changelog"));
 // Lazy import for guidance engine (heavy feature - only load on /quests)
 const QuestsPage = lazy(() => import("@/features/guidance-engine").then(module => ({ default: module.QuestsPage })));
 
-const GUIDANCE_ENABLED_ROUTES = ["/app", "/app/new-search", "/quests", "/contacts", "/campaigns", "/replies", "/account", "/strategy", "/companies", "/admin"];
+const GUIDANCE_ENABLED_ROUTES = ["/app", "/app/new-search", "/search", "/quests", "/contacts", "/campaigns", "/replies", "/account", "/strategy", "/companies", "/admin"];
 
 function isGuidanceRoute(path: string): boolean {
   return GUIDANCE_ENABLED_ROUTES.some(route => path === route || path.startsWith(route + "/"));
@@ -240,7 +240,20 @@ function Router() {
               <Switch>
                 <Route path="/auth" component={Auth} />
                 
+                {/* /search redirect to /app */}
+                <Route path="/search">
+                  {() => {
+                    window.location.replace('/app');
+                    return <LoadingScreen message="Redirecting..." />;
+                  }}
+                </Route>
+                
                 {/* Semi-protected routes - allow initial access but prompt for login for certain actions */}
+                <SemiProtectedRoute path="/search/:slug/:listId" component={() => 
+                  <Suspense fallback={<LoadingScreen message="Loading search..." />}>
+                    <Home />
+                  </Suspense>
+                } />
                 <SemiProtectedRoute path="/app/new-search" component={() => 
                   <Suspense fallback={<LoadingScreen message="Loading search interface..." />}>
                     <Home isNewSearch={true} />

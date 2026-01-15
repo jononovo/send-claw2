@@ -19,6 +19,7 @@ import { Button } from "@/components/ui/button";
 import { PanelLeft, Plus, Users, Send, Zap, Pencil } from "lucide-react";
 import type { SearchList } from "@shared/schema";
 import { generateListPromptOnly } from "@/lib/list-utils";
+import { generateSearchUrl } from "@/lib/url-utils";
 import {
   Tooltip,
   TooltipContent,
@@ -145,22 +146,26 @@ export function SavedSearchesDrawer({ open, onOpenChange, onLoadSearch, onNewSea
                 <TableRow 
                   key={list.id}
                   className={`cursor-pointer hover:bg-muted border-0 ${clickedId === list.id ? 'bg-blue-100 dark:bg-blue-900/30' : ''}`}
-                  onClick={() => {
-                    setClickedId(list.id);
-                    onLoadSearch(list);
-                  }}
                 >
                   <TableCell className="text-sm font-medium text-gray-500 py-3 pr-2">
-                    <TooltipProvider delayDuration={1500}>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <span className="cursor-pointer">{generateListPromptOnly(list)}</span>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <p>Search ID: {list.listId}</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
+                    <Link 
+                      href={generateSearchUrl(generateListPromptOnly(list), list.listId)}
+                      onClick={() => {
+                        setClickedId(list.id);
+                        onOpenChange(false);
+                      }}
+                    >
+                      <TooltipProvider delayDuration={1500}>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <span className="cursor-pointer hover:text-blue-600 transition-colors">{generateListPromptOnly(list)}</span>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>Search ID: {list.listId}</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    </Link>
                   </TableCell>
                   <TableCell className="text-right text-sm font-medium text-gray-700 py-3 pr-3">{list.resultCount}</TableCell>
                 </TableRow>
