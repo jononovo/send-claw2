@@ -1,8 +1,9 @@
 import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import type { SpotlightOverlayProps } from "../types";
+import { findElement } from "../utils/elementSelector";
 
-export function SpotlightOverlay({ targetSelector, isVisible }: SpotlightOverlayProps) {
+export function SpotlightOverlay({ targetSelector, contentMatch, isVisible }: SpotlightOverlayProps) {
   const [rect, setRect] = useState<DOMRect | null>(null);
   const animationRef = useRef<number>();
 
@@ -13,7 +14,7 @@ export function SpotlightOverlay({ targetSelector, isVisible }: SpotlightOverlay
     }
 
     const updatePosition = () => {
-      const element = document.querySelector(targetSelector);
+      const element = findElement(targetSelector, contentMatch);
       if (element) {
         const newRect = element.getBoundingClientRect();
         setRect(newRect);
@@ -30,7 +31,7 @@ export function SpotlightOverlay({ targetSelector, isVisible }: SpotlightOverlay
         cancelAnimationFrame(animationRef.current);
       }
     };
-  }, [targetSelector, isVisible]);
+  }, [targetSelector, contentMatch, isVisible]);
 
   if (!isVisible) return null;
 

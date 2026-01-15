@@ -1,8 +1,9 @@
 import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import type { ElementHighlightProps } from "../types";
+import { findElement } from "../utils/elementSelector";
 
-export function ElementHighlight({ targetSelector, isVisible, actionType }: ElementHighlightProps) {
+export function ElementHighlight({ targetSelector, contentMatch, isVisible, actionType }: ElementHighlightProps) {
   const [rect, setRect] = useState<DOMRect | null>(null);
   const animationRef = useRef<number>();
 
@@ -14,7 +15,7 @@ export function ElementHighlight({ targetSelector, isVisible, actionType }: Elem
 
     const updatePosition = () => {
       try {
-        const element = document.querySelector(targetSelector);
+        const element = findElement(targetSelector, contentMatch);
         if (element) {
           const newRect = element.getBoundingClientRect();
           setRect(newRect);
@@ -34,7 +35,7 @@ export function ElementHighlight({ targetSelector, isVisible, actionType }: Elem
         cancelAnimationFrame(animationRef.current);
       }
     };
-  }, [targetSelector, isVisible]);
+  }, [targetSelector, contentMatch, isVisible]);
 
   if (!isVisible || !rect) return null;
 

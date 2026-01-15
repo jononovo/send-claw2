@@ -12,6 +12,7 @@ import {
   ChallengeComplete,
 } from "../components";
 import { GuidanceVideoPlayer, getChallengeVideo } from "../video";
+import { findElement } from "../utils/elementSelector";
 
 const GuidanceContext = createContext<GuidanceContextValue | null>(null);
 
@@ -288,14 +289,14 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
   // Helper function to perform an action on an element
   const performActionOnElement = useCallback((
     stepIndex: number,
-    step: { selector: string; action: string; value?: string },
-    steps: { selector: string; action: string; value?: string }[],
+    step: { selector: string; contentMatch?: string; action: string; value?: string },
+    steps: { selector: string; contentMatch?: string; action: string; value?: string }[],
     timestamps: { stepIndex: number; timestamp: number }[]
   ) => {
     const execTime = Date.now();
     try {
-      const element = document.querySelector(step.selector);
-      console.log(`[TIMELINE ${execTime}] Action for step ${stepIndex}: ${step.action}, selector: "${step.selector}", found: ${!!element}`);
+      const element = findElement(step.selector, step.contentMatch);
+      console.log(`[TIMELINE ${execTime}] Action for step ${stepIndex}: ${step.action}, selector: "${step.selector}", contentMatch: "${step.contentMatch || 'none'}", found: ${!!element}`);
       
       if (!element) {
         console.warn(`[TIMELINE ${execTime}] Element NOT found: ${step.selector}`);
@@ -697,7 +698,7 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
       const target = e.target as HTMLElement;
       let stepElement: Element | null = null;
       try {
-        stepElement = document.querySelector(selector);
+        stepElement = findElement(selector, currentStep?.contentMatch);
       } catch {
         // Invalid selector
       }
@@ -732,7 +733,7 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
       if (action !== "type" || hasAdvancedForType) return;
       
       const target = e.target as HTMLElement;
-      const stepElement = document.querySelector(selector);
+      const stepElement = findElement(selector, currentStep?.contentMatch);
       
       if (stepElement && (stepElement === target || stepElement.contains(target))) {
         hasAdvancedForType = true;
@@ -860,11 +861,13 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
             <>
               <ElementHighlight
                 targetSelector={displayStep.selector}
+                contentMatch={displayStep.contentMatch}
                 isVisible={state.isActive && !tooltipHiddenRef.current && (state.playbackMode !== "show" || highlightVisible)}
                 actionType={displayStep.action}
               />
               <GuidanceTooltip
                 targetSelector={displayStep.selector}
+                contentMatch={displayStep.contentMatch}
                 instruction={displayStep.instruction}
                 position={displayStep.tooltipPosition || "auto"}
                 isVisible={state.isActive && !tooltipHiddenRef.current && (state.playbackMode !== "show" || highlightVisible)}

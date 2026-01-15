@@ -3,10 +3,12 @@ import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import type { GuidanceTooltipProps } from "../types";
+import { findElement } from "../utils/elementSelector";
 import ducklingMascot from "@/assets/duckling-mascot.png";
 
 export function GuidanceTooltip({
   targetSelector,
+  contentMatch,
   instruction,
   position = "auto",
   isVisible,
@@ -25,9 +27,8 @@ export function GuidanceTooltip({
   const calculatePosition = useCallback(() => {
     let element: Element | null = null;
     try {
-      element = document.querySelector(targetSelector);
+      element = findElement(targetSelector, contentMatch);
     } catch (e) {
-      // Invalid selector (e.g., Tailwind classes with brackets like min-h-[80px])
       setCoords(null);
       return;
     }
@@ -91,7 +92,7 @@ export function GuidanceTooltip({
     top = Math.max(10, Math.min(top, window.innerHeight - tooltipHeight - 10));
 
     setCoords({ top, left, arrowPosition });
-  }, [targetSelector, position]);
+  }, [targetSelector, contentMatch, position]);
 
   useEffect(() => {
     if (!isVisible || !targetSelector) {

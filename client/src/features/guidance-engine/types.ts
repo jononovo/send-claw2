@@ -3,6 +3,7 @@ import { ReactNode } from "react";
 export interface GuidanceStep {
   id: string;
   selector: string;
+  contentMatch?: string;
   action: "click" | "type" | "view" | "hover";
   instruction: string;
   tooltipPosition?: "top" | "bottom" | "left" | "right" | "auto";
@@ -109,12 +110,14 @@ export interface QuestProgressHeaderProps {
 
 export interface ElementHighlightProps {
   targetSelector: string;
+  contentMatch?: string;
   isVisible: boolean;
   actionType?: "click" | "type" | "view" | "hover";
 }
 
 export interface GuidanceTooltipProps {
   targetSelector: string;
+  contentMatch?: string;
   instruction: string;
   position: "top" | "bottom" | "left" | "right" | "auto";
   isVisible: boolean;
@@ -130,6 +133,7 @@ export interface GuidanceTooltipProps {
 
 export interface SpotlightOverlayProps {
   targetSelector: string;
+  contentMatch?: string;
   isVisible: boolean;
 }
 
