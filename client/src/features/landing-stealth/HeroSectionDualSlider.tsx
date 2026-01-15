@@ -34,55 +34,6 @@ interface HeroSectionDualSliderProps {
   showQuestionnaire: boolean;
 }
 
-function getPlayerCount(atDate?: Date): number {
-  const BASE_COUNT = 1248;
-  const BASE_DATE_EST = new Date('2026-01-06T09:00:00-05:00');
-  
-  const targetDate = atDate || new Date();
-  
-  if (targetDate < BASE_DATE_EST) return BASE_COUNT;
-  
-  const formatter = new Intl.DateTimeFormat('en-US', {
-    timeZone: 'America/New_York',
-    year: 'numeric', month: '2-digit', day: '2-digit',
-    hour: '2-digit', minute: '2-digit', hour12: false
-  });
-  const parts = formatter.formatToParts(targetDate);
-  const getPart = (type: string) => parts.find(p => p.type === type)?.value || '0';
-  const estHour = parseInt(getPart('hour'), 10);
-  const estMinute = parseInt(getPart('minute'), 10);
-  const estMonth = parseInt(getPart('month'), 10);
-  const estDay = parseInt(getPart('day'), 10);
-  const estYear = parseInt(getPart('year'), 10);
-  
-  const baseParts = formatter.formatToParts(BASE_DATE_EST);
-  const getBasePart = (type: string) => baseParts.find(p => p.type === type)?.value || '0';
-  const baseMonth = parseInt(getBasePart('month'), 10);
-  const baseDay = parseInt(getBasePart('day'), 10);
-  const baseYear = parseInt(getBasePart('year'), 10);
-  
-  const estTodayUTC = Date.UTC(estYear, estMonth - 1, estDay);
-  const estBaseDayUTC = Date.UTC(baseYear, baseMonth - 1, baseDay);
-  const msPerDay = 24 * 60 * 60 * 1000;
-  const fullDaysPassed = Math.floor((estTodayUTC - estBaseDayUTC) / msPerDay);
-  
-  let totalIncrements = Math.max(0, fullDaysPassed) * 24;
-  
-  if (estHour >= 9 && estHour < 17) {
-    const minutesSince9AM = (estHour - 9) * 60 + estMinute;
-    totalIncrements += Math.floor(minutesSince9AM / 20);
-  } else if (estHour >= 17) {
-    totalIncrements += 24;
-  }
-  
-  return BASE_COUNT + totalIncrements;
-}
-
-function getNewPlayersLast8Hours(): number {
-  const now = new Date();
-  const eightHoursAgo = new Date(now.getTime() - 8 * 60 * 60 * 1000);
-  return Math.max(0, getPlayerCount(now) - getPlayerCount(eightHoursAgo));
-}
 
 const LOADING_MESSAGES = [
   "Unlocking sales processes...",
@@ -177,9 +128,18 @@ export function HeroSectionDualSlider({
   
   const [isDuckLoaded, setIsDuckLoaded] = useState(false);
   const [shouldRenderDemo, setShouldRenderDemo] = useState(false);
+  
+  const [playerCount, setPlayerCount] = useState<number | null>(null);
 
   useEffect(() => {
     setIsMounted(true);
+  }, []);
+  
+  useEffect(() => {
+    fetch('/api/player-count')
+      .then(res => res.json())
+      .then(data => setPlayerCount(data.count))
+      .catch(() => setPlayerCount(1248));
   }, []);
 
   const triggerUnlockConfetti = () => {
@@ -819,12 +779,12 @@ export function HeroSectionDualSlider({
                       <img src={mikeThumb} alt="Player" loading="lazy" className="w-full h-full object-cover" />
                     </div>
                   </div>
-                  <p className="font-heading"><span className="text-white font-bold">{getPlayerCount().toLocaleString()}</span> Players Waiting</p>
+                  <p className="font-heading"><span className="text-white font-bold">{playerCount !== null ? playerCount.toLocaleString() : 'loading'}</span> Players Waiting</p>
                 </div>
               </HoverCardTrigger>
               <HoverCardContent className="w-auto bg-zinc-900/95 border-white/10 backdrop-blur-md" data-testid="tooltip-new-players">
                 <p className="text-sm text-white/80 font-heading">
-                  <span className="text-white font-bold">{getNewPlayersLast8Hours()}</span> new players joined in the last 8 hours
+                  Join the waitlist for early access
                 </p>
               </HoverCardContent>
             </HoverCard>
