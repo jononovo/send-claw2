@@ -66,13 +66,13 @@ function getPlayerCount(atDate?: Date): number {
   const msPerDay = 24 * 60 * 60 * 1000;
   const fullDaysPassed = Math.floor((estTodayUTC - estBaseDayUTC) / msPerDay);
   
-  let totalIncrements = Math.max(0, fullDaysPassed) * 96;
+  let totalIncrements = Math.max(0, fullDaysPassed) * 24;
   
   if (estHour >= 9 && estHour < 17) {
     const minutesSince9AM = (estHour - 9) * 60 + estMinute;
-    totalIncrements += Math.floor(minutesSince9AM / 5);
+    totalIncrements += Math.floor(minutesSince9AM / 20);
   } else if (estHour >= 17) {
-    totalIncrements += 96;
+    totalIncrements += 24;
   }
   
   return BASE_COUNT + totalIncrements;
