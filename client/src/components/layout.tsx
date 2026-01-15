@@ -58,13 +58,11 @@ export function AppLayout({ children }: LayoutProps) {
     setSavedSearchesDrawerOpen(false);
   };
   
-  // Handle new search action - navigate to /app if needed
+  // Handle new search action - navigate to /app#new-search
   const handleNewSearch = () => {
-    if (location !== '/app') {
-      // Navigate to /app first
-      setLocation('/app');
-    }
-    // Dispatch event for the home page to handle
+    // Always navigate to /app#new-search - the hash ensures expanded search view
+    setLocation('/app#new-search');
+    // Dispatch event for the home page to handle (in case already on /app)
     window.dispatchEvent(new CustomEvent('startNewSearch'));
     setSavedSearchesDrawerOpen(false);
   };
