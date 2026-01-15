@@ -519,7 +519,8 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
     return () => {
       clearTimelineTimers();
     };
-  }, [state.isActive, state.playbackMode, currentChallenge, videoTimestamps, state.currentStepIndex, scheduleTimelineEvent, clearTimelineTimers, performActionOnElement]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- Intentionally exclude state.currentStepIndex to prevent cleanup from clearing timers on every step advance
+  }, [state.isActive, state.playbackMode, currentChallenge, videoTimestamps, scheduleTimelineEvent, clearTimelineTimers, performActionOnElement]);
 
   // Get the step to display (for tooltip) - use visibleStepIndex in show mode
   const displayStep = state.playbackMode === "show" && visibleStepIndex >= 0 
