@@ -126,8 +126,6 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
   const typingInProgressRef = useRef<boolean>(false);
   const completionScheduledRef = useRef<boolean>(false);
   const completionTimerRef = useRef<NodeJS.Timeout | null>(null);
-  const typingHideTimerRef = useRef<NodeJS.Timeout | null>(null);
-  const typingHiddenRef = useRef<boolean>(false); // Track if typing action has hidden its highlight
   
   // Early tooltip visibility - tooltip appears 1.2 seconds before action in show mode
   const [showTooltipEarly, setShowTooltipEarly] = useState(false);
@@ -333,7 +331,6 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
     lastAdvancedStepRef.current = -2;
     typingInProgressRef.current = false;
     completionScheduledRef.current = false;
-    typingHiddenRef.current = false;
     setShowTooltipEarly(false);
     setVideoCurrentTimeMs(0);
     setIsVideoPlaying(false);
@@ -341,16 +338,7 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
       clearTimeout(completionTimerRef.current);
       completionTimerRef.current = null;
     }
-    if (typingHideTimerRef.current) {
-      clearTimeout(typingHideTimerRef.current);
-      typingHideTimerRef.current = null;
-    }
   }, [currentChallenge?.id]);
-  
-  // Reset typingHidden when step changes
-  useEffect(() => {
-    typingHiddenRef.current = false;
-  }, [state.currentStepIndex]);
   
   // Show-me mode: Show tooltip 1.2 seconds before action executes
   // Also hide current step's highlight 1.2 seconds before NEXT step's action
@@ -389,8 +377,7 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
         }
       } else if (videoCurrentTimeMs >= currentStepTimestamp.timestamp) {
         // Past the action time - tooltip should remain visible (action is happening)
-        // BUT don't re-show if typing has already hidden it organically
-        if (!showTooltipEarly && !typingHiddenRef.current) {
+        if (!showTooltipEarly) {
           setShowTooltipEarly(true);
         }
       } else {
@@ -573,17 +560,6 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
                   // Mark typing as complete
                   typingInProgressRef.current = false;
                   console.log(`[TIMING ${Date.now()}] TYPE completed - "${valueToType}", element.value="${element.value}"`);
-                  
-                  // Hide the typing highlight 4 seconds after typing completes (organic fade)
-                  if (typingHideTimerRef.current) {
-                    clearTimeout(typingHideTimerRef.current);
-                  }
-                  typingHideTimerRef.current = setTimeout(() => {
-                    console.log(`[TIMING ${Date.now()}] Hiding typing highlight after 4s delay`);
-                    typingHiddenRef.current = true; // Mark that typing has intentionally hidden
-                    setShowTooltipEarly(false);
-                  }, 4000);
-                  
                   scheduleCompletionIfLastStep();
                 }
               }, typingIntervalMs);
