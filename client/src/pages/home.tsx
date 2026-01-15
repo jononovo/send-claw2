@@ -1233,14 +1233,25 @@ export default function Home({ isNewSearch = false }: HomeProps) {
       const listId = parseInt(searchRouteParams.listId, 10);
       if (isNaN(listId)) return;
       
-      // Skip if we already have this search loaded
-      if (currentListId === listId) return;
+      // Skip if we already have this search loaded (e.g., from drawer click)
+      if (currentListId === listId) {
+        console.log('Search already loaded, skipping fetch:', { listId });
+        return;
+      }
       
-      console.log('Loading search from URL:', { listId, slug: searchRouteParams.slug });
+      // Wait for auth to be ready before deciding if list is not found
+      // This prevents false negatives during Firebase handshake
+      if (!auth.authReady) {
+        console.log('Waiting for auth to be ready before loading search:', { listId });
+        return;
+      }
+      
+      console.log('Loading search from URL:', { listId, slug: searchRouteParams.slug, isAuthenticated: !!auth.user });
       
       // Fetch the search list by listId and load it
       const loadSearchByListId = async () => {
         try {
+          // Fetch all lists (works without auth for demo users)
           const lists = await queryClient.fetchQuery({
             queryKey: ["/api/lists"]
           }) as SearchList[];
@@ -1249,23 +1260,49 @@ export default function Home({ isNewSearch = false }: HomeProps) {
           if (list) {
             handleLoadSavedSearch(list);
           } else {
-            console.error('Search not found for listId:', listId);
+            // List not found - if not logged in, prompt login; otherwise show not found
+            console.warn('Search not found for listId:', listId);
+            if (!auth.user) {
+              toast({
+                title: "Login to view this search",
+                description: "This search may belong to your account. Please log in to view it.",
+                variant: "default"
+              });
+            } else {
+              toast({
+                title: "Search not found",
+                description: "The search you're looking for could not be found.",
+                variant: "destructive"
+              });
+            }
+            // Stay on page - don't redirect, let user decide to log in or navigate away
+          }
+        } catch (error: any) {
+          console.error('Failed to load search by listId:', error);
+          const errorMessage = error?.message || '';
+          
+          // Check if it's an auth error (error format is "status: message")
+          if (errorMessage.startsWith('401') || errorMessage.startsWith('403')) {
             toast({
-              title: "Search not found",
-              description: "The search you're looking for could not be found.",
+              title: "Login required",
+              description: "Please log in to view this search.",
+              variant: "default"
+            });
+          } else {
+            // For other errors (network, 5xx), show retry message
+            toast({
+              title: "Loading error",
+              description: "Unable to load search. Please try again.",
               variant: "destructive"
             });
-            setLocation('/app');
           }
-        } catch (error) {
-          console.error('Failed to load search by listId:', error);
-          setLocation('/app');
+          // Stay on page - don't redirect
         }
       };
       
       loadSearchByListId();
     }
-  }, [isSearchRoute, searchRouteParams?.listId]);
+  }, [isSearchRoute, searchRouteParams?.listId, currentListId, auth.authReady, auth.user]);
 
   //New function added here
   const getEnrichButtonText = (contact: Contact) => {

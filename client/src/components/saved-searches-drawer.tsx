@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import {
   Sheet,
   SheetContent,
@@ -41,6 +41,7 @@ export function SavedSearchesDrawer({ open, onOpenChange, onLoadSearch, onNewSea
   });
   
   const [clickedId, setClickedId] = useState<number | null>(null);
+  const [, setLocation] = useLocation();
 
   return (
     <SheetPrimitive.Root open={open} onOpenChange={onOpenChange}>
@@ -146,26 +147,27 @@ export function SavedSearchesDrawer({ open, onOpenChange, onLoadSearch, onNewSea
                 <TableRow 
                   key={list.id}
                   className={`cursor-pointer hover:bg-muted border-0 ${clickedId === list.id ? 'bg-blue-100 dark:bg-blue-900/30' : ''}`}
+                  onClick={() => {
+                    setClickedId(list.id);
+                    // Load the search data immediately for instant hydration
+                    onLoadSearch(list);
+                    onOpenChange(false);
+                    // Navigate to SEO-friendly URL (effect will skip loading since data is already loaded)
+                    const searchUrl = generateSearchUrl(generateListPromptOnly(list), list.listId);
+                    setLocation(searchUrl);
+                  }}
                 >
                   <TableCell className="text-sm font-medium text-gray-500 py-3 pr-2">
-                    <Link 
-                      href={generateSearchUrl(generateListPromptOnly(list), list.listId)}
-                      onClick={() => {
-                        setClickedId(list.id);
-                        onOpenChange(false);
-                      }}
-                    >
-                      <TooltipProvider delayDuration={1500}>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <span className="cursor-pointer hover:text-blue-600 transition-colors">{generateListPromptOnly(list)}</span>
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            <p>Search ID: {list.listId}</p>
-                          </TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
-                    </Link>
+                    <TooltipProvider delayDuration={1500}>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <span className="cursor-pointer">{generateListPromptOnly(list)}</span>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Search ID: {list.listId}</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
                   </TableCell>
                   <TableCell className="text-right text-sm font-medium text-gray-700 py-3 pr-3">{list.resultCount}</TableCell>
                 </TableRow>
