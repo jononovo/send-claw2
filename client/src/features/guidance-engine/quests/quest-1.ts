@@ -1125,6 +1125,74 @@ export const quest1: Quest = {
         }
       ],
       "completionMessage": "Great job! You've learned how to use the search feature to find startup information. You can now search for any startup data you need!"
+    },
+    {
+      "id": "search-kfc-locations-nyc",
+      "name": "Search for KFC in NYC",
+      "description": "Learn how to search for specific business locations using the search feature",
+      "emoji": "🔍",
+      "steps": [
+        {
+          "id": "click-search-input",
+          "selector": "[data-testid=\"search-input\"]",
+          "action": "click",
+          "instruction": "Click on the search input field to start your search",
+          "tooltipPosition": "bottom",
+          "route": "/app"
+        },
+        {
+          "id": "type-search-query",
+          "selector": "[data-testid=\"search-input\"]",
+          "action": "type",
+          "instruction": "Type 'kfc nyc' to search for KFC locations in New York City",
+          "tooltipPosition": "bottom",
+          "route": "/app",
+          "value": "kfc nyc"
+        },
+        {
+          "id": "click-search-button",
+          "selector": "span",
+          "action": "click",
+          "instruction": "Click the Search button to execute your search",
+          "tooltipPosition": "top",
+          "route": "/app"
+        }
+      ],
+      "completionMessage": "Great job! You've learned how to search for specific businesses and locations. You can now find any restaurant or business using the search feature!"
+    },
+    {
+      "id": "search-hsbc-italy",
+      "name": "Search for Companies",
+      "description": "Learn how to search for specific companies in different locations",
+      "emoji": "🔍",
+      "steps": [
+        {
+          "id": "click-search-input",
+          "selector": "[data-testid=\"search-input\"]",
+          "action": "click",
+          "instruction": "Click on the search input field to start your search",
+          "tooltipPosition": "bottom",
+          "route": "/app"
+        },
+        {
+          "id": "type-search-query",
+          "selector": "[data-testid=\"search-input\"]",
+          "action": "type",
+          "instruction": "Type your search query to find HSBC locations in Italy",
+          "tooltipPosition": "bottom",
+          "route": "/app",
+          "value": "hsbc in italy"
+        },
+        {
+          "id": "execute-search",
+          "selector": "span",
+          "action": "click",
+          "instruction": "Click the Search button to execute your search",
+          "tooltipPosition": "left",
+          "route": "/app"
+        }
+      ],
+      "completionMessage": "Great job! You've learned how to search for companies by name and location. This is essential for finding specific businesses in your target markets."
     }
   ],
 };

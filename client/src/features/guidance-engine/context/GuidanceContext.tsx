@@ -116,19 +116,34 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
   const tooltipHiddenRef = useRef(false);
   const [, setVisibilityTick] = useState(0);
   
-  // Video playback state
+  // Video playback state (video is visual companion, doesn't control timeline)
   const [videoUrl, setVideoUrl] = useState<string | null>(null);
   const [showVideo, setShowVideo] = useState(false);
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
   const [videoCurrentTimeMs, setVideoCurrentTimeMs] = useState(0);
-  const lastAdvancedStepRef = useRef<number>(-1);
-  const fallbackTimerRef = useRef<NodeJS.Timeout | null>(null);
   const typingInProgressRef = useRef<boolean>(false);
   const completionScheduledRef = useRef<boolean>(false);
   const completionTimerRef = useRef<NodeJS.Timeout | null>(null);
   
-  // Early tooltip visibility - tooltip appears 1.2 seconds before action in show mode
-  const [showTooltipEarly, setShowTooltipEarly] = useState(false);
+  // Timeline-based show mode: all events scheduled upfront
+  const [highlightVisible, setHighlightVisible] = useState(false);
+  const [visibleStepIndex, setVisibleStepIndex] = useState<number>(-1);
+  const timelineTimersRef = useRef<NodeJS.Timeout[]>([]);
+  const timelineStartedRef = useRef<boolean>(false);
+  
+  // Helper to clear all timeline timers
+  const clearTimelineTimers = useCallback(() => {
+    timelineTimersRef.current.forEach(timer => clearTimeout(timer));
+    timelineTimersRef.current = [];
+    timelineStartedRef.current = false;
+  }, []);
+  
+  // Helper to schedule a timer and track it for cleanup
+  const scheduleTimelineEvent = useCallback((callback: () => void, delayMs: number) => {
+    const timer = setTimeout(callback, Math.max(0, delayMs));
+    timelineTimersRef.current.push(timer);
+    return timer;
+  }, []);
   
   // Stable refs for engine functions to avoid effect re-runs when engine object changes
   const startQuestRef = useRef(engine.startQuest);
@@ -146,28 +161,41 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
   const isOnAppRoute = location === "/app" || location.startsWith("/app/");
 
   // Handle route-based navigation for steps that require a specific page
-  // Only auto-navigate when STEP changes (advancing through quest), not when user manually navigates
+  // In show mode, use visibleStepIndex for earlier navigation (before action fires)
+  // In guide mode, use engine's currentStepIndex
   useEffect(() => {
-    if (!state.isActive || !currentStep?.route) {
-      // Reset ref when guidance becomes inactive so next activation will check route
-      if (!state.isActive) previousStepKey.current = null;
+    if (!state.isActive) {
+      previousStepKey.current = null;
       return;
     }
     
-    const stepKey = `${state.currentQuestId}-${state.currentChallengeIndex}-${state.currentStepIndex}`;
+    // Determine which step to use for navigation
+    // In show mode, use visibleStepIndex to navigate early (when highlight appears)
+    // In guide mode, use currentStepIndex
+    const activeStepIndex = state.playbackMode === "show" && visibleStepIndex >= 0 
+      ? visibleStepIndex 
+      : state.currentStepIndex;
+    const activeStep = currentChallenge?.steps[activeStepIndex];
+    
+    if (!activeStep?.route) {
+      return;
+    }
+    
+    const stepKey = `${state.currentQuestId}-${state.currentChallengeIndex}-${activeStepIndex}`;
     
     // Only auto-navigate when step changes, not on every location change
     if (previousStepKey.current !== stepKey) {
       previousStepKey.current = stepKey;
       
-      const expectedRoute = currentStep.route;
+      const expectedRoute = activeStep.route;
       const isOnCorrectRoute = location === expectedRoute || location.startsWith(expectedRoute + "/");
       
       if (!isOnCorrectRoute) {
+        console.log(`[ROUTE] Navigating to ${expectedRoute} for step ${activeStepIndex}`);
         navigate(expectedRoute);
       }
     }
-  }, [state.isActive, currentStep, state.currentQuestId, state.currentChallengeIndex, state.currentStepIndex, location, navigate]);
+  }, [state.isActive, state.playbackMode, currentChallenge, currentStep, state.currentQuestId, state.currentChallengeIndex, state.currentStepIndex, visibleStepIndex, location, navigate]);
 
   const refreshChallengeVideo = useCallback(async (challengeId: string) => {
     try {
@@ -225,372 +253,279 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
   // Auto-resume on navigation removed - guidance should only start via explicit triggers
   // Users can manually resume by clicking Fluffy if they want to continue a paused challenge
 
-  // Show-me mode with timestamps: advance steps based on actual video playback time
-  // Steps show at their exact recorded timestamp - simple and direct
+  // Reset state when challenge changes
   useEffect(() => {
-    const now = Date.now();
-    // Only run when in show mode with timestamps
-    if (!state.isActive || state.playbackMode !== "show" || !currentChallenge) {
-      return;
-    }
-
-    if (videoTimestamps.length === 0 || !isVideoPlaying) {
-      return;
-    }
-
-    const currentStepIdx = state.currentStepIndex;
-    const totalSteps = currentChallenge.steps.length;
-
-    // Don't advance past the last step
-    if (currentStepIdx >= totalSteps - 1) {
-      return;
-    }
-
-    // Find the timestamp for the next step's action
-    // For step -1 (initial state in show mode), the next step is 0
-    const nextStepIdx = currentStepIdx + 1;
-    const nextStepTimestamp = videoTimestamps.find(t => t.stepIndex === nextStepIdx);
-
-    if (nextStepTimestamp) {
-      // Advance to next step when video reaches the step's timestamp
-      // BUT wait for typing to complete if typing is in progress
-      if (videoCurrentTimeMs >= nextStepTimestamp.timestamp && nextStepIdx > lastAdvancedStepRef.current) {
-        if (typingInProgressRef.current) {
-          console.log(`[TIMING ${now}] WAITING for typing to complete before advancing to step ${nextStepIdx}`);
-          return;
-        }
-        console.log(`[TIMING ${now}] STEP ADVANCING to step ${nextStepIdx} at videoTime ${videoCurrentTimeMs}ms (timestamp: ${nextStepTimestamp.timestamp}ms)`);
-        lastAdvancedStepRef.current = nextStepIdx;
-        advanceStepRef.current();
-      }
-    } else {
-      console.log(`[TIMING ${now}] No timestamp found for next step ${nextStepIdx}`);
-    }
-  }, [state.isActive, state.playbackMode, state.currentStepIndex, currentChallenge, videoTimestamps, isVideoPlaying, videoCurrentTimeMs]);
-
-  // Show-me mode fallback: Use fixed delay when no timestamps available
-  useEffect(() => {
-    // Clear any existing fallback timer
-    if (fallbackTimerRef.current) {
-      clearTimeout(fallbackTimerRef.current);
-      fallbackTimerRef.current = null;
-    }
-
-    // Only run fallback when in show mode without timestamps
-    if (!state.isActive || state.playbackMode !== "show" || !currentChallenge) {
-      lastAdvancedStepRef.current = -1;
-      return;
-    }
-
-    // If we have timestamps, let the video-based effect handle it
-    if (videoTimestamps.length > 0) {
-      return;
-    }
-
-    const currentStepIdx = state.currentStepIndex;
-    const totalSteps = currentChallenge.steps.length;
-
-    // Don't advance past the last step
-    if (currentStepIdx >= totalSteps - 1) {
-      return;
-    }
-
-    // Fallback: Use fixed delay + wait for action completion when no timestamps available
-    // For step -1, advance immediately to show first step; for other steps wait for action
-    const baseDelay = currentStepIdx === -1 ? 500 : 2000;
-    
-    const checkAndAdvance = () => {
-      // For step -1, can always advance (no action to wait for)
-      // For other steps, wait for the action to be performed
-      const canAdvance = currentStepIdx === -1 || lastPerformedStepRef.current >= currentStepIdx;
-      
-      console.log(`[Show mode fallback] Check advance - step: ${currentStepIdx}, lastPerformed: ${lastPerformedStepRef.current}, canAdvance: ${canAdvance}`);
-      
-      if (canAdvance) {
-        console.log(`[Show mode fallback] Advancing to next step after step ${currentStepIdx}`);
-        advanceStepRef.current();
-      } else {
-        // Action not performed yet - check again after a short delay
-        fallbackTimerRef.current = setTimeout(checkAndAdvance, 200);
-      }
-    };
-    
-    fallbackTimerRef.current = setTimeout(checkAndAdvance, baseDelay);
-
-    return () => {
-      if (fallbackTimerRef.current) {
-        clearTimeout(fallbackTimerRef.current);
-        fallbackTimerRef.current = null;
-      }
-    };
-  }, [state.isActive, state.playbackMode, state.currentStepIndex, currentChallenge, videoTimestamps]);
-
-  // Reset step tracking when challenge changes
-  useEffect(() => {
-    // Reset to -2 so that advancing from -1 to 0 works correctly
-    lastAdvancedStepRef.current = -2;
     typingInProgressRef.current = false;
     completionScheduledRef.current = false;
-    setShowTooltipEarly(false);
+    setHighlightVisible(false);
+    setVisibleStepIndex(-1);
+    clearTimelineTimers();
     setVideoCurrentTimeMs(0);
     setIsVideoPlaying(false);
     if (completionTimerRef.current) {
       clearTimeout(completionTimerRef.current);
       completionTimerRef.current = null;
     }
-  }, [currentChallenge?.id]);
-  
-  // Show-me mode: Show tooltip 1.2 seconds before action executes
-  // Also hide current step's highlight 1.2 seconds before NEXT step's action
-  useEffect(() => {
-    if (!state.isActive || state.playbackMode !== "show" || !currentStep || !currentChallenge) {
-      setShowTooltipEarly(false);
-      return;
-    }
-    
-    const hasTimestamps = videoTimestamps.length > 0;
-    const currentStepTimestamp = videoTimestamps.find(t => t.stepIndex === state.currentStepIndex);
-    const nextStepTimestamp = videoTimestamps.find(t => t.stepIndex === state.currentStepIndex + 1);
-    const isLastStep = state.currentStepIndex === currentChallenge.steps.length - 1;
-    
-    if (hasTimestamps && currentStepTimestamp) {
-      const tooltipShowTime = currentStepTimestamp.timestamp - 1200; // 1.2 seconds before action
-      
-      // Check if we're approaching the NEXT step - if so, hide current step's highlight
-      if (!isLastStep && nextStepTimestamp) {
-        const nextStepPreviewTime = nextStepTimestamp.timestamp - 1200;
-        if (videoCurrentTimeMs >= nextStepPreviewTime) {
-          // We're within 1.2 seconds of next step - hide current highlight to prepare for transition
-          if (showTooltipEarly) {
-            console.log(`[TOOLTIP] Hiding current step highlight - approaching next step at ${nextStepTimestamp.timestamp}ms`);
-            setShowTooltipEarly(false);
-          }
-          return;
-        }
-      }
-      
-      if (videoCurrentTimeMs >= tooltipShowTime && videoCurrentTimeMs < currentStepTimestamp.timestamp) {
-        // We're in the tooltip preview window - show tooltip
-        if (!showTooltipEarly) {
-          console.log(`[TOOLTIP] Showing tooltip early at ${videoCurrentTimeMs}ms (action at ${currentStepTimestamp.timestamp}ms)`);
-          setShowTooltipEarly(true);
-        }
-      } else if (videoCurrentTimeMs >= currentStepTimestamp.timestamp) {
-        // Past the action time - tooltip should remain visible (action is happening)
-        if (!showTooltipEarly) {
-          setShowTooltipEarly(true);
-        }
-      } else {
-        // Before tooltip window - hide tooltip
-        if (showTooltipEarly) {
-          setShowTooltipEarly(false);
-        }
-      }
-    } else {
-      // No timestamps - always show tooltip
-      setShowTooltipEarly(true);
-    }
-  }, [state.isActive, state.playbackMode, state.currentStepIndex, currentStep, currentChallenge, videoTimestamps, videoCurrentTimeMs, showTooltipEarly]);
-  
-  // Reset completion state when show mode is exited
+  }, [currentChallenge?.id, clearTimelineTimers]);
+
+  // Reset when show mode is exited
   useEffect(() => {
     if (!state.isActive || state.playbackMode !== "show") {
       completionScheduledRef.current = false;
+      clearTimelineTimers();
+      setHighlightVisible(false);
+      setVisibleStepIndex(-1);
+      timelineStartedRef.current = false;
     }
-  }, [state.isActive, state.playbackMode]);
+  }, [state.isActive, state.playbackMode, clearTimelineTimers]);
 
-  // Show-me mode: Perform actions automatically (click, type, etc.)
-  // Actions are synced to video timestamps - they execute when video reaches the step's timestamp
-  // IMPORTANT: Actions execute at their EXACT recorded timestamp, independent of tooltip timing
-  const lastPerformedStepRef = useRef<number>(-1);
+  // ============================================================================
+  // TIMELINE-BASED SHOW MODE
+  // All events (show highlight, execute action, hide highlight) are scheduled
+  // upfront when show mode starts. Video plays alongside but doesn't control timing.
+  // ============================================================================
   
-  useEffect(() => {
-    // Only perform actions in show mode
-    if (!state.isActive || state.playbackMode !== "show" || !currentStep) {
-      lastPerformedStepRef.current = -1;
-      return;
-    }
-
-    const now = Date.now();
-    console.log(`[TIMING ${now}] Action effect triggered - stepIdx: ${state.currentStepIndex}, lastPerformed: ${lastPerformedStepRef.current}, action: ${currentStep.action}, value: ${currentStep.value}, videoTime: ${videoCurrentTimeMs}ms`);
-
-    // Don't re-perform the same step
-    if (state.currentStepIndex === lastPerformedStepRef.current) {
-      console.log(`[TIMING ${now}] Skipping - already performed step ${state.currentStepIndex}`);
-      return;
-    }
-
-    // Check if we have video timestamps to sync with
-    const hasTimestamps = videoTimestamps.length > 0;
-    const currentStepTimestamp = videoTimestamps.find(t => t.stepIndex === state.currentStepIndex);
-    
-    console.log(`[TIMING ${now}] Timestamp lookup - stepIdx: ${state.currentStepIndex}, found: ${JSON.stringify(currentStepTimestamp)}, videoTime: ${videoCurrentTimeMs}ms, hasTimestamps: ${hasTimestamps}`);
-    
-    if (hasTimestamps && currentStepTimestamp) {
-      // Video hasn't reached this step's timestamp yet - don't perform action
-      if (videoCurrentTimeMs < currentStepTimestamp.timestamp) {
-        const waitTime = currentStepTimestamp.timestamp - videoCurrentTimeMs;
-        console.log(`[TIMING ${now}] WAITING - video at ${videoCurrentTimeMs}ms, action scheduled at ${currentStepTimestamp.timestamp}ms, need to wait ${waitTime}ms more`);
+  // Helper function to perform an action on an element
+  const performActionOnElement = useCallback((
+    stepIndex: number,
+    step: { selector: string; action: string; value?: string },
+    steps: { selector: string; action: string; value?: string }[],
+    timestamps: { stepIndex: number; timestamp: number }[]
+  ) => {
+    const execTime = Date.now();
+    try {
+      const element = document.querySelector(step.selector);
+      console.log(`[TIMELINE ${execTime}] Action for step ${stepIndex}: ${step.action}, selector: "${step.selector}", found: ${!!element}`);
+      
+      if (!element) {
+        console.warn(`[TIMELINE ${execTime}] Element NOT found: ${step.selector}`);
         return;
       }
-      const delay = videoCurrentTimeMs - currentStepTimestamp.timestamp;
-      console.log(`[TIMING ${now}] READY to execute - video at ${videoCurrentTimeMs}ms, action timestamp was ${currentStepTimestamp.timestamp}ms (${delay}ms late)`);
-    } else if (!hasTimestamps) {
-      // No timestamps - execute action immediately (fallback mode)
-      console.log(`[TIMING ${now}] No timestamps - executing action immediately for step ${state.currentStepIndex}`);
+
+      const isLastStep = stepIndex === steps.length - 1;
+
+      switch (step.action) {
+        case "click":
+          if (element instanceof HTMLElement) {
+            element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            const clickEvent = new MouseEvent('click', {
+              bubbles: true,
+              cancelable: true,
+              view: window
+            });
+            element.dispatchEvent(clickEvent);
+            console.log(`[TIMELINE ${Date.now()}] CLICK dispatched for step ${stepIndex}`);
+          }
+          break;
+
+        case "type":
+          if (element instanceof HTMLInputElement || element instanceof HTMLTextAreaElement) {
+            element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            element.focus();
+            
+            const valueToType = step.value || '';
+            
+            // Calculate typing speed based on time until next step
+            const currentTs = timestamps.find(t => t.stepIndex === stepIndex);
+            const nextTs = timestamps.find(t => t.stepIndex === stepIndex + 1);
+            
+            let typingIntervalMs = 100;
+            if (currentTs && nextTs && valueToType.length > 0) {
+              const availableTimeMs = nextTs.timestamp - currentTs.timestamp;
+              const calculatedInterval = Math.floor((availableTimeMs - 500) / valueToType.length);
+              typingIntervalMs = Math.max(50, Math.min(150, calculatedInterval));
+            }
+            
+            const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
+              element instanceof HTMLTextAreaElement 
+                ? window.HTMLTextAreaElement.prototype 
+                : window.HTMLInputElement.prototype, 
+              'value'
+            )?.set;
+            
+            if (!nativeInputValueSetter) {
+              console.error('[TIMELINE] Could not get native value setter');
+              return;
+            }
+            
+            nativeInputValueSetter.call(element, '');
+            element.dispatchEvent(new Event('input', { bubbles: true }));
+            
+            typingInProgressRef.current = true;
+            
+            let charIndex = 0;
+            let currentValue = '';
+            const typeInterval = setInterval(() => {
+              if (charIndex < valueToType.length) {
+                currentValue += valueToType[charIndex];
+                nativeInputValueSetter.call(element, currentValue);
+                element.dispatchEvent(new Event('input', { bubbles: true }));
+                charIndex++;
+              } else {
+                clearInterval(typeInterval);
+                element.dispatchEvent(new Event('change', { bubbles: true }));
+                element.blur();
+                element.focus();
+                typingInProgressRef.current = false;
+                console.log(`[TIMELINE ${Date.now()}] TYPE completed for step ${stepIndex}`);
+              }
+            }, typingIntervalMs);
+          }
+          break;
+
+        case "hover":
+          if (element instanceof HTMLElement) {
+            element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            element.dispatchEvent(new MouseEvent('mouseenter', { bubbles: true }));
+          }
+          break;
+
+        case "view":
+          if (element instanceof HTMLElement) {
+            element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+          break;
+      }
+
+      // Schedule completion after last step
+      if (isLastStep && !completionScheduledRef.current) {
+        completionScheduledRef.current = true;
+        console.log(`[TIMELINE] Last step ${stepIndex} - scheduling completion`);
+        completionTimerRef.current = setTimeout(() => {
+          console.log(`[TIMELINE] Completing challenge`);
+          advanceStepRef.current();
+        }, 1500);
+      }
+    } catch (err) {
+      console.error("[TIMELINE] Error performing action:", err);
+    }
+  }, []);
+
+  // Main timeline scheduling effect - runs once when show mode starts
+  useEffect(() => {
+    // Only run in show mode with a challenge
+    if (!state.isActive || state.playbackMode !== "show" || !currentChallenge) {
+      return;
     }
 
-    console.log(`[TIMING ${now}] EXECUTING action: ${currentStep.action} for step ${state.currentStepIndex}`);
+    // Don't re-schedule if already started
+    if (timelineStartedRef.current) {
+      return;
+    }
 
-    // Perform the action (video has reached the timestamp, or no timestamps available)
-    const performAction = () => {
-      const execTime = Date.now();
-      try {
-        const element = document.querySelector(currentStep.selector);
-        console.log(`[TIMING ${execTime}] performAction() called - selector: "${currentStep.selector}", element found: ${!!element}`);
-        if (!element) {
-          console.warn(`[TIMING ${execTime}] Element NOT found: ${currentStep.selector}`);
-          return;
+    const steps = currentChallenge.steps;
+    const hasTimestamps = videoTimestamps.length > 0;
+    
+    console.log(`[TIMELINE] Starting show mode - ${steps.length} steps, hasTimestamps: ${hasTimestamps}`);
+
+    // Build timeline: either from recorded timestamps or with fallback fixed delays
+    interface TimelineEntry {
+      stepIndex: number;
+      showTime: number;    // When to show highlight (1.2s before action)
+      actionTime: number;  // When to execute action
+      hideTime: number;    // When to hide highlight
+    }
+    
+    const timeline: TimelineEntry[] = [];
+    const HIGHLIGHT_LEAD_TIME = 1200; // Show highlight 1.2s before action
+    const FALLBACK_STEP_DURATION = 3000; // 3s per step when no timestamps
+    const TYPING_EXTRA_VISIBLE_TIME = 2000; // Keep highlight visible 2s after typing starts
+    
+    if (hasTimestamps) {
+      // Use recorded timestamps
+      for (let i = 0; i < steps.length; i++) {
+        const ts = videoTimestamps.find(t => t.stepIndex === i);
+        if (!ts) continue;
+        
+        const actionTime = ts.timestamp;
+        const showTime = Math.max(0, actionTime - HIGHLIGHT_LEAD_TIME);
+        
+        // Hide time depends on action type
+        let hideTime: number;
+        if (steps[i].action === "type") {
+          // For typing, hide 2s after action starts (typing animation takes time)
+          hideTime = actionTime + TYPING_EXTRA_VISIBLE_TIME;
+        } else {
+          // For click/hover/view, hide immediately after action
+          hideTime = actionTime;
         }
-
-        lastPerformedStepRef.current = state.currentStepIndex;
-        console.log(`[TIMING ${execTime}] Marked step ${state.currentStepIndex} as performed`);
-
-        // Helper to schedule completion after last step
-        const scheduleCompletionIfLastStep = () => {
-          if (currentChallenge && state.currentStepIndex === currentChallenge.steps.length - 1 && !completionScheduledRef.current) {
-            completionScheduledRef.current = true;
-            console.log(`[COMPLETION] Last step performed - scheduling challenge completion in 1.5s`);
-            completionTimerRef.current = setTimeout(() => {
-              console.log(`[COMPLETION] Completing challenge - hiding highlight`);
-              advanceStepRef.current();
-            }, 1500);
-          }
-        };
-
-        switch (currentStep.action) {
-          case "click":
-            // Simulate a click
-            if (element instanceof HTMLElement) {
-              console.log(`[TIMING ${execTime}] CLICK action - scrolling and clicking element`);
-              // Scroll element into view first
-              element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-              
-              // Create and dispatch a click event
-              const clickEvent = new MouseEvent('click', {
-                bubbles: true,
-                cancelable: true,
-                view: window
-              });
-              element.dispatchEvent(clickEvent);
-              console.log(`[TIMING ${Date.now()}] CLICK dispatched`);
-              scheduleCompletionIfLastStep();
-            }
-            break;
-
-          case "type":
-            // Type text into the input
-            console.log(`[TIMING ${execTime}] TYPE action - element is input/textarea: ${element instanceof HTMLInputElement || element instanceof HTMLTextAreaElement}, value: "${currentStep.value}"`);
-            if (element instanceof HTMLInputElement || element instanceof HTMLTextAreaElement) {
-              // Scroll and focus
-              element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-              element.focus();
-              
-              // Get the value to type
-              const valueToType = currentStep.value || '';
-              
-              // Calculate typing speed based on time until next step
-              // This ensures typing finishes just before the next step's timestamp
-              const currentStepTimestamp = videoTimestamps.find(t => t.stepIndex === state.currentStepIndex);
-              const nextStepTimestamp = videoTimestamps.find(t => t.stepIndex === state.currentStepIndex + 1);
-              
-              let typingIntervalMs = 100; // Default: 100ms per character
-              if (currentStepTimestamp && nextStepTimestamp && valueToType.length > 0) {
-                const availableTimeMs = nextStepTimestamp.timestamp - currentStepTimestamp.timestamp;
-                // Leave 500ms buffer before next step, divide remaining time by character count
-                const calculatedInterval = Math.floor((availableTimeMs - 500) / valueToType.length);
-                // Clamp between 50ms (fast) and 150ms (slow) per character
-                typingIntervalMs = Math.max(50, Math.min(150, calculatedInterval));
-                console.log(`[TIMING ${execTime}] TYPE - calculated interval: ${calculatedInterval}ms, using: ${typingIntervalMs}ms (available: ${availableTimeMs}ms for ${valueToType.length} chars)`);
-              }
-              
-              console.log(`[TIMING ${execTime}] TYPE starting - "${valueToType}" (${valueToType.length} chars, ${typingIntervalMs}ms/char)`);
-              
-              // Get the native value setter to properly trigger React's state updates
-              // React overrides the value setter, so we need to use the native one
-              const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
-                element instanceof HTMLTextAreaElement 
-                  ? window.HTMLTextAreaElement.prototype 
-                  : window.HTMLInputElement.prototype, 
-                'value'
-              )?.set;
-              
-              if (!nativeInputValueSetter) {
-                console.error('[TIMING] Could not get native value setter');
-                return;
-              }
-              
-              // Clear existing value using native setter
-              nativeInputValueSetter.call(element, '');
-              element.dispatchEvent(new Event('input', { bubbles: true }));
-              
-              // Mark typing as in progress (prevents step advancement until done)
-              typingInProgressRef.current = true;
-              
-              // Simulate typing character by character for a realistic effect
-              let charIndex = 0;
-              let currentValue = '';
-              const typeInterval = setInterval(() => {
-                if (charIndex < valueToType.length) {
-                  currentValue += valueToType[charIndex];
-                  // Use native setter to bypass React's synthetic event system
-                  nativeInputValueSetter.call(element, currentValue);
-                  // Dispatch input event - React listens for this to update state
-                  const inputEvent = new Event('input', { bubbles: true });
-                  element.dispatchEvent(inputEvent);
-                  charIndex++;
-                } else {
-                  clearInterval(typeInterval);
-                  // Final dispatch to ensure React state is updated
-                  const changeEvent = new Event('change', { bubbles: true });
-                  element.dispatchEvent(changeEvent);
-                  // Also trigger blur/focus cycle to ensure form validation picks up the value
-                  element.blur();
-                  element.focus();
-                  // Mark typing as complete
-                  typingInProgressRef.current = false;
-                  console.log(`[TIMING ${Date.now()}] TYPE completed - "${valueToType}", element.value="${element.value}"`);
-                  scheduleCompletionIfLastStep();
-                }
-              }, typingIntervalMs);
-            }
-            break;
-
-          case "hover":
-            // Simulate hover
-            if (element instanceof HTMLElement) {
-              element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-              element.dispatchEvent(new MouseEvent('mouseenter', { bubbles: true }));
-              scheduleCompletionIfLastStep();
-            }
-            break;
-
-          case "view":
-            // Just scroll into view
-            if (element instanceof HTMLElement) {
-              element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-              scheduleCompletionIfLastStep();
-            }
-            break;
-        }
-      } catch (err) {
-        console.error("[Show mode] Error performing action:", err);
+        
+        timeline.push({ stepIndex: i, showTime, actionTime, hideTime });
       }
-    };
+    } else {
+      // Fallback: fixed delays between steps
+      let currentTime = 0;
+      for (let i = 0; i < steps.length; i++) {
+        const showTime = currentTime;
+        const actionTime = currentTime + HIGHLIGHT_LEAD_TIME;
+        
+        let hideTime: number;
+        if (steps[i].action === "type") {
+          hideTime = actionTime + TYPING_EXTRA_VISIBLE_TIME;
+          currentTime = hideTime + 500; // Next step starts after typing hide + buffer
+        } else {
+          hideTime = actionTime;
+          currentTime = actionTime + FALLBACK_STEP_DURATION - HIGHLIGHT_LEAD_TIME;
+        }
+        
+        timeline.push({ stepIndex: i, showTime, actionTime, hideTime });
+      }
+    }
 
-    // Execute action immediately - actions happen at their exact recorded timestamp
-    performAction();
-  }, [state.isActive, state.playbackMode, state.currentStepIndex, currentStep, videoTimestamps, videoCurrentTimeMs]);
+    console.log(`[TIMELINE] Built timeline:`, timeline);
+
+    // Mark as started before scheduling
+    timelineStartedRef.current = true;
+
+    // Schedule all events
+    // Track the engine's current step to know when to advance
+    // Note: advanceStepRef.current() will handle the actual increment
+    
+    timeline.forEach((entry, idx) => {
+      const step = steps[entry.stepIndex];
+      
+      // Schedule: show highlight (visual only, no engine state change)
+      scheduleTimelineEvent(() => {
+        console.log(`[TIMELINE] Showing highlight for step ${entry.stepIndex}`);
+        setVisibleStepIndex(entry.stepIndex);
+        setHighlightVisible(true);
+      }, entry.showTime);
+      
+      // Schedule: execute action AND advance engine step
+      // Advancing at action time (not show time) ensures routes don't change prematurely
+      scheduleTimelineEvent(() => {
+        console.log(`[TIMELINE] Advancing engine to step ${entry.stepIndex} and executing action`);
+        advanceStepRef.current();
+        performActionOnElement(entry.stepIndex, step, steps, videoTimestamps);
+      }, entry.actionTime);
+      
+      // Schedule: hide highlight (unless it's the last step - let completion handler do it)
+      if (idx < timeline.length - 1) {
+        scheduleTimelineEvent(() => {
+          console.log(`[TIMELINE] Hiding highlight for step ${entry.stepIndex}`);
+          setHighlightVisible(false);
+          setVisibleStepIndex(-1);
+        }, entry.hideTime);
+      } else {
+        // Last step: hide after completion delay
+        scheduleTimelineEvent(() => {
+          console.log(`[TIMELINE] Hiding highlight for last step ${entry.stepIndex}`);
+          setHighlightVisible(false);
+          setVisibleStepIndex(-1);
+        }, entry.hideTime + 1500);
+      }
+    });
+
+    return () => {
+      clearTimelineTimers();
+    };
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- Intentionally exclude state.currentStepIndex to prevent cleanup from clearing timers on every step advance
+  }, [state.isActive, state.playbackMode, currentChallenge, videoTimestamps, scheduleTimelineEvent, clearTimelineTimers, performActionOnElement]);
+
+  // Get the step to display (for tooltip) - use visibleStepIndex in show mode
+  const displayStep = state.playbackMode === "show" && visibleStepIndex >= 0 
+    ? currentChallenge?.steps[visibleStepIndex] ?? currentStep
+    : currentStep;
 
   useEffect(() => {
     if (!autoStartForNewUsers) return;
@@ -921,22 +856,22 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
             canAutoPlay={state.playbackMode !== "show" || videoTimestamps.length > 0}
           />
 
-          {state.isActive && currentStep && (
+          {state.isActive && displayStep && (
             <>
               <ElementHighlight
-                targetSelector={currentStep.selector}
-                isVisible={state.isActive && !tooltipHiddenRef.current && (state.playbackMode !== "show" || showTooltipEarly)}
-                actionType={currentStep.action}
+                targetSelector={displayStep.selector}
+                isVisible={state.isActive && !tooltipHiddenRef.current && (state.playbackMode !== "show" || highlightVisible)}
+                actionType={displayStep.action}
               />
               <GuidanceTooltip
-                targetSelector={currentStep.selector}
-                instruction={currentStep.instruction}
-                position={currentStep.tooltipPosition || "auto"}
-                isVisible={state.isActive && !tooltipHiddenRef.current && (state.playbackMode !== "show" || showTooltipEarly)}
+                targetSelector={displayStep.selector}
+                instruction={displayStep.instruction}
+                position={displayStep.tooltipPosition || "auto"}
+                isVisible={state.isActive && !tooltipHiddenRef.current && (state.playbackMode !== "show" || highlightVisible)}
                 onDismiss={() => engine.advanceStep()}
                 onBack={() => engine.previousStep()}
                 onClose={() => engine.pauseGuidance()}
-                stepNumber={state.currentStepIndex + 1}
+                stepNumber={(state.playbackMode === "show" ? visibleStepIndex : state.currentStepIndex) + 1}
                 totalSteps={currentChallenge?.steps.length}
                 playbackMode={state.playbackMode}
                 hasVideo={!!videoUrl}
