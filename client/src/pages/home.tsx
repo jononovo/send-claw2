@@ -87,7 +87,11 @@ interface SourceBreakdown {
   Hunter: number;
 }
 
-export default function Home() {
+interface HomeProps {
+  isNewSearch?: boolean;
+}
+
+export default function Home({ isNewSearch = false }: HomeProps) {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [currentQuery, setCurrentQuery] = useState<string>("");
   const [currentResults, setCurrentResults] = useState<CompanyWithContacts[] | null>(null);
@@ -1206,31 +1210,15 @@ export default function Home() {
     localStorage.removeItem('searchState');
     sessionStorage.removeItem('searchState');
     localStorage.removeItem('emailComposerState');
-    
-    // Clear the #new-search hash from URL (use replaceState to avoid polluting history)
-    if (window.location.hash === '#new-search') {
-      window.history.replaceState(null, '', window.location.pathname);
-    }
   };
 
-  // Handle #new-search hash - triggers new search when URL has this hash
+  // Handle /app/new-search route - triggers new search when navigated to this route
   useEffect(() => {
-    const handleHashChange = () => {
-      if (window.location.hash === '#new-search') {
-        handleNewSearch();
-      }
-    };
-
-    // Check on mount
-    if (window.location.hash === '#new-search') {
+    if (isNewSearch) {
       // Use setTimeout to ensure this runs after initial render
       setTimeout(() => handleNewSearch(), 0);
     }
-
-    // Listen for hash changes
-    window.addEventListener('hashchange', handleHashChange);
-    return () => window.removeEventListener('hashchange', handleHashChange);
-  }, []);
+  }, [isNewSearch]);
 
   //New function added here
   const getEnrichButtonText = (contact: Contact) => {
