@@ -60,9 +60,16 @@ export function AppLayout({ children }: LayoutProps) {
   
   // Handle new search action - navigate to /app#new-search
   const handleNewSearch = () => {
-    // Always navigate to /app#new-search - the hash ensures expanded search view
-    setLocation('/app#new-search');
-    // Dispatch event for the home page to handle (in case already on /app)
+    // Navigate to /app first if not already there
+    if (location !== '/app') {
+      setLocation('/app');
+    }
+    // Set hash using native API (wouter doesn't handle hashes)
+    // Use pushState to add #new-search to URL
+    window.history.pushState(null, '', '/app#new-search');
+    // Dispatch hashchange event so home.tsx can detect it
+    window.dispatchEvent(new HashChangeEvent('hashchange'));
+    // Also dispatch startNewSearch event as backup
     window.dispatchEvent(new CustomEvent('startNewSearch'));
     setSavedSearchesDrawerOpen(false);
   };

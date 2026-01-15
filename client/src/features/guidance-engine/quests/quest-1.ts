@@ -1227,6 +1227,40 @@ export const quest1: Quest = {
         }
       ],
       "completionMessage": "Great job! You've learned how to search for local businesses. Now you can find any type of restaurant or service in your area!"
+    },
+    {
+      "id": "search-chinese-restaurants",
+      "name": "Search for Restaurants",
+      "description": "Learn how to use the search feature to find local businesses",
+      "emoji": "🔍",
+      "steps": [
+        {
+          "id": "click-search-input",
+          "selector": "[data-testid=\"search-input\"]",
+          "action": "click",
+          "instruction": "Click on the search input field to start your search",
+          "tooltipPosition": "bottom",
+          "route": "/app"
+        },
+        {
+          "id": "type-search-query",
+          "selector": "[data-testid=\"search-input\"]",
+          "action": "type",
+          "instruction": "Type your search query for Chinese restaurants in Hell's Kitchen",
+          "tooltipPosition": "bottom",
+          "route": "/app",
+          "value": "chinese restaruants in hells kitchen"
+        },
+        {
+          "id": "click-search-button",
+          "selector": "[data-testid=\"search-button\"]",
+          "action": "click",
+          "instruction": "Click the search button to find matching results",
+          "tooltipPosition": "left",
+          "route": "/app"
+        }
+      ],
+      "completionMessage": "Great job! You've learned how to search for local businesses using the search feature. Now you can find restaurants and other businesses in any neighborhood!"
     }
   ],
 };
