@@ -574,15 +574,15 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
                   typingInProgressRef.current = false;
                   console.log(`[TIMING ${Date.now()}] TYPE completed - "${valueToType}", element.value="${element.value}"`);
                   
-                  // Hide the typing highlight 2 seconds after typing completes (organic fade)
+                  // Hide the typing highlight 4 seconds after typing completes (organic fade)
                   if (typingHideTimerRef.current) {
                     clearTimeout(typingHideTimerRef.current);
                   }
                   typingHideTimerRef.current = setTimeout(() => {
-                    console.log(`[TIMING ${Date.now()}] Hiding typing highlight after 2s delay`);
+                    console.log(`[TIMING ${Date.now()}] Hiding typing highlight after 4s delay`);
                     typingHiddenRef.current = true; // Mark that typing has intentionally hidden
                     setShowTooltipEarly(false);
-                  }, 2000);
+                  }, 4000);
                   
                   scheduleCompletionIfLastStep();
                 }
