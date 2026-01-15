@@ -395,14 +395,29 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
     } else {
       // For click/hover/view: schedule to show 1.2s before action
       if (hasTimestamps && currentStepTimestamp) {
-        const showDelay = Math.max(0, currentStepTimestamp.timestamp - videoCurrentTimeMs - 1200);
-        console.log(`[HIGHLIGHT] Scheduling show for step ${state.currentStepIndex} in ${showDelay}ms (action at ${currentStepTimestamp.timestamp}ms)`);
-        showTimerRef.current = setTimeout(() => {
-          console.log(`[HIGHLIGHT] Showing highlight for step ${state.currentStepIndex}`);
+        const timeUntilAction = currentStepTimestamp.timestamp - videoCurrentTimeMs;
+        
+        // If we're already at or past the action time (step just activated), show immediately
+        // This handles step 0 which activates AT its action time, not before
+        if (timeUntilAction <= 0) {
+          console.log(`[HIGHLIGHT] Step ${state.currentStepIndex} activated at/past action time - showing immediately`);
           setHighlightVisible(true);
-        }, showDelay);
+        } else if (timeUntilAction <= 1200) {
+          // Less than 1.2s until action - show immediately
+          console.log(`[HIGHLIGHT] Step ${state.currentStepIndex} within 1.2s of action - showing immediately`);
+          setHighlightVisible(true);
+        } else {
+          // More than 1.2s until action - schedule to show 1.2s before
+          const showDelay = timeUntilAction - 1200;
+          console.log(`[HIGHLIGHT] Scheduling show for step ${state.currentStepIndex} in ${showDelay}ms (action at ${currentStepTimestamp.timestamp}ms)`);
+          showTimerRef.current = setTimeout(() => {
+            console.log(`[HIGHLIGHT] Showing highlight for step ${state.currentStepIndex}`);
+            setHighlightVisible(true);
+          }, showDelay);
+        }
       } else {
         // No timestamps - show immediately
+        console.log(`[HIGHLIGHT] No timestamps - showing highlight immediately for step ${state.currentStepIndex}`);
         setHighlightVisible(true);
       }
     }
