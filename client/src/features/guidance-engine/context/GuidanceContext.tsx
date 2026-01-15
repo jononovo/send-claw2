@@ -127,8 +127,32 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
   const completionScheduledRef = useRef<boolean>(false);
   const completionTimerRef = useRef<NodeJS.Timeout | null>(null);
   
-  // Early tooltip visibility - tooltip appears 1.2 seconds before action in show mode
-  const [showTooltipEarly, setShowTooltipEarly] = useState(false);
+  // Event-driven highlight visibility for show mode
+  const [highlightVisible, setHighlightVisible] = useState(false);
+  const showTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const hideTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const lastScheduledStepRef = useRef<number>(-1);
+  
+  // Helper to clear visibility timers
+  const clearVisibilityTimers = useCallback(() => {
+    if (showTimerRef.current) {
+      clearTimeout(showTimerRef.current);
+      showTimerRef.current = null;
+    }
+    if (hideTimerRef.current) {
+      clearTimeout(hideTimerRef.current);
+      hideTimerRef.current = null;
+    }
+  }, []);
+  
+  // Helper to hide highlight (called after action completes)
+  const scheduleHideHighlight = useCallback((delayMs: number) => {
+    if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
+    hideTimerRef.current = setTimeout(() => {
+      console.log(`[HIGHLIGHT] Hiding highlight after ${delayMs}ms delay`);
+      setHighlightVisible(false);
+    }, delayMs);
+  }, []);
   
   // Stable refs for engine functions to avoid effect re-runs when engine object changes
   const startQuestRef = useRef(engine.startQuest);
@@ -331,73 +355,66 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
     lastAdvancedStepRef.current = -2;
     typingInProgressRef.current = false;
     completionScheduledRef.current = false;
-    setShowTooltipEarly(false);
+    lastScheduledStepRef.current = -1;
+    setHighlightVisible(false);
+    clearVisibilityTimers();
     setVideoCurrentTimeMs(0);
     setIsVideoPlaying(false);
     if (completionTimerRef.current) {
       clearTimeout(completionTimerRef.current);
       completionTimerRef.current = null;
     }
-  }, [currentChallenge?.id]);
+  }, [currentChallenge?.id, clearVisibilityTimers]);
   
-  // Show-me mode: Show tooltip 1.2 seconds before action executes
-  // Also hide current step's highlight 1.2 seconds before NEXT step's action
+  // Show-me mode: Event-driven highlight visibility
+  // Schedule show timer when step changes (based on action type and timestamps)
   useEffect(() => {
-    if (!state.isActive || state.playbackMode !== "show" || !currentStep || !currentChallenge) {
-      setShowTooltipEarly(false);
+    if (!state.isActive || state.playbackMode !== "show" || !currentStep) {
+      setHighlightVisible(false);
+      clearVisibilityTimers();
+      lastScheduledStepRef.current = -1;
       return;
     }
     
+    // Don't re-schedule for the same step
+    if (lastScheduledStepRef.current === state.currentStepIndex) {
+      return;
+    }
+    lastScheduledStepRef.current = state.currentStepIndex;
+    
+    // Clear any existing timers
+    clearVisibilityTimers();
+    
     const hasTimestamps = videoTimestamps.length > 0;
     const currentStepTimestamp = videoTimestamps.find(t => t.stepIndex === state.currentStepIndex);
-    const nextStepTimestamp = videoTimestamps.find(t => t.stepIndex === state.currentStepIndex + 1);
-    const isLastStep = state.currentStepIndex === currentChallenge.steps.length - 1;
     
-    if (hasTimestamps && currentStepTimestamp) {
-      const tooltipShowTime = currentStepTimestamp.timestamp - 1200; // 1.2 seconds before action
-      
-      // Check if we're approaching the NEXT step - if so, hide current step's highlight
-      if (!isLastStep && nextStepTimestamp) {
-        const nextStepPreviewTime = nextStepTimestamp.timestamp - 1200;
-        if (videoCurrentTimeMs >= nextStepPreviewTime) {
-          // We're within 1.2 seconds of next step - hide current highlight to prepare for transition
-          if (showTooltipEarly) {
-            console.log(`[TOOLTIP] Hiding current step highlight - approaching next step at ${nextStepTimestamp.timestamp}ms`);
-            setShowTooltipEarly(false);
-          }
-          return;
-        }
-      }
-      
-      if (videoCurrentTimeMs >= tooltipShowTime && videoCurrentTimeMs < currentStepTimestamp.timestamp) {
-        // We're in the tooltip preview window - show tooltip
-        if (!showTooltipEarly) {
-          console.log(`[TOOLTIP] Showing tooltip early at ${videoCurrentTimeMs}ms (action at ${currentStepTimestamp.timestamp}ms)`);
-          setShowTooltipEarly(true);
-        }
-      } else if (videoCurrentTimeMs >= currentStepTimestamp.timestamp) {
-        // Past the action time - tooltip should remain visible (action is happening)
-        if (!showTooltipEarly) {
-          setShowTooltipEarly(true);
-        }
-      } else {
-        // Before tooltip window - hide tooltip
-        if (showTooltipEarly) {
-          setShowTooltipEarly(false);
-        }
-      }
+    if (currentStep.action === "type") {
+      // For typing: show highlight immediately when step activates
+      console.log(`[HIGHLIGHT] Type action - showing highlight immediately for step ${state.currentStepIndex}`);
+      setHighlightVisible(true);
     } else {
-      // No timestamps - always show tooltip
-      setShowTooltipEarly(true);
+      // For click/hover/view: schedule to show 1.2s before action
+      if (hasTimestamps && currentStepTimestamp) {
+        const showDelay = Math.max(0, currentStepTimestamp.timestamp - videoCurrentTimeMs - 1200);
+        console.log(`[HIGHLIGHT] Scheduling show for step ${state.currentStepIndex} in ${showDelay}ms (action at ${currentStepTimestamp.timestamp}ms)`);
+        showTimerRef.current = setTimeout(() => {
+          console.log(`[HIGHLIGHT] Showing highlight for step ${state.currentStepIndex}`);
+          setHighlightVisible(true);
+        }, showDelay);
+      } else {
+        // No timestamps - show immediately
+        setHighlightVisible(true);
+      }
     }
-  }, [state.isActive, state.playbackMode, state.currentStepIndex, currentStep, currentChallenge, videoTimestamps, videoCurrentTimeMs, showTooltipEarly]);
+  }, [state.isActive, state.playbackMode, state.currentStepIndex, currentStep, videoTimestamps, videoCurrentTimeMs, clearVisibilityTimers]);
   
   // Reset completion state when show mode is exited
   useEffect(() => {
     if (!state.isActive || state.playbackMode !== "show") {
       completionScheduledRef.current = false;
+      clearVisibilityTimers();
     }
-  }, [state.isActive, state.playbackMode]);
+  }, [state.isActive, state.playbackMode, clearVisibilityTimers]);
 
   // Show-me mode: Perform actions automatically (click, type, etc.)
   // Actions are synced to video timestamps - they execute when video reaches the step's timestamp
@@ -456,16 +473,20 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
         lastPerformedStepRef.current = state.currentStepIndex;
         console.log(`[TIMING ${execTime}] Marked step ${state.currentStepIndex} as performed`);
 
-        // Helper to schedule completion after last step
-        const scheduleCompletionIfLastStep = () => {
+        // Helper to schedule completion after last step (returns true if this is the last step)
+        const scheduleCompletionIfLastStep = (): boolean => {
           if (currentChallenge && state.currentStepIndex === currentChallenge.steps.length - 1 && !completionScheduledRef.current) {
             completionScheduledRef.current = true;
             console.log(`[COMPLETION] Last step performed - scheduling challenge completion in 1.5s`);
+            // Hide highlight after 1.5s then complete
+            scheduleHideHighlight(1500);
             completionTimerRef.current = setTimeout(() => {
-              console.log(`[COMPLETION] Completing challenge - hiding highlight`);
+              console.log(`[COMPLETION] Completing challenge`);
               advanceStepRef.current();
             }, 1500);
+            return true;
           }
+          return false;
         };
 
         switch (currentStep.action) {
@@ -484,7 +505,10 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
               });
               element.dispatchEvent(clickEvent);
               console.log(`[TIMING ${Date.now()}] CLICK dispatched`);
-              scheduleCompletionIfLastStep();
+              // Hide highlight immediately after click (unless it's the last step)
+              if (!scheduleCompletionIfLastStep()) {
+                scheduleHideHighlight(0);
+              }
             }
             break;
 
@@ -560,7 +584,10 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
                   // Mark typing as complete
                   typingInProgressRef.current = false;
                   console.log(`[TIMING ${Date.now()}] TYPE completed - "${valueToType}", element.value="${element.value}"`);
-                  scheduleCompletionIfLastStep();
+                  // Hide highlight 2 seconds after typing ends (unless it's the last step)
+                  if (!scheduleCompletionIfLastStep()) {
+                    scheduleHideHighlight(2000);
+                  }
                 }
               }, typingIntervalMs);
             }
@@ -571,7 +598,9 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
             if (element instanceof HTMLElement) {
               element.scrollIntoView({ behavior: 'smooth', block: 'center' });
               element.dispatchEvent(new MouseEvent('mouseenter', { bubbles: true }));
-              scheduleCompletionIfLastStep();
+              if (!scheduleCompletionIfLastStep()) {
+                scheduleHideHighlight(0);
+              }
             }
             break;
 
@@ -579,7 +608,9 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
             // Just scroll into view
             if (element instanceof HTMLElement) {
               element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-              scheduleCompletionIfLastStep();
+              if (!scheduleCompletionIfLastStep()) {
+                scheduleHideHighlight(0);
+              }
             }
             break;
         }
@@ -925,14 +956,14 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
             <>
               <ElementHighlight
                 targetSelector={currentStep.selector}
-                isVisible={state.isActive && !tooltipHiddenRef.current && (state.playbackMode !== "show" || showTooltipEarly)}
+                isVisible={state.isActive && !tooltipHiddenRef.current && (state.playbackMode !== "show" || highlightVisible)}
                 actionType={currentStep.action}
               />
               <GuidanceTooltip
                 targetSelector={currentStep.selector}
                 instruction={currentStep.instruction}
                 position={currentStep.tooltipPosition || "auto"}
-                isVisible={state.isActive && !tooltipHiddenRef.current && (state.playbackMode !== "show" || showTooltipEarly)}
+                isVisible={state.isActive && !tooltipHiddenRef.current && (state.playbackMode !== "show" || highlightVisible)}
                 onDismiss={() => engine.advanceStep()}
                 onBack={() => engine.previousStep()}
                 onClose={() => engine.pauseGuidance()}
