@@ -193,7 +193,7 @@ export function HeroSectionDualSlider({
   }, [currentIndex, shouldRenderDemo]);
 
   useEffect(() => {
-    if (currentIndex === 6 && code.length > 0) return;
+    if (currentIndex === 6) return;
     if (showAccessGranted) return;
     if (showQuestionnaire) return;
     if (isRegistrationModalOpen) return;
@@ -206,7 +206,11 @@ export function HeroSectionDualSlider({
     
     const deferralTimeout = setTimeout(() => {
       slideTimeout = setTimeout(() => {
-        setCurrentIndex((prev) => (prev + 1) % content.length);
+        setCurrentIndex((prev) => {
+          const next = prev + 1;
+          if (next >= 6) return 0;
+          return next;
+        });
       }, duration);
     }, 150);
 
@@ -214,7 +218,7 @@ export function HeroSectionDualSlider({
       clearTimeout(deferralTimeout);
       if (slideTimeout) clearTimeout(slideTimeout);
     };
-  }, [currentIndex, code, showAccessGranted, showQuestionnaire, isRegistrationModalOpen, showApplyForm]);
+  }, [currentIndex, showAccessGranted, showQuestionnaire, isRegistrationModalOpen, showApplyForm]);
 
   const handleQuack = () => {
     const validCodes = ["quack", "charlie"];
