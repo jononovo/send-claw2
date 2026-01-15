@@ -135,6 +135,7 @@ export interface SpotlightOverlayProps {
 
 export interface RecordedStep {
   selector: string;
+  contentMatch?: string;
   action: "click" | "type" | "view" | "hover";
   tagName: string;
   textContent?: string;
