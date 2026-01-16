@@ -228,7 +228,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
               const axios = (await import('axios')).default;
               axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
               
-              await syncWithBackend(firebaseUser);
+              // Only sync if user is not already in cache or is a different user
+              const existingUser = queryClient.getQueryData<SelectUser>(["/api/user"]);
+              if (!existingUser || existingUser.email !== firebaseUser.email) {
+                await syncWithBackend(firebaseUser);
+              }
             } catch (error) {
               console.error('Error during auth state sync:', error);
               queryClient.setQueryData(["/api/user"], null);
