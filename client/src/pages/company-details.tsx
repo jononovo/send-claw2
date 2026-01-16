@@ -1,6 +1,5 @@
 import { useRoute, useLocation } from "wouter";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { lazy, Suspense } from "react";
 import { SEOHead } from "@/components/ui/seo-head";
 import {
   Card,
@@ -24,7 +23,6 @@ import {
   Building2,
   Users,
   Globe,
-  Trophy,
   Mail,
   ArrowLeft,
   Star,
@@ -47,35 +45,6 @@ function isMaskedEmail(email: string | null | undefined): boolean {
 
 function hasAnyMaskedEmails(contacts: Contact[]): boolean {
   return contacts.some(c => isMaskedEmail(c.email));
-}
-
-type ChartDataItem = { name: string; value: number };
-
-const LazyPerformanceChart = lazy(() => 
-  import("recharts").then((module) => ({
-    default: ({ data }: { data: ChartDataItem[] }) => (
-      <module.ResponsiveContainer width="100%" height="100%">
-        <module.BarChart data={data}>
-          <module.CartesianGrid strokeDasharray="3 3" />
-          <module.XAxis dataKey="name" />
-          <module.YAxis />
-          <module.Tooltip />
-          <module.Bar dataKey="value" fill="hsl(var(--primary))" />
-        </module.BarChart>
-      </module.ResponsiveContainer>
-    ),
-  }))
-);
-
-function ChartLoadingSkeleton() {
-  return (
-    <div className="h-[300px] w-full flex items-end justify-around gap-4 p-4">
-      <Skeleton className="h-[60%] w-16" />
-      <Skeleton className="h-[80%] w-16" />
-      <Skeleton className="h-[40%] w-16" />
-      <Skeleton className="h-[70%] w-16" />
-    </div>
-  );
 }
 
 export default function CompanyDetails() {
@@ -195,13 +164,6 @@ export default function CompanyDetails() {
       value: company.customerCount || 0,
       icon: Building2,
     },
-  ];
-
-  const chartData = [
-    { name: "Website Ranking", value: company.ranking || 0 },
-    { name: "LinkedIn Score", value: company.linkedinProminence || 0 },
-    { name: "Customer Base", value: company.customerCount || 0 },
-    { name: "Rating", value: company.rating || 0 },
   ];
 
   // Function to go back to previous page if possible, or to home as fallback
@@ -434,22 +396,6 @@ export default function CompanyDetails() {
                   <span>{company.age} years</span>
                 </div>
               )}
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Trophy className="h-5 w-5" />
-              Performance Metrics
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="h-[300px]">
-              <Suspense fallback={<ChartLoadingSkeleton />}>
-                <LazyPerformanceChart data={chartData} />
-              </Suspense>
             </div>
           </CardContent>
         </Card>
