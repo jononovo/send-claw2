@@ -181,7 +181,7 @@ export default function LandingSimple() {
             </div>
 
             {/* Right Column - Demo Simulation */}
-            <div className="hidden lg:flex lg:flex-col lg:items-center -mt-8">
+            <div className="hidden lg:flex lg:flex-col lg:items-center -mt-16">
               <div className="relative">
                 <div className="bg-[#1a1814] rounded-xl overflow-hidden shadow-2xl border border-white/10">
                   {/* Browser chrome header */}
@@ -212,7 +212,7 @@ export default function LandingSimple() {
               </div>
               
               {/* Certifications */}
-              <div className="mt-6 flex items-center justify-center gap-3">
+              <div className="mt-10 flex items-center justify-center gap-3">
                 {/* SOC 2 Badge */}
                 <div className="flex flex-col items-center gap-1 px-4 py-3 bg-gradient-to-b from-white/5 to-transparent border border-white/10 rounded-lg hover:border-white/20 transition-colors">
                   <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
