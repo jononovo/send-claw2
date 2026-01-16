@@ -1,0 +1,70 @@
+You're absolutely right. This is much simpler than I was making it.
+The Simple Solution
+Don't load any guidance code until the page is completely loaded.
+
+No wrapper
+No early loading
+No Fluffy until page is idle
+User won't even notice because they're reading/interacting with the actual content
+
+Implementation
+typescript// App.tsx
+
+function App() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider>
+        <InsufficientCreditsProvider>
+          <AuthProvider>
+            <RegistrationModalProvider>
+              <Router />
+              <DeferredGuidance />
+              <RegistrationModalContainer />
+              <Toaster />
+            </RegistrationModalProvider>
+          </AuthProvider>
+        </InsufficientCreditsProvider>
+      </ThemeProvider>
+    </QueryClientProvider>
+  );
+}
+
+function DeferredGuidance() {
+  const [GuidanceLayer, setGuidanceLayer] = useState<React.ComponentType | null>(null);
+  const [location] = useLocation();
+  
+  useEffect(() => {
+    if (!isGuidanceRoute(location)) return;
+    if (GuidanceLayer) return;
+    
+    // Wait until page is fully idle
+    const load = () => {
+      import("@/features/guidance-engine").then(module => {
+        setGuidanceLayer(() => module.GuidanceLayer);
+      });
+    };
+    
+    if ('requestIdleCallback' in window) {
+      const handle = requestIdleCallback(load, { timeout: 5000 });
+      return () => cancelIdleCallback(handle);
+    } else {
+      const timer = setTimeout(load, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [location, GuidanceLayer]);
+  
+  if (!GuidanceLayer) return null;
+  
+  return <GuidanceLayer />;
+}
+But Wait - The Context Issue
+The other AI's point still stands: if GuidanceLayer renders as a sibling, components in Router can't access its context.
+However, do any components in Router actually need to call useGuidance() proactively?
+Let me reconsider:
+
+If guidance features are only triggered by user clicking Fluffy (which renders inside GuidanceLayer)
+And all the overlays/tooltips render inside GuidanceLayer via portals
+Then maybe nothing in Router actually needs the context?
+
+Do you know if any components outside of the guidance engine itself call useGuidance()?
+If not, the sibling approach works. If yes, we need a different solution.
