@@ -189,7 +189,7 @@ export default function LandingSimple() {
 
             {/* Right Column - Demo Simulation */}
             <div className="hidden lg:block -mt-16">
-              <div className="relative w-[500px]">
+              <div className="relative w-[520px]">
                 <div className="bg-[#1a1814] rounded-xl overflow-hidden shadow-2xl border border-white/10">
                   {/* Browser chrome header */}
                   <div className="flex items-center gap-3 px-4 py-2 bg-[#0f0e0c] border-b border-white/5">
@@ -211,8 +211,8 @@ export default function LandingSimple() {
                   
                   <DemoSimulationPlayer
                     simulation="search-composer-demo"
-                    width={500}
-                    height={500}
+                    width={520}
+                    height={520}
                     showControls={false}
                   />
                 </div>
