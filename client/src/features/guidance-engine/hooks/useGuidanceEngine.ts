@@ -68,7 +68,7 @@ async function fetchServerProgress(): Promise<Partial<GuidanceState> | null> {
     const data = await queryClient.fetchQuery({
       queryKey: ["/api/guidance/progress"],
       queryFn: getQueryFn({ on401: "returnNull" }),
-      staleTime: 30000,
+      staleTime: 2000,
     });
     return data as Partial<GuidanceState> | null;
   } catch (e) {
