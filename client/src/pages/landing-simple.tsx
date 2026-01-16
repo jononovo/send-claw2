@@ -159,7 +159,7 @@ export default function LandingSimple() {
 
                 {/* Trust Section */}
                 <div className="mt-8 pt-6 border-t border-white/5">
-                  <div className="flex items-center justify-center gap-6 text-gray-400 text-sm mb-4">
+                  <div className="flex items-center justify-center gap-6 text-gray-400 text-sm mb-2">
                     <div className="flex items-center gap-1">
                       <div className="flex">
                         {[1,2,3,4,5].map((i) => (
@@ -170,11 +170,11 @@ export default function LandingSimple() {
                     </div>
                     <div className="w-px h-4 bg-white/10" />
                     <span>2,400+ customers</span>
-                    <div className="w-px h-4 bg-white/10" />
-                    <div className="flex items-center gap-3">
-                      <span className="text-gray-500 font-bold text-xs tracking-wider">CAPRA</span>
-                      <span className="text-gray-500 font-bold text-xs tracking-wider">GT</span>
-                    </div>
+                  </div>
+                  <div className="flex items-center justify-center gap-4 mb-4">
+                    <span className="text-gray-500 font-semibold text-xs">Capterra</span>
+                    <span className="text-gray-600">•</span>
+                    <span className="text-orange-500 font-bold text-xs">G2</span>
                   </div>
                   
                   <p className="text-gray-500 text-xs text-center mb-3">Trusted by teams at</p>
