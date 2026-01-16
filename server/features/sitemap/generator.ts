@@ -9,8 +9,22 @@
  */
 
 import { db } from "../../db";
-import { companies, contacts } from "@shared/schema";
+import { companies, contacts, searchLists } from "@shared/schema";
 import { generateCompanySlug, generateContactSlug } from "../../utils/slug-generator";
+
+/**
+ * Generate a URL-friendly slug from a search prompt
+ */
+function generateSearchSlug(prompt: string): string {
+  return prompt
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '')
+    .slice(0, 100);
+}
 
 const BASE_URL = 'https://5ducks.ai';
 
@@ -62,6 +76,10 @@ export function generateSitemapIndex(): string {
   </sitemap>
   <sitemap>
     <loc>${BASE_URL}/sitemap-contacts.xml</loc>
+    <lastmod>${today}</lastmod>
+  </sitemap>
+  <sitemap>
+    <loc>${BASE_URL}/sitemap-searches.xml</loc>
     <lastmod>${today}</lastmod>
   </sitemap>
 </sitemapindex>`;
@@ -127,6 +145,27 @@ export async function generateContactsSitemap(): Promise<string> {
   });
 
   return wrapInUrlset(generateUrlElements(contactUrls));
+}
+
+/**
+ * Generate sitemap for all search lists
+ */
+export async function generateSearchesSitemap(): Promise<string> {
+  const allLists = await db.select({
+    listId: searchLists.listId,
+    prompt: searchLists.prompt
+  }).from(searchLists);
+
+  const searchUrls: SitemapUrl[] = allLists.map(list => {
+    const slug = generateSearchSlug(list.prompt);
+    return {
+      loc: `${BASE_URL}/search/${escapeXml(slug)}/${list.listId}`,
+      changefreq: 'weekly',
+      priority: 0.6
+    };
+  });
+
+  return wrapInUrlset(generateUrlElements(searchUrls));
 }
 
 /**
