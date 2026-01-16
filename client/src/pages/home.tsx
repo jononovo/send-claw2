@@ -75,7 +75,7 @@ import { filterTopProspects, ContactWithCompanyInfo } from "@/lib/results-analys
 import { Checkbox } from "@/components/ui/checkbox";
 import { ContactActionColumn } from "@/components/contact-action-column";
 import { SearchSessionManager } from "@/lib/search-session-manager";
-import { updateToSearchUrl, generateSearchUrl } from "@/lib/url-utils";
+import { updateToSearchUrl } from "@/lib/url-utils";
 import { useComprehensiveEmailSearch } from "@/features/search-email";
 import { useSearchState, type SavedSearchState, type CompanyWithContacts } from "@/features/search-state";
 import { useEmailSearchOrchestration } from "@/features/email-search-orchestration";
@@ -1219,20 +1219,11 @@ export default function Home({ isNewSearch = false }: HomeProps) {
     localStorage.removeItem('emailComposerState');
   };
 
-  // Handle /app route - check for saved search and redirect or show clean state
+  // Handle /app/new-search route - triggers new search when navigated to this route
   useEffect(() => {
     if (isNewSearch) {
-      // Check if there's a saved search to restore
-      const savedState = loadSearchState();
-      if (savedState?.currentListId && savedState?.currentQuery) {
-        // Redirect to the proper search URL instead of staying on /app
-        const searchUrl = generateSearchUrl(savedState.currentQuery, savedState.currentListId);
-        console.log('Redirecting to saved search URL:', searchUrl);
-        setLocation(searchUrl);
-      } else {
-        // No saved search - show clean new search state
-        setTimeout(() => handleNewSearch(), 0);
-      }
+      // Use setTimeout to ensure this runs after initial render
+      setTimeout(() => handleNewSearch(), 0);
     }
   }, [isNewSearch]);
 

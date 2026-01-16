@@ -58,14 +58,10 @@ export function AppLayout({ children }: LayoutProps) {
     setSavedSearchesDrawerOpen(false);
   };
   
-  // Handle new search action - clear saved state and navigate to /app
+  // Handle new search action - navigate to /app/new-search
   const handleNewSearch = () => {
-    // Clear localStorage first so /app shows a clean slate
-    localStorage.removeItem('searchState');
-    sessionStorage.removeItem('searchState');
-    localStorage.removeItem('emailComposerState');
-    // Navigate to /app - it will show clean new search since localStorage is cleared
-    setLocation('/app');
+    // Navigate to /app/new-search - the route handles the new search state
+    setLocation('/app/new-search');
     setSavedSearchesDrawerOpen(false);
   };
   
