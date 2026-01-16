@@ -16,12 +16,15 @@ const PromptEditor = lazy(() => import("@/components/prompt-editor"));
 const EmailDrawer = lazy(() => 
   import("@/features/email-drawer").then(m => ({ default: m.EmailDrawer }))
 );
+const SearchManagementDrawer = lazy(() => 
+  import("@/features/search-management-drawer/index.tsx").then(m => ({ default: m.SearchManagementDrawer }))
+);
 
 // Import consolidated search report modal
 import { SearchReportModal } from "@/features/search-report";
 import { OnboardingFlowOrchestrator } from "@/components/onboarding/OnboardingFlowOrchestrator";
 import { useEmailDrawer } from "@/features/email-drawer";
-import { SearchManagementDrawer, useSearchManagementDrawer } from "@/features/search-management-drawer";
+import { useSearchManagementDrawer } from "@/features/search-management-drawer";
 import { TopProspectsCard } from "@/features/top-prospects";
 import { SelectionToolbar } from "@/components/SelectionToolbar";
 import { useToast } from "@/hooks/use-toast";
@@ -1795,16 +1798,20 @@ export default function Home({ isNewSearch = false }: HomeProps) {
         </Suspense>
       )}
       
-      {/* Search Management Drawer */}
-      <SearchManagementDrawer
-        open={searchManagementDrawer.isOpen}
-        width={searchManagementDrawer.drawerWidth}
-        isResizing={searchManagementDrawer.isResizing}
-        onClose={searchManagementDrawer.closeDrawer}
-        onResizeStart={searchManagementDrawer.handleMouseDown}
-        onTrainAI={() => setShowOnboarding(true)}
-        hasSearchResults={onboardingSearchResults && onboardingSearchResults.length > 0}
-      />
+      {/* Search Management Drawer - Lazy loaded, only renders when open */}
+      {searchManagementDrawer.isOpen && (
+        <Suspense fallback={null}>
+          <SearchManagementDrawer
+            open={searchManagementDrawer.isOpen}
+            width={searchManagementDrawer.drawerWidth}
+            isResizing={searchManagementDrawer.isResizing}
+            onClose={searchManagementDrawer.closeDrawer}
+            onResizeStart={searchManagementDrawer.handleMouseDown}
+            onTrainAI={() => setShowOnboarding(true)}
+            hasSearchResults={onboardingSearchResults && onboardingSearchResults.length > 0}
+          />
+        </Suspense>
+      )}
 
       {/* Notification System - Outside flex container */}
       <NotificationToast
