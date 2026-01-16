@@ -158,23 +158,30 @@ export default function LandingSimple() {
                 </div>
 
                 {/* Trust Section */}
-                <div className="mt-4 pt-4">
-                  <div className="flex items-center justify-center gap-6 text-gray-400 text-sm mb-1">
-                    <div className="flex items-center gap-1">
+                <div className="mt-4 pt-4 flex items-center justify-center gap-8">
+                  {/* Rating Block */}
+                  <div className="text-center">
+                    <div className="flex items-center justify-center gap-1 mb-1">
                       <div className="flex">
                         {[1,2,3,4,5].map((i) => (
                           <Star key={i} className="w-4 h-4 fill-yellow-500 text-yellow-500" />
                         ))}
                       </div>
-                      <span className="ml-1">4.82/5</span>
+                      <span className="ml-1 text-gray-400 text-sm">4.82/5</span>
                     </div>
-                    <div className="w-px h-4 bg-white/10" />
-                    <span>2,400+ customers</span>
+                    <div className="flex items-center justify-center gap-3">
+                      <span className="text-gray-500 font-semibold text-xs">Capterra</span>
+                      <span className="text-gray-600">•</span>
+                      <span className="text-gray-500 font-bold text-xs">G2</span>
+                    </div>
                   </div>
-                  <div className="flex items-center justify-center gap-4">
-                    <span className="text-gray-500 font-semibold text-xs">Capterra</span>
-                    <span className="text-gray-600">•</span>
-                    <span className="text-gray-500 font-bold text-xs">G2</span>
+                  
+                  <div className="w-px h-10 bg-white/10" />
+                  
+                  {/* Customers Block */}
+                  <div className="text-center">
+                    <div className="text-gray-400 text-sm mb-1">2,400+ customers</div>
+                    <div className="text-gray-500 text-xs">worldwide</div>
                   </div>
                 </div>
               </div>
