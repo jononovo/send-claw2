@@ -169,7 +169,7 @@ export default function LandingSimple() {
                   </div>
                   
                   <DemoSimulationPlayer
-                    simulation="showcase-results"
+                    simulation="original"
                     params={{ id: 1 }}
                     responsive
                     aspectRatio={58/50}
