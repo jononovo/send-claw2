@@ -115,6 +115,8 @@ export default function Home({ isNewSearch = false }: HomeProps) {
   // Add new state for tracking contact loading status
   const [isLoadingContacts, setIsLoadingContacts] = useState(false);
   const [contactsLoaded, setContactsLoaded] = useState(false);
+  // Track if we're loading a search from URL (prevents empty form flash)
+  const [isLoadingFromUrl, setIsLoadingFromUrl] = useState(false);
   // Track if user came from landing page
   const [isFromLandingPage, setIsFromLandingPage] = useState(false);
   // Track the last executed search query and if input has changed
@@ -1090,7 +1092,11 @@ export default function Home({ isNewSearch = false }: HomeProps) {
         });
       }
       
+      // Clear URL loading state
+      setIsLoadingFromUrl(false);
+      
     } catch (error) {
+      setIsLoadingFromUrl(false);
       toast({
         title: "Failed to load search",
         description: "Could not load the selected search.",
@@ -1151,6 +1157,9 @@ export default function Home({ isNewSearch = false }: HomeProps) {
       
       console.log('Loading search from URL:', { listId, slug: searchRouteParams.slug });
       
+      // Set loading state to prevent empty form flash
+      setIsLoadingFromUrl(true);
+      
       // Fetch and load the search
       const loadSearchByListId = async () => {
         try {
@@ -1162,6 +1171,7 @@ export default function Home({ isNewSearch = false }: HomeProps) {
           if (list) {
             handleLoadSavedSearch(list);
           } else {
+            setIsLoadingFromUrl(false);
             console.warn('Search not found:', listId);
             if (!auth.user) {
               toast({
@@ -1178,6 +1188,7 @@ export default function Home({ isNewSearch = false }: HomeProps) {
             }
           }
         } catch (error: any) {
+          setIsLoadingFromUrl(false);
           console.error('Failed to load search:', error);
           const errorMessage = error?.message || '';
           
@@ -1482,12 +1493,18 @@ export default function Home({ isNewSearch = false }: HomeProps) {
                   </button>
                 )}
                 
-                {!currentResults && !isAnalyzing && (
+                {!currentResults && !isAnalyzing && !isLoadingFromUrl && (
                   <div className="flex flex-col-reverse md:flex-row items-center gap-4 mb-3">
                     <div className="flex items-center gap-3">
                       <EggAnimation />
                       <h2 className="text-2xl mt-2 md:mt-0">Search for target businesses</h2>
                     </div>
+                  </div>
+                )}
+                {isLoadingFromUrl && !currentResults && (
+                  <div className="flex items-center justify-center py-8">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                    <span className="ml-3 text-muted-foreground">Loading search...</span>
                   </div>
                 )}
                 <Suspense fallback={<div className="h-32 bg-slate-100 dark:bg-slate-800 rounded-lg animate-pulse"></div>}>
