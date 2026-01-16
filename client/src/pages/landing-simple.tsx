@@ -264,17 +264,19 @@ export default function LandingSimple() {
         </div>
 
         {/* Trusted By Section - Full Width */}
-        <div className="relative z-20 py-16 border-t border-white/5">
+        <div className="relative z-20 py-8 -mt-4 border-t border-white/5">
           <div className="container mx-auto px-6">
-            <p className="text-gray-500 text-sm text-center mb-8 tracking-wide">Trusted by teams at</p>
-            <div className="flex items-center justify-center gap-10 md:gap-16 flex-wrap opacity-60 hover:opacity-80 transition-opacity duration-500">
-              <span className="text-gray-400 font-medium text-lg tracking-wide">Linear</span>
-              <span className="text-gray-400 font-light text-lg italic">Vercel</span>
-              <span className="text-gray-400 font-bold text-sm uppercase tracking-widest">Raycast</span>
-              <span className="text-gray-400 font-medium text-lg">Loom</span>
-              <span className="text-gray-400 font-semibold text-lg tracking-tight">Notion</span>
-              <span className="text-gray-400 font-light text-lg">Figma</span>
-              <span className="text-gray-400 font-bold text-sm uppercase tracking-wider">Slack</span>
+            <p className="text-gray-500 text-sm text-center mb-5 tracking-wide">Trusted by teams at</p>
+            <div className="flex items-center justify-center gap-8 md:gap-12 flex-wrap">
+              <span className="text-gray-500 font-medium text-xl tracking-wide hover:text-gray-300 transition-colors duration-300 cursor-default">Linear</span>
+              <span className="text-gray-500 font-light text-xl italic hover:text-gray-300 transition-colors duration-300 cursor-default">Vercel</span>
+              <span className="text-gray-500 font-bold text-sm uppercase tracking-widest hover:text-gray-300 transition-colors duration-300 cursor-default">Raycast</span>
+              <span className="text-gray-500 font-medium text-xl hover:text-gray-300 transition-colors duration-300 cursor-default">Loom</span>
+              <span className="text-gray-500 font-semibold text-xl tracking-tight hover:text-gray-300 transition-colors duration-300 cursor-default">Notion</span>
+              <span className="text-gray-500 font-light text-xl hover:text-gray-300 transition-colors duration-300 cursor-default">Figma</span>
+              <span className="text-gray-500 font-bold text-sm uppercase tracking-wider hover:text-gray-300 transition-colors duration-300 cursor-default">Slack</span>
+              <span className="text-gray-500 font-medium text-xl hover:text-gray-300 transition-colors duration-300 cursor-default">Airtable</span>
+              <span className="text-gray-500 font-semibold text-sm uppercase tracking-wide hover:text-gray-300 transition-colors duration-300 cursor-default">Webflow</span>
             </div>
           </div>
         </div>
