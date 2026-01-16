@@ -128,7 +128,8 @@ export default function LandingSimple() {
                 </h1>
 
                 <p className="text-xl text-muted-foreground leading-relaxed max-w-md font-medium pt-8">
-                  AI-powered prospecting that finds your ideal customers in seconds. No more endless filtering or stale databases.
+                  And email them in seconds.<br />
+                  Start with 5 mins per day & see your pipeline grow.
                 </p>
               </div>
 
