@@ -12,6 +12,7 @@ import { DemoSimulationPlayer } from "@/features/demo-simulations";
 import { logConversionEvent } from "@/features/attribution";
 import duckImage from "./assets/3d_cute_duckling_mascot_edited.webp";
 import duckImageMobile from "./assets/3d_cute_duckling_mascot_edited-400w.webp";
+import bgImage from "./assets/abstract_3d_sales_background_with_envelopes_and_charts.webp";
 import salesImage from "./assets/sales_meeting_v9_transparent.webp";
 import dealFlowImage from "./assets/deal_flow_v6_transparent.webp";
 import leadsImage from "./assets/email-notification-no-bg-crop.webp";
@@ -127,29 +128,11 @@ export function HeroSectionDualSlider({
   
   const [isDuckLoaded, setIsDuckLoaded] = useState(false);
   const [shouldRenderDemo, setShouldRenderDemo] = useState(false);
-  const [bgImageLoaded, setBgImageLoaded] = useState<string | null>(null);
   
   const [playerCount, setPlayerCount] = useState<number | null>(null);
 
   useEffect(() => {
     setIsMounted(true);
-  }, []);
-
-  // Load background image after initial paint to avoid it being the LCP element
-  useEffect(() => {
-    const bgImageUrl = new URL("./assets/abstract_3d_sales_background_with_envelopes_and_charts.webp", import.meta.url).href;
-    
-    const loadBgImage = () => {
-      const img = new Image();
-      img.onload = () => setBgImageLoaded(bgImageUrl);
-      img.src = bgImageUrl;
-    };
-    
-    if ('requestIdleCallback' in window) {
-      (window as any).requestIdleCallback(loadBgImage, { timeout: 2000 });
-    } else {
-      setTimeout(loadBgImage, 100);
-    }
   }, []);
   
   useEffect(() => {
@@ -322,10 +305,10 @@ export function HeroSectionDualSlider({
       </div>
 
       <div className="absolute inset-0 z-0">
-        {bgImageLoaded && (
+        {isDuckLoaded && (
           <div 
             className="absolute inset-0 opacity-40 mix-blend-screen bg-cover bg-center"
-            style={{ backgroundImage: `url(${bgImageLoaded})` }}
+            style={{ backgroundImage: `url(${bgImage})` }}
             aria-hidden="true"
           />
         )}
