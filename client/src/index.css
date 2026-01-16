@@ -444,8 +444,8 @@ input[type="checkbox"]:indeterminate::before {
 
 @keyframes text-swap-in {
   0% { opacity: 0; }
-  50% { opacity: 0; }
-  75% { opacity: 1; }
+  35% { opacity: 0; }
+  60% { opacity: 1; }
   100% { opacity: 1; }
 }
 
