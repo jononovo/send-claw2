@@ -107,12 +107,43 @@ function DeferredGuidance() {
   );
 }
 
+// Preload Home page when on landing pages (runs after page load, during idle time)
+const LANDING_ROUTES = ["/", "/landing-stealth", "/stealth", "/s", "/react-landing", "/landing2"];
+
+function useHomePreload() {
+  const [location] = useLocation();
+  
+  useEffect(() => {
+    // Only preload if we're on a landing page
+    if (!LANDING_ROUTES.includes(location)) return;
+    
+    const preloadHome = () => {
+      if ('requestIdleCallback' in window) {
+        (window as any).requestIdleCallback(() => {
+          import("@/pages/home");
+        }, { timeout: 3000 });
+      } else {
+        setTimeout(() => import("@/pages/home"), 2000);
+      }
+    };
+    
+    if (document.readyState === 'complete') {
+      preloadHome();
+    } else {
+      window.addEventListener('load', preloadHome, { once: true });
+    }
+  }, [location]);
+}
+
 function Router() {
   // Track page views when routes change
   useAnalytics();
   
   // Capture attribution data (UTM params, referrer, etc.) on first visit
   useAttributionCapture();
+  
+  // Preload Home page during idle time when on landing pages
+  useHomePreload();
   
   return (
     <>
