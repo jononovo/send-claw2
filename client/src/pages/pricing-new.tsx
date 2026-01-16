@@ -216,10 +216,6 @@ export default function PricingPage() {
 
           <div className="container mx-auto px-6 relative z-10">
             <div className="text-center mb-16">
-              <span className="block text-sm lg:text-base text-gray-500 dark:text-gray-400 font-medium tracking-widest uppercase mb-4 font-mono opacity-80">
-                Simple Pricing
-              </span>
-              
               <h1 className="text-5xl lg:text-7xl font-bold leading-[0.9] tracking-normal text-gray-800 dark:text-gray-200 font-serif mb-6">
                 Pick Your
                 <span className="block text-transparent bg-clip-text bg-gradient-to-r from-yellow-500 to-yellow-600 dark:from-yellow-400 dark:to-yellow-100 drop-shadow-[0_0_30px_rgba(250,204,21,0.3)]">
