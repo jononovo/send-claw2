@@ -11,5 +11,6 @@ export {
   generatePagesSitemap,
   generateCompaniesSitemap,
   generateContactsSitemap,
+  generateSearchesSitemap,
   generateSitemapXML 
 } from "./generator";

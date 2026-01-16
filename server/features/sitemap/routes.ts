@@ -10,7 +10,8 @@ import {
   generateSitemapIndex, 
   generatePagesSitemap, 
   generateCompaniesSitemap, 
-  generateContactsSitemap 
+  generateContactsSitemap,
+  generateSearchesSitemap
 } from "./generator";
 
 /**
@@ -21,6 +22,7 @@ export function registerSitemapRoutes(app: Express): void {
   app.get('/sitemap-pages.xml', handlePagesSitemapRequest);
   app.get('/sitemap-companies.xml', handleCompaniesSitemapRequest);
   app.get('/sitemap-contacts.xml', handleContactsSitemapRequest);
+  app.get('/sitemap-searches.xml', handleSearchesSitemapRequest);
   app.get('/robots.txt', handleRobotsRequest);
 }
 
@@ -42,6 +44,7 @@ Allow: /terms
 Allow: /privacy
 Allow: /company/
 Allow: /p/
+Allow: /search/
 Disallow: /app
 Disallow: /lists
 Disallow: /campaigns
@@ -54,31 +57,37 @@ Disallow: /admin
 User-agent: Googlebot
 Allow: /company/
 Allow: /p/
+Allow: /search/
 
 User-agent: Bingbot
 Allow: /company/
 Allow: /p/
+Allow: /search/
 
 User-agent: DuckDuckBot
 Allow: /company/
 Allow: /p/
+Allow: /search/
 
 # AI bots - allowed to index public content
 User-agent: GPTBot
 Allow: /company/
 Allow: /p/
+Allow: /search/
 Disallow: /app
 Disallow: /api
 
 User-agent: Claude-Web
 Allow: /company/
 Allow: /p/
+Allow: /search/
 Disallow: /app
 Disallow: /api
 
 User-agent: Anthropic-AI
 Allow: /company/
 Allow: /p/
+Allow: /search/
 Disallow: /app
 Disallow: /api
 
@@ -167,6 +176,20 @@ async function handleContactsSitemapRequest(req: Request, res: Response): Promis
     res.send(xml);
   } catch (error) {
     console.error('Error generating contacts sitemap:', error);
+    res.status(500).send('Error generating sitemap');
+  }
+}
+
+/**
+ * Handle searches sitemap request
+ */
+async function handleSearchesSitemapRequest(req: Request, res: Response): Promise<void> {
+  try {
+    const xml = await generateSearchesSitemap();
+    res.header('Content-Type', 'application/xml');
+    res.send(xml);
+  } catch (error) {
+    console.error('Error generating searches sitemap:', error);
     res.status(500).send('Error generating sitemap');
   }
 }

@@ -138,7 +138,7 @@ export function HeroSectionDualSlider({
   useEffect(() => {
     fetch('/api/player-count')
       .then(res => res.json())
-      .then(data => setPlayerCount(data.count))
+      .then(data => setPlayerCount(data.count ?? 1248))
       .catch(() => setPlayerCount(1248));
   }, []);
 

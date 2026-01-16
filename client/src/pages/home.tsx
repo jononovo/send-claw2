@@ -2,6 +2,8 @@ import { useState, useEffect, useRef, lazy, Suspense, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useLocation, useRoute } from "wouter";
 import { Button } from "@/components/ui/button";
+import { SEOHead } from "@/components/ui/seo-head";
+import { slugify } from "@/lib/url-utils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { SearchProgressIndicator, type SearchProgressState } from "@/features/search-progress";
 import { TableSkeleton } from "@/components/ui/table-skeleton";
@@ -1432,8 +1434,47 @@ export default function Home({ isNewSearch = false }: HomeProps) {
     });
   };
 
+  // SEO meta data for search pages
+  const searchPageSeoData = useMemo(() => {
+    if (!isSearchRoute || !currentQuery || !currentListId) return null;
+    
+    // Use the actual route slug to ensure canonical URL matches the page URL
+    const slug = searchRouteParams?.slug || slugify(currentQuery);
+    const resultCount = currentResults?.length ?? 0;
+    const canonicalUrl = `https://5ducks.ai/search/${slug}/${currentListId}`;
+    
+    return {
+      title: `${currentQuery} | 5Ducks`,
+      description: `${resultCount} companies found for "${currentQuery}". Discover verified contacts and leads for your B2B outreach.`,
+      canonicalUrl,
+      jsonLd: {
+        "@context": "https://schema.org",
+        "@type": "CollectionPage",
+        "name": currentQuery,
+        "description": `${resultCount} companies matching: ${currentQuery}`,
+        "url": canonicalUrl,
+        "numberOfItems": resultCount,
+        "provider": {
+          "@type": "Organization",
+          "name": "5Ducks",
+          "url": "https://5ducks.ai"
+        }
+      }
+    };
+  }, [isSearchRoute, currentQuery, currentListId, currentResults?.length, searchRouteParams?.slug]);
+
   return (
     <>
+      {/* SEO meta tags for search pages */}
+      {searchPageSeoData && (
+        <SEOHead
+          title={searchPageSeoData.title}
+          description={searchPageSeoData.description}
+          canonicalUrl={searchPageSeoData.canonicalUrl}
+          jsonLd={searchPageSeoData.jsonLd}
+        />
+      )}
+      
       {/* Consolidated Search Report Modal - Rendered at root level to avoid overflow clipping */}
       <SearchReportModal
         metrics={{

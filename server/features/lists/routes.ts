@@ -1,44 +1,12 @@
 import { Router, Request, Response, Application } from 'express';
 import { SearchListsService } from './service';
 import { SearchListRequest, UpdateSearchListRequest } from './types';
+import { isAuthenticated as checkAuth, getUserId as getAuthUserId } from '../../utils/auth';
+import { maskContactEmails } from '../../utils/email-masker';
 
-// Helper function to safely get user ID from request
+// Helper function to safely get user ID from request (wrapper around shared utility)
 function getUserId(req: Request): number {
-  console.log('getUserId() called:', {
-    path: req.path,
-    method: req.method,
-    sessionID: (req as any).sessionID || 'none',
-    hasSession: !!(req as any).session,
-    isAuthenticated: (req as any).isAuthenticated ? (req as any).isAuthenticated() : false,
-    hasUser: !!(req as any).user,
-    userId: (req as any).user ? (req as any).user.id : 'none',
-    hasFirebaseUser: !!(req as any).firebaseUser,
-    firebaseUserId: (req as any).firebaseUser ? (req as any).firebaseUser.id : 'none',
-    timestamp: new Date().toISOString()
-  });
-
-  try {
-    // First check if user is authenticated through session
-    if ((req as any).isAuthenticated && (req as any).isAuthenticated() && (req as any).user && (req as any).user.id) {
-      const userId = (req as any).user.id;
-      console.log('User ID from session authentication:', userId);
-      return userId;
-    }
-    
-    // Then check for Firebase authentication
-    if ((req as any).firebaseUser && (req as any).firebaseUser.id) {
-      const userId = (req as any).firebaseUser.id;
-      console.log('User ID from Firebase authentication:', userId);
-      return userId;
-    }
-    
-    // If no authentication is found
-    console.log('No authentication found, defaulting to demo user ID 1');
-    return 1; // Default to demo user
-  } catch (error) {
-    console.error('Error getting user ID:', error);
-    return 1; // Default to demo user on error
-  }
+  return getAuthUserId(req);
 }
 
 export function registerSearchListsRoutes(app: Application, requireAuth: any) {
@@ -53,30 +21,49 @@ export function registerSearchListsRoutes(app: Application, requireAuth: any) {
     res.json(lists);
   });
 
-  // Get specific list
-  router.get('/:listId', requireAuth, async (req: Request, res: Response) => {
-    const isAuthenticated = (req as any).isAuthenticated && (req as any).isAuthenticated() && (req as any).user;
+  // Get specific list - PUBLIC access for SEO (emails masked for unauthenticated)
+  router.get('/:listId', async (req: Request, res: Response) => {
+    const userIsAuthenticated = checkAuth(req);
     const listId = parseInt(req.params.listId);
-    const userId = (req as any).user?.id || 1;
+    const userId = userIsAuthenticated ? getUserId(req) : 1;
     
-    const list = await SearchListsService.getSearchList(listId, userId, isAuthenticated);
+    const list = await SearchListsService.getSearchList(listId, userId, userIsAuthenticated);
     
     if (!list) {
       res.status(404).json({ message: "List not found" });
       return;
     }
     
+    // Mask emails in reportCompanies for unauthenticated users
+    if (!userIsAuthenticated && list.reportCompanies) {
+      const maskedReportCompanies = list.reportCompanies.map((company: any) => ({
+        ...company,
+        contacts: company.contacts ? company.contacts.map((contact: any) => maskContactEmails(contact)) : []
+      }));
+      res.json({ ...list, reportCompanies: maskedReportCompanies });
+      return;
+    }
+    
     res.json(list);
   });
 
-  // Get companies in a list
+  // Get companies in a list - PUBLIC access for SEO (emails masked for unauthenticated)
   router.get('/:listId/companies', async (req: Request, res: Response) => {
-    const isAuthenticated = (req as any).isAuthenticated && (req as any).isAuthenticated() && (req as any).user;
+    const userIsAuthenticated = checkAuth(req);
     const listId = parseInt(req.params.listId);
-    const userId = (req as any).user?.id || 1;
+    const userId = userIsAuthenticated ? getUserId(req) : 1;
     
-    const companies = await SearchListsService.getSearchListCompanies(listId, userId, isAuthenticated);
-    res.json(companies);
+    const companies = await SearchListsService.getSearchListCompanies(listId, userId, userIsAuthenticated);
+    
+    // Mask contact emails for unauthenticated users
+    const responseCompanies = userIsAuthenticated 
+      ? companies 
+      : companies.map((company: any) => ({
+          ...company,
+          contacts: company.contacts ? company.contacts.map((contact: any) => maskContactEmails(contact)) : []
+        }));
+    
+    res.json(responseCompanies);
   });
 
   // Create new list
