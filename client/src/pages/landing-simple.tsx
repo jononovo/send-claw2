@@ -221,20 +221,40 @@ export default function LandingSimple() {
               
               {/* Certifications */}
               <div className="mt-6 flex items-center justify-center gap-3">
+                {/* SOC 2 Badge */}
                 <div className="flex flex-col items-center gap-1 px-4 py-3 bg-gradient-to-b from-white/5 to-transparent border border-white/10 rounded-lg hover:border-yellow-500/30 transition-colors">
-                  <Shield className="w-5 h-5 text-yellow-500" />
+                  <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+                    <circle cx="14" cy="14" r="12" stroke="#eab308" strokeWidth="2" fill="none"/>
+                    <path d="M14 6L16 10H12L14 6Z" fill="#eab308"/>
+                    <circle cx="14" cy="14" r="4" fill="#eab308"/>
+                    <path d="M8 18C8 18 10 21 14 21C18 21 20 18 20 18" stroke="#eab308" strokeWidth="1.5" strokeLinecap="round"/>
+                  </svg>
                   <span className="text-xs text-gray-300 font-medium">SOC 2</span>
                 </div>
+                {/* WeWork Badge */}
                 <div className="flex flex-col items-center gap-1 px-4 py-3 bg-gradient-to-b from-white/5 to-transparent border border-white/10 rounded-lg hover:border-blue-500/30 transition-colors">
-                  <Award className="w-5 h-5 text-blue-400" />
+                  <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+                    <rect x="4" y="8" width="20" height="14" rx="2" stroke="#60a5fa" strokeWidth="2" fill="none"/>
+                    <path d="M8 12V18M11 14V18M14 10V18M17 14V18M20 12V18" stroke="#60a5fa" strokeWidth="1.5" strokeLinecap="round"/>
+                  </svg>
                   <span className="text-xs text-gray-300 font-medium">WeWork</span>
                 </div>
+                {/* Stripe Badge */}
                 <div className="flex flex-col items-center gap-1 px-4 py-3 bg-gradient-to-b from-white/5 to-transparent border border-white/10 rounded-lg hover:border-purple-500/30 transition-colors">
-                  <CreditCard className="w-5 h-5 text-purple-400" />
+                  <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+                    <rect x="3" y="6" width="22" height="16" rx="3" stroke="#a78bfa" strokeWidth="2" fill="none"/>
+                    <path d="M7 14H21" stroke="#a78bfa" strokeWidth="1.5"/>
+                    <path d="M7 18H13" stroke="#a78bfa" strokeWidth="1.5" strokeLinecap="round"/>
+                    <circle cx="19" cy="11" r="2" fill="#a78bfa"/>
+                  </svg>
                   <span className="text-xs text-gray-300 font-medium">Stripe</span>
                 </div>
+                {/* GDPR Badge */}
                 <div className="flex flex-col items-center gap-1 px-4 py-3 bg-gradient-to-b from-white/5 to-transparent border border-white/10 rounded-lg hover:border-green-500/30 transition-colors">
-                  <Lock className="w-5 h-5 text-green-400" />
+                  <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+                    <path d="M14 3L4 8V14C4 20 8 24 14 26C20 24 24 20 24 14V8L14 3Z" stroke="#4ade80" strokeWidth="2" fill="none"/>
+                    <path d="M10 14L13 17L18 11" stroke="#4ade80" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
                   <span className="text-xs text-gray-300 font-medium">GDPR</span>
                 </div>
               </div>
