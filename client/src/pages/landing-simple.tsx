@@ -38,7 +38,8 @@ export default function LandingSimple() {
   const testimonialSectionRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const isRootPath = window.location.pathname === '/simple' || window.location.pathname === '/landing-simple';
+    // Only redirect on root path - /simple and /landing-simple bypass redirect for testing
+    const isRootPath = window.location.pathname === '/';
     if (user && isRootPath) {
       window.location.href = "/app";
     }
