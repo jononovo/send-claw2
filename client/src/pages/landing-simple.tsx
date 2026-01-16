@@ -148,7 +148,7 @@ export default function LandingSimple() {
                   <span className="relative z-10 flex items-center">
                     <span className="group-hover:animate-[text-swap-out_3s_ease-in-out_forwards]">Start outreach with baby steps</span>
                     <span className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:animate-[text-swap-in_3s_ease-in-out_forwards] text-white">You've Got This!</span>
-                    <ArrowRight className="ml-2 group-hover:animate-[text-swap-out_3s_ease-in-out_forwards]" style={{ width: '24px', height: '24px' }} />
+                    <ArrowRight className="ml-2 group-hover:animate-[arrow-fade-out_3s_ease-in-out_forwards]" style={{ width: '24px', height: '24px' }} />
                   </span>
                 </Button>
                 <div className="flex flex-wrap justify-center gap-4 text-gray-500 text-sm">

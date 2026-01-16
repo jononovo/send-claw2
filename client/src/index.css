@@ -436,6 +436,12 @@ input[type="checkbox"]:indeterminate::before {
   100% { opacity: 0; }
 }
 
+@keyframes arrow-fade-out {
+  0% { opacity: 1; }
+  35% { opacity: 0; }
+  100% { opacity: 0; }
+}
+
 @keyframes text-swap-in {
   0% { opacity: 0; }
   50% { opacity: 0; }
