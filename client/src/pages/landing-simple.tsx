@@ -138,7 +138,7 @@ export default function LandingSimple() {
                   onClick={handleGetStarted}
                   className="h-16 bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-black font-bold text-xl rounded-xl transition-all duration-300 hover:scale-[1.02]"
                 >
-                  Find Customers for Free
+                  Start outreach with baby steps
                   <ArrowRight className="ml-2 w-5 h-5" />
                 </Button>
                 <div className="flex flex-wrap justify-center gap-4 text-gray-500 text-sm">
