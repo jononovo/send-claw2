@@ -218,6 +218,14 @@ export default function LandingSimple() {
                 </div>
               </div>
               
+              {/* Try search link */}
+              <div className="mt-4 flex items-center justify-center">
+                <a href="/app" className="flex items-center gap-2 text-gray-400 text-sm hover:text-gray-200 transition-colors">
+                  <span>Tryout search directly</span>
+                  <ArrowRight className="w-4 h-4" />
+                </a>
+              </div>
+              
               {/* Certifications - positioned below demo */}
               <div className="mt-8 flex items-center justify-center gap-6">
                 {/* SOC 2 Badge */}
