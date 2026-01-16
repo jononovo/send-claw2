@@ -64,18 +64,30 @@
       })();
     </script>
     
-    <!-- Google Tag Manager -->
-    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-    })(window,document,'script','dataLayer','GTM-TNCXX3SG');</script>
-    <!-- End Google Tag Manager -->
-    
-    <!-- GTM creates gtag() automatically, but define it for compatibility with analytics.ts -->
+    <!-- Initialize dataLayer and gtag for compatibility (GTM loaded after page idle) -->
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
+    </script>
+    
+    <!-- Deferred Google Tag Manager - loads after page is idle for better performance -->
+    <script>
+      (function() {
+        function loadGTM() {
+          if (window.__gtmLoaded) return;
+          window.__gtmLoaded = true;
+          window.dataLayer.push({'gtm.start': new Date().getTime(), event: 'gtm.js'});
+          var s = document.createElement('script');
+          s.async = true;
+          s.src = 'https://www.googletagmanager.com/gtm.js?id=GTM-TNCXX3SG';
+          document.head.appendChild(s);
+        }
+        if ('requestIdleCallback' in window) {
+          requestIdleCallback(loadGTM, { timeout: 4000 });
+        } else {
+          setTimeout(loadGTM, 3500);
+        }
+      })();
     </script>
     
     <style>
