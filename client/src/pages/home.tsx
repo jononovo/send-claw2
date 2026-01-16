@@ -45,29 +45,7 @@ import { logConversionEvent } from "@/features/attribution";
 import { useRegistrationModal } from "@/hooks/use-registration-modal";
 import { useNotifications } from "@/hooks/use-notifications";
 import { NotificationToast } from "@/components/ui/notification-toast";
-import {
-  Search,
-  Code2,
-  UserCircle,
-  Banknote,
-  Eye,
-  ChevronDown,
-  ChevronUp,
-  ChevronLeft,
-  ChevronRight,
-  X,
-  ThumbsUp,
-  ThumbsDown,
-  Star,
-  MessageSquare,
-  Gem,
-  MoreHorizontal,
-  Menu,
-  Mail,
-  Megaphone,
-  Target,
-  Plus,
-} from "lucide-react";
+import { Search, ChevronDown, ChevronUp } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
