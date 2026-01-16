@@ -158,30 +158,30 @@ export default function LandingSimple() {
                 </div>
 
                 {/* Trust Section */}
-                <div className="mt-4 pt-4 flex items-center justify-center gap-8">
+                <div className="mt-6 pt-6 flex items-center justify-center gap-10">
                   {/* Rating Block */}
                   <div className="text-center">
-                    <div className="flex items-center justify-center gap-1 mb-1">
+                    <div className="flex items-center justify-center gap-1.5 mb-2">
                       <div className="flex">
                         {[1,2,3,4,5].map((i) => (
-                          <Star key={i} className="w-4 h-4 fill-yellow-500 text-yellow-500" />
+                          <Star key={i} className="w-5 h-5 fill-yellow-500 text-yellow-500" />
                         ))}
                       </div>
-                      <span className="ml-1 text-gray-400 text-sm">4.82/5</span>
+                      <span className="ml-2 text-gray-300 text-base font-medium">4.82/5</span>
                     </div>
                     <div className="flex items-center justify-center gap-3">
-                      <span className="text-gray-500 font-semibold text-xs">Capterra</span>
+                      <span className="text-gray-500 font-semibold text-sm">Capterra</span>
                       <span className="text-gray-600">•</span>
-                      <span className="text-gray-500 font-bold text-xs">G2</span>
+                      <span className="text-gray-500 font-bold text-sm">G2</span>
                     </div>
                   </div>
                   
-                  <div className="w-px h-10 bg-white/10" />
+                  <div className="w-px h-12 bg-white/10" />
                   
                   {/* Customers Block */}
                   <div className="text-center">
-                    <div className="text-gray-400 text-sm mb-1">2,400+ customers</div>
-                    <div className="text-gray-500 text-xs">worldwide</div>
+                    <div className="text-gray-300 text-base font-medium mb-1">2,400+ customers</div>
+                    <div className="text-gray-500 text-sm">worldwide</div>
                   </div>
                 </div>
               </div>
