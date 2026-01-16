@@ -8,6 +8,14 @@ import { objectStorageClient } from "../../replit_integrations/object_storage";
 
 const execAsync = promisify(exec);
 
+function getDatePrefix(): string {
+  const now = new Date();
+  const yy = String(now.getFullYear()).slice(-2);
+  const mm = String(now.getMonth() + 1).padStart(2, '0');
+  const dd = String(now.getDate()).padStart(2, '0');
+  return `${yy}${mm}${dd}`;
+}
+
 function getBucketName(): string {
   const bucketId = process.env.DEFAULT_OBJECT_STORAGE_BUCKET_ID;
   if (!bucketId) {
@@ -89,7 +97,8 @@ export async function processVideo(
     const fileSize = stats.size;
 
     console.log(`[VideoProcessor] Uploading to App Storage...`);
-    const objectName = `guidance-videos/${challengeId}.webm`;
+    const datePrefix = getDatePrefix();
+    const objectName = `guidance-videos/${datePrefix}-${challengeId}.webm`;
     const objectPath = await uploadToObjectStorage(outputPath, objectName);
     console.log(`[VideoProcessor] Uploaded to: ${objectPath}`);
 
@@ -139,7 +148,8 @@ export async function processVideoSimple(
     const fileSize = stats.size;
 
     console.log(`[VideoProcessor] Uploading to App Storage...`);
-    const objectName = `guidance-videos/${challengeId}.webm`;
+    const datePrefix = getDatePrefix();
+    const objectName = `guidance-videos/${datePrefix}-${challengeId}.webm`;
     const objectPath = await uploadToObjectStorage(outputPath, objectName);
     console.log(`[VideoProcessor] Uploaded to: ${objectPath}`);
 

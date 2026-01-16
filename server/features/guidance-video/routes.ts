@@ -138,12 +138,8 @@ export function registerGuidanceVideoRoutes(app: Express) {
       }
 
       let url: string | null = null;
-      if (video.status === 'completed') {
-        if (video.objectPath) {
-          url = await getSignedVideoUrl(video.objectPath);
-        } else if (video.processedPath) {
-          url = `/static/guidance-videos/processed/${video.challengeId}.webm`;
-        }
+      if (video.status === 'completed' && video.objectPath) {
+        url = await getSignedVideoUrl(video.objectPath);
       }
 
       res.json({
@@ -168,12 +164,11 @@ export function registerGuidanceVideoRoutes(app: Express) {
         return res.status(404).json({ message: "No video available" });
       }
 
-      let url: string;
-      if (video.objectPath) {
-        url = await getSignedVideoUrl(video.objectPath);
-      } else {
-        url = `/static/guidance-videos/processed/${video.challengeId}.webm`;
+      if (!video.objectPath) {
+        return res.status(404).json({ message: "Video file not available" });
       }
+
+      const url = await getSignedVideoUrl(video.objectPath);
 
       res.json({
         url,
