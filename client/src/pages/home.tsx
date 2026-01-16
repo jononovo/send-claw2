@@ -23,7 +23,7 @@ const SearchReportModal = lazy(() =>
   import("@/features/search-report").then(m => ({ default: m.SearchReportModal }))
 );
 const OnboardingFlowOrchestrator = lazy(() => 
-  import("@/components/onboarding/OnboardingFlowOrchestrator").then(m => ({ default: m.OnboardingFlowOrchestrator }))
+  import("@/features/onboarding").then(m => ({ default: m.OnboardingFlowOrchestrator }))
 );
 const FeedbackModal = lazy(() => 
   import("@/features/feedback").then(m => ({ default: m.FeedbackModal }))
