@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Award, Check, Clock, CreditCard, Lock, Shield, Star, Zap } from "lucide-react";
+import { ArrowRight, Award, Check, Clock, CreditCard, Lock, Moon, Shield, Star, Sun, Zap } from "lucide-react";
 import { useRegistrationModal } from "@/hooks/use-registration-modal";
 import { useAuth } from "@/hooks/use-auth";
 import { FooterStealth } from "@/components/footer-stealth";
@@ -37,6 +37,7 @@ export default function LandingSimple() {
   
   const [currentTestimonialIndex, setCurrentTestimonialIndex] = useState(0);
   const [isOnboardingOpen, setIsOnboardingOpen] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(true);
   const testimonialSectionRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -84,7 +85,7 @@ export default function LandingSimple() {
   };
 
   return (
-    <div className="dark">
+    <div className={isDarkMode ? "dark" : ""}>
       <div className="min-h-screen w-full bg-background overflow-x-hidden relative flex flex-col">
         
         {/* Hero Section */}
@@ -99,12 +100,20 @@ export default function LandingSimple() {
             </div>
           </div>
 
-          {/* Login Link */}
-          <div className="absolute top-4 right-6 md:top-6 md:right-10 z-30">
+          {/* Login Link & Theme Toggle */}
+          <div className="absolute top-4 right-6 md:top-6 md:right-10 z-30 flex items-center gap-4">
+            <button 
+              type="button"
+              onClick={() => setIsDarkMode(!isDarkMode)}
+              className="p-2 rounded-full text-foreground/40 hover:text-foreground/70 hover:bg-foreground/5 transition-all duration-200"
+              aria-label={isDarkMode ? "Switch to light mode" : "Switch to dark mode"}
+            >
+              {isDarkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+            </button>
             <button 
               type="button"
               onClick={handleLogin}
-              className="text-sm text-white/30 hover:text-white/60 transition-colors font-bold uppercase tracking-widest bg-transparent border-none cursor-pointer"
+              className="text-sm text-foreground/30 hover:text-foreground/60 transition-colors font-bold uppercase tracking-widest bg-transparent border-none cursor-pointer"
             >
               Login
             </button>
