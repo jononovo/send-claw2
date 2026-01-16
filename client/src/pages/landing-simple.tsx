@@ -436,6 +436,64 @@ export default function LandingSimple() {
           </div>
         </div>
 
+        {/* My Story Section */}
+        <div className="relative z-20 py-24">
+          <div className="absolute inset-0 bg-gradient-to-b from-gray-100 via-amber-50 to-amber-100 dark:from-[#0A0A10] dark:via-[#1a1612] dark:to-[#1f1915]" />
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-amber-200/20 to-amber-200/30 dark:via-amber-900/15 dark:to-amber-900/25" />
+          
+          <div className="container mx-auto px-6 relative z-10">
+            <div className="max-w-3xl mx-auto">
+              <div className="p-8 md:p-12">
+                <div className="flex items-center gap-3 mb-8">
+                  <span className="text-4xl">🎮</span>
+                  <h3 className="text-3xl md:text-5xl font-serif text-gray-800 dark:text-white">My Story</h3>
+                </div>
+                
+                <div className="space-y-6 text-gray-600 dark:text-gray-400 leading-relaxed">
+                  <p className="text-lg">
+                    I do <span className="text-gray-800 dark:text-white italic">10 push-ups</span> before every shower and I realized that if I do 20, I will very soon stop doing them. But I will explain that later.
+                  </p>
+                  
+                  <p>
+                    In February, after spending an embarrassingly long amount of time creating a SaaS product with a couple of developers. It was finally time to start selling. But being easily distracted, I instead figured that I should create a tool that will make selling easier for me. <span className="text-gray-700 dark:text-gray-300 italic">(Of course!!! That's not procrastination. That's efficiency.)</span>
+                  </p>
+                  
+                  <p>
+                    I then got distracted in workflows to optimize the sales and lead generation. However, finally coming back to this, I decided to launch it because, who the hell wants to open their inbox (with all those clickbait newsletters and juicy news updates) and THEN start sending sales emails?!? <span className="text-gray-800 dark:text-white italic">That's like asking an alcoholic to work at a bar.</span> It's so distracting.
+                  </p>
+                  
+                  <p>
+                    The other thing I realized is that all the other lead generation services that popped-up when I was searching, were for people with <span className="text-gray-800 dark:text-white italic">big budgets</span> and usually needed someone to set it up for them.
+                  </p>
+                  
+                  <p>
+                    I wanted something for the <span className="text-gray-800 dark:text-white italic">small guy</span> that he could get running in less than 60 seconds. And that could be <span className="text-gray-800 dark:text-white italic">addictive and fun</span>.
+                  </p>
+                  
+                  <p>
+                    Now back to those pushups. Well, I realized that the harder the task is, the more likely that I will abandon it, and not make it habit. And I figured, if I can make the selling process much, much easier, but then put a limit so that people will not feel guilty leaving after <span className="text-gray-800 dark:text-white italic">five minutes</span>, that they might enjoy it more AND may make a habit out of it.
+                  </p>
+                  
+                  <p className="text-gray-700 dark:text-gray-300 pt-4">
+                    Umm,... yeah. <br />
+                    Thanks for listening and enjoy. <br />
+                    <span className="font-bold text-gray-800 dark:text-white">- Jon</span> 🐥
+                  </p>
+                </div>
+                
+                <div className="mt-10 text-center">
+                  <Button 
+                    onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                    className="bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-black font-bold px-8 py-6 rounded-full text-lg transition-all duration-300 hover:scale-105"
+                  >
+                    Start a new habit today <ArrowRight className="ml-2 w-5 h-5" />
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <FooterStealth />
       </div>
 
