@@ -429,6 +429,21 @@ input[type="checkbox"]:indeterminate::before {
   100% { color: #d1d5db; }
 }
 
+/* Text swap animations */
+@keyframes text-swap-out {
+  0% { opacity: 1; color: #9ca3af; }
+  50% { opacity: 1; color: #000000; }
+  75% { opacity: 0; color: #000000; }
+  100% { opacity: 0; }
+}
+
+@keyframes text-swap-in {
+  0% { opacity: 0; }
+  50% { opacity: 0; }
+  75% { opacity: 1; }
+  100% { opacity: 1; }
+}
+
 @layer utilities {
   .animate-disco-bounce {
     animation: disco-bounce 5s ease-in-out;
