@@ -250,8 +250,12 @@ export default function Home({ isNewSearch = false }: HomeProps) {
       // Also collapse when search results are shown
       setSearchSectionCollapsed(true);
     } else {
-      // Expand when drawer closes and no results
-      setSearchSectionCollapsed(false);
+      // Only expand when drawer closes and no results IF we're not on a URL route loading data
+      // URL routes start collapsed and should stay collapsed until data loads
+      const isUrlRoute = window.location.pathname.match(/^\/search\/[^/]+\/\d+/);
+      if (!isUrlRoute) {
+        setSearchSectionCollapsed(false);
+      }
     }
   }, [emailDrawer.isOpen, currentResults]);
   
