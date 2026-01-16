@@ -158,7 +158,7 @@ export default function LandingSimple() {
                 </div>
 
                 {/* Trust Section */}
-                <div className="mt-8 pt-6 border-t border-white/5">
+                <div className="mt-4 pt-4">
                   <div className="flex items-center justify-center gap-6 text-gray-400 text-sm mb-1">
                     <div className="flex items-center gap-1">
                       <div className="flex">
