@@ -136,7 +136,7 @@ export default function LandingSimple() {
               <div className="flex flex-col gap-4 w-full max-w-md mt-4">
                 <Button
                   onClick={handleGetStarted}
-                  className="h-16 bg-gradient-to-r from-gray-700 to-gray-800 hover:from-yellow-500 hover:to-yellow-600 text-white hover:text-black font-bold text-xl rounded-xl transition-all duration-300 hover:scale-[1.02] cursor-pointer border border-gray-600 hover:border-yellow-500"
+                  className="h-16 bg-gradient-to-r from-zinc-800 via-zinc-700 to-zinc-800 hover:from-yellow-500 hover:via-yellow-400 hover:to-yellow-500 text-gray-300 hover:text-black font-bold text-xl rounded-xl transition-all duration-500 hover:scale-[1.02] cursor-pointer border border-zinc-600/50 hover:border-yellow-400"
                 >
                   Start outreach with baby steps
                   <ArrowRight className="ml-2 w-5 h-5" />
