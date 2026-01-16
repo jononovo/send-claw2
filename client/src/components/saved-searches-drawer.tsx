@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import {
   Sheet,
   SheetContent,
@@ -19,6 +19,7 @@ import { Button } from "@/components/ui/button";
 import { PanelLeft, Plus, Users, Send, Zap, Pencil } from "lucide-react";
 import type { SearchList } from "@shared/schema";
 import { generateListPromptOnly } from "@/lib/list-utils";
+import { generateSearchUrl } from "@/lib/url-utils";
 import {
   Tooltip,
   TooltipContent,
@@ -40,6 +41,7 @@ export function SavedSearchesDrawer({ open, onOpenChange, onLoadSearch, onNewSea
   });
   
   const [clickedId, setClickedId] = useState<number | null>(null);
+  const [, setLocation] = useLocation();
 
   return (
     <SheetPrimitive.Root open={open} onOpenChange={onOpenChange}>
@@ -147,7 +149,12 @@ export function SavedSearchesDrawer({ open, onOpenChange, onLoadSearch, onNewSea
                   className={`cursor-pointer hover:bg-muted border-0 ${clickedId === list.id ? 'bg-blue-100 dark:bg-blue-900/30' : ''}`}
                   onClick={() => {
                     setClickedId(list.id);
+                    // Load the search data immediately for instant hydration
                     onLoadSearch(list);
+                    onOpenChange(false);
+                    // Navigate to SEO-friendly URL (effect will skip loading since data is already loaded)
+                    const searchUrl = generateSearchUrl(generateListPromptOnly(list), list.listId);
+                    setLocation(searchUrl);
                   }}
                 >
                   <TableCell className="text-sm font-medium text-gray-500 py-3 pr-2">

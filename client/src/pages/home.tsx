@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, lazy, Suspense, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useLocation } from "wouter";
+import { useLocation, useRoute } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { SearchProgressIndicator, type SearchProgressState } from "@/features/search-progress";
@@ -75,6 +75,7 @@ import { filterTopProspects, ContactWithCompanyInfo } from "@/lib/results-analys
 import { Checkbox } from "@/components/ui/checkbox";
 import { ContactActionColumn } from "@/components/contact-action-column";
 import { SearchSessionManager } from "@/lib/search-session-manager";
+import { updateToSearchUrl } from "@/lib/url-utils";
 import { useComprehensiveEmailSearch } from "@/features/search-email";
 import { useSearchState, type SavedSearchState, type CompanyWithContacts } from "@/features/search-state";
 import { useEmailSearchOrchestration } from "@/features/email-search-orchestration";
@@ -87,7 +88,11 @@ interface SourceBreakdown {
   Hunter: number;
 }
 
-export default function Home() {
+interface HomeProps {
+  isNewSearch?: boolean;
+}
+
+export default function Home({ isNewSearch = false }: HomeProps) {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [currentQuery, setCurrentQuery] = useState<string>("");
   const [currentResults, setCurrentResults] = useState<CompanyWithContacts[] | null>(null);
@@ -170,6 +175,7 @@ export default function Home() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [, setLocation] = useLocation();
+  const [isSearchRoute, searchRouteParams] = useRoute("/search/:slug/:listId");
   const registrationModal = useRegistrationModal();
   const auth = useAuth();
   const { notificationState, triggerNotification, closeNotification } = useNotifications();
@@ -668,6 +674,11 @@ export default function Home() {
           .catch((error) => {
             console.error('Failed to persist pending search metrics:', error);
           });
+      }
+      
+      // Update URL to SEO-friendly search URL (replaceState for no re-render)
+      if (currentQuery && listId) {
+        updateToSearchUrl(currentQuery, listId);
       }
       // No toast notification (silent auto-save)
     },
@@ -1207,6 +1218,91 @@ export default function Home() {
     sessionStorage.removeItem('searchState');
     localStorage.removeItem('emailComposerState');
   };
+
+  // Handle /app/new-search route - triggers new search when navigated to this route
+  useEffect(() => {
+    if (isNewSearch) {
+      // Use setTimeout to ensure this runs after initial render
+      setTimeout(() => handleNewSearch(), 0);
+    }
+  }, [isNewSearch]);
+
+  // Handle /search/:slug/:listId route - load search by listId when navigating directly
+  useEffect(() => {
+    if (isSearchRoute && searchRouteParams?.listId) {
+      const listId = parseInt(searchRouteParams.listId, 10);
+      if (isNaN(listId)) return;
+      
+      // Skip if we already have this search loaded (e.g., from drawer click)
+      if (currentListId === listId) {
+        console.log('Search already loaded, skipping fetch:', { listId });
+        return;
+      }
+      
+      // Wait for auth to be ready before deciding if list is not found
+      // This prevents false negatives during Firebase handshake
+      if (!auth.authReady) {
+        console.log('Waiting for auth to be ready before loading search:', { listId });
+        return;
+      }
+      
+      console.log('Loading search from URL:', { listId, slug: searchRouteParams.slug, isAuthenticated: !!auth.user });
+      
+      // Fetch the search list by listId and load it
+      const loadSearchByListId = async () => {
+        try {
+          // Fetch all lists (works without auth for demo users)
+          const lists = await queryClient.fetchQuery({
+            queryKey: ["/api/lists"]
+          }) as SearchList[];
+          
+          const list = lists.find(l => l.listId === listId);
+          if (list) {
+            handleLoadSavedSearch(list);
+          } else {
+            // List not found - if not logged in, prompt login; otherwise show not found
+            console.warn('Search not found for listId:', listId);
+            if (!auth.user) {
+              toast({
+                title: "Login to view this search",
+                description: "This search may belong to your account. Please log in to view it.",
+                variant: "default"
+              });
+            } else {
+              toast({
+                title: "Search not found",
+                description: "The search you're looking for could not be found.",
+                variant: "destructive"
+              });
+            }
+            // Stay on page - don't redirect, let user decide to log in or navigate away
+          }
+        } catch (error: any) {
+          console.error('Failed to load search by listId:', error);
+          const errorMessage = error?.message || '';
+          
+          // Check if it's an auth error (error format is "status: message")
+          if (errorMessage.startsWith('401') || errorMessage.startsWith('403')) {
+            toast({
+              title: "Login required",
+              description: "Please log in to view this search.",
+              variant: "default"
+            });
+          } else {
+            // For other errors (network, 5xx), show retry message
+            toast({
+              title: "Loading error",
+              description: "Unable to load search. Please try again.",
+              variant: "destructive"
+            });
+          }
+          // Stay on page - don't redirect
+        }
+      };
+      
+      loadSearchByListId();
+    }
+  }, [isSearchRoute, searchRouteParams?.listId, currentListId, auth.authReady, auth.user]);
 
   //New function added here
   const getEnrichButtonText = (contact: Contact) => {
