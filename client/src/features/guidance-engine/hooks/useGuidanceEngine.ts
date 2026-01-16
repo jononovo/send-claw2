@@ -137,7 +137,7 @@ export function useGuidanceEngine(options: UseGuidanceEngineOptions): GuidanceCo
   
   const [videoTimestamps, setVideoTimestamps] = useState<VideoTimestamp[]>([]);
 
-  // Initialize from server once auth is ready
+  // Initialize from server once auth is ready (deferred to idle time for LCP optimization)
   useEffect(() => {
     if (!authReady) {
       return;
@@ -156,7 +156,15 @@ export function useGuidanceEngine(options: UseGuidanceEngineOptions): GuidanceCo
       setIsInitialized(true);
       lastUserIdRef.current = userId;
     }
-    initFromServer();
+    
+    // Defer to idle time to avoid blocking LCP
+    if ('requestIdleCallback' in window) {
+      const id = requestIdleCallback(() => initFromServer(), { timeout: 2000 });
+      return () => cancelIdleCallback(id);
+    } else {
+      const timer = setTimeout(() => initFromServer(), 100);
+      return () => clearTimeout(timer);
+    }
   }, [authReady, userId]);
 
   // Re-fetch progress when user changes (login/logout transition)
