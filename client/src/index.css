@@ -409,6 +409,46 @@ input[type="checkbox"]:indeterminate::before {
   animation: progress-shimmer 3s linear infinite;
 }
 
+/* Button gold shimmer animation */
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* Button hover fade in then settle */
+@keyframes shimmer-fade {
+  0% { opacity: 0; }
+  50% { opacity: 1; }
+  100% { opacity: 0.2; }
+}
+
+/* Button text color sync with shimmer */
+@keyframes text-fade {
+  0% { color: #9ca3af; }
+  50% { color: #000000; }
+  100% { color: #d1d5db; }
+}
+
+/* Text swap animations */
+@keyframes text-swap-out {
+  0% { opacity: 1; }
+  50% { opacity: 0; }
+  100% { opacity: 0; }
+}
+
+@keyframes arrow-fade-out {
+  0% { opacity: 1; }
+  35% { opacity: 0; }
+  100% { opacity: 0; }
+}
+
+@keyframes text-swap-in {
+  0% { opacity: 0; }
+  35% { opacity: 0; }
+  60% { opacity: 1; }
+  100% { opacity: 1; }
+}
+
 @layer utilities {
   .animate-disco-bounce {
     animation: disco-bounce 5s ease-in-out;
