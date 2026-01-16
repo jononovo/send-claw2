@@ -1,0 +1,126 @@
+Technical Note: Fix Double-Mount Bug by Deferring GuidanceProvider
+Problem Summary
+The Home component mounts twice on browser navigation (e.g., clicking logo then hitting back), causing a glitchy double-reload. Each mount triggers localStorage restoration and database fetches.
+Root Cause
+LazyGuidanceWrapper in App.tsx changes its wrapper element type after loading:
+typescript// BEFORE load: Fragment wrapper
+return <>{children}</>;
+
+// AFTER load: GuidanceProvider wrapper  
+return <GuidanceProvider>{children}</GuidanceProvider>;
+React treats this as a different tree structure and unmounts/remounts the entire subtree (~600ms after initial render).
+Proposed Solution
+Defer GuidanceProvider loading until after the page is fully loaded and idle. Render it as a sibling to the app content rather than a wrapper.
+Why This Works
+
+Context fallback exists - useGuidance() already returns safe defaults when provider isn't mounted:
+
+typescript   export function useGuidance() {
+     const context = useContext(GuidanceContext);
+     return context ?? defaultGuidanceValue;  // No-op functions, empty state
+   }
+
+Recording uses global listeners - Attaches to document, doesn't need to wrap children
+Playback uses DOM queries - findElement() queries the DOM by selector, doesn't require wrapping
+Overlays use portals - ElementHighlight, GuidanceTooltip render to document.body
+
+What Won't Break
+FeatureStatusReasonRecording challenges✅ WorksGlobal event listeners on documentPlayback/Show mode✅ WorksDOM queries + portalsVideo recording✅ WorksMediaRecorder API, independent of React treeFluffy guide✅ WorksRenders after provider loadsuseGuidance() hooks✅ WorksReturn defaults until provider loads, then upgrade
+Tradeoff
+
+Fluffy and guidance UI appear ~2-3 seconds after page load instead of ~1 second
+QuestProgressHeader won't push content down (but this is acceptable)
+
+
+Implementation
+File: client/src/App.tsx
+Remove LazyGuidanceWrapper from wrapping Router. Add DeferredGuidance as a sibling.
+typescript// DELETE this function entirely:
+// function LazyGuidanceWrapper({ children }: { children: ReactNode }) { ... }
+
+// ADD this new function:
+function DeferredGuidance() {
+  const [GuidanceProvider, setGuidanceProvider] = useState<React.ComponentType<{ 
+    children: ReactNode; 
+    autoStartForNewUsers?: boolean 
+  }> | null>(null);
+  const [location] = useLocation();
+  
+  useEffect(() => {
+    // Only load on guidance-enabled routes
+    if (!isGuidanceRoute(location)) return;
+    
+    // Already loaded
+    if (GuidanceProvider) return;
+    
+    // Wait for page to be fully loaded and idle
+    const load = () => {
+      import("@/features/guidance-engine").then(module => {
+        setGuidanceProvider(() => module.GuidanceProvider);
+      }).catch(err => {
+        console.error("Failed to load guidance engine:", err);
+      });
+    };
+    
+    // Use requestIdleCallback for true deferral, with fallback
+    if ('requestIdleCallback' in window) {
+      const handle = requestIdleCallback(load, { timeout: 3000 });
+      return () => cancelIdleCallback(handle);
+    } else {
+      const timer = setTimeout(load, 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [location, GuidanceProvider]);
+  
+  // Don't render anything until loaded
+  if (!GuidanceProvider) return null;
+  
+  // Render provider with empty children - it provides context and renders overlays
+  return (
+    <GuidanceProvider autoStartForNewUsers={true}>
+      <></>
+    </GuidanceProvider>
+  );
+}
+
+// MODIFY the App function:
+function App() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider>
+        <InsufficientCreditsProvider>
+          <AuthProvider>
+            <RegistrationModalProvider>
+              {/* REMOVED: LazyGuidanceWrapper no longer wraps Router */}
+              <Router />
+              <DeferredGuidance />  {/* NEW: Sibling component */}
+              <RegistrationModalContainer />
+              <Toaster />
+            </RegistrationModalProvider>
+          </AuthProvider>
+        </InsufficientCreditsProvider>
+      </ThemeProvider>
+    </QueryClientProvider>
+  );
+}
+Keep Existing Helper Function
+The isGuidanceRoute function should remain unchanged:
+typescriptconst GUIDANCE_ENABLED_ROUTES = ["/app", "/app/new-search", "/search", "/quests", "/contacts", "/campaigns", "/replies", "/account", "/strategy", "/companies", "/admin"];
+
+function isGuidanceRoute(path: string): boolean {
+  return GUIDANCE_ENABLED_ROUTES.some(route => path === route || path.startsWith(route + "/"));
+}
+
+Validation Checklist
+ScenarioExpected ResultDirect load /search/:slug/:listIdSingle mount, no double-reloadLogo click → browser backSingle mount, correct page displayedRefresh on /appPage loads normallyStart recording (after Fluffy loads)Recording worksPlayback challengeHighlights and tooltips workNavigate between pagesNo remounting of app content
+
+Risk Assessment
+RiskLikelihoodMitigationuseGuidance() returns no-ops before loadExpectedFallback already implemented in codebaseUser tries to record before Fluffy appearsLowFluffy loads within 2-3 secondsLayout shift when guidance UI appearsLowOnly affects active guidance sessions
+
+Summary
+This change:
+
+Fixes the double-mount bug by eliminating the wrapper-swap
+Improves initial page load performance
+Preserves all guidance functionality (recording, playback, video)
+Requires minimal code changes (one file, ~30 lines)
