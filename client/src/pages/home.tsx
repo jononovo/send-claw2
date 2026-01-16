@@ -1438,7 +1438,8 @@ export default function Home({ isNewSearch = false }: HomeProps) {
   const searchPageSeoData = useMemo(() => {
     if (!isSearchRoute || !currentQuery || !currentListId) return null;
     
-    const slug = slugify(currentQuery);
+    // Use the actual route slug to ensure canonical URL matches the page URL
+    const slug = searchRouteParams?.slug || slugify(currentQuery);
     const resultCount = currentResults?.length ?? 0;
     const canonicalUrl = `https://5ducks.ai/search/${slug}/${currentListId}`;
     
@@ -1460,7 +1461,7 @@ export default function Home({ isNewSearch = false }: HomeProps) {
         }
       }
     };
-  }, [isSearchRoute, currentQuery, currentListId, currentResults?.length]);
+  }, [isSearchRoute, currentQuery, currentListId, currentResults?.length, searchRouteParams?.slug]);
 
   return (
     <>
