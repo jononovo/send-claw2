@@ -159,7 +159,7 @@ export default function LandingSimple() {
 
                 {/* Trust Section */}
                 <div className="mt-8 pt-6 border-t border-white/5">
-                  <div className="flex items-center justify-center gap-6 text-gray-400 text-sm mb-2">
+                  <div className="flex items-center justify-center gap-6 text-gray-400 text-sm mb-1">
                     <div className="flex items-center gap-1">
                       <div className="flex">
                         {[1,2,3,4,5].map((i) => (
@@ -171,18 +171,10 @@ export default function LandingSimple() {
                     <div className="w-px h-4 bg-white/10" />
                     <span>2,400+ customers</span>
                   </div>
-                  <div className="flex items-center justify-center gap-4 mb-4">
+                  <div className="flex items-center justify-center gap-4">
                     <span className="text-gray-500 font-semibold text-xs">Capterra</span>
                     <span className="text-gray-600">•</span>
                     <span className="text-orange-500 font-bold text-xs">G2</span>
-                  </div>
-                  
-                  <p className="text-gray-500 text-xs text-center mb-3">Trusted by teams at</p>
-                  <div className="flex items-center justify-center gap-6 opacity-50 hover:opacity-70 transition-opacity">
-                    <span className="text-gray-400 font-medium text-sm tracking-wide">Linear</span>
-                    <span className="text-gray-400 font-light text-sm italic">Vercel</span>
-                    <span className="text-gray-400 font-bold text-xs uppercase tracking-widest">Raycast</span>
-                    <span className="text-gray-400 font-medium text-sm">Loom</span>
                   </div>
                 </div>
               </div>
@@ -258,6 +250,22 @@ export default function LandingSimple() {
                   <span className="text-xs text-gray-300 font-medium">GDPR</span>
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Trusted By Section - Full Width */}
+        <div className="relative z-20 py-16 border-t border-white/5">
+          <div className="container mx-auto px-6">
+            <p className="text-gray-500 text-sm text-center mb-8 tracking-wide">Trusted by teams at</p>
+            <div className="flex items-center justify-center gap-10 md:gap-16 flex-wrap opacity-60 hover:opacity-80 transition-opacity duration-500">
+              <span className="text-gray-400 font-medium text-lg tracking-wide">Linear</span>
+              <span className="text-gray-400 font-light text-lg italic">Vercel</span>
+              <span className="text-gray-400 font-bold text-sm uppercase tracking-widest">Raycast</span>
+              <span className="text-gray-400 font-medium text-lg">Loom</span>
+              <span className="text-gray-400 font-semibold text-lg tracking-tight">Notion</span>
+              <span className="text-gray-400 font-light text-lg">Figma</span>
+              <span className="text-gray-400 font-bold text-sm uppercase tracking-wider">Slack</span>
             </div>
           </div>
         </div>
