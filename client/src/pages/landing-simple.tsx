@@ -156,6 +156,31 @@ export default function LandingSimple() {
                   <span className="flex items-center gap-1"><Check className="w-4 h-4 text-gray-500 group-hover:text-green-500 transition-colors" /> No credit card</span>
                   <span className="flex items-center gap-1"><Check className="w-4 h-4 text-gray-500 group-hover:text-green-500 transition-colors" /> 190 Credits</span>
                 </div>
+
+                {/* Trust Section */}
+                <div className="mt-8 pt-6 border-t border-white/5">
+                  <div className="flex items-center justify-center gap-6 text-gray-400 text-sm mb-4">
+                    <div className="flex items-center gap-1">
+                      <div className="flex">
+                        {[1,2,3,4,5].map((i) => (
+                          <Star key={i} className="w-4 h-4 fill-yellow-500 text-yellow-500" />
+                        ))}
+                      </div>
+                      <span className="ml-1">4.9/5</span>
+                    </div>
+                    <div className="w-px h-4 bg-white/10" />
+                    <span>2,400+ customers</span>
+                  </div>
+                  
+                  <p className="text-gray-500 text-xs text-center mb-4">Trusted by teams at</p>
+                  <div className="flex items-center justify-center gap-8 opacity-50 hover:opacity-70 transition-opacity">
+                    <span className="text-gray-400 font-semibold text-sm">Salesforce</span>
+                    <span className="text-gray-400 font-semibold text-sm">HubSpot</span>
+                    <span className="text-gray-400 font-semibold text-sm">Stripe</span>
+                    <span className="text-gray-400 font-semibold text-sm">Notion</span>
+                    <span className="text-gray-400 font-semibold text-sm">Figma</span>
+                  </div>
+                </div>
               </div>
             </div>
 
