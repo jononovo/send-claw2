@@ -134,7 +134,31 @@ export default function Home({ isNewSearch = false }: HomeProps) {
   // Search Management drawer
   const searchManagementDrawer = useSearchManagementDrawer();
   
-  const [searchSectionCollapsed, setSearchSectionCollapsed] = useState(false);
+  const [searchSectionCollapsed, setSearchSectionCollapsed] = useState(() => {
+    // Guard for SSR/test contexts where window is undefined
+    if (typeof window === 'undefined') {
+      return false;
+    }
+    
+    // Landing page flow - always start expanded (new search incoming)
+    if (localStorage.getItem('pendingSearchQuery')) {
+      return false;
+    }
+    
+    // URL route (/search/:slug/:listId) - start collapsed, will fetch from API
+    if (window.location.pathname.match(/^\/search\/[^/]+\/\d+/)) {
+      return true;
+    }
+    
+    // Check if sessionStorage has saved results to restore
+    const savedState = searchSessionStorage.load();
+    if (savedState?.currentResults && savedState.currentResults.length > 0) {
+      return true;
+    }
+    
+    // Fresh visit - start expanded
+    return false;
+  });
   
   // Search progress state (lifted from PromptEditor for rendering outside collapsible section)
   const [promptEditorProgress, setPromptEditorProgress] = useState<SearchProgressState>({
