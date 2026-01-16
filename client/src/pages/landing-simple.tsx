@@ -38,6 +38,7 @@ export default function LandingSimple() {
   const [currentTestimonialIndex, setCurrentTestimonialIndex] = useState(0);
   const [isOnboardingOpen, setIsOnboardingOpen] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(true);
+  const [onlineCount, setOnlineCount] = useState(() => Math.floor(Math.random() * (99 - 13 + 1)) + 13);
   const testimonialSectionRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -61,6 +62,18 @@ export default function LandingSimple() {
     const interval = setInterval(() => {
       setCurrentTestimonialIndex((prev) => (prev + 1) % testimonials.length);
     }, 5000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setOnlineCount((prev) => {
+        const change = Math.floor(Math.random() * 9) - 4;
+        const newCount = prev + change;
+        return Math.max(13, Math.min(99, newCount));
+      });
+    }, 120000);
 
     return () => clearInterval(interval);
   }, []);
@@ -191,7 +204,10 @@ export default function LandingSimple() {
                   {/* Customers Block */}
                   <div className="text-center">
                     <div className="text-gray-700 dark:text-gray-300 text-base font-medium mb-1">2,400+ customers</div>
-                    <div className="text-gray-500 text-sm">worldwide</div>
+                    <div className="text-gray-500 text-sm flex items-center justify-center gap-1">
+                      <span className="inline-block w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                      {onlineCount} Online
+                    </div>
                   </div>
                 </div>
               </div>
