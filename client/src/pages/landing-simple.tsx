@@ -152,9 +152,9 @@ export default function LandingSimple() {
                   </span>
                 </Button>
                 <div className="flex flex-wrap justify-center gap-4 text-gray-500 text-sm">
-                  <span className="flex items-center gap-1 group"><Check className="w-4 h-4 text-gray-500 group-hover:text-green-500 transition-colors" /> No registration</span>
-                  <span className="flex items-center gap-1 group"><Check className="w-4 h-4 text-gray-500 group-hover:text-green-500 transition-colors" /> No credit card</span>
-                  <span className="flex items-center gap-1 group"><Check className="w-4 h-4 text-gray-500 group-hover:text-green-500 transition-colors" /> Pure awesome</span>
+                  <span className="flex items-center gap-1 group px-3 py-1 rounded-lg cursor-pointer hover:text-white hover:scale-105 transition-all duration-200"><Check className="w-4 h-4 text-gray-500 group-hover:text-green-500 transition-colors" /> No registration</span>
+                  <span className="flex items-center gap-1 group px-3 py-1 rounded-lg cursor-pointer hover:text-white hover:scale-105 transition-all duration-200"><Check className="w-4 h-4 text-gray-500 group-hover:text-green-500 transition-colors" /> No credit card</span>
+                  <span className="flex items-center gap-1 group px-3 py-1 rounded-lg cursor-pointer hover:text-white hover:scale-105 transition-all duration-200"><Check className="w-4 h-4 text-gray-500 group-hover:text-green-500 transition-colors" /> 190 Credits</span>
                 </div>
               </div>
             </div>
