@@ -1,0 +1,75 @@
+The Problem: Duplicate API Calls on /app
+From the HAR files, I see:
+
+/api/user called 5 times
+/api/guidance/progress called 2 times
+
+Where the calls come from:
+/api/user (5 calls):
+
+useAuth hook (client/src/hooks/use-auth.tsx)
+
+typescript   useQuery({
+     queryKey: ["/api/user"],
+     queryFn: getQueryFn({ on401: "returnNull" }),
+     enabled: hasLocalAuth || isAITestMode,
+   });
+
+Components using useAuth() - Every component that calls const { user } = useAuth() doesn't create a new fetch (React Query deduplicates), BUT if they mount at slightly different times or have different enabled states, they can trigger separate calls.
+AllContacts.tsx, Streak.tsx, ContactListDetail.tsx - These pages have:
+
+typescript   const { user } = useAuth();
+   // Later...
+   useQuery({ queryKey: [...], enabled: !!user });
+The enabled: !!user can cause race conditions where the query fires before auth settles.
+/api/guidance/progress (2 calls):
+
+useGuidanceEngine hook (client/src/features/guidance-engine/hooks/useGuidanceEngine.ts)
+
+typescript   async function fetchServerProgress() {
+     const res = await fetch("/api/guidance/progress", { credentials: "include" });
+     // ...
+   }
+This is a raw fetch(), NOT a useQuery. It bypasses React Query's deduplication.
+
+Called again on user change detection in the same file.
+
+
+The Fix
+1. For /api/guidance/progress - Use React Query instead of raw fetch
+In client/src/features/guidance-engine/hooks/useGuidanceEngine.ts, change:
+typescript// BEFORE - raw fetch, no deduplication
+async function fetchServerProgress() {
+  const res = await fetch("/api/guidance/progress", { credentials: "include" });
+  return res.json();
+}
+
+// AFTER - use React Query's queryClient
+import { queryClient } from "@/lib/queryClient";
+
+async function fetchServerProgress() {
+  return queryClient.fetchQuery({
+    queryKey: ["/api/guidance/progress"],
+    staleTime: 30000, // Don't refetch for 30 seconds
+  });
+}
+2. For /api/user - Add staleTime to prevent refetches
+In client/src/hooks/use-auth.tsx:
+typescript// BEFORE
+useQuery({
+  queryKey: ["/api/user"],
+  queryFn: getQueryFn({ on401: "returnNull" }),
+  enabled: hasLocalAuth || isAITestMode,
+});
+
+// AFTER - add staleTime
+useQuery({
+  queryKey: ["/api/user"],
+  queryFn: getQueryFn({ on401: "returnNull" }),
+  enabled: hasLocalAuth || isAITestMode,
+  staleTime: 60000, // Consider fresh for 1 minute
+});
+3. Check your queryClient default options
+In client/src/lib/queryClient.ts, you have:
+typescriptstaleTime: Infinity,
+This is good, but Infinity means queries never go stale automatically. The issue is that components with enabled: !!user might be triggering fresh fetches when user changes from undefined to a value.

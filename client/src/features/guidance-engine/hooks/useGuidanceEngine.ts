@@ -2,6 +2,7 @@ import { useState, useCallback, useMemo, useEffect, useRef } from "react";
 import type { GuidanceState, GuidanceContextValue, Quest, Challenge, GuidanceStep, RecordingState, RecordedStep, PlaybackMode, VideoTimestamp } from "../types";
 import { QUESTS, getQuestById, getFirstIncompleteQuest } from "../quests";
 import { getBestSelector, getElementDescription } from "../utils/elementSelector";
+import { queryClient, getQueryFn } from "@/lib/queryClient";
 
 const defaultRecordingState: RecordingState = {
   isRecording: false,
@@ -64,22 +65,12 @@ function getAuthHeaders(): HeadersInit {
 
 async function fetchServerProgress(): Promise<Partial<GuidanceState> | null> {
   try {
-    const authToken = localStorage.getItem('authToken');
-    
-    const headers: HeadersInit = {};
-    if (authToken) {
-      headers['Authorization'] = `Bearer ${authToken}`;
-    }
-    
-    const res = await fetch("/api/guidance/progress", { 
-      credentials: "include",
-      headers 
+    const data = await queryClient.fetchQuery({
+      queryKey: ["/api/guidance/progress"],
+      queryFn: getQueryFn({ on401: "returnNull" }),
+      staleTime: 30000,
     });
-    if (!res.ok) {
-      return null;
-    }
-    const data = await res.json();
-    return data;
+    return data as Partial<GuidanceState> | null;
   } catch (e) {
     console.error("[GuidanceEngine] Failed to fetch server guidance progress:", e);
     return null;
