@@ -205,7 +205,7 @@ export default function LandingSimple() {
                   <div className="text-center">
                     <div className="text-gray-700 dark:text-gray-300 text-base font-medium mb-1">2,400+ customers</div>
                     <div className="text-gray-500 text-sm flex items-center justify-center gap-1">
-                      <span className="inline-block w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                      <span className="inline-block w-2 h-2 rounded-full bg-green-600/70" />
                       {onlineCount} Online
                     </div>
                   </div>
