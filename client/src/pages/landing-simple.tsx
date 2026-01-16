@@ -136,11 +136,10 @@ export default function LandingSimple() {
               <div className="flex flex-col gap-4 w-full max-w-md mt-4">
                 <Button
                   onClick={handleGetStarted}
-                  className="group relative h-16 overflow-hidden bg-gradient-to-r from-[#0A0A10] via-[#1a1a1f] to-[#0f0f14] text-gray-400 hover:text-black font-bold text-xl rounded-xl transition-colors duration-500 ease-in-out !cursor-pointer border border-white/10 hover:border-yellow-400"
+                  className="group relative h-16 overflow-hidden bg-gradient-to-r from-[#0A0A10] via-[#1a1a1f] to-[#0f0f14] text-gray-400 hover:text-black font-bold text-xl rounded-xl transition-colors duration-500 ease-in-out !cursor-pointer border border-white/10"
                 >
                   <span className="absolute inset-0 bg-gradient-to-r from-yellow-500 via-yellow-400 to-yellow-500 opacity-0 group-hover:opacity-100 transition-opacity duration-500 ease-in rounded-xl" />
-                  Start outreach with baby steps
-                  <ArrowRight className="ml-2 w-5 h-5" />
+                  <span className="relative z-10 flex items-center">Start outreach with baby steps<ArrowRight className="ml-2 w-5 h-5" /></span>
                 </Button>
                 <div className="flex flex-wrap justify-center gap-4 text-gray-500 text-sm">
                   <span className="flex items-center gap-1 group"><Check className="w-4 h-4 text-gray-500 group-hover:text-green-500 transition-colors" /> No registration</span>
