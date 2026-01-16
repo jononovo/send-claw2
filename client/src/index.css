@@ -431,9 +431,8 @@ input[type="checkbox"]:indeterminate::before {
 
 /* Text swap animations */
 @keyframes text-swap-out {
-  0% { opacity: 1; color: #9ca3af; }
-  50% { opacity: 1; color: #000000; }
-  75% { opacity: 0; color: #000000; }
+  0% { opacity: 1; }
+  50% { opacity: 0; }
   100% { opacity: 0; }
 }
 
