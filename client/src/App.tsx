@@ -2,7 +2,7 @@ import { lazy, Suspense, useEffect, useState, ReactNode } from "react";
 import { Switch, Route, useLocation } from "wouter";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "@/lib/queryClient";
-import { LoadingScreen } from "@/components/ui/loading-screen";
+import { AppSkeleton } from "@/components/ui/app-skeleton";
 import { AppLayout, Layout } from "@/components/layout";
 import { MainNav } from "@/components/main-nav";
 import { ProtectedRoute } from "@/lib/protected-route";
@@ -153,14 +153,14 @@ function Router() {
         
         {/* React version of landing page for comparison */}
         <Route path="/react-landing" component={() => 
-          <Suspense fallback={<LoadingScreen />}>
+          <Suspense fallback={null}>
             <Landing />
           </Suspense>
         } />
         
         {/* Landing2 Page Clone */}
         <Route path="/landing2" component={() => 
-          <Suspense fallback={<LoadingScreen />}>
+          <Suspense fallback={null}>
             <Landing2 />
           </Suspense>
         } />
@@ -172,14 +172,14 @@ function Router() {
         
         {/* Strategic Planning Page (no nav) */}
         <Route path="/planning" component={() => 
-          <Suspense fallback={<LoadingScreen />}>
+          <Suspense fallback={null}>
             <Planning />
           </Suspense>
         } />
         
         {/* Daily Outreach Page - Standalone without navigation */}
         <Route path="/outreach/daily/:token" component={() => 
-          <Suspense fallback={<LoadingScreen />}>
+          <Suspense fallback={null}>
             <DailyOutreach />
           </Suspense>
         } />
@@ -189,7 +189,7 @@ function Router() {
           <Layout>
             <MainNav />
             <div className="flex-1">
-              <Suspense fallback={<LoadingScreen />}>
+              <Suspense fallback={null}>
                 <Terms />
               </Suspense>
             </div>
@@ -200,7 +200,7 @@ function Router() {
           <Layout>
             <MainNav />
             <div className="flex-1">
-              <Suspense fallback={<LoadingScreen />}>
+              <Suspense fallback={null}>
                 <Blog />
               </Suspense>
             </div>
@@ -211,7 +211,7 @@ function Router() {
           <Layout>
             <MainNav />
             <div className="flex-1">
-              <Suspense fallback={<LoadingScreen />}>
+              <Suspense fallback={null}>
                 <BlogPost />
               </Suspense>
             </div>
@@ -222,7 +222,7 @@ function Router() {
           <Layout>
             <MainNav />
             <div className="flex-1">
-              <Suspense fallback={<LoadingScreen />}>
+              <Suspense fallback={null}>
                 <Levels />
               </Suspense>
             </div>
@@ -233,7 +233,7 @@ function Router() {
           <Layout>
             <MainNav />
             <div className="flex-1">
-              <Suspense fallback={<LoadingScreen />}>
+              <Suspense fallback={null}>
                 <Support />
               </Suspense>
             </div>
@@ -243,7 +243,7 @@ function Router() {
           <Layout>
             <MainNav />
             <div className="flex-1">
-              <Suspense fallback={<LoadingScreen />}>
+              <Suspense fallback={null}>
                 <Privacy />
               </Suspense>
             </div>
@@ -253,7 +253,7 @@ function Router() {
           <Layout>
             <MainNav />
             <div className="flex-1">
-              <Suspense fallback={<LoadingScreen />}>
+              <Suspense fallback={null}>
                 <Changelog />
               </Suspense>
             </div>
@@ -261,7 +261,7 @@ function Router() {
         </Route>
 
         <Route path="/quests">
-          <Suspense fallback={<LoadingScreen />}>
+          <Suspense fallback={null}>
             <QuestsPage />
           </Suspense>
         </Route>
@@ -278,136 +278,136 @@ function Router() {
                 <Route path="/search">
                   {() => {
                     window.location.replace('/app');
-                    return <LoadingScreen message="Redirecting..." />;
+                    return null;
                   }}
                 </Route>
                 
                 {/* Semi-protected routes - allow initial access but prompt for login for certain actions */}
                 <SemiProtectedRoute path="/search/:slug/:listId" component={() => 
-                  <Suspense fallback={<LoadingScreen message="Loading search..." />}>
+                  <Suspense fallback={<AppSkeleton />}>
                     <Home />
                   </Suspense>
                 } />
                 <SemiProtectedRoute path="/app/new-search" component={() => 
-                  <Suspense fallback={<LoadingScreen message="Loading search interface..." />}>
+                  <Suspense fallback={<AppSkeleton />}>
                     <Home isNewSearch={true} />
                   </Suspense>
                 } />
                 <SemiProtectedRoute path="/app" component={() => 
-                  <Suspense fallback={<LoadingScreen message="Loading search interface..." />}>
+                  <Suspense fallback={<AppSkeleton />}>
                     <Home />
                   </Suspense>
                 } />
                 <SemiProtectedRoute path="/company/:slug/:id" component={() => 
-                  <Suspense fallback={<LoadingScreen message="Loading company details..." />}>
+                  <Suspense fallback={null}>
                     <CompanyDetails />
                   </Suspense>
                 } />
                 
                 {/* Fully protected routes - require login */}
                 <ProtectedRoute path="/account" component={() => 
-                  <Suspense fallback={<LoadingScreen />}>
+                  <Suspense fallback={null}>
                     <Account />
                   </Suspense>
                 } />
                 <ProtectedRoute path="/streak" component={() => 
-                  <Suspense fallback={<LoadingScreen />}>
+                  <Suspense fallback={null}>
                     <Streak />
                   </Suspense>
                 } />
                 <ProtectedRoute path="/campaigns" component={() => 
-                  <Suspense fallback={<LoadingScreen />}>
+                  <Suspense fallback={null}>
                     <Campaigns />
                   </Suspense>
                 } />
                 <ProtectedRoute path="/campaigns/:id" component={() => 
-                  <Suspense fallback={<LoadingScreen />}>
+                  <Suspense fallback={null}>
                     <CampaignDetail />
                   </Suspense>
                 } />
                 <ProtectedRoute path="/contacts" component={() => 
-                  <Suspense fallback={<LoadingScreen />}>
+                  <Suspense fallback={null}>
                     <Contacts />
                   </Suspense>
                 } />
                 <ProtectedRoute path="/contacts/all-contacts" component={() => 
-                  <Suspense fallback={<LoadingScreen />}>
+                  <Suspense fallback={null}>
                     <AllContacts />
                   </Suspense>
                 } />
                 <ProtectedRoute path="/contacts/lists/:id" component={() => 
-                  <Suspense fallback={<LoadingScreen />}>
+                  <Suspense fallback={null}>
                     <ContactListDetail />
                   </Suspense>
                 } />
                 <ProtectedRoute path="/contact-lists/:id" component={() => 
-                  <Suspense fallback={<LoadingScreen />}>
+                  <Suspense fallback={null}>
                     <ContactListDetail />
                   </Suspense>
                 } />
                 <ProtectedRoute path="/replies" component={() => 
-                  <Suspense fallback={<LoadingScreen />}>
+                  <Suspense fallback={null}>
                     <Replies />
                   </Suspense>
                 } />
                 <SemiProtectedRoute path="/p/:slug/:id" component={() => 
-                  <Suspense fallback={<LoadingScreen />}>
+                  <Suspense fallback={null}>
                     <ContactDetails />
                   </Suspense>
                 } />
                 <ProtectedRoute path="/testing" component={() => 
-                  <Suspense fallback={<LoadingScreen />}>
+                  <Suspense fallback={null}>
                     <Testing />
                   </Suspense>
                 } />
                 <ProtectedRoute path="/strategy" component={() => 
-                  <Suspense fallback={<LoadingScreen />}>
+                  <Suspense fallback={null}>
                     <StrategyDashboard />
                   </Suspense>
                 } />
                 
                 {/* Admin routes - require login and admin privileges */}
                 <ProtectedRoute path="/admin" component={() => 
-                  <Suspense fallback={<LoadingScreen />}>
+                  <Suspense fallback={null}>
                     <AdminDashboard />
                   </Suspense>
                 } />
                 <ProtectedRoute path="/admin/users" component={() => 
-                  <Suspense fallback={<LoadingScreen />}>
+                  <Suspense fallback={null}>
                     <AdminUsers />
                   </Suspense>
                 } />
                 <ProtectedRoute path="/admin/email" component={() => 
-                  <Suspense fallback={<LoadingScreen />}>
+                  <Suspense fallback={null}>
                     <AdminEmailTesting />
                   </Suspense>
                 } />
                 <ProtectedRoute path="/admin/testing" component={() => 
-                  <Suspense fallback={<LoadingScreen />}>
+                  <Suspense fallback={null}>
                     <AdminApiTesting />
                   </Suspense>
                 } />
                 <ProtectedRoute path="/admin/templates" component={() => 
-                  <Suspense fallback={<LoadingScreen />}>
+                  <Suspense fallback={null}>
                     <AdminTemplates />
                   </Suspense>
                 } />
                 <ProtectedRoute path="/admin/attribution" component={() => 
-                  <Suspense fallback={<LoadingScreen />}>
+                  <Suspense fallback={null}>
                     <AdminAttribution />
                   </Suspense>
                 } />
                 
                 {/* Subscription Success Page */}
                 <Route path="/subscription-success" component={() => 
-                  <Suspense fallback={<LoadingScreen />}>
+                  <Suspense fallback={null}>
                     <SubscriptionSuccess />
                   </Suspense>
                 } />
                 
                 {/* 404 Page */}
                 <Route component={() => 
-                  <Suspense fallback={<LoadingScreen />}>
+                  <Suspense fallback={null}>
                     <NotFound />
                   </Suspense>
                 } />

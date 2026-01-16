@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { ChevronDown, Coins } from 'lucide-react';
-import { useQuery } from "@tanstack/react-query";
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -10,6 +9,7 @@ import {
 import { cn } from "@/lib/utils";
 import { PlanCards } from '@/components/plan-cards';
 import { useAuth } from "@/hooks/use-auth";
+import { useDeferredQuery } from "@/hooks/use-deferred-query";
 
 interface CreditData {
   balance: number;
@@ -28,12 +28,12 @@ interface SubscriptionStatus {
 export function CreditUpgradeDropdown() {
   const { user } = useAuth();
   
-  const { data: credits, isLoading } = useQuery<CreditData>({
+  const { data: credits, isLoading } = useDeferredQuery<CreditData>({
     queryKey: ['/api/credits'],
     enabled: !!user,
   });
 
-  const { data: subscriptionStatus } = useQuery<SubscriptionStatus>({
+  const { data: subscriptionStatus } = useDeferredQuery<SubscriptionStatus>({
     queryKey: ['/api/stripe/subscription-status'],
     enabled: !!user,
   });

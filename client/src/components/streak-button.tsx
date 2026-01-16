@@ -1,4 +1,3 @@
-import { useQuery } from "@tanstack/react-query";
 import { Link } from "wouter";
 import { Flame } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -10,6 +9,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useAuth } from "@/hooks/use-auth";
+import { useDeferredQuery } from "@/hooks/use-deferred-query";
 
 interface StreakStats {
   currentStreak: number;
@@ -36,9 +36,9 @@ interface StreakStats {
 export function StreakButton() {
   const { user } = useAuth();
   
-  const { data: stats, isLoading } = useQuery<StreakStats>({
+  const { data: stats, isLoading } = useDeferredQuery<StreakStats>({
     queryKey: ['/api/daily-outreach/streak-stats'],
-    refetchInterval: 30000, // Refresh every 30 seconds
+    refetchInterval: 30000,
     retry: false,
     enabled: !!user,
   });

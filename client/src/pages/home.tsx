@@ -30,10 +30,14 @@ const OnboardingFlowOrchestrator = lazy(() =>
 const FeedbackModal = lazy(() => 
   import("@/features/feedback").then(m => ({ default: m.FeedbackModal }))
 );
+const TopProspectsCard = lazy(() => 
+  import("@/features/top-prospects").then(m => ({ default: m.TopProspectsCard }))
+);
+const SelectionToolbar = lazy(() => 
+  import("@/components/SelectionToolbar").then(m => ({ default: m.SelectionToolbar }))
+);
 import { useEmailDrawer } from "@/features/email-drawer";
 import { useSearchManagementDrawer } from "@/features/search-management-drawer";
-import { TopProspectsCard } from "@/features/top-prospects";
-import { SelectionToolbar } from "@/components/SelectionToolbar";
 import { useToast } from "@/hooks/use-toast";
 import { getPersistedEmailSubject } from "@/hooks/use-email-composer-persistence";
 import { useAuth } from "@/hooks/use-auth";
@@ -1743,11 +1747,13 @@ export default function Home({ isNewSearch = false }: HomeProps) {
                       getCompanySelectionState={getCompanySelectionState}
                       onCompanySelectionChange={handleCompanyCheckboxChange}
                       topActionsTrailing={selectedContacts.size > 0 ? (
-                        <SelectionToolbar
-                          selectedCount={selectedContacts.size}
-                          onClear={() => setSelectedContacts(new Set())}
-                          selectedContactIds={Array.from(selectedContacts)}
-                        />
+                        <Suspense fallback={null}>
+                          <SelectionToolbar
+                            selectedCount={selectedContacts.size}
+                            onClear={() => setSelectedContacts(new Set())}
+                            selectedContactIds={Array.from(selectedContacts)}
+                          />
+                        </Suspense>
                       ) : undefined}
                       onShowReport={() => setMainSummaryVisible(true)}
                       onFindKeyEmails={emailOrchestration.runEmailSearch}
@@ -1763,15 +1769,19 @@ export default function Home({ isNewSearch = false }: HomeProps) {
             </Card>
           ) : null}
 
-          {/* Top Prospects Section - Modular component */}
-          <TopProspectsCard
-            prospects={topProspects}
-            pendingComprehensiveSearchIds={pendingComprehensiveSearchIds}
-            isVisible={!!(currentResults && currentResults.length > 0 && companiesViewMode !== 'slides')}
-            onContactView={handleContactView}
-            onContactFeedback={handleContactFeedback}
-            handleComprehensiveEmailSearch={handleComprehensiveEmailSearch}
-          />
+          {/* Top Prospects Section - Lazy loaded, only renders after search results */}
+          {currentResults && currentResults.length > 0 && companiesViewMode !== 'slides' && (
+            <Suspense fallback={null}>
+              <TopProspectsCard
+                prospects={topProspects}
+                pendingComprehensiveSearchIds={pendingComprehensiveSearchIds}
+                isVisible={true}
+                onContactView={handleContactView}
+                onContactFeedback={handleContactFeedback}
+                handleComprehensiveEmailSearch={handleComprehensiveEmailSearch}
+              />
+            </Suspense>
+          )}
             </div>
 
             {/* API Templates Button moved to settings drawer */}
