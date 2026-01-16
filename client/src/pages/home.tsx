@@ -12,10 +12,15 @@ import { TableSkeleton } from "@/components/ui/table-skeleton";
 const CompanyCards = lazy(() => import("@/components/company-cards"));
 const PromptEditor = lazy(() => import("@/components/prompt-editor"));
 
+// Lazy load components that only appear after user interaction
+const EmailDrawer = lazy(() => 
+  import("@/features/email-drawer").then(m => ({ default: m.EmailDrawer }))
+);
+
 // Import consolidated search report modal
 import { SearchReportModal } from "@/features/search-report";
 import { OnboardingFlowOrchestrator } from "@/components/onboarding/OnboardingFlowOrchestrator";
-import { EmailDrawer, useEmailDrawer } from "@/features/email-drawer";
+import { useEmailDrawer } from "@/features/email-drawer";
 import { SearchManagementDrawer, useSearchManagementDrawer } from "@/features/search-management-drawer";
 import { TopProspectsCard } from "@/features/top-prospects";
 import { SelectionToolbar } from "@/components/SelectionToolbar";
@@ -1764,27 +1769,31 @@ export default function Home({ isNewSearch = false }: HomeProps) {
         </div>
       </div>
       
-      {/* Email Drawer - New modular component */}
-      <EmailDrawer
-        open={emailDrawer.isOpen}
-        mode={emailDrawer.mode}
-        viewState={emailDrawer.viewState}
-        selectedContact={emailDrawer.selectedContact}
-        selectedCompany={emailDrawer.selectedCompany}
-        selectedCompanyContacts={emailDrawer.selectedCompanyContacts}
-        width={emailDrawer.drawerWidth}
-        isResizing={emailDrawer.isResizing}
-        currentListId={currentListId}
-        currentQuery={currentQuery}
-        emailSubject={emailDrawer.viewState === 'minimized' ? getPersistedEmailSubject() : undefined}
-        onClose={emailDrawer.closeDrawer}
-        onModeChange={emailDrawer.setMode}
-        onContactChange={handleEmailContactChange}
-        onResizeStart={emailDrawer.handleMouseDown}
-        onMinimize={emailDrawer.minimize}
-        onExpand={emailDrawer.expand}
-        onRestore={emailDrawer.restore}
-      />
+      {/* Email Drawer - Lazy loaded, only renders when open */}
+      {emailDrawer.isOpen && (
+        <Suspense fallback={null}>
+          <EmailDrawer
+            open={emailDrawer.isOpen}
+            mode={emailDrawer.mode}
+            viewState={emailDrawer.viewState}
+            selectedContact={emailDrawer.selectedContact}
+            selectedCompany={emailDrawer.selectedCompany}
+            selectedCompanyContacts={emailDrawer.selectedCompanyContacts}
+            width={emailDrawer.drawerWidth}
+            isResizing={emailDrawer.isResizing}
+            currentListId={currentListId}
+            currentQuery={currentQuery}
+            emailSubject={emailDrawer.viewState === 'minimized' ? getPersistedEmailSubject() : undefined}
+            onClose={emailDrawer.closeDrawer}
+            onModeChange={emailDrawer.setMode}
+            onContactChange={handleEmailContactChange}
+            onResizeStart={emailDrawer.handleMouseDown}
+            onMinimize={emailDrawer.minimize}
+            onExpand={emailDrawer.expand}
+            onRestore={emailDrawer.restore}
+          />
+        </Suspense>
+      )}
       
       {/* Search Management Drawer */}
       <SearchManagementDrawer
