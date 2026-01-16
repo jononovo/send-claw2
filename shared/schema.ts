@@ -1551,3 +1551,72 @@ export const insertGuidanceVideoSchema = z.object({
 export type GuidanceVideo = typeof guidanceVideos.$inferSelect;
 export type InsertGuidanceVideo = z.infer<typeof insertGuidanceVideoSchema>;
 
+// Pricing Promos - manages dynamic pricing configurations and promotions
+export const pricingPromos = pgTable("pricing_promos", {
+  id: serial("id").primaryKey(),
+  code: text("code").notNull().unique(), // URL parameter code (e.g., "spring-sale", "egg")
+  name: text("name").notNull(), // Display name for admin
+  description: text("description"),
+  isActive: boolean("is_active").notNull().default(true),
+  priority: integer("priority").notNull().default(0), // Higher = takes precedence
+  
+  // Schedule configuration
+  startDate: timestamp("start_date", { withTimezone: true }),
+  endDate: timestamp("end_date", { withTimezone: true }),
+  daysOfWeek: jsonb("days_of_week").$type<number[]>().default([]), // 0=Sun, 1=Mon, etc. Empty = all days
+  
+  // Plan visibility
+  showFreeTrial: boolean("show_free_trial").notNull().default(true),
+  showDuckling: boolean("show_duckling").notNull().default(true),
+  showMamaDuck: boolean("show_mama_duck").notNull().default(true),
+  
+  // Price overrides (null = use default)
+  ducklingPrice: real("duckling_price"),
+  ducklingCredits: integer("duckling_credits"),
+  ducklingBonus: integer("duckling_bonus"),
+  mamaDuckPrice: real("mama_duck_price"),
+  mamaDuckCredits: integer("mama_duck_credits"),
+  mamaDuckBonus: integer("mama_duck_bonus"),
+  freeTrialCredits: integer("free_trial_credits"),
+  
+  // Stripe price IDs for this promo (null = use default)
+  ducklingStripePriceId: text("duckling_stripe_price_id"),
+  mamaDuckStripePriceId: text("mama_duck_stripe_price_id"),
+  
+  // Tracking
+  metadata: jsonb("metadata").default({}),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow()
+}, (table) => [
+  index('idx_pricing_promos_code').on(table.code),
+  index('idx_pricing_promos_active').on(table.isActive),
+  index('idx_pricing_promos_priority').on(table.priority)
+]);
+
+export const insertPricingPromoSchema = z.object({
+  code: z.string().min(1, "Promo code is required"),
+  name: z.string().min(1, "Name is required"),
+  description: z.string().optional(),
+  isActive: z.boolean().default(true),
+  priority: z.number().default(0),
+  startDate: z.date().optional(),
+  endDate: z.date().optional(),
+  daysOfWeek: z.array(z.number().min(0).max(6)).default([]),
+  showFreeTrial: z.boolean().default(true),
+  showDuckling: z.boolean().default(true),
+  showMamaDuck: z.boolean().default(true),
+  ducklingPrice: z.number().optional(),
+  ducklingCredits: z.number().optional(),
+  ducklingBonus: z.number().optional(),
+  mamaDuckPrice: z.number().optional(),
+  mamaDuckCredits: z.number().optional(),
+  mamaDuckBonus: z.number().optional(),
+  freeTrialCredits: z.number().optional(),
+  ducklingStripePriceId: z.string().optional(),
+  mamaDuckStripePriceId: z.string().optional(),
+  metadata: z.record(z.unknown()).optional()
+});
+
+export type PricingPromo = typeof pricingPromos.$inferSelect;
+export type InsertPricingPromo = z.infer<typeof insertPricingPromoSchema>;
+
