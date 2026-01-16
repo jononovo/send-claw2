@@ -134,6 +134,7 @@ function Router() {
         
         {/* Stealth Mode Landing Page (directly imported, no Suspense needed) */}
         <Route path="/landing-stealth" component={LandingStealth} />
+        <Route path="/stealth" component={LandingStealth} />
         <Route path="/s" component={LandingStealth} />
         
         {/* Strategic Planning Page (no nav) */}

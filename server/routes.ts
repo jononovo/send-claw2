@@ -4,6 +4,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
 import { storage } from "./storage";
+import { pool } from "./db";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -171,6 +172,32 @@ export function registerRoutes(app: Express) {
     res.type('text/plain').sendFile(path.join(__dirname, '../static/llms.txt'));
   });
   
+  // Player count API - non-blocking async updates
+  app.get('/api/player-count', async (req, res) => {
+    try {
+      const result = await pool.query(
+        "SELECT value FROM site_stats WHERE key = 'player_count'"
+      );
+      const count = result.rows[0]?.value ?? 1248;
+      res.json({ count });
+    } catch (error) {
+      console.error('[PlayerCount] Error fetching count:', error);
+      res.status(500).json({ error: 'Failed to fetch player count' });
+    }
+  });
+  
+  app.post('/api/player-count/increment', async (req, res) => {
+    try {
+      const result = await pool.query(
+        "UPDATE site_stats SET value = value + 1, updated_at = NOW() WHERE key = 'player_count' RETURNING value"
+      );
+      const count = result.rows[0]?.value ?? 1248;
+      res.json({ count });
+    } catch (error) {
+      console.error('[PlayerCount] Error incrementing count:', error);
+      res.status(500).json({ error: 'Failed to increment player count' });
+    }
+  });
 
 
 

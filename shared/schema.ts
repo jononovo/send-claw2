@@ -1523,6 +1523,14 @@ export type InsertEmailSequenceEvent = z.infer<typeof insertEmailSequenceEventSc
 export type EmailSend = typeof emailSends.$inferSelect;
 export type InsertEmailSend = z.infer<typeof insertEmailSendSchema>;
 
+// Site statistics - tracks global site metrics like player count
+export const siteStats = pgTable("site_stats", {
+  id: serial("id").primaryKey(),
+  key: text("key").notNull().unique(),
+  value: integer("value").notNull().default(0),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow()
+});
+
 // Backward compatibility exports
 export const targetCustomerProfiles = customerProfiles;
 
