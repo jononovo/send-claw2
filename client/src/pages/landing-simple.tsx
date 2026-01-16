@@ -172,45 +172,19 @@ export default function LandingSimple() {
                     <span>2,400+ customers</span>
                   </div>
                   
-                  <div className="flex flex-col md:flex-row items-center justify-center gap-8">
-                    {/* Brands */}
-                    <div className="flex-1">
-                      <p className="text-gray-500 text-xs text-center mb-3">Trusted by teams at</p>
-                      <div className="flex items-center justify-center gap-6 opacity-50 hover:opacity-70 transition-opacity">
-                        <span className="text-gray-400 font-medium text-sm tracking-wide">Linear</span>
-                        <span className="text-gray-400 font-light text-sm italic">Vercel</span>
-                        <span className="text-gray-400 font-bold text-xs uppercase tracking-widest">Raycast</span>
-                        <span className="text-gray-400 font-medium text-sm">Loom</span>
-                      </div>
-                    </div>
-                    
-                    <div className="hidden md:block w-px h-12 bg-white/10" />
-                    
-                    {/* Certifications */}
-                    <div className="flex-1">
-                      <p className="text-gray-500 text-xs text-center mb-3">Certifications & Partners</p>
-                      <div className="flex items-center justify-center gap-4 opacity-50 hover:opacity-70 transition-opacity">
-                        <div className="flex items-center gap-1 px-2 py-1 border border-white/10 rounded text-xs text-gray-400">
-                          <Shield className="w-3 h-3" /> SOC 2
-                        </div>
-                        <div className="flex items-center gap-1 px-2 py-1 border border-white/10 rounded text-xs text-gray-400">
-                          <Award className="w-3 h-3" /> WeWork
-                        </div>
-                        <div className="flex items-center gap-1 px-2 py-1 border border-white/10 rounded text-xs text-gray-400">
-                          <CreditCard className="w-3 h-3" /> Stripe
-                        </div>
-                        <div className="flex items-center gap-1 px-2 py-1 border border-white/10 rounded text-xs text-gray-400">
-                          <Lock className="w-3 h-3" /> GDPR
-                        </div>
-                      </div>
-                    </div>
+                  <p className="text-gray-500 text-xs text-center mb-3">Trusted by teams at</p>
+                  <div className="flex items-center justify-center gap-6 opacity-50 hover:opacity-70 transition-opacity">
+                    <span className="text-gray-400 font-medium text-sm tracking-wide">Linear</span>
+                    <span className="text-gray-400 font-light text-sm italic">Vercel</span>
+                    <span className="text-gray-400 font-bold text-xs uppercase tracking-widest">Raycast</span>
+                    <span className="text-gray-400 font-medium text-sm">Loom</span>
                   </div>
                 </div>
               </div>
             </div>
 
             {/* Right Column - Demo Simulation */}
-            <div className="hidden lg:block">
+            <div className="hidden lg:flex lg:flex-col lg:items-center -mt-8">
               <div className="relative">
                 <div className="bg-[#1a1814] rounded-xl overflow-hidden shadow-2xl border border-white/10">
                   {/* Browser chrome header */}
@@ -237,6 +211,26 @@ export default function LandingSimple() {
                     aspectRatio={1}
                     showControls={false}
                   />
+                </div>
+              </div>
+              
+              {/* Certifications */}
+              <div className="mt-6 flex items-center justify-center gap-3">
+                <div className="flex flex-col items-center gap-1 px-4 py-3 bg-gradient-to-b from-white/5 to-transparent border border-white/10 rounded-lg hover:border-yellow-500/30 transition-colors">
+                  <Shield className="w-5 h-5 text-yellow-500" />
+                  <span className="text-xs text-gray-300 font-medium">SOC 2</span>
+                </div>
+                <div className="flex flex-col items-center gap-1 px-4 py-3 bg-gradient-to-b from-white/5 to-transparent border border-white/10 rounded-lg hover:border-blue-500/30 transition-colors">
+                  <Award className="w-5 h-5 text-blue-400" />
+                  <span className="text-xs text-gray-300 font-medium">WeWork</span>
+                </div>
+                <div className="flex flex-col items-center gap-1 px-4 py-3 bg-gradient-to-b from-white/5 to-transparent border border-white/10 rounded-lg hover:border-purple-500/30 transition-colors">
+                  <CreditCard className="w-5 h-5 text-purple-400" />
+                  <span className="text-xs text-gray-300 font-medium">Stripe</span>
+                </div>
+                <div className="flex flex-col items-center gap-1 px-4 py-3 bg-gradient-to-b from-white/5 to-transparent border border-white/10 rounded-lg hover:border-green-500/30 transition-colors">
+                  <Lock className="w-5 h-5 text-green-400" />
+                  <span className="text-xs text-gray-300 font-medium">GDPR</span>
                 </div>
               </div>
             </div>
