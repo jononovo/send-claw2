@@ -422,6 +422,13 @@ input[type="checkbox"]:indeterminate::before {
   100% { opacity: 0.2; }
 }
 
+/* Button text color sync with shimmer */
+@keyframes text-fade {
+  0% { color: #9ca3af; }
+  50% { color: #000000; }
+  100% { color: #d1d5db; }
+}
+
 @layer utilities {
   .animate-disco-bounce {
     animation: disco-bounce 5s ease-in-out;
