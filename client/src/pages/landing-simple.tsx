@@ -129,7 +129,7 @@ export default function LandingSimple() {
 
                 <p className="text-xl text-muted-foreground leading-relaxed max-w-md font-medium pt-8">
                   And email them in seconds.<br />
-                  Start with 5 mins per day & see your pipeline grow.
+                  Start with 5 mins per day.
                 </p>
               </div>
 
