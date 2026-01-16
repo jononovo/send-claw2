@@ -139,7 +139,7 @@ export default function LandingSimple() {
                   className="group relative h-16 overflow-hidden bg-gradient-to-r from-[#0A0A10] via-[#1a1a1f] to-[#0f0f14] text-gray-400 hover:text-black font-bold text-xl rounded-xl transition-colors duration-500 ease-in-out !cursor-pointer border border-white/10"
                 >
                   <span 
-                    className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-1000 ease-in rounded-xl group-hover:animate-[shimmer_8s_ease-in-out_infinite]"
+                    className="absolute inset-0 opacity-0 rounded-xl group-hover:animate-[shimmer-fade_3s_ease-in-out_forwards,shimmer_8s_ease-in-out_infinite]"
                     style={{ 
                       backgroundImage: 'linear-gradient(90deg, #eab308 0%, #facc15 25%, #fef08a 50%, #facc15 75%, #eab308 100%)',
                       backgroundSize: '200% 100%'
