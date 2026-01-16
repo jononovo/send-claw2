@@ -3,7 +3,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { SearchSessionManager } from "@/lib/search-session-manager";
-import type { CompanyWithContacts } from "@/features/search-state";
+import { searchSessionStorage, type CompanyWithContacts } from "@/features/search-state";
 import type { SearchProgressState } from "@/features/search-progress";
 import type {
   EmailSearchMetadata,
@@ -224,20 +224,14 @@ export function useEmailSearchOrchestration({
 
         setCurrentResults(mergedResults);
 
-        // Save to localStorage with full search state structure
-        const searchState = {
-          query: currentQuery,
-          resultsCount: mergedResults.length,
-          listId: currentListId,
+        // Save to sessionStorage for persistence
+        searchSessionStorage.save({
           currentQuery: currentQuery,
           currentResults: mergedResults,
           currentListId: currentListId,
           lastExecutedQuery: lastExecutedQuery,
-          companies: mergedResults.map(c => ({ id: c.id, name: c.name })),
-          timestamp: Date.now(),
           emailSearchCompleted: true
-        };
-        localStorage.setItem('searchState', JSON.stringify(searchState));
+        });
 
         const emailCount = mergedResults.reduce((total, company) =>
           total + (company.contacts?.filter(c => c.email && c.email.length > 0).length || 0), 0

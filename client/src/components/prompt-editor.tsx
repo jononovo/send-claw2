@@ -12,6 +12,7 @@ import { Loader2, Search, HelpCircle, Crown, Building, Users, Target, Settings }
 import { useConfetti } from "@/hooks/use-confetti";
 import { SearchSessionManager } from "@/lib/search-session-manager";
 import { logConversionEvent } from "@/features/attribution";
+import { searchSessionStorage } from "@/features/search-state";
 
 import { useAuth } from "@/hooks/use-auth";
 import { useRegistrationModal } from "@/hooks/use-registration-modal";
@@ -188,11 +189,11 @@ export default function PromptEditor({
   // Function to refresh contact data using outreach page pattern (cache invalidation + fresh queries)
   const refreshContactDataFromCache = async (session: any) => {
     try {
-      // Get saved search state from localStorage
-      const savedState = localStorage.getItem('searchState');
+      // Get saved search state from sessionStorage
+      const savedState = searchSessionStorage.load();
       if (!savedState) return;
       
-      const { currentResults } = JSON.parse(savedState);
+      const currentResults = savedState.currentResults;
       if (!currentResults || currentResults.length === 0) return;
       
       console.log('[Email Refresh] Starting database sync for', currentResults.length, 'companies');
@@ -229,14 +230,13 @@ export default function PromptEditor({
         })
       );
       
-      // STEP 4: Update localStorage with fresh database data
-      const updatedState = {
+      // STEP 4: Update sessionStorage with fresh database data
+      searchSessionStorage.save({
         currentQuery: session.query,
-        currentResults: refreshedResults
-      };
-      const stateString = JSON.stringify(updatedState);
-      localStorage.setItem('searchState', stateString);
-      sessionStorage.setItem('searchState', stateString);
+        currentResults: refreshedResults,
+        currentListId: null,
+        lastExecutedQuery: session.query
+      });
       
       // STEP 5: Force UI update with fresh database data
       stableOnSearchResults.current(session.query, refreshedResults);
