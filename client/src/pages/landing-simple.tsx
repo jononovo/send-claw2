@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Clock, Star, Zap } from "lucide-react";
+import { ArrowRight, Check, Clock, Star, Zap } from "lucide-react";
 import { useRegistrationModal } from "@/hooks/use-registration-modal";
 import { useAuth } from "@/hooks/use-auth";
 import { FooterStealth } from "@/components/footer-stealth";
@@ -141,9 +141,11 @@ export default function LandingSimple() {
                   Find Customers for Free
                   <ArrowRight className="ml-2 w-5 h-5" />
                 </Button>
-                <p className="text-center text-gray-500 text-sm">
-                  No credit card required
-                </p>
+                <div className="flex flex-wrap justify-center gap-4 text-gray-500 text-sm">
+                  <span className="flex items-center gap-1"><Check className="w-4 h-4 text-green-500" /> No registration</span>
+                  <span className="flex items-center gap-1"><Check className="w-4 h-4 text-green-500" /> No credit card</span>
+                  <span className="flex items-center gap-1"><Check className="w-4 h-4 text-green-500" /> Pure awesome</span>
+                </div>
               </div>
             </div>
 
