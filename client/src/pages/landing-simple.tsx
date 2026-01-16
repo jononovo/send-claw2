@@ -368,7 +368,7 @@ export default function LandingSimple() {
   useEffect(() => {
     if (freshDataPaused) return;
     const interval = setInterval(() => {
-      setFreshDataActiveTab(prev => (prev + 1) % 3);
+      setFreshDataActiveTab(prev => (prev + 1) % freshDataTabs.length);
     }, 4000);
     return () => clearInterval(interval);
   }, [freshDataPaused]);
