@@ -100,7 +100,7 @@ function ComparisonChart() {
 function PromptVsFilters() {
   return (
     <div className="w-full h-full flex items-center justify-center p-4">
-      <div className="w-full max-w-lg space-y-2">
+      <div className="w-full max-w-lg space-y-4">
         <div className="bg-red-500/5 border border-red-500/20 rounded-xl p-3">
           <div className="flex items-center gap-2 mb-2">
             <Filter className="w-4 h-4 text-red-400" />
