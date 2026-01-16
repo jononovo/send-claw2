@@ -76,7 +76,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { ContactActionColumn } from "@/components/contact-action-column";
 import { SearchSessionManager } from "@/lib/search-session-manager";
 import { useComprehensiveEmailSearch } from "@/features/search-email";
-import { useSearchState, type SavedSearchState, type CompanyWithContacts } from "@/features/search-state";
+import { useSearchState, searchSessionStorage, type SavedSearchState, type CompanyWithContacts } from "@/features/search-state";
 import { useEmailSearchOrchestration } from "@/features/email-search-orchestration";
 import { FeedbackModal } from "@/features/find-ideal-customer/components/FeedbackModal";
 
@@ -134,7 +134,31 @@ export default function Home({ isNewSearch = false }: HomeProps) {
   // Search Management drawer
   const searchManagementDrawer = useSearchManagementDrawer();
   
-  const [searchSectionCollapsed, setSearchSectionCollapsed] = useState(false);
+  const [searchSectionCollapsed, setSearchSectionCollapsed] = useState(() => {
+    // Guard for SSR/test contexts where window is undefined
+    if (typeof window === 'undefined') {
+      return false;
+    }
+    
+    // Landing page flow - always start expanded (new search incoming)
+    if (localStorage.getItem('pendingSearchQuery')) {
+      return false;
+    }
+    
+    // URL route (/search/:slug/:listId) - start collapsed, will fetch from API
+    if (window.location.pathname.match(/^\/search\/[^/]+\/\d+/)) {
+      return true;
+    }
+    
+    // Check if sessionStorage has saved results to restore
+    const savedState = searchSessionStorage.load();
+    if (savedState?.currentResults && savedState.currentResults.length > 0) {
+      return true;
+    }
+    
+    // Fresh visit - start expanded
+    return false;
+  });
   
   // Search progress state (lifted from PromptEditor for rendering outside collapsible section)
   const [promptEditorProgress, setPromptEditorProgress] = useState<SearchProgressState>({
@@ -226,8 +250,12 @@ export default function Home({ isNewSearch = false }: HomeProps) {
       // Also collapse when search results are shown
       setSearchSectionCollapsed(true);
     } else {
-      // Expand when drawer closes and no results
-      setSearchSectionCollapsed(false);
+      // Only expand when drawer closes and no results IF we're not on a URL route loading data
+      // URL routes start collapsed and should stay collapsed until data loads
+      const isUrlRoute = window.location.pathname.match(/^\/search\/[^/]+\/\d+/);
+      if (!isUrlRoute) {
+        setSearchSectionCollapsed(false);
+      }
     }
   }, [emailDrawer.isOpen, currentResults]);
   
@@ -248,17 +276,14 @@ export default function Home({ isNewSearch = false }: HomeProps) {
           )
         }));
         
-        // Save to localStorage for persistence
-        // Save lastExecutedQuery as currentQuery to ensure consistency
+        // Save to sessionStorage for persistence
         const queryToSave = lastExecutedQuery || currentQuery;
-        const stateToSave = {
+        searchSessionStorage.save({
           currentQuery: queryToSave,
           currentResults: updatedResults,
           currentListId,
           lastExecutedQuery
-        };
-        localStorage.setItem('searchState', JSON.stringify(stateToSave));
-        sessionStorage.setItem('searchState', JSON.stringify(stateToSave));
+        });
         
         return updatedResults;
       });
@@ -298,7 +323,7 @@ export default function Home({ isNewSearch = false }: HomeProps) {
   const refreshContactDataIfNeeded = async (companies: CompanyWithContacts[]) => {
     try {
       // Check if there was a recent email search (within last 2 minutes)
-      const lastEmailSearch = localStorage.getItem('lastEmailSearchTimestamp');
+      const lastEmailSearch = sessionStorage.getItem('lastEmailSearchTimestamp');
       if (lastEmailSearch) {
         const timeSinceSearch = Date.now() - parseInt(lastEmailSearch);
         if (timeSinceSearch < 120000) { // 2 minutes
@@ -341,109 +366,47 @@ export default function Home({ isNewSearch = false }: HomeProps) {
     );
   };
 
-  // Load state from localStorage on component mount
+  // Load state from sessionStorage on component mount (for page refresh persistence)
+  // Skip restoration for URL-based routes (/search/:slug/:listId) - they fetch from API
   useEffect(() => {
     console.log('🟣 COMPONENT MOUNT - Home page mounting');
     
-    // Check for pending search query from landing page
+    // Check for pending search query from landing page (stays in localStorage for cross-page)
     const pendingQuery = localStorage.getItem('pendingSearchQuery');
     if (pendingQuery) {
       console.log('Found pending search query:', pendingQuery);
       setCurrentQuery(pendingQuery);
-      setIsFromLandingPage(true); // Set flag when coming from landing page
+      setIsFromLandingPage(true);
       localStorage.removeItem('pendingSearchQuery');
-      // Clear any existing search state AND list ID when starting fresh search
-      localStorage.removeItem('searchState');
-      sessionStorage.removeItem('searchState');
-      setCurrentListId(null); // Clear any existing list ID
+      searchSessionStorage.clear();
+      setCurrentListId(null);
       setIsSaved(false);
-      // No longer automatically triggering search - user must click the search button
-    } else {
-      // Enhanced data restoration logic with intelligent merging
+    } else if (!isSearchRoute && !isNewSearch) {
+      // Only restore from sessionStorage on /app route (not URL-based routes)
+      // This enables refresh persistence while preventing stale state resurrection
       const savedState = loadSearchState();
       
       if (savedState && savedState.currentResults && !hasSessionRestoredDataRef.current) {
-        console.log('Found localStorage data:', {
+        hasSessionRestoredDataRef.current = true;
+        
+        console.log('Restoring from session storage:', {
           query: savedState.currentQuery,
           resultsCount: savedState.currentResults?.length,
-          hasContacts: hasCompleteContacts(savedState.currentResults),
           listId: savedState.currentListId
         });
         
-        // Restore state variables
         const queryToRestore = savedState.currentQuery || "";
         const listIdToRestore = savedState.currentListId;
         
-        console.log('[LOCALSTORAGE RESTORE] Loading saved state:', {
-          queryToRestore,
-          listIdToRestore,
-          resultsCount: savedState.currentResults?.length,
-          hasListId: !!listIdToRestore,
-          savedStateKeys: Object.keys(savedState)
-        });
-        
-        // Set state only once
         setCurrentQuery(queryToRestore);
         setCurrentListId(listIdToRestore);
         setCurrentResults(savedState.currentResults);
         setLastExecutedQuery(savedState.lastExecutedQuery || savedState.currentQuery);
-        setInputHasChanged(false); // Set to false when loading saved state
+        setInputHasChanged(false);
         
-        // Mark list as saved if we have a listId
         if (listIdToRestore) {
           setIsSaved(true);
-          console.log('[LOCALSTORAGE RESTORE] Restored saved search list with ID:', listIdToRestore);
-        } else {
-          // Do NOT auto-create a new list for orphaned results
-          // This prevents duplicate lists when user navigates away before list creation completes
-          console.log('🔵 [LOCALSTORAGE RESTORE] No listId found - will be created if user performs new search');
         }
-        
-        // Always refresh contact data when restoring from localStorage to ensure emails are preserved
-        console.log('Refreshing contact data from database to preserve emails after navigation');
-        console.log('Companies before refresh:', savedState.currentResults.map((c: CompanyWithContacts) => ({
-          name: c.name,
-          contactCount: c.contacts?.length || 0,
-          contactsWithEmails: c.contacts?.filter(contact => contact.email).length || 0,
-          listId: listIdToRestore
-        })));
-        
-        // Always refresh from database to ensure fresh data (including emails)
-        console.log('NAVIGATION: Passing listId to refreshAndUpdateResults:', listIdToRestore);
-        refreshAndUpdateResults(
-          savedState.currentResults,
-          {
-            currentQuery: queryToRestore,
-            currentListId: listIdToRestore,
-            lastExecutedQuery: savedState.lastExecutedQuery || savedState.currentQuery
-          },
-          {
-            additionalStateFields: {
-              emailSearchCompleted: savedState.emailSearchCompleted || false,
-              emailSearchTimestamp: savedState.emailSearchTimestamp || null,
-              navigationRefreshTimestamp: Date.now()
-            }
-          }
-        ).then(refreshedResults => {
-          const emailsAfterRefresh = refreshedResults.reduce((total, company) => 
-            total + (company.contacts?.filter(c => c.email && c.email.length > 0).length || 0), 0
-          );
-          
-          console.log(`NAVIGATION: Database refresh completed with ${emailsAfterRefresh} emails`);
-          console.log('NAVIGATION: Companies after refresh:', refreshedResults.map(c => ({
-            name: c.name,
-            contactCount: c.contacts?.length || 0,
-            contactsWithEmails: c.contacts?.filter(contact => contact.email && contact.email.length > 0).length || 0
-          })));
-          
-          if (emailsAfterRefresh > 0) {
-            console.log(`NAVIGATION: Successfully restored ${emailsAfterRefresh} emails`);
-          }
-        }).catch(error => {
-          console.error('NAVIGATION: Database refresh failed:', error);
-          // Fallback to using saved state as-is
-          setCurrentResults(savedState.currentResults);
-        });
       } else {
         console.log('No saved search state found or session data already restored');
       }
@@ -465,11 +428,10 @@ export default function Home({ isNewSearch = false }: HomeProps) {
         
         console.log('Extracted guest data:', guestData);
         
-        // Clear all guest localStorage data
-        localStorage.removeItem('searchState');
-        sessionStorage.removeItem('searchState');
+        // Clear all guest session/localStorage data
+        searchSessionStorage.clear();
         localStorage.removeItem('contactSearchConfig');
-        localStorage.removeItem('lastEmailSearchTimestamp');
+        sessionStorage.removeItem('lastEmailSearchTimestamp');
         localStorage.removeItem('pendingSearchQuery');
         
         // Clear guidance engine localStorage so new user gets fresh guidance
@@ -552,25 +514,18 @@ export default function Home({ isNewSearch = false }: HomeProps) {
     };
   }, [emailDrawer.openCompose]);
 
-  // Save state to localStorage whenever it changes (but prevent corruption during unmount)
+  // Save state to sessionStorage whenever it changes (for refresh persistence)
   useEffect(() => {
-    // Clear existing timer
     if (debounceTimerRef.current) {
       clearTimeout(debounceTimerRef.current);
     }
     
-    // Set 1000ms delay for existing save logic
     debounceTimerRef.current = setTimeout(() => {
-      // Only save if component is mounted and initialized (prevents corruption during unmount)
       if (!isMountedRef.current || !isInitializedRef.current) {
-        console.log('Skipping localStorage save - component not ready or unmounting');
         return;
       }
       
-      // Only save if we have meaningful data (prevents saving null states)
       if (currentQuery || (currentResults && currentResults.length > 0)) {
-        // Save lastExecutedQuery as currentQuery to ensure the saved query matches the results
-        // If no search has been executed yet, fall back to currentQuery
         const queryToSave = lastExecutedQuery || currentQuery;
         const stateToSave: SavedSearchState = {
           currentQuery: queryToSave,
@@ -578,23 +533,10 @@ export default function Home({ isNewSearch = false }: HomeProps) {
           currentListId,
           lastExecutedQuery
         };
-        console.log('Saving search state:', {
-          query: queryToSave,
-          resultsCount: currentResults?.length,
-          listId: currentListId,
-          companies: currentResults?.map(c => ({ id: c.id, name: c.name }))
-        });
-        
-        // Save to both localStorage and sessionStorage for redundancy
-        const stateString = JSON.stringify(stateToSave);
-        localStorage.setItem('searchState', stateString);
-        sessionStorage.setItem('searchState', stateString);
-      } else {
-        console.log('Skipping localStorage save - no meaningful data to save');
+        searchSessionStorage.save(stateToSave);
       }
     }, 1000);
     
-    // Cleanup on unmount
     return () => {
       if (debounceTimerRef.current) {
         clearTimeout(debounceTimerRef.current);
@@ -853,11 +795,10 @@ export default function Home({ isNewSearch = false }: HomeProps) {
       setOnboardingSearchResults(results);
     }
     
-    // Clear any stale localStorage data that might conflict with new search results
+    // Clear any stale session data that might conflict with new search results
     if (isNewSearch) {
-      console.log('New search detected - clearing stale localStorage data and list ID');
-      localStorage.removeItem('searchState');
-      sessionStorage.removeItem('searchState');
+      console.log('New search detected - clearing stale session data and list ID');
+      searchSessionStorage.clear();
       setCurrentListId(null);
       setIsSaved(false);
     }
@@ -1209,9 +1150,8 @@ export default function Home({ isNewSearch = false }: HomeProps) {
     // Expand the search section
     setSearchSectionCollapsed(false);
     
-    // Clear localStorage and sessionStorage saved state
-    localStorage.removeItem('searchState');
-    sessionStorage.removeItem('searchState');
+    // Clear session storage saved state
+    searchSessionStorage.clear();
     localStorage.removeItem('emailComposerState');
   };
 
