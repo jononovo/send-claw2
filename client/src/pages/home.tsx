@@ -343,7 +343,13 @@ export default function Home({ isNewSearch = false }: HomeProps) {
 
   // Load state from localStorage on component mount
   useEffect(() => {
-    console.log('🟣 COMPONENT MOUNT - Home page mounting');
+    console.log('🟣 COMPONENT MOUNT - Home page mounting, isNewSearch:', isNewSearch);
+    
+    // Skip state restoration if navigating to new search
+    if (isNewSearch) {
+      console.log('New search route - skipping state restoration');
+      return;
+    }
     
     // Check for pending search query from landing page
     const pendingQuery = localStorage.getItem('pendingSearchQuery');
