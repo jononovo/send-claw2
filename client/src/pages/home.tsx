@@ -87,9 +87,6 @@ interface SourceBreakdown {
   Hunter: number;
 }
 
-// Module-level tracking to prevent double hydration across component remounts
-let lastHydratedListId: number | null = null;
-
 interface HomeProps {
   isNewSearch?: boolean;
 }
@@ -343,118 +340,21 @@ export default function Home({ isNewSearch = false }: HomeProps) {
     );
   };
 
-  // Load state from localStorage on component mount
+  // Handle pending search query from landing page (only case where localStorage matters)
   useEffect(() => {
     console.log('🟣 COMPONENT MOUNT - Home page mounting, isNewSearch:', isNewSearch);
-    
-    // Skip state restoration if navigating to new search
-    if (isNewSearch) {
-      console.log('New search route - skipping state restoration');
-      return;
-    }
     
     // Check for pending search query from landing page
     const pendingQuery = localStorage.getItem('pendingSearchQuery');
     if (pendingQuery) {
       console.log('Found pending search query:', pendingQuery);
       setCurrentQuery(pendingQuery);
-      setIsFromLandingPage(true); // Set flag when coming from landing page
+      setIsFromLandingPage(true);
       localStorage.removeItem('pendingSearchQuery');
-      // Clear any existing search state AND list ID when starting fresh search
       localStorage.removeItem('searchState');
       sessionStorage.removeItem('searchState');
-      setCurrentListId(null); // Clear any existing list ID
+      setCurrentListId(null);
       setIsSaved(false);
-      // No longer automatically triggering search - user must click the search button
-    } else {
-      // Enhanced data restoration logic with intelligent merging
-      const savedState = loadSearchState();
-      
-      if (savedState && savedState.currentResults && !hasSessionRestoredDataRef.current) {
-        console.log('Found localStorage data:', {
-          query: savedState.currentQuery,
-          resultsCount: savedState.currentResults?.length,
-          hasContacts: hasCompleteContacts(savedState.currentResults),
-          listId: savedState.currentListId
-        });
-        
-        // Restore state variables
-        const queryToRestore = savedState.currentQuery || "";
-        const listIdToRestore = savedState.currentListId;
-        
-        console.log('[LOCALSTORAGE RESTORE] Loading saved state:', {
-          queryToRestore,
-          listIdToRestore,
-          resultsCount: savedState.currentResults?.length,
-          hasListId: !!listIdToRestore,
-          savedStateKeys: Object.keys(savedState)
-        });
-        
-        // Set state only once
-        setCurrentQuery(queryToRestore);
-        setCurrentListId(listIdToRestore);
-        setCurrentResults(savedState.currentResults);
-        setLastExecutedQuery(savedState.lastExecutedQuery || savedState.currentQuery);
-        setInputHasChanged(false); // Set to false when loading saved state
-        
-        // Mark list as saved if we have a listId
-        if (listIdToRestore) {
-          setIsSaved(true);
-          console.log('[LOCALSTORAGE RESTORE] Restored saved search list with ID:', listIdToRestore);
-        } else {
-          // Do NOT auto-create a new list for orphaned results
-          // This prevents duplicate lists when user navigates away before list creation completes
-          console.log('🔵 [LOCALSTORAGE RESTORE] No listId found - will be created if user performs new search');
-        }
-        
-        // Always refresh contact data when restoring from localStorage to ensure emails are preserved
-        console.log('Refreshing contact data from database to preserve emails after navigation');
-        console.log('Companies before refresh:', savedState.currentResults.map((c: CompanyWithContacts) => ({
-          name: c.name,
-          contactCount: c.contacts?.length || 0,
-          contactsWithEmails: c.contacts?.filter(contact => contact.email).length || 0,
-          listId: listIdToRestore
-        })));
-        
-        // Always refresh from database to ensure fresh data (including emails)
-        console.log('NAVIGATION: Passing listId to refreshAndUpdateResults:', listIdToRestore);
-        refreshAndUpdateResults(
-          savedState.currentResults,
-          {
-            currentQuery: queryToRestore,
-            currentListId: listIdToRestore,
-            lastExecutedQuery: savedState.lastExecutedQuery || savedState.currentQuery
-          },
-          {
-            additionalStateFields: {
-              emailSearchCompleted: savedState.emailSearchCompleted || false,
-              emailSearchTimestamp: savedState.emailSearchTimestamp || null,
-              navigationRefreshTimestamp: Date.now()
-            }
-          }
-        ).then(refreshedResults => {
-          const emailsAfterRefresh = refreshedResults.reduce((total, company) => 
-            total + (company.contacts?.filter(c => c.email && c.email.length > 0).length || 0), 0
-          );
-          
-          console.log(`NAVIGATION: Database refresh completed with ${emailsAfterRefresh} emails`);
-          console.log('NAVIGATION: Companies after refresh:', refreshedResults.map(c => ({
-            name: c.name,
-            contactCount: c.contacts?.length || 0,
-            contactsWithEmails: c.contacts?.filter(contact => contact.email && contact.email.length > 0).length || 0
-          })));
-          
-          if (emailsAfterRefresh > 0) {
-            console.log(`NAVIGATION: Successfully restored ${emailsAfterRefresh} emails`);
-          }
-        }).catch(error => {
-          console.error('NAVIGATION: Database refresh failed:', error);
-          // Fallback to using saved state as-is
-          setCurrentResults(savedState.currentResults);
-        });
-      } else {
-        console.log('No saved search state found or session data already restored');
-      }
     }
 
     // Registration success callback setup (only set once)
@@ -1226,44 +1126,32 @@ export default function Home({ isNewSearch = false }: HomeProps) {
   // Handle /app/new-search route - triggers new search when navigated to this route
   useEffect(() => {
     if (isNewSearch) {
-      // Reset module-level hydration tracking for new searches
-      lastHydratedListId = null;
-      // Use setTimeout to ensure this runs after initial render
       setTimeout(() => handleNewSearch(), 0);
     }
   }, [isNewSearch]);
 
-  // Handle /search/:slug/:listId route - load search by listId on initial page load only
+  // Handle /search/:slug/:listId route - URL is source of truth
+  // Always load search from URL when listId changes
   useEffect(() => {
     if (isSearchRoute && searchRouteParams?.listId) {
       const listId = parseInt(searchRouteParams.listId, 10);
       if (isNaN(listId)) return;
       
-      // Skip if we already hydrated this specific listId (prevents double load on back navigation)
-      // Uses module-level variable to persist across component remounts
-      if (lastHydratedListId === listId) {
-        console.log('Already hydrated this listId, skipping:', { listId });
-        return;
-      }
-      
-      // Skip if we already have this search loaded in state (e.g., from drawer click)
+      // Skip if this search is already loaded
       if (currentListId === listId) {
-        console.log('Search already loaded in state, skipping fetch:', { listId });
-        lastHydratedListId = listId;
+        console.log('Search already loaded:', { listId });
         return;
       }
       
-      // Wait for auth to be ready before deciding if list is not found
+      // Wait for auth to be ready
       if (!auth.authReady) {
-        console.log('Waiting for auth to be ready before loading search:', { listId });
+        console.log('Waiting for auth:', { listId });
         return;
       }
       
-      // Mark this specific listId as hydrated (module-level)
-      lastHydratedListId = listId;
-      console.log('Loading search from URL (one-time):', { listId, slug: searchRouteParams.slug });
+      console.log('Loading search from URL:', { listId, slug: searchRouteParams.slug });
       
-      // Fetch the search list by listId and load it
+      // Fetch and load the search
       const loadSearchByListId = async () => {
         try {
           const lists = await queryClient.fetchQuery({
@@ -1274,7 +1162,7 @@ export default function Home({ isNewSearch = false }: HomeProps) {
           if (list) {
             handleLoadSavedSearch(list);
           } else {
-            console.warn('Search not found for listId:', listId);
+            console.warn('Search not found:', listId);
             if (!auth.user) {
               toast({
                 title: "Login to view this search",
@@ -1290,7 +1178,7 @@ export default function Home({ isNewSearch = false }: HomeProps) {
             }
           }
         } catch (error: any) {
-          console.error('Failed to load search by listId:', error);
+          console.error('Failed to load search:', error);
           const errorMessage = error?.message || '';
           
           if (errorMessage.startsWith('401') || errorMessage.startsWith('403')) {
