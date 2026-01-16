@@ -99,39 +99,38 @@ function ComparisonChart() {
 
 function PromptVsFilters() {
   return (
-    <div className="w-full h-full flex items-center justify-center p-6">
-      <div className="w-full max-w-lg space-y-6">
-        <div className="bg-red-500/5 border border-red-500/20 rounded-xl p-4">
-          <div className="flex items-center gap-2 mb-3">
+    <div className="w-full h-full flex items-center justify-center p-4">
+      <div className="w-full max-w-lg space-y-3">
+        <div className="bg-red-500/5 border border-red-500/20 rounded-xl p-3">
+          <div className="flex items-center gap-2 mb-2">
             <Filter className="w-4 h-4 text-red-400" />
             <span className="text-red-400 text-sm font-medium">Traditional Approach</span>
           </div>
-          <div className="grid grid-cols-3 gap-2">
+          <div className="grid grid-cols-3 gap-1.5">
             {["Industry", "Company Size", "Revenue", "Location", "Tech Stack", "Job Title", "Seniority", "Department", "Keywords"].map((filter) => (
               <div key={filter} className="bg-gray-200 dark:bg-white/5 border border-gray-300 dark:border-white/10 rounded px-2 py-1 text-xs text-gray-500 truncate">
                 {filter} ▾
               </div>
             ))}
           </div>
-          <p className="text-gray-600 text-xs mt-3 italic">+ 66 more filters...</p>
+          <p className="text-gray-600 text-xs mt-2 italic">+ 66 more filters...</p>
         </div>
         
-        <div className="flex items-center justify-center">
+        <div className="flex items-center justify-center py-1">
           <span className="text-gray-600 text-sm">vs</span>
         </div>
         
-        <div className="bg-yellow-500/5 border border-yellow-500/30 rounded-xl p-4">
-          <div className="flex items-center gap-2 mb-3">
+        <div className="bg-yellow-500/5 border border-yellow-500/30 rounded-xl p-3">
+          <div className="flex items-center gap-2 mb-2">
             <Sparkles className="w-4 h-4 text-yellow-400" />
             <span className="text-yellow-400 text-sm font-medium">5Ducks Approach</span>
           </div>
-          <div className="bg-gray-800 dark:bg-black/40 border border-gray-600 dark:border-white/20 rounded-lg px-4 py-3">
+          <div className="bg-gray-800 dark:bg-black/40 border border-gray-600 dark:border-white/20 rounded-lg px-4 py-2.5">
             <span className="text-white font-mono text-sm">
               "SaaS companies in Austin with Series A funding"
             </span>
             <span className="text-yellow-400 ml-1">|</span>
           </div>
-          <p className="text-gray-400 text-xs mt-3">Just type what you want. That's it.</p>
         </div>
       </div>
     </div>
