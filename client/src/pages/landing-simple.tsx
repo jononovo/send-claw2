@@ -174,7 +174,7 @@ export default function LandingSimple() {
                   <div className="flex items-center justify-center gap-4">
                     <span className="text-gray-500 font-semibold text-xs">Capterra</span>
                     <span className="text-gray-600">•</span>
-                    <span className="text-orange-500 font-bold text-xs">G2</span>
+                    <span className="text-gray-500 font-bold text-xs">G2</span>
                   </div>
                 </div>
               </div>
