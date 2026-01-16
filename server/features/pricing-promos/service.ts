@@ -26,6 +26,19 @@ const HARDCODED_PROMOS: Record<string, Partial<PricingPromo>> = {
     showMamaDuck: false,
     daysOfWeek: [],
   },
+  'set-a': {
+    id: -3,
+    code: 'set-a',
+    name: 'Set A Pricing',
+    isActive: true,
+    priority: 0,
+    showFreeTrial: false,
+    showDuckling: true,
+    showMamaDuck: true,
+    ducklingPrice: 18.95,
+    mamaDuckPrice: 44.95,
+    daysOfWeek: [],
+  },
 };
 
 export class PricingPromoService {
