@@ -5,6 +5,7 @@ import { useRegistrationModal } from "@/hooks/use-registration-modal";
 import { useAuth } from "@/hooks/use-auth";
 import { FooterStealth } from "@/components/footer-stealth";
 import { DemoSimulationPlayer } from "@/features/demo-simulations";
+import { StealthOnboardingModal } from "@/features/landing-stealth/StealthOnboardingModal";
 import danThumb from "@/features/landing-stealth/assets/professional_headshot_of_dan_hartmann_thumb.jpg";
 import sarahThumb from "@/features/landing-stealth/assets/professional_headshot_of_sarah_chen_thumb.jpg";
 import alexThumb from "@/features/landing-stealth/assets/natural_outdoor_portrait_of_older_alex_rivera_with_beard_thumb.jpg";
@@ -35,6 +36,7 @@ export default function LandingSimple() {
   const { user } = useAuth();
   
   const [currentTestimonialIndex, setCurrentTestimonialIndex] = useState(0);
+  const [isOnboardingOpen, setIsOnboardingOpen] = useState(false);
   const testimonialSectionRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -66,10 +68,12 @@ export default function LandingSimple() {
   }, []);
 
   const handleGetStarted = () => {
-    setRegistrationSuccessCallback(() => {
-      window.location.href = "/app";
-    });
-    openModal();
+    setIsOnboardingOpen(true);
+  };
+
+  const handleOnboardingComplete = () => {
+    setIsOnboardingOpen(false);
+    window.location.href = "/app";
   };
 
   const handleLogin = () => {
@@ -412,6 +416,12 @@ export default function LandingSimple() {
 
         <FooterStealth />
       </div>
+
+      <StealthOnboardingModal
+        isOpen={isOnboardingOpen}
+        onClose={() => setIsOnboardingOpen(false)}
+        onComplete={handleOnboardingComplete}
+      />
     </div>
   );
 }
