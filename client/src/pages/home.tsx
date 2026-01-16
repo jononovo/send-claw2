@@ -19,10 +19,15 @@ const EmailDrawer = lazy(() =>
 const SearchManagementDrawer = lazy(() => 
   import("@/features/search-management-drawer/index.tsx").then(m => ({ default: m.SearchManagementDrawer }))
 );
-
-// Import consolidated search report modal
-import { SearchReportModal } from "@/features/search-report";
-import { OnboardingFlowOrchestrator } from "@/components/onboarding/OnboardingFlowOrchestrator";
+const SearchReportModal = lazy(() => 
+  import("@/features/search-report").then(m => ({ default: m.SearchReportModal }))
+);
+const OnboardingFlowOrchestrator = lazy(() => 
+  import("@/components/onboarding/OnboardingFlowOrchestrator").then(m => ({ default: m.OnboardingFlowOrchestrator }))
+);
+const FeedbackModal = lazy(() => 
+  import("@/features/feedback").then(m => ({ default: m.FeedbackModal }))
+);
 import { useEmailDrawer } from "@/features/email-drawer";
 import { useSearchManagementDrawer } from "@/features/search-management-drawer";
 import { TopProspectsCard } from "@/features/top-prospects";
@@ -88,7 +93,6 @@ import { SearchSessionManager } from "@/lib/search-session-manager";
 import { useComprehensiveEmailSearch } from "@/features/search-email";
 import { useSearchState, searchSessionStorage, type SavedSearchState, type CompanyWithContacts } from "@/features/search-state";
 import { useEmailSearchOrchestration } from "@/features/email-search-orchestration";
-import { FeedbackModal } from "@/features/find-ideal-customer/components/FeedbackModal";
 
 // Define SourceBreakdown interface to match EmailSearchSummary
 interface SourceBreakdown {
@@ -1483,20 +1487,24 @@ export default function Home({ isNewSearch = false }: HomeProps) {
         />
       )}
       
-      {/* Consolidated Search Report Modal - Rendered at root level to avoid overflow clipping */}
-      <SearchReportModal
-        metrics={{
-          query: mainSearchMetrics.query,
-          totalCompanies: mainSearchMetrics.totalCompanies,
-          totalContacts: mainSearchMetrics.totalContacts,
-          totalEmails: mainSearchMetrics.totalEmails,
-          searchDuration: mainSearchMetrics.searchDuration,
-          companies: mainSearchMetrics.companies,
-          sourceBreakdown: mainSearchMetrics.sourceBreakdown
-        }}
-        isVisible={mainSummaryVisible}
-        onClose={() => setMainSummaryVisible(false)}
-      />
+      {/* Consolidated Search Report Modal - Lazy loaded, only renders when visible */}
+      {mainSummaryVisible && (
+        <Suspense fallback={null}>
+          <SearchReportModal
+            metrics={{
+              query: mainSearchMetrics.query,
+              totalCompanies: mainSearchMetrics.totalCompanies,
+              totalContacts: mainSearchMetrics.totalContacts,
+              totalEmails: mainSearchMetrics.totalEmails,
+              searchDuration: mainSearchMetrics.searchDuration,
+              companies: mainSearchMetrics.companies,
+              sourceBreakdown: mainSearchMetrics.sourceBreakdown
+            }}
+            isVisible={mainSummaryVisible}
+            onClose={() => setMainSummaryVisible(false)}
+          />
+        </Suspense>
+      )}
       
       <div className="flex h-[calc(100vh-3.5rem)] overflow-hidden relative">
         {/* Backdrop for mobile */}
@@ -1821,34 +1829,40 @@ export default function Home({ isNewSearch = false }: HomeProps) {
       
       {/* Mobile Selection Toolbar - Shows at bottom */}
       
-      {/* Onboarding Flow */}
+      {/* Onboarding Flow - Lazy loaded, only renders when shown */}
       {showOnboarding && (
-        <OnboardingFlowOrchestrator
-          searchQuery={onboardingSearchQuery}
-          searchResults={onboardingSearchResults}
-          onComplete={() => {
-            setShowOnboarding(false);
-            localStorage.setItem('hasCompletedOnboarding', 'true');
-            toast({
-              title: "Setup complete!",
-              description: "Your campaign is now active and ready to start generating leads.",
-            });
-          }}
-          onClose={() => {
-            setShowOnboarding(false);
-          }}
-        />
+        <Suspense fallback={null}>
+          <OnboardingFlowOrchestrator
+            searchQuery={onboardingSearchQuery}
+            searchResults={onboardingSearchResults}
+            onComplete={() => {
+              setShowOnboarding(false);
+              localStorage.setItem('hasCompletedOnboarding', 'true');
+              toast({
+                title: "Setup complete!",
+                description: "Your campaign is now active and ready to start generating leads.",
+              });
+            }}
+            onClose={() => {
+              setShowOnboarding(false);
+            }}
+          />
+        </Suspense>
       )}
       
-      {/* Feedback Modal for rating contacts */}
-      <FeedbackModal
-        isOpen={feedbackModalState.isOpen}
-        onClose={handleFeedbackModalClose}
-        onSubmit={handleFeedbackSubmit}
-        feedbackType={feedbackModalState.feedbackType}
-        contactName={feedbackModalState.contactName}
-        isPending={feedbackMutation.isPending}
-      />
+      {/* Feedback Modal for rating contacts - Lazy loaded, only renders when open */}
+      {feedbackModalState.isOpen && (
+        <Suspense fallback={null}>
+          <FeedbackModal
+            isOpen={feedbackModalState.isOpen}
+            onClose={handleFeedbackModalClose}
+            onSubmit={handleFeedbackSubmit}
+            feedbackType={feedbackModalState.feedbackType}
+            contactName={feedbackModalState.contactName}
+            isPending={feedbackMutation.isPending}
+          />
+        </Suspense>
+      )}
     </div>
     </>
   );
