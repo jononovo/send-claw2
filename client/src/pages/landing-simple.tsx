@@ -50,15 +50,12 @@ export default function LandingSimple() {
 
   useEffect(() => {
     const root = document.documentElement;
-    const wasDark = root.classList.contains('dark');
-    root.classList.add('dark');
-    
-    return () => {
-      if (!wasDark) {
-        root.classList.remove('dark');
-      }
-    };
-  }, []);
+    if (isDarkMode) {
+      root.classList.add('dark');
+    } else {
+      root.classList.remove('dark');
+    }
+  }, [isDarkMode]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -85,7 +82,7 @@ export default function LandingSimple() {
   };
 
   return (
-    <div className={isDarkMode ? "dark" : ""}>
+    <div>
       <div className="min-h-screen w-full bg-background overflow-x-hidden relative flex flex-col">
         
         {/* Hero Section */}
