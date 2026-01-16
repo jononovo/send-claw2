@@ -1,6 +1,6 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Award, Check, Clock, CreditCard, Lock, Moon, Shield, Star, Sun, Zap } from "lucide-react";
+import { ArrowRight, Award, Check, Clock, CreditCard, Database, Filter, Lock, Map, Moon, Search, Shield, Sparkles, Star, Sun, Zap } from "lucide-react";
 import { useRegistrationModal } from "@/hooks/use-registration-modal";
 import { useAuth } from "@/hooks/use-auth";
 import { FooterStealth } from "@/components/footer-stealth";
@@ -31,6 +31,290 @@ const testimonials = [
   }
 ];
 
+const freshDataTabs = [
+  {
+    id: "fresh-data",
+    icon: Zap,
+    title: "0 Contacts in Our DB",
+    summary: "Fresh data, every search",
+    fullDescription: "The era of cold emailing 30k \"industry-related\" people is over. Find your ISP for THIS WEEK, maybe 10, 20 or 30, and email them.",
+  },
+  {
+    id: "one-prompt",
+    icon: Sparkles,
+    title: "1 Prompt, Not 75 Filters",
+    summary: "Just type what you want",
+    fullDescription: "No dropdown mazes. No endless checkboxes. No \"advanced search\" tutorials. Just describe your ideal customer in plain English and let AI do the rest.",
+  },
+  {
+    id: "unsearchable",
+    icon: Map,
+    title: "Search the Unsearchable",
+    summary: "Queries nobody else can run",
+    fullDescription: "Traditional databases can only filter by industry, location, and company size. We can find \"recently-exited startups\" or \"beach-side hotels\" — context that exists nowhere else.",
+  },
+];
+
+function ComparisonChart() {
+  return (
+    <div className="w-full h-full flex items-center justify-center p-6">
+      <div className="w-full max-w-md">
+        <div className="flex items-end justify-center gap-8 h-48">
+          <div className="flex flex-col items-center">
+            <div className="relative">
+              <div className="w-20 bg-red-500/20 border border-red-500/40 rounded-t-lg h-32 flex items-end justify-center pb-2">
+                <Database className="w-8 h-8 text-red-400/60" />
+              </div>
+              <div className="absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap">
+                <span className="text-red-400 text-sm font-mono">300M+</span>
+              </div>
+            </div>
+            <span className="text-gray-500 text-sm mt-3 text-center">Stale DB</span>
+            <span className="text-gray-600 text-xs">12-18 months old</span>
+          </div>
+          
+          <div className="flex flex-col items-center">
+            <div className="relative">
+              <div className="w-20 bg-green-500/20 border border-green-500/40 rounded-t-lg h-16 flex items-end justify-center pb-2">
+                <Zap className="w-8 h-8 text-green-400" />
+              </div>
+              <div className="absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap">
+                <span className="text-green-400 text-sm font-mono">Fresh</span>
+              </div>
+            </div>
+            <span className="text-gray-400 text-sm mt-3 text-center">Live Search</span>
+            <span className="text-green-400/80 text-xs">Real-time</span>
+          </div>
+        </div>
+        
+        <div className="mt-8 text-center">
+          <p className="text-gray-500 text-sm">
+            <span className="text-yellow-400">Quality</span> over quantity
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function PromptVsFilters() {
+  return (
+    <div className="w-full h-full flex items-center justify-center p-6">
+      <div className="w-full max-w-lg space-y-6">
+        <div className="bg-red-500/5 border border-red-500/20 rounded-xl p-4">
+          <div className="flex items-center gap-2 mb-3">
+            <Filter className="w-4 h-4 text-red-400" />
+            <span className="text-red-400 text-sm font-medium">Traditional Approach</span>
+          </div>
+          <div className="grid grid-cols-3 gap-2">
+            {["Industry", "Company Size", "Revenue", "Location", "Tech Stack", "Job Title", "Seniority", "Department", "Keywords"].map((filter) => (
+              <div key={filter} className="bg-gray-200 dark:bg-white/5 border border-gray-300 dark:border-white/10 rounded px-2 py-1 text-xs text-gray-500 truncate">
+                {filter} ▾
+              </div>
+            ))}
+          </div>
+          <p className="text-gray-600 text-xs mt-3 italic">+ 66 more filters...</p>
+        </div>
+        
+        <div className="flex items-center justify-center">
+          <span className="text-gray-600 text-sm">vs</span>
+        </div>
+        
+        <div className="bg-yellow-500/5 border border-yellow-500/30 rounded-xl p-4">
+          <div className="flex items-center gap-2 mb-3">
+            <Sparkles className="w-4 h-4 text-yellow-400" />
+            <span className="text-yellow-400 text-sm font-medium">5Ducks Approach</span>
+          </div>
+          <div className="bg-gray-800 dark:bg-black/40 border border-gray-600 dark:border-white/20 rounded-lg px-4 py-3">
+            <span className="text-white font-mono text-sm">
+              "SaaS companies in Austin with Series A funding"
+            </span>
+            <span className="text-yellow-400 ml-1">|</span>
+          </div>
+          <p className="text-gray-400 text-xs mt-3">Just type what you want. That's it.</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function SearchExamples() {
+  const examples = [
+    "Beach-side 4-star hotels on the Space Coast",
+    "Recently-exited startups in Miami",
+    "Family-owned wineries in Napa Valley",
+    "AI companies hiring remote engineers",
+    "Boutique marketing agencies in Brooklyn",
+  ];
+  
+  return (
+    <div className="w-full h-full flex items-center justify-center p-6">
+      <div className="w-full max-w-lg">
+        <div className="flex items-center gap-2 mb-6">
+          <Search className="w-5 h-5 text-yellow-400" />
+          <span className="text-gray-400 text-sm">Searches that are impossible elsewhere:</span>
+        </div>
+        
+        <div className="space-y-3">
+          {examples.slice(0, 3).map((example, i) => (
+            <div
+              key={i}
+              className="bg-gray-200 dark:bg-white/5 border border-gray-300 dark:border-white/10 rounded-xl px-4 py-3 flex items-center gap-3"
+            >
+              <div className="w-2 h-2 rounded-full bg-yellow-400" />
+              <span className="text-gray-700 dark:text-gray-300 text-sm">"{example}"</span>
+            </div>
+          ))}
+        </div>
+        
+        <p className="text-center text-gray-500 text-sm mt-6">
+          <span className="text-yellow-400">Literally anything.</span> At your fingertips.
+        </p>
+      </div>
+    </div>
+  );
+}
+
+const freshDataGraphics = [ComparisonChart, PromptVsFilters, SearchExamples];
+
+function FreshDataSection({ activeTab, onTabClick }: { activeTab: number; onTabClick: (index: number) => void }) {
+  const GraphicComponent = freshDataGraphics[activeTab];
+  const activeTabData = freshDataTabs[activeTab];
+
+  return (
+    <div className="relative z-20 bg-gray-50 dark:bg-[#0A0A10] py-24">
+      <div className="absolute inset-0 opacity-5 dark:opacity-10" style={{ backgroundImage: "radial-gradient(#64748b 1px, transparent 1px)", backgroundSize: "40px 40px" }} />
+      
+      <div className="container mx-auto px-6 relative z-10">
+        <div className="text-center mb-16">
+          <h2 className="text-3xl md:text-5xl font-serif text-gray-800 dark:text-white mb-4">Fresh Data. Zero Bloat.</h2>
+          <p className="text-xl text-gray-500 italic">
+            While competitors rely on stale databases, we search fresh — every time.
+          </p>
+        </div>
+        
+        <div className="max-w-5xl mx-auto">
+          {/* Desktop: Vertical tabs layout */}
+          <div className="hidden md:grid md:grid-cols-[300px_1fr] gap-6">
+            <div className="space-y-3">
+              {freshDataTabs.map((tab, index) => {
+                const Icon = tab.icon;
+                const isActive = index === activeTab;
+                
+                return (
+                  <button
+                    key={tab.id}
+                    onClick={() => onTabClick(index)}
+                    className={`w-full text-left p-4 rounded-xl border transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] ${
+                      isActive 
+                        ? "bg-yellow-100 dark:bg-yellow-500/10 border-yellow-400 dark:border-yellow-500/30" 
+                        : "bg-gray-100 dark:bg-white/5 border-gray-200 dark:border-white/10 hover:border-gray-300 dark:hover:border-white/20"
+                    }`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className={`w-10 h-10 rounded-lg flex items-center justify-center transition-colors ${
+                        isActive ? "bg-yellow-200 dark:bg-yellow-500/20" : "bg-gray-200 dark:bg-white/10"
+                      }`}>
+                        <Icon className={`w-5 h-5 ${isActive ? "text-yellow-600 dark:text-yellow-400" : "text-gray-400"}`} />
+                      </div>
+                      <div>
+                        <h3 className={`font-bold transition-colors ${isActive ? "text-gray-800 dark:text-white" : "text-gray-500 dark:text-gray-400"}`}>
+                          {tab.title}
+                        </h3>
+                        <p className={`text-sm transition-colors ${isActive ? "text-gray-600 dark:text-gray-400" : "text-gray-400 dark:text-gray-600"}`}>
+                          {tab.summary}
+                        </p>
+                      </div>
+                    </div>
+                    
+                    {isActive && (
+                      <div
+                        key={`progress-${activeTab}`}
+                        className="h-0.5 bg-yellow-500/50 mt-3 rounded-full"
+                        style={{ animation: "progress-fill 4s linear" }}
+                      />
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+            
+            <div className="bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl overflow-hidden min-h-[400px] flex flex-col">
+              <div className="flex-1 relative">
+                {freshDataGraphics.map((Graphic, index) => (
+                  <div
+                    key={index}
+                    className={`absolute inset-0 transition-opacity duration-300 ${
+                      index === activeTab ? "opacity-100" : "opacity-0 pointer-events-none"
+                    }`}
+                  >
+                    <Graphic />
+                  </div>
+                ))}
+              </div>
+              
+              <div className="p-6 border-t border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-black/20">
+                <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
+                  {activeTabData.fullDescription}
+                </p>
+              </div>
+            </div>
+          </div>
+          
+          {/* Mobile: Accordion layout */}
+          <div className="md:hidden space-y-4">
+            {freshDataTabs.map((tab, index) => {
+              const Icon = tab.icon;
+              const isActive = index === activeTab;
+              const Graphic = freshDataGraphics[index];
+              
+              return (
+                <div
+                  key={tab.id}
+                  className="border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden"
+                >
+                  <button
+                    onClick={() => onTabClick(index)}
+                    className={`w-full text-left p-4 flex items-center gap-3 transition-colors ${
+                      isActive ? "bg-yellow-100 dark:bg-yellow-500/10" : "bg-gray-100 dark:bg-white/5"
+                    }`}
+                  >
+                    <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
+                      isActive ? "bg-yellow-200 dark:bg-yellow-500/20" : "bg-gray-200 dark:bg-white/10"
+                    }`}>
+                      <Icon className={`w-5 h-5 ${isActive ? "text-yellow-600 dark:text-yellow-400" : "text-gray-400"}`} />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className={`font-bold ${isActive ? "text-gray-800 dark:text-white" : "text-gray-500 dark:text-gray-400"}`}>
+                        {tab.title}
+                      </h3>
+                    </div>
+                  </button>
+                  
+                  <div
+                    className={`overflow-hidden transition-all duration-300 ${
+                      isActive ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"
+                    }`}
+                  >
+                    <div className="p-4 border-t border-gray-200 dark:border-white/10">
+                      <div className="h-64">
+                        <Graphic />
+                      </div>
+                      <p className="text-gray-500 dark:text-gray-400 text-sm mt-4">
+                        {tab.fullDescription}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function LandingSimple() {
   const { openModal, openModalForLogin, setRegistrationSuccessCallback } = useRegistrationModal();
   const { user } = useAuth();
@@ -39,6 +323,9 @@ export default function LandingSimple() {
   const [isOnboardingOpen, setIsOnboardingOpen] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(true);
   const [onlineCount, setOnlineCount] = useState(() => Math.floor(Math.random() * (99 - 13 + 1)) + 13);
+  const [freshDataActiveTab, setFreshDataActiveTab] = useState(0);
+  const [freshDataPaused, setFreshDataPaused] = useState(false);
+  const freshDataPauseTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const testimonialSectionRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -76,6 +363,33 @@ export default function LandingSimple() {
     }, 120000);
 
     return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    if (freshDataPaused) return;
+    const interval = setInterval(() => {
+      setFreshDataActiveTab(prev => (prev + 1) % 3);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, [freshDataPaused]);
+
+  useEffect(() => {
+    return () => {
+      if (freshDataPauseTimeoutRef.current) {
+        clearTimeout(freshDataPauseTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  const handleFreshDataTabClick = useCallback((index: number) => {
+    setFreshDataActiveTab(index);
+    setFreshDataPaused(true);
+    if (freshDataPauseTimeoutRef.current) {
+      clearTimeout(freshDataPauseTimeoutRef.current);
+    }
+    freshDataPauseTimeoutRef.current = setTimeout(() => {
+      setFreshDataPaused(false);
+    }, 8000);
   }, []);
 
   const handleGetStarted = () => {
@@ -372,6 +686,12 @@ export default function LandingSimple() {
             </div>
           </div>
         </div>
+
+        {/* Fresh Data Section */}
+        <FreshDataSection 
+          activeTab={freshDataActiveTab}
+          onTabClick={handleFreshDataTabClick}
+        />
 
         {/* Features Section */}
         <div className="relative z-20 bg-gray-100 dark:bg-[#0A0A10] py-24">
