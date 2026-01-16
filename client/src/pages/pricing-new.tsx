@@ -1,12 +1,13 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Check, Zap, Crown, Moon, Sun, Sparkles } from "lucide-react";
+import { ArrowRight, Check, Zap, Crown, Moon, Sun, Sparkles, Loader2 } from "lucide-react";
 import { useRegistrationModal } from "@/hooks/use-registration-modal";
 import { useAuth } from "@/hooks/use-auth";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { FooterStealth } from "@/components/footer-stealth";
 import { Link } from "wouter";
+import { usePricingConfig, getPromoCodeFromUrl } from "@/features/pricing-promos";
 
 const WAITLIST_STORAGE_KEY = '5ducks_waitlist_plans';
 
@@ -25,60 +26,6 @@ function saveWaitlistPlans(plans: string[]) {
   } catch {}
 }
 
-const plans = [
-  {
-    id: 'free',
-    name: 'Free Trial',
-    credits: 190,
-    bonus: 0,
-    price: 0,
-    description: 'Perfect for testing the waters',
-    features: [
-      'AI-powered company search',
-      'Contact discovery',
-      'Email composition',
-      'No credit card required',
-    ],
-    highlight: false,
-    cta: 'Start Free',
-  },
-  {
-    id: 'ugly-duckling',
-    name: 'The Duckling',
-    credits: 2000,
-    bonus: 3000,
-    price: 18.95,
-    description: 'For serious prospectors',
-    features: [
-      'Everything in Free',
-      '2,000 credits/month',
-      '+3,000 bonus credits',
-      'Priority email search',
-      'Saved search lists',
-    ],
-    highlight: true,
-    cta: 'Start Selling',
-  },
-  {
-    id: 'duckin-awesome',
-    name: 'Mama Duck',
-    credits: 5000,
-    bonus: 10000,
-    price: 44.95,
-    description: 'For power users',
-    features: [
-      'Everything in Duckling',
-      '5,000 credits/month',
-      '+10,000 bonus credits',
-      'Advanced analytics',
-      'Priority support',
-    ],
-    highlight: false,
-    cta: 'Join Waitlist',
-    comingSoon: true,
-  },
-];
-
 export default function PricingPage() {
   const { openModal, openModalForLogin, setRegistrationSuccessCallback } = useRegistrationModal();
   const { user } = useAuth();
@@ -87,6 +34,10 @@ export default function PricingPage() {
   const [waitlistPlans, setWaitlistPlans] = useState<string[]>(() => getStoredWaitlistPlans());
   const [isLoading, setIsLoading] = useState<string | null>(null);
   const originalThemeRef = useRef<boolean | null>(null);
+  
+  const promoCode = useMemo(() => getPromoCodeFromUrl(), []);
+  const { data: pricingConfig, isLoading: isConfigLoading } = usePricingConfig(promoCode);
+  const plans = pricingConfig?.plans || [];
 
   useEffect(() => {
     const root = document.documentElement;
@@ -224,7 +175,16 @@ export default function PricingPage() {
               </h1>
             </div>
 
-            <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+            {isConfigLoading ? (
+              <div className="flex justify-center items-center py-20">
+                <Loader2 className="w-8 h-8 animate-spin text-yellow-500" />
+              </div>
+            ) : (
+              <div className={`grid gap-6 max-w-5xl mx-auto ${
+              plans.length === 1 ? 'md:grid-cols-1 max-w-md' :
+              plans.length === 2 ? 'md:grid-cols-2 max-w-3xl' :
+              'md:grid-cols-3'
+            }`}>
               {plans.map((plan) => {
                 const isOnWaitlist = waitlistPlans.includes(plan.id);
                 const isPlanLoading = isLoading === plan.id;
@@ -328,6 +288,7 @@ export default function PricingPage() {
                 );
               })}
             </div>
+            )}
 
             <div className="text-center mt-16">
               <p className="text-gray-500 text-sm mb-2">

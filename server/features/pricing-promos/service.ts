@@ -3,8 +3,37 @@ import { pricingPromos, PricingPromo } from "@shared/schema";
 import { eq, and, lte, gte, desc } from "drizzle-orm";
 import { DEFAULT_PLANS, applyPromoToPlans, ResolvedPricingConfig, PlanConfig } from "./types";
 
+const HARDCODED_PROMOS: Record<string, Partial<PricingPromo>> = {
+  'egg': {
+    id: -1,
+    code: 'egg',
+    name: 'Free Trial Included',
+    isActive: true,
+    priority: 0,
+    showFreeTrial: true,
+    showDuckling: true,
+    showMamaDuck: true,
+    daysOfWeek: [],
+  },
+  'duckling-only': {
+    id: -2,
+    code: 'duckling-only',
+    name: 'Duckling Only',
+    isActive: true,
+    priority: 0,
+    showFreeTrial: false,
+    showDuckling: true,
+    showMamaDuck: false,
+    daysOfWeek: [],
+  },
+};
+
 export class PricingPromoService {
   static async getPromoByCode(code: string): Promise<PricingPromo | null> {
+    if (HARDCODED_PROMOS[code]) {
+      return HARDCODED_PROMOS[code] as PricingPromo;
+    }
+    
     try {
       const [promo] = await db
         .select()

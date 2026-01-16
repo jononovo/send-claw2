@@ -59,6 +59,7 @@ import { registerAccessApplicationsRoutes } from "./features/access-applications
 import { registerFeedbackRoutes } from "./features/feedback/routes";
 import { registerFindIdealCustomerRoutes } from "./features/find-ideal-customer/routes";
 import { attributionRoutes } from "./features/attribution";
+import { registerPricingPromoRoutes } from "./features/pricing-promos";
 
 
 // Import centralized auth utilities
@@ -365,6 +366,9 @@ Respond in this exact JSON format:
   
   // Register find ideal customer routes (contact feedback)
   registerFindIdealCustomerRoutes(app);
+  
+  // Register pricing promo routes
+  registerPricingPromoRoutes(app);
 
   const httpServer = createServer(app);
   return httpServer;
