@@ -53,7 +53,7 @@ export const DEFAULT_PLANS: PlanConfig[] = [
       'Saved search lists',
     ],
     highlight: true,
-    cta: 'Start Selling',
+    cta: 'Start Selling More',
     stripePriceId: process.env.STRIPE_DUCKLING_PRICE_ID,
   },
   {
