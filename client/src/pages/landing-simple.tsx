@@ -177,10 +177,10 @@ export default function LandingSimple() {
                     <div className="flex-1">
                       <p className="text-gray-500 text-xs text-center mb-3">Trusted by teams at</p>
                       <div className="flex items-center justify-center gap-6 opacity-50 hover:opacity-70 transition-opacity">
-                        <span className="text-gray-400 font-semibold text-sm">Salesforce</span>
-                        <span className="text-gray-400 font-semibold text-sm">HubSpot</span>
-                        <span className="text-gray-400 font-semibold text-sm">Stripe</span>
-                        <span className="text-gray-400 font-semibold text-sm">Notion</span>
+                        <span className="text-gray-400 font-medium text-sm tracking-wide">Linear</span>
+                        <span className="text-gray-400 font-light text-sm italic">Vercel</span>
+                        <span className="text-gray-400 font-bold text-xs uppercase tracking-widest">Raycast</span>
+                        <span className="text-gray-400 font-medium text-sm">Loom</span>
                       </div>
                     </div>
                     
