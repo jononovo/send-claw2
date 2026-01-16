@@ -267,7 +267,7 @@ export default function LandingSimple() {
         <div className="relative z-20 py-8 -mt-4 border-t border-white/5">
           <div className="container mx-auto px-6">
             <p className="text-gray-500 text-sm text-center mb-5 tracking-wide">Trusted by teams at</p>
-            <div className="flex items-center justify-center gap-8 md:gap-12 flex-wrap">
+            <div className="flex items-center justify-center gap-8 md:gap-12 flex-nowrap overflow-hidden">
               <span className="text-gray-500 font-medium text-xl tracking-wide hover:text-gray-300 transition-colors duration-300 cursor-default">Linear</span>
               <span className="text-gray-500 font-light text-xl italic hover:text-gray-300 transition-colors duration-300 cursor-default">Vercel</span>
               <span className="text-gray-500 font-bold text-sm uppercase tracking-widest hover:text-gray-300 transition-colors duration-300 cursor-default">Raycast</span>
