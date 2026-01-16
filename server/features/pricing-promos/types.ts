@@ -43,7 +43,7 @@ export const DEFAULT_PLANS: PlanConfig[] = [
     name: 'The Duckling',
     credits: 2000,
     bonus: 3000,
-    price: 18.95,
+    price: 36.95,
     description: 'For serious prospectors',
     features: [
       'Everything in Free',
@@ -61,7 +61,7 @@ export const DEFAULT_PLANS: PlanConfig[] = [
     name: 'Mama Duck',
     credits: 5000,
     bonus: 10000,
-    price: 44.95,
+    price: 88.95,
     description: 'For power users',
     features: [
       'Everything in Duckling',
