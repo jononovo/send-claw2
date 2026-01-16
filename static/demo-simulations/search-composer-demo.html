@@ -1762,10 +1762,16 @@ Alex`;
       successToast.classList.remove('show');
       successToast.style.transform = 'translate(-50%, -50%) scale(0)';
       successToast.style.opacity = '';
-      // Reset title overlays for replays
+      // Reset title overlays for replays - must clear animation state first
       titleOverlay1.classList.remove('visible');
+      titleOverlay1.style.animation = 'none';
+      titleOverlay1.offsetHeight; // Trigger reflow to reset animation
+      titleOverlay1.style.animation = '';
       titleOverlay1.classList.add('preload'); // Show immediately for replay
       titleOverlay2.classList.remove('visible');
+      titleOverlay2.style.animation = 'none';
+      titleOverlay2.offsetHeight;
+      titleOverlay2.style.animation = '';
     }
     
     async function runDemo() {
