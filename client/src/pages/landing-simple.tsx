@@ -138,7 +138,13 @@ export default function LandingSimple() {
                   onClick={handleGetStarted}
                   className="group relative h-16 overflow-hidden bg-gradient-to-r from-[#0A0A10] via-[#1a1a1f] to-[#0f0f14] text-gray-400 hover:text-black font-bold text-xl rounded-xl transition-colors duration-500 ease-in-out !cursor-pointer border border-white/10"
                 >
-                  <span className="absolute inset-0 bg-gradient-to-r from-yellow-500 via-yellow-400 to-yellow-500 opacity-0 group-hover:opacity-100 transition-opacity duration-1000 ease-in rounded-xl" />
+                  <span 
+                    className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-1000 ease-in rounded-xl group-hover:animate-[shimmer_2s_ease-in-out_infinite]"
+                    style={{ 
+                      backgroundImage: 'linear-gradient(90deg, #eab308 0%, #facc15 25%, #fef08a 50%, #facc15 75%, #eab308 100%)',
+                      backgroundSize: '200% 100%'
+                    }}
+                  />
                   <span className="relative z-10 flex items-center">Start outreach with baby steps<ArrowRight className="ml-2 w-5 h-5" /></span>
                 </Button>
                 <div className="flex flex-wrap justify-center gap-4 text-gray-500 text-sm">

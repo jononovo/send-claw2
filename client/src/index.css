@@ -409,6 +409,12 @@ input[type="checkbox"]:indeterminate::before {
   animation: progress-shimmer 3s linear infinite;
 }
 
+/* Button gold shimmer animation */
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
 @layer utilities {
   .animate-disco-bounce {
     animation: disco-bounce 5s ease-in-out;
