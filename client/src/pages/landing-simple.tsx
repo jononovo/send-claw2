@@ -228,7 +228,7 @@ export default function LandingSimple() {
                     <circle cx="14" cy="14" r="4" fill="#6b7280"/>
                     <path d="M8 18C8 18 10 21 14 21C18 21 20 18 20 18" stroke="#6b7280" strokeWidth="1.5" strokeLinecap="round"/>
                   </svg>
-                  <span className="text-xs text-gray-500 font-medium">SOC 2</span>
+                  <span className="text-xs text-gray-500 font-medium">SOC 2*</span>
                 </div>
                 {/* Built in NYC Badge */}
                 <div className="flex flex-col items-center gap-1">
