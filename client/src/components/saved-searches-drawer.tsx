@@ -38,6 +38,7 @@ interface SavedSearchesDrawerProps {
 export function SavedSearchesDrawer({ open, onOpenChange, onLoadSearch, onNewSearch, onOpenCompose }: SavedSearchesDrawerProps) {
   const { data: lists = [] } = useQuery<SearchList[]>({
     queryKey: ["/api/lists"],
+    enabled: open,
   });
   
   const [clickedId, setClickedId] = useState<number | null>(null);
