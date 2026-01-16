@@ -117,6 +117,8 @@ export default function Home({ isNewSearch = false }: HomeProps) {
   const [contactsLoaded, setContactsLoaded] = useState(false);
   // Track if we're loading a search from URL (prevents empty form flash)
   const [isLoadingFromUrl, setIsLoadingFromUrl] = useState(false);
+  // Ref to track which listId is currently being loaded (prevents duplicate loads on remount)
+  const loadingListIdRef = useRef<number | null>(null);
   // Track if user came from landing page
   const [isFromLandingPage, setIsFromLandingPage] = useState(false);
   // Track the last executed search query and if input has changed
@@ -1110,6 +1112,9 @@ export default function Home({ isNewSearch = false }: HomeProps) {
     // Close email drawer first (updates React state immediately)
     emailDrawer.closeDrawer();
     
+    // Clear loading ref to allow fresh loads
+    loadingListIdRef.current = null;
+    
     // Clear all search state
     setCurrentQuery("");
     setCurrentResults(null);
@@ -1143,9 +1148,15 @@ export default function Home({ isNewSearch = false }: HomeProps) {
       const listId = parseInt(searchRouteParams.listId, 10);
       if (isNaN(listId)) return;
       
-      // Skip if this search is already loaded
+      // Skip if this search is already loaded (state-based check)
       if (currentListId === listId) {
         console.log('Search already loaded:', { listId });
+        return;
+      }
+      
+      // Skip if we're already loading this search (ref-based check for remount protection)
+      if (loadingListIdRef.current === listId) {
+        console.log('Search already loading (skipping duplicate):', { listId });
         return;
       }
       
@@ -1156,6 +1167,9 @@ export default function Home({ isNewSearch = false }: HomeProps) {
       }
       
       console.log('Loading search from URL:', { listId, slug: searchRouteParams.slug });
+      
+      // Mark this listId as being loaded to prevent duplicate loads on remount
+      loadingListIdRef.current = listId;
       
       // Set loading state to prevent empty form flash
       setIsLoadingFromUrl(true);
