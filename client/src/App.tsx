@@ -27,6 +27,7 @@ import LandingStealth from "@/features/landing-stealth";
 // Lazy-loaded landing pages (secondary pages)
 const Landing = lazy(() => import("@/pages/landing"));
 const Landing2 = lazy(() => import("@/pages/landing2"));
+const LandingSimple = lazy(() => import("@/pages/landing-simple"));
 const Planning = lazy(() => import("@/pages/planning"));
 
 // Lazy imports for app pages that can be loaded on demand
@@ -108,7 +109,7 @@ function DeferredGuidance() {
 }
 
 // Preload Home page when on landing pages (runs after page load, during idle time)
-const LANDING_ROUTES = ["/", "/landing-stealth", "/stealth", "/s", "/react-landing", "/landing2"];
+const LANDING_ROUTES = ["/", "/landing-stealth", "/stealth", "/s", "/react-landing", "/landing2", "/landing-simple", "/simple"];
 
 function useHomePreload() {
   const [location] = useLocation();
@@ -169,6 +170,18 @@ function Router() {
         <Route path="/landing-stealth" component={LandingStealth} />
         <Route path="/stealth" component={LandingStealth} />
         <Route path="/s" component={LandingStealth} />
+        
+        {/* Simple Landing Page (minimal animations) */}
+        <Route path="/landing-simple" component={() => 
+          <Suspense fallback={null}>
+            <LandingSimple />
+          </Suspense>
+        } />
+        <Route path="/simple" component={() => 
+          <Suspense fallback={null}>
+            <LandingSimple />
+          </Suspense>
+        } />
         
         {/* Strategic Planning Page (no nav) */}
         <Route path="/planning" component={() => 
