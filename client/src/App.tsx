@@ -149,8 +149,12 @@ function Router() {
   return (
     <>
       <Switch>
-        {/* Default landing page - Stealth Mode (directly imported, no Suspense needed) */}
-        <Route path="/" component={LandingStealth} />
+        {/* Default landing page - Simple Landing */}
+        <Route path="/" component={() => 
+          <Suspense fallback={null}>
+            <LandingSimple />
+          </Suspense>
+        } />
         
         {/* React version of landing page for comparison */}
         <Route path="/react-landing" component={() => 
