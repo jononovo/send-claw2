@@ -8,9 +8,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { SearchProgressIndicator, type SearchProgressState } from "@/features/search-progress";
 import { TableSkeleton } from "@/components/ui/table-skeleton";
 
-// Lazy load heavy components
+// Lazy load heavy components that appear after search
 const CompanyCards = lazy(() => import("@/components/company-cards"));
-const PromptEditor = lazy(() => import("@/components/prompt-editor"));
+
+// Direct import for PromptEditor - contains search input (LCP critical element)
+import PromptEditor from "@/components/prompt-editor";
 
 // Lazy load components that only appear after user interaction
 const EmailDrawer = lazy(() => 
@@ -1587,8 +1589,7 @@ export default function Home({ isNewSearch = false }: HomeProps) {
                     </div>
                   </div>
                 )}
-                <Suspense fallback={<div className="h-32 bg-slate-100 dark:bg-slate-800 rounded-lg animate-pulse"></div>}>
-                  <PromptEditor
+                <PromptEditor
                     onAnalyze={() => {
                       setIsAnalyzing(true);
                       // Clear list ID and results when starting a NEW search (different query)
@@ -1668,7 +1669,6 @@ export default function Home({ isNewSearch = false }: HomeProps) {
                     onOpenSearchDrawer={() => searchManagementDrawer.openDrawer()}
                     onProgressUpdate={setPromptEditorProgress}
                   />
-                </Suspense>
                 
                 {/* Search suggestions - shown only when no results and not actively searching */}
                 {!currentResults && !isAnalyzing && (
