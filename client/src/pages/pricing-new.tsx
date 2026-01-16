@@ -222,10 +222,6 @@ export default function PricingPage() {
                   Adventure
                 </span>
               </h1>
-
-              <p className="text-xl text-muted-foreground leading-relaxed max-w-2xl mx-auto">
-                Start free. Upgrade when you're ready to scale your outreach.
-              </p>
             </div>
 
             <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
