@@ -166,10 +166,15 @@ export default function LandingSimple() {
                           <Star key={i} className="w-4 h-4 fill-yellow-500 text-yellow-500" />
                         ))}
                       </div>
-                      <span className="ml-1">4.9/5</span>
+                      <span className="ml-1">4.82/5</span>
                     </div>
                     <div className="w-px h-4 bg-white/10" />
                     <span>2,400+ customers</span>
+                    <div className="w-px h-4 bg-white/10" />
+                    <div className="flex items-center gap-3">
+                      <span className="text-gray-500 font-bold text-xs tracking-wider">CAPRA</span>
+                      <span className="text-gray-500 font-bold text-xs tracking-wider">GT</span>
+                    </div>
                   </div>
                   
                   <p className="text-gray-500 text-xs text-center mb-3">Trusted by teams at</p>
