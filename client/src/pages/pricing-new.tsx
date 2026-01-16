@@ -264,7 +264,7 @@ export default function PricingPage() {
                       disabled={isPlanLoading || isOnWaitlist}
                       className={`w-full font-bold py-6 rounded-xl text-base transition-all duration-300 ${
                         plan.highlight
-                          ? 'bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-black'
+                          ? 'bg-gradient-to-r from-yellow-600 to-yellow-700 hover:from-yellow-400 hover:to-yellow-500 text-black'
                           : plan.comingSoon
                             ? 'bg-gray-100 dark:bg-white/10 hover:bg-gray-200 dark:hover:bg-white/20 text-gray-700 dark:text-gray-300'
                             : 'bg-gray-800 dark:bg-white hover:bg-gray-900 dark:hover:bg-gray-100 text-white dark:text-black'
