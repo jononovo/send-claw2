@@ -87,6 +87,9 @@ interface SourceBreakdown {
   Hunter: number;
 }
 
+// Module-level tracking to prevent double hydration across component remounts
+let lastHydratedListId: number | null = null;
+
 interface HomeProps {
   isNewSearch?: boolean;
 }
@@ -283,7 +286,6 @@ export default function Home({ isNewSearch = false }: HomeProps) {
   const listMutationInProgressRef = useRef(false);
   const listUpdateTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const hasTriggeredWelcomeRef = useRef(false);
-  const hasHydratedFromRouteRef = useRef(false);
   // Ref to store pending metrics to persist after list creation
   const pendingMetricsRef = useRef<{
     totalContacts: number | null;
@@ -1224,6 +1226,8 @@ export default function Home({ isNewSearch = false }: HomeProps) {
   // Handle /app/new-search route - triggers new search when navigated to this route
   useEffect(() => {
     if (isNewSearch) {
+      // Reset module-level hydration tracking for new searches
+      lastHydratedListId = null;
       // Use setTimeout to ensure this runs after initial render
       setTimeout(() => handleNewSearch(), 0);
     }
@@ -1231,19 +1235,21 @@ export default function Home({ isNewSearch = false }: HomeProps) {
 
   // Handle /search/:slug/:listId route - load search by listId on initial page load only
   useEffect(() => {
-    // Only run once on initial mount - subsequent searches don't trigger this
-    if (hasHydratedFromRouteRef.current) {
-      return;
-    }
-    
     if (isSearchRoute && searchRouteParams?.listId) {
       const listId = parseInt(searchRouteParams.listId, 10);
       if (isNaN(listId)) return;
       
-      // Skip if we already have this search loaded (e.g., from drawer click)
+      // Skip if we already hydrated this specific listId (prevents double load on back navigation)
+      // Uses module-level variable to persist across component remounts
+      if (lastHydratedListId === listId) {
+        console.log('Already hydrated this listId, skipping:', { listId });
+        return;
+      }
+      
+      // Skip if we already have this search loaded in state (e.g., from drawer click)
       if (currentListId === listId) {
-        console.log('Search already loaded, skipping fetch:', { listId });
-        hasHydratedFromRouteRef.current = true;
+        console.log('Search already loaded in state, skipping fetch:', { listId });
+        lastHydratedListId = listId;
         return;
       }
       
@@ -1253,8 +1259,8 @@ export default function Home({ isNewSearch = false }: HomeProps) {
         return;
       }
       
-      // Mark as hydrated so this effect doesn't run again
-      hasHydratedFromRouteRef.current = true;
+      // Mark this specific listId as hydrated (module-level)
+      lastHydratedListId = listId;
       console.log('Loading search from URL (one-time):', { listId, slug: searchRouteParams.slug });
       
       // Fetch the search list by listId and load it
