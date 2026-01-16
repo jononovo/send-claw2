@@ -173,9 +173,8 @@ export default function LandingSimple() {
                   
                   <DemoSimulationPlayer
                     simulation="search-composer-demo"
-                    params={{ id: 1 }}
                     responsive
-                    aspectRatio={58/50}
+                    aspectRatio={1}
                     showControls={false}
                   />
                 </div>
