@@ -73,36 +73,38 @@ function isGuidanceRoute(path: string): boolean {
   return GUIDANCE_ENABLED_ROUTES.some(route => path === route || path.startsWith(route + "/"));
 }
 
-function LazyGuidanceWrapper({ children }: { children: ReactNode }) {
-  const [location] = useLocation();
+function DeferredGuidance() {
   const [GuidanceProvider, setGuidanceProvider] = useState<React.ComponentType<{ children: ReactNode; autoStartForNewUsers?: boolean }> | null>(null);
-  const [shouldLoad, setShouldLoad] = useState(false);
+  const [location] = useLocation();
   
   useEffect(() => {
-    if (!isGuidanceRoute(location)) {
-      return;
+    if (!isGuidanceRoute(location)) return;
+    if (GuidanceProvider) return;
+    
+    const load = () => {
+      import("@/features/guidance-engine").then(module => {
+        setGuidanceProvider(() => module.GuidanceProvider);
+      }).catch(err => {
+        console.error("Failed to load guidance engine:", err);
+      });
+    };
+    
+    if ('requestIdleCallback' in window) {
+      const handle = (window as any).requestIdleCallback(load, { timeout: 5000 });
+      return () => (window as any).cancelIdleCallback(handle);
+    } else {
+      const timer = setTimeout(load, 3000);
+      return () => clearTimeout(timer);
     }
-    
-    const timer = setTimeout(() => {
-      setShouldLoad(true);
-    }, 1000);
-    
-    return () => clearTimeout(timer);
-  }, [location]);
+  }, [location, GuidanceProvider]);
   
-  useEffect(() => {
-    if (!shouldLoad) return;
-    
-    import("@/features/guidance-engine").then(module => {
-      setGuidanceProvider(() => module.GuidanceProvider);
-    });
-  }, [shouldLoad]);
+  if (!GuidanceProvider) return null;
   
-  if (GuidanceProvider) {
-    return <GuidanceProvider autoStartForNewUsers={true}>{children}</GuidanceProvider>;
-  }
-  
-  return <>{children}</>;
+  return (
+    <GuidanceProvider autoStartForNewUsers={true}>
+      <></>
+    </GuidanceProvider>
+  );
 }
 
 function Router() {
@@ -397,11 +399,10 @@ function App() {
         <InsufficientCreditsProvider>
           <AuthProvider>
             <RegistrationModalProvider>
-              <LazyGuidanceWrapper>
-                <Router />
-                <RegistrationModalContainer />
-                <Toaster />
-              </LazyGuidanceWrapper>
+              <Router />
+              <DeferredGuidance />
+              <RegistrationModalContainer />
+              <Toaster />
             </RegistrationModalProvider>
             <InsufficientCreditsModal />
             <InsufficientCreditsHandlerSetup />
