@@ -142,9 +142,9 @@ export default function LandingSimple() {
                   <ArrowRight className="ml-2 w-5 h-5" />
                 </Button>
                 <div className="flex flex-wrap justify-center gap-4 text-gray-500 text-sm">
-                  <span className="flex items-center gap-1"><Check className="w-4 h-4 text-green-500" /> No registration</span>
-                  <span className="flex items-center gap-1"><Check className="w-4 h-4 text-green-500" /> No credit card</span>
-                  <span className="flex items-center gap-1"><Check className="w-4 h-4 text-green-500" /> Pure awesome</span>
+                  <span className="flex items-center gap-1"><Check className="w-4 h-4 text-gray-500" /> No registration</span>
+                  <span className="flex items-center gap-1"><Check className="w-4 h-4 text-gray-500" /> No credit card</span>
+                  <span className="flex items-center gap-1"><Check className="w-4 h-4 text-gray-500" /> Pure awesome</span>
                 </div>
               </div>
             </div>
