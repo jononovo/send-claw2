@@ -75,7 +75,6 @@ import { filterTopProspects, ContactWithCompanyInfo } from "@/lib/results-analys
 import { Checkbox } from "@/components/ui/checkbox";
 import { ContactActionColumn } from "@/components/contact-action-column";
 import { SearchSessionManager } from "@/lib/search-session-manager";
-import { updateToSearchUrl } from "@/lib/url-utils";
 import { useComprehensiveEmailSearch } from "@/features/search-email";
 import { useSearchState, type SavedSearchState, type CompanyWithContacts } from "@/features/search-state";
 import { useEmailSearchOrchestration } from "@/features/email-search-orchestration";
@@ -284,6 +283,7 @@ export default function Home({ isNewSearch = false }: HomeProps) {
   const listMutationInProgressRef = useRef(false);
   const listUpdateTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const hasTriggeredWelcomeRef = useRef(false);
+  const hasHydratedFromRouteRef = useRef(false);
   // Ref to store pending metrics to persist after list creation
   const pendingMetricsRef = useRef<{
     totalContacts: number | null;
@@ -676,10 +676,6 @@ export default function Home({ isNewSearch = false }: HomeProps) {
           });
       }
       
-      // Update URL to SEO-friendly search URL (replaceState for no re-render)
-      if (currentQuery && listId) {
-        updateToSearchUrl(currentQuery, listId);
-      }
       // No toast notification (silent auto-save)
     },
     onError: (error) => {
@@ -1227,8 +1223,13 @@ export default function Home({ isNewSearch = false }: HomeProps) {
     }
   }, [isNewSearch]);
 
-  // Handle /search/:slug/:listId route - load search by listId when navigating directly
+  // Handle /search/:slug/:listId route - load search by listId on initial page load only
   useEffect(() => {
+    // Only run once on initial mount - subsequent searches don't trigger this
+    if (hasHydratedFromRouteRef.current) {
+      return;
+    }
+    
     if (isSearchRoute && searchRouteParams?.listId) {
       const listId = parseInt(searchRouteParams.listId, 10);
       if (isNaN(listId)) return;
@@ -1236,22 +1237,23 @@ export default function Home({ isNewSearch = false }: HomeProps) {
       // Skip if we already have this search loaded (e.g., from drawer click)
       if (currentListId === listId) {
         console.log('Search already loaded, skipping fetch:', { listId });
+        hasHydratedFromRouteRef.current = true;
         return;
       }
       
       // Wait for auth to be ready before deciding if list is not found
-      // This prevents false negatives during Firebase handshake
       if (!auth.authReady) {
         console.log('Waiting for auth to be ready before loading search:', { listId });
         return;
       }
       
-      console.log('Loading search from URL:', { listId, slug: searchRouteParams.slug, isAuthenticated: !!auth.user });
+      // Mark as hydrated so this effect doesn't run again
+      hasHydratedFromRouteRef.current = true;
+      console.log('Loading search from URL (one-time):', { listId, slug: searchRouteParams.slug });
       
       // Fetch the search list by listId and load it
       const loadSearchByListId = async () => {
         try {
-          // Fetch all lists (works without auth for demo users)
           const lists = await queryClient.fetchQuery({
             queryKey: ["/api/lists"]
           }) as SearchList[];
@@ -1260,7 +1262,6 @@ export default function Home({ isNewSearch = false }: HomeProps) {
           if (list) {
             handleLoadSavedSearch(list);
           } else {
-            // List not found - if not logged in, prompt login; otherwise show not found
             console.warn('Search not found for listId:', listId);
             if (!auth.user) {
               toast({
@@ -1275,13 +1276,11 @@ export default function Home({ isNewSearch = false }: HomeProps) {
                 variant: "destructive"
               });
             }
-            // Stay on page - don't redirect, let user decide to log in or navigate away
           }
         } catch (error: any) {
           console.error('Failed to load search by listId:', error);
           const errorMessage = error?.message || '';
           
-          // Check if it's an auth error (error format is "status: message")
           if (errorMessage.startsWith('401') || errorMessage.startsWith('403')) {
             toast({
               title: "Login required",
@@ -1289,14 +1288,12 @@ export default function Home({ isNewSearch = false }: HomeProps) {
               variant: "default"
             });
           } else {
-            // For other errors (network, 5xx), show retry message
             toast({
               title: "Loading error",
               description: "Unable to load search. Please try again.",
               variant: "destructive"
             });
           }
-          // Stay on page - don't redirect
         }
       };
       

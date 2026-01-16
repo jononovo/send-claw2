@@ -25,12 +25,3 @@ export function generateSearchUrl(query: string, listId: number): string {
   const slug = slugify(query);
   return `/search/${slug}/${listId}`;
 }
-
-/**
- * Updates the browser URL to the search URL without navigation
- * Uses replaceState for performance (no re-render)
- */
-export function updateToSearchUrl(query: string, listId: number): void {
-  const newUrl = generateSearchUrl(query, listId);
-  window.history.replaceState(null, '', newUrl);
-}
