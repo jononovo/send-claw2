@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Check, Clock, Star, Zap } from "lucide-react";
+import { ArrowRight, Award, Check, Clock, CreditCard, Lock, Shield, Star, Zap } from "lucide-react";
 import { useRegistrationModal } from "@/hooks/use-registration-modal";
 import { useAuth } from "@/hooks/use-auth";
 import { FooterStealth } from "@/components/footer-stealth";
@@ -172,13 +172,38 @@ export default function LandingSimple() {
                     <span>2,400+ customers</span>
                   </div>
                   
-                  <p className="text-gray-500 text-xs text-center mb-4">Trusted by teams at</p>
-                  <div className="flex items-center justify-center gap-8 opacity-50 hover:opacity-70 transition-opacity">
-                    <span className="text-gray-400 font-semibold text-sm">Salesforce</span>
-                    <span className="text-gray-400 font-semibold text-sm">HubSpot</span>
-                    <span className="text-gray-400 font-semibold text-sm">Stripe</span>
-                    <span className="text-gray-400 font-semibold text-sm">Notion</span>
-                    <span className="text-gray-400 font-semibold text-sm">Figma</span>
+                  <div className="flex flex-col md:flex-row items-center justify-center gap-8">
+                    {/* Brands */}
+                    <div className="flex-1">
+                      <p className="text-gray-500 text-xs text-center mb-3">Trusted by teams at</p>
+                      <div className="flex items-center justify-center gap-6 opacity-50 hover:opacity-70 transition-opacity">
+                        <span className="text-gray-400 font-semibold text-sm">Salesforce</span>
+                        <span className="text-gray-400 font-semibold text-sm">HubSpot</span>
+                        <span className="text-gray-400 font-semibold text-sm">Stripe</span>
+                        <span className="text-gray-400 font-semibold text-sm">Notion</span>
+                      </div>
+                    </div>
+                    
+                    <div className="hidden md:block w-px h-12 bg-white/10" />
+                    
+                    {/* Certifications */}
+                    <div className="flex-1">
+                      <p className="text-gray-500 text-xs text-center mb-3">Certifications & Partners</p>
+                      <div className="flex items-center justify-center gap-4 opacity-50 hover:opacity-70 transition-opacity">
+                        <div className="flex items-center gap-1 px-2 py-1 border border-white/10 rounded text-xs text-gray-400">
+                          <Shield className="w-3 h-3" /> SOC 2
+                        </div>
+                        <div className="flex items-center gap-1 px-2 py-1 border border-white/10 rounded text-xs text-gray-400">
+                          <Award className="w-3 h-3" /> WeWork
+                        </div>
+                        <div className="flex items-center gap-1 px-2 py-1 border border-white/10 rounded text-xs text-gray-400">
+                          <CreditCard className="w-3 h-3" /> Stripe
+                        </div>
+                        <div className="flex items-center gap-1 px-2 py-1 border border-white/10 rounded text-xs text-gray-400">
+                          <Lock className="w-3 h-3" /> GDPR
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
