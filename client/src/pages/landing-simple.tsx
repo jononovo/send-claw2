@@ -188,7 +188,7 @@ export default function LandingSimple() {
             </div>
 
             {/* Right Column - Demo Simulation */}
-            <div className="hidden lg:flex lg:flex-col lg:items-center -mt-16">
+            <div className="hidden lg:flex lg:flex-col lg:items-center -mt-24">
               <div className="relative">
                 <div className="bg-[#1a1814] rounded-xl overflow-hidden shadow-2xl border border-white/10">
                   {/* Browser chrome header */}
@@ -223,40 +223,40 @@ export default function LandingSimple() {
                 {/* SOC 2 Badge */}
                 <div className="flex flex-col items-center gap-1 px-4 py-3 bg-gradient-to-b from-white/5 to-transparent border border-white/10 rounded-lg hover:border-white/20 transition-colors">
                   <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
-                    <circle cx="14" cy="14" r="12" stroke="#9ca3af" strokeWidth="2" fill="none"/>
-                    <path d="M14 6L16 10H12L14 6Z" fill="#9ca3af"/>
-                    <circle cx="14" cy="14" r="4" fill="#9ca3af"/>
-                    <path d="M8 18C8 18 10 21 14 21C18 21 20 18 20 18" stroke="#9ca3af" strokeWidth="1.5" strokeLinecap="round"/>
+                    <circle cx="14" cy="14" r="12" stroke="#6b7280" strokeWidth="2" fill="none"/>
+                    <path d="M14 6L16 10H12L14 6Z" fill="#6b7280"/>
+                    <circle cx="14" cy="14" r="4" fill="#6b7280"/>
+                    <path d="M8 18C8 18 10 21 14 21C18 21 20 18 20 18" stroke="#6b7280" strokeWidth="1.5" strokeLinecap="round"/>
                   </svg>
-                  <span className="text-xs text-gray-400 font-medium">SOC 2</span>
+                  <span className="text-xs text-gray-500 font-medium">SOC 2</span>
                 </div>
-                {/* ISO 27001 Badge */}
+                {/* Built in NYC Badge */}
                 <div className="flex flex-col items-center gap-1 px-4 py-3 bg-gradient-to-b from-white/5 to-transparent border border-white/10 rounded-lg hover:border-white/20 transition-colors">
                   <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
-                    <rect x="4" y="4" width="20" height="20" rx="3" stroke="#9ca3af" strokeWidth="2" fill="none"/>
-                    <path d="M9 10H19M9 14H19M9 18H15" stroke="#9ca3af" strokeWidth="1.5" strokeLinecap="round"/>
-                    <circle cx="20" cy="20" r="5" fill="#0a0a0a" stroke="#9ca3af" strokeWidth="1.5"/>
-                    <path d="M18 20L19.5 21.5L22.5 18.5" stroke="#9ca3af" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    <rect x="6" y="12" width="4" height="12" fill="#6b7280"/>
+                    <rect x="12" y="6" width="4" height="18" fill="#6b7280"/>
+                    <rect x="18" y="9" width="4" height="15" fill="#6b7280"/>
+                    <path d="M14 2L12 6H16L14 2Z" fill="#6b7280"/>
                   </svg>
-                  <span className="text-xs text-gray-400 font-medium">ISO 27001</span>
+                  <span className="text-xs text-gray-500 font-medium">Built in NYC</span>
                 </div>
                 {/* Stripe Badge */}
                 <div className="flex flex-col items-center gap-1 px-4 py-3 bg-gradient-to-b from-white/5 to-transparent border border-white/10 rounded-lg hover:border-white/20 transition-colors">
                   <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
-                    <rect x="3" y="6" width="22" height="16" rx="3" stroke="#9ca3af" strokeWidth="2" fill="none"/>
-                    <path d="M7 14H21" stroke="#9ca3af" strokeWidth="1.5"/>
-                    <path d="M7 18H13" stroke="#9ca3af" strokeWidth="1.5" strokeLinecap="round"/>
-                    <circle cx="19" cy="11" r="2" fill="#9ca3af"/>
+                    <rect x="3" y="6" width="22" height="16" rx="3" stroke="#6b7280" strokeWidth="2" fill="none"/>
+                    <path d="M7 14H21" stroke="#6b7280" strokeWidth="1.5"/>
+                    <path d="M7 18H13" stroke="#6b7280" strokeWidth="1.5" strokeLinecap="round"/>
+                    <circle cx="19" cy="11" r="2" fill="#6b7280"/>
                   </svg>
-                  <span className="text-xs text-gray-400 font-medium">Stripe</span>
+                  <span className="text-xs text-gray-500 font-medium">Stripe</span>
                 </div>
                 {/* GDPR Badge */}
                 <div className="flex flex-col items-center gap-1 px-4 py-3 bg-gradient-to-b from-white/5 to-transparent border border-white/10 rounded-lg hover:border-white/20 transition-colors">
                   <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
-                    <path d="M14 3L4 8V14C4 20 8 24 14 26C20 24 24 20 24 14V8L14 3Z" stroke="#9ca3af" strokeWidth="2" fill="none"/>
-                    <path d="M10 14L13 17L18 11" stroke="#9ca3af" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M14 3L4 8V14C4 20 8 24 14 26C20 24 24 20 24 14V8L14 3Z" stroke="#6b7280" strokeWidth="2" fill="none"/>
+                    <path d="M10 14L13 17L18 11" stroke="#6b7280" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                   </svg>
-                  <span className="text-xs text-gray-400 font-medium">GDPR</span>
+                  <span className="text-xs text-gray-500 font-medium">GDPR</span>
                 </div>
               </div>
             </div>
