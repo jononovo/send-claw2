@@ -614,6 +614,31 @@ export default function LandingSimple() {
                     <div className="w-80 h-80 bg-purple-500/30 rounded-full blur-[100px] animate-pulse" />
                   </div>
                   
+                  {/* Handwritten note with arrow */}
+                  <div className="absolute -top-2 left-1/2 -translate-x-1/2 z-30 flex flex-col items-center animate-[floatCard1_3s_ease-in-out_infinite]">
+                    <span 
+                      className="text-gray-300/80 text-lg whitespace-nowrap -rotate-6"
+                      style={{ fontFamily: "'Caveat', cursive" }}
+                    >
+                      This is Anastasia!
+                    </span>
+                    {/* Hand-drawn arrow pointing down */}
+                    <svg 
+                      width="40" 
+                      height="50" 
+                      viewBox="0 0 40 50" 
+                      className="text-gray-300/70 mt-1 rotate-12"
+                      fill="none" 
+                      stroke="currentColor" 
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M20 5 C 15 15, 25 25, 20 40" />
+                      <path d="M12 32 L 20 42 L 28 32" />
+                    </svg>
+                  </div>
+                  
                   {/* Duck image with CSS bob animation */}
                   <img 
                     src={duckImage} 
