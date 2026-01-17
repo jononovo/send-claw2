@@ -1342,7 +1342,7 @@ export default function PromptEditor({
                     onClick={isSearchActive ? handleStopSearch : handleSearch}
                     disabled={!isSearchActive && (isAnalyzing || quickSearchMutation.isPending)}
                     className={`
-                      rounded-md
+                      rounded-md group
                       transition-all duration-300 flex items-center gap-2
                       ${lastExecutedQuery && !inputHasChanged && !isSearchActive
                         ? 'bg-gray-200 hover:bg-gray-300 dark:bg-gray-400 dark:hover:bg-gray-500 shadow-md hover:shadow-lg text-gray-700 dark:text-gray-900' 
@@ -1354,8 +1354,12 @@ export default function PromptEditor({
                   >
                     {isSearchActive ? (
                       <>
-                        <Square className="h-4 w-4" />
-                        <span>Stop</span>
+                        {/* Default state: Searching */}
+                        <Loader2 className="h-4 w-4 animate-spin group-hover:hidden" />
+                        <span className="group-hover:hidden">Searching</span>
+                        {/* Hover state: Stop */}
+                        <Square className="h-4 w-4 hidden group-hover:block" />
+                        <span className="hidden group-hover:block">Stop</span>
                       </>
                     ) : (
                       <>
