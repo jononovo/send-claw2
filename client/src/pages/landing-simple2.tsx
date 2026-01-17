@@ -606,8 +606,9 @@ export default function LandingSimple() {
                 </div>
               </div>
               
-              {/* ANASTASIA Duck with Floating Elements */}
-              <div className={`transition-all duration-500 ${heroTab === "anastasia" ? "opacity-100" : "opacity-0 absolute pointer-events-none"}`}>
+              {/* ANASTASIA Duck with Floating Elements - Only render when tab is active */}
+              {heroTab === "anastasia" && (
+              <div className="transition-all duration-500 opacity-100">
                 <div className="relative w-[520px] h-[520px] flex items-center justify-center">
                   {/* Glow effect behind duck */}
                   <div className="absolute inset-0 flex items-center justify-center">
@@ -686,6 +687,7 @@ export default function LandingSimple() {
                   </div>
                 </div>
               </div>
+              )}
               
               {/* Certifications - positioned below demo */}
               <div className="mt-8 flex items-center justify-center gap-6">
