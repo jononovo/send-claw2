@@ -21,13 +21,11 @@ import { useAttributionCapture } from "@/features/attribution";
 // Static pages (small components kept static)
 import Auth from "@/pages/auth";
 
-// Direct import for primary landing page (critical path - no lazy loading)
-import LandingStealth from "@/features/landing-stealth";
-
-// Lazy-loaded landing pages (secondary pages)
+// Lazy-loaded landing pages (framer-motion pages load on demand)
 const Landing = lazy(() => import("@/pages/landing"));
 const Landing2 = lazy(() => import("@/pages/landing2"));
 const LandingSimple = lazy(() => import("@/pages/landing-simple"));
+const LandingStealth = lazy(() => import("@/features/landing-stealth"));
 const Planning = lazy(() => import("@/pages/planning"));
 
 // Lazy imports for app pages that can be loaded on demand
@@ -170,10 +168,22 @@ function Router() {
           </Suspense>
         } />
         
-        {/* Stealth Mode Landing Page (directly imported, no Suspense needed) */}
-        <Route path="/landing-stealth" component={LandingStealth} />
-        <Route path="/stealth" component={LandingStealth} />
-        <Route path="/s" component={LandingStealth} />
+        {/* Stealth Mode Landing Page (lazy-loaded with framer-motion) */}
+        <Route path="/landing-stealth" component={() => 
+          <Suspense fallback={null}>
+            <LandingStealth />
+          </Suspense>
+        } />
+        <Route path="/stealth" component={() => 
+          <Suspense fallback={null}>
+            <LandingStealth />
+          </Suspense>
+        } />
+        <Route path="/s" component={() => 
+          <Suspense fallback={null}>
+            <LandingStealth />
+          </Suspense>
+        } />
         
         {/* Simple Landing Page (minimal animations) */}
         <Route path="/landing-simple" component={() => 

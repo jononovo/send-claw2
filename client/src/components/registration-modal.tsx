@@ -1,10 +1,9 @@
 import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
-import { Mail, ChevronRight, ArrowLeft, X } from "lucide-react";
+import { ArrowLeft, X } from "lucide-react";
 import { useRegistrationModal, type RegistrationPage } from "@/hooks/use-registration-modal";
 import { loadFirebase } from "@/lib/firebase";
-import { motion } from "framer-motion";
 import { useToast } from "@/hooks/use-toast";
 import { sendAttributionToServer, logConversionEvent } from "@/features/attribution";
 
