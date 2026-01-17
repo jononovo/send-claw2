@@ -27,7 +27,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
-interface SavedSearchesDrawerProps {
+interface LeftMenuDrawerProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onLoadSearch: (list: SearchList) => void;
@@ -35,7 +35,7 @@ interface SavedSearchesDrawerProps {
   onOpenCompose?: () => void;
 }
 
-export function SavedSearchesDrawer({ open, onOpenChange, onLoadSearch, onNewSearch, onOpenCompose }: SavedSearchesDrawerProps) {
+export function LeftMenuDrawer({ open, onOpenChange, onLoadSearch, onNewSearch, onOpenCompose }: LeftMenuDrawerProps) {
   const { data: lists = [] } = useQuery<SearchList[]>({
     queryKey: ["/api/lists"],
     enabled: open,
