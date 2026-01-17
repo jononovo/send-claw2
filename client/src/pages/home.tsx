@@ -1567,7 +1567,7 @@ export default function Home({ isNewSearch = false }: HomeProps) {
                   <div className="flex flex-col-reverse md:flex-row items-center gap-4 mb-3">
                     <div className="flex items-center gap-3">
                       <EggAnimation />
-                      <h2 className="text-2xl sm:text-3xl md:text-4xl mt-2 md:mt-0 font-serif text-amber-800 dark:text-amber-200">Find your ideal <em>business</em> customers</h2>
+                      <h2 className="text-2xl sm:text-3xl md:text-4xl mt-2 md:mt-0 font-serif text-accent dark:text-accent">Find your ideal <em>business</em> customers</h2>
                     </div>
                   </div>
                 )}

@@ -276,11 +276,11 @@ input[type="checkbox"]:indeterminate::before {
     --muted: 35 8% 94%;
     --muted-foreground: 42 12% 55%;
 
-    --accent: 45 93% 47%;
-    --accent-foreground: 30 10% 10%;
-    --accent-hover: 45 93% 47% / 0.1;
-    --accent-active: 45 93% 47% / 0.15;
-    --accent-border-hover: 45 93% 47% / 0.3;
+    --accent: 25 55% 35%;
+    --accent-foreground: 25 55% 95%;
+    --accent-hover: 25 55% 35% / 0.1;
+    --accent-active: 25 55% 35% / 0.15;
+    --accent-border-hover: 25 55% 35% / 0.3;
 
     --card: 40 15% 99%;
     --card-foreground: 30 10% 10%;
@@ -314,11 +314,11 @@ input[type="checkbox"]:indeterminate::before {
     --muted: 30 6% 14%;
     --muted-foreground: 35 8% 60%;
 
-    --accent: 45 93% 47%;
-    --accent-foreground: 30 8% 6%;
-    --accent-hover: 45 93% 52% / 0.1;
-    --accent-active: 45 93% 52% / 0.15;
-    --accent-border-hover: 45 93% 52% / 0.3;
+    --accent: 25 45% 55%;
+    --accent-foreground: 25 20% 10%;
+    --accent-hover: 25 45% 55% / 0.1;
+    --accent-active: 25 45% 55% / 0.15;
+    --accent-border-hover: 25 45% 55% / 0.3;
 
     --card: 30 8% 6%;
     --card-foreground: 35 10% 98%;
