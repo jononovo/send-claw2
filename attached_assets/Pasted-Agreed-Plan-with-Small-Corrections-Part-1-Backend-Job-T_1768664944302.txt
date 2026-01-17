@@ -1,0 +1,38 @@
+Agreed Plan with Small Corrections
+Part 1: Backend - Job Termination API
+FileChangeserver/search/routes/search-jobs.tsAdd POST /api/search-jobs/:jobId/terminate (not DELETE — we're terminating, not deleting the job record)server/search/services/search-job-service.tsAdd terminateJob() method + status checks in executeJob() to stop when terminated
+Part 2: Backend - Cache Lookup API
+FileChangeserver/features/lists/routes.tsAdd GET /api/lists/by-prompt?prompt=xxxserver/features/lists/service.tsAdd findRecentSearchByPrompt() (90-day window, case-insensitive)
+Part 3: Frontend - Parallel Cache + Stop Button
+FileChangeclient/src/components/prompt-editor.tsxParallel cache check, call terminate on hit, stop button UIclient/src/pages/home.tsxAdd onCacheHit callback to load cached results via existing handleLoadSavedSearch()
+
+One Correction to the Flow Diagram
+The terminate call should be POST /api/search-jobs/:jobId/terminate, not DELETE:
+User clicks Search
+        │
+        ├────────────────────────────────┬────────────────────────┐
+        ▼                                ▼                        │
+   CREATE JOB                       CHECK CACHE                   │
+   POST /api/companies/quick-search  GET /api/lists/by-prompt     │
+        │                                │                        │
+        ▼                                ▼                        │
+   Start polling               ┌──────────────┐                   │
+   for results                 │ Cache Hit?   │                   │
+        │                      └──────┬───────┘                   │
+        │                        Yes  │  No                       │
+        │                         ▼   │   ▼                       │
+        │                  TERMINATE  │  (let search continue)    │
+        │          POST /api/search-jobs/:jobId/terminate         │
+        │                         │   │                           │
+        │                         ▼   │                           │
+        │                   Load cached results                   │
+        │                   via handleLoadSavedSearch()           │
+        │                   + Show toast "Cached results"         │
+        │                         │                               │
+        └─────────────────────────┴───────────────────────────────┘
+                                  │
+                                  ▼
+                        (User can also click STOP button
+                         at any time to terminate manually)
+
+Ready to implement when you give the go-ahead.Claude is AI and can make mistakes. Please double-check responses.

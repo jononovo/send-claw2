@@ -2,6 +2,48 @@ import { storage } from '../../storage';
 import { SearchListRequest, SearchListResponse, UpdateSearchListRequest } from './types';
 
 export class SearchListsService {
+  /**
+   * Find a recent search by prompt (for cache lookup)
+   * Returns the most recent list matching the prompt within the specified days
+   */
+  static async findRecentSearchByPrompt(
+    prompt: string, 
+    userId: number, 
+    isAuthenticated: boolean,
+    daysBack: number = 90
+  ): Promise<{ listId: number; prompt: string; resultCount: number; createdAt: Date } | null> {
+    const normalizedPrompt = prompt.toLowerCase().trim();
+    const cutoffDate = new Date();
+    cutoffDate.setDate(cutoffDate.getDate() - daysBack);
+    
+    // Get all lists for the user (or demo user if not authenticated)
+    const targetUserId = isAuthenticated ? userId : 1;
+    const lists = await storage.listSearchLists(targetUserId);
+    
+    // Find ALL matching prompts within date range, then sort to get most recent
+    const matchingLists = lists
+      .filter(list => 
+        list.prompt.toLowerCase().trim() === normalizedPrompt &&
+        new Date(list.createdAt) >= cutoffDate
+      )
+      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    
+    const matchingList = matchingLists[0]; // Get the most recent match
+    
+    if (matchingList) {
+      console.log(`[CACHE HIT] Found cached search for prompt "${prompt}" (listId: ${matchingList.listId}, created: ${matchingList.createdAt})`);
+      return {
+        listId: matchingList.listId,
+        prompt: matchingList.prompt,
+        resultCount: matchingList.resultCount,
+        createdAt: matchingList.createdAt
+      };
+    }
+    
+    console.log(`[CACHE MISS] No cached search found for prompt "${prompt}" within ${daysBack} days`);
+    return null;
+  }
+
   static extractCustomSearchTargets(contactSearchConfig: SearchListRequest['contactSearchConfig']): string[] {
     const customSearchTargets: string[] = [];
     if (contactSearchConfig) {
