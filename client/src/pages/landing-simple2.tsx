@@ -456,8 +456,8 @@ export default function LandingSimple() {
                     onClick={() => setHeroTab("5ducks")}
                     className={`px-4 py-2 text-sm font-bold tracking-widest uppercase transition-all duration-300 rounded-lg ${
                       heroTab === "5ducks"
-                        ? "bg-yellow-500/20 text-yellow-500 border border-yellow-500/30"
-                        : "text-gray-500 hover:text-gray-400 hover:bg-gray-500/10"
+                        ? "text-yellow-500/60 border border-yellow-500/20"
+                        : "text-gray-600/50 hover:text-gray-500/70 border border-transparent"
                     }`}
                   >
                     5DUCKS
@@ -466,8 +466,8 @@ export default function LandingSimple() {
                     onClick={() => setHeroTab("anastasia")}
                     className={`px-4 py-2 text-sm font-bold tracking-widest uppercase transition-all duration-300 rounded-lg flex items-center gap-2 ${
                       heroTab === "anastasia"
-                        ? "bg-purple-500/20 text-purple-400 border border-purple-500/30"
-                        : "text-gray-500 hover:text-gray-400 hover:bg-gray-500/10"
+                        ? "text-purple-400/60 border border-purple-500/20"
+                        : "text-gray-600/50 hover:text-gray-500/70 border border-transparent"
                     }`}
                   >
                     <Bot className="w-4 h-4" />
