@@ -6,7 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Search, HelpCircle, Crown, Building, Users, Target, Settings } from "lucide-react";
+import { Loader2, Search, HelpCircle, Crown, Building, Users, Target, Settings, Square } from "lucide-react";
 
 
 import { useConfetti } from "@/hooks/use-confetti";
@@ -581,6 +581,8 @@ export default function PromptEditor({
       if (cacheHitRef.current) {
         console.log('Cache hit already occurred, terminating new job');
         apiRequest("POST", `/api/search-jobs/${data.jobId}/terminate`).catch(() => {});
+        isPollingRef.current = false;
+        setIsPolling(false);
         return;
       }
       
@@ -1332,37 +1334,38 @@ export default function PromptEditor({
             
             {/* Right side: Search/Stop button */}
             <div className="pointer-events-auto">
-              {(isAnalyzing || quickSearchMutation.isPending || isPolling) ? (
-                <Button 
-                  type="button"
-                  onClick={handleStopSearch}
-                  className="rounded-md transition-all duration-300 flex items-center gap-2 bg-red-500 hover:bg-red-600 shadow-md hover:shadow-lg"
-                  aria-label="Stop Search"
-                  data-testid="stop-search-button"
-                >
-                  <span className="h-3 w-3 bg-white rounded-sm" />
-                  <span>Stop</span>
-                </Button>
-              ) : (
-              <Button 
-                type="submit"
-                onClick={handleSearch} 
-                disabled={isAnalyzing || quickSearchMutation.isPending}
-                className={`
-                  rounded-md
-                  transition-all duration-300 flex items-center gap-2
-                  ${lastExecutedQuery && !inputHasChanged 
-                    ? 'bg-gray-200 hover:bg-gray-300 dark:bg-gray-400 dark:hover:bg-gray-500 shadow-md hover:shadow-lg text-gray-700 dark:text-gray-900' 
-                    : 'bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 shadow-md hover:shadow-lg'
-                  }
-                `}
-                aria-label="Search"
-                data-testid="search-button"
-              >
-                <Search className="h-4 w-4" />
-                <span>Search</span>
-              </Button>
-              )}
+              {(() => {
+                const isSearchActive = isAnalyzing || quickSearchMutation.isPending || isPolling;
+                return (
+                  <Button 
+                    type={isSearchActive ? "button" : "submit"}
+                    onClick={isSearchActive ? handleStopSearch : handleSearch}
+                    disabled={!isSearchActive && (isAnalyzing || quickSearchMutation.isPending)}
+                    className={`
+                      rounded-md
+                      transition-all duration-300 flex items-center gap-2
+                      ${lastExecutedQuery && !inputHasChanged && !isSearchActive
+                        ? 'bg-gray-200 hover:bg-gray-300 dark:bg-gray-400 dark:hover:bg-gray-500 shadow-md hover:shadow-lg text-gray-700 dark:text-gray-900' 
+                        : 'bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 shadow-md hover:shadow-lg'
+                      }
+                    `}
+                    aria-label={isSearchActive ? "Stop Search" : "Search"}
+                    data-testid={isSearchActive ? "stop-search-button" : "search-button"}
+                  >
+                    {isSearchActive ? (
+                      <>
+                        <Square className="h-4 w-4" />
+                        <span>Stop</span>
+                      </>
+                    ) : (
+                      <>
+                        <Search className="h-4 w-4" />
+                        <span>Search</span>
+                      </>
+                    )}
+                  </Button>
+                );
+              })()}
             </div>
           </div>
         </div>
