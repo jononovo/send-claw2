@@ -1669,7 +1669,7 @@ export default function Home({ isNewSearch = false }: HomeProps) {
                             setCurrentQuery(suggestion);
                             setInputHasChanged(true);
                           }}
-                          className="px-3 py-1.5 text-sm bg-gray-100 hover:bg-gray-200 rounded-full transition-colors hover:shadow-sm"
+                          className="px-3 py-1.5 text-sm bg-transparent border border-secondary-foreground/30 hover:border-secondary-foreground/50 text-foreground rounded-full transition-colors"
                           data-testid={`button-suggestion-${suggestion.toLowerCase().replace(/\s+/g, '-').slice(0, 30)}`}
                         >
                           {suggestion}
