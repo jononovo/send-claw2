@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Award, Check, Clock, CreditCard, Database, Filter, Lock, Map, Moon, Search, Shield, Sparkles, Star, Sun, Zap } from "lucide-react";
+import { ArrowRight, Award, Bot, Check, Clock, CreditCard, Database, Filter, Lock, Map, Moon, Search, Shield, Sparkles, Star, Sun, Zap } from "lucide-react";
 import { useRegistrationModal } from "@/hooks/use-registration-modal";
 import { useAuth } from "@/hooks/use-auth";
 import { FooterStealth } from "@/components/footer-stealth";
@@ -9,6 +9,7 @@ import { StealthOnboardingModal } from "@/features/landing-stealth/StealthOnboar
 import danThumb from "@/features/landing-stealth/assets/professional_headshot_of_dan_hartmann_thumb.jpg";
 import sarahThumb from "@/features/landing-stealth/assets/professional_headshot_of_sarah_chen_thumb.jpg";
 import alexThumb from "@/features/landing-stealth/assets/natural_outdoor_portrait_of_older_alex_rivera_with_beard_thumb.jpg";
+import duckImage from "@/features/landing-stealth/assets/3d_cute_duckling_mascot_edited.webp";
 
 const testimonials = [
   {
@@ -320,6 +321,7 @@ export default function LandingSimple() {
   const [onlineCount, setOnlineCount] = useState(() => Math.floor(Math.random() * (99 - 13 + 1)) + 13);
   const [freshDataActiveTab, setFreshDataActiveTab] = useState(0);
   const [freshDataPaused, setFreshDataPaused] = useState(false);
+  const [heroTab, setHeroTab] = useState<"5ducks" | "anastasia">("5ducks");
   const freshDataPauseTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const testimonialSectionRef = useRef<HTMLDivElement>(null);
 
@@ -448,21 +450,60 @@ export default function LandingSimple() {
             {/* Left Column - Text & CTA */}
             <div className="flex flex-col gap-8 max-w-xl">
               <div className="space-y-4 pt-12 lg:pt-24">
-                <span className="block text-sm lg:text-base text-gray-500 dark:text-gray-400 font-medium tracking-widest uppercase mb-2 pl-1 font-mono opacity-80">
-                  Founder-led
-                </span>
+                {/* Tab Buttons */}
+                <div className="flex gap-1 mb-4">
+                  <button
+                    onClick={() => setHeroTab("5ducks")}
+                    className={`px-4 py-2 text-sm font-bold tracking-widest uppercase transition-all duration-300 rounded-lg ${
+                      heroTab === "5ducks"
+                        ? "bg-yellow-500/20 text-yellow-500 border border-yellow-500/30"
+                        : "text-gray-500 hover:text-gray-400 hover:bg-gray-500/10"
+                    }`}
+                  >
+                    5DUCKS
+                  </button>
+                  <button
+                    onClick={() => setHeroTab("anastasia")}
+                    className={`px-4 py-2 text-sm font-bold tracking-widest uppercase transition-all duration-300 rounded-lg flex items-center gap-2 ${
+                      heroTab === "anastasia"
+                        ? "bg-purple-500/20 text-purple-400 border border-purple-500/30"
+                        : "text-gray-500 hover:text-gray-400 hover:bg-gray-500/10"
+                    }`}
+                  >
+                    <Bot className="w-4 h-4" />
+                    ANASTASIA
+                  </button>
+                </div>
                 
-                <h1 className="text-6xl lg:text-8xl font-bold leading-[0.9] tracking-normal text-gray-800 dark:text-gray-200 font-serif">
-                  <span className="block mb-2">Find</span>
-                  <span className="block text-transparent bg-clip-text bg-gradient-to-r from-yellow-500 to-yellow-600 dark:from-yellow-400 dark:to-yellow-100 drop-shadow-[0_0_30px_rgba(250,204,21,0.3)]">
-                    Customers.
-                  </span>
-                </h1>
+                {/* 5DUCKS Content */}
+                <div className={`transition-all duration-500 ${heroTab === "5ducks" ? "opacity-100" : "opacity-0 absolute pointer-events-none"}`}>
+                  <h1 className="text-6xl lg:text-8xl font-bold leading-[0.9] tracking-normal text-gray-800 dark:text-gray-200 font-serif">
+                    <span className="block mb-2">Find</span>
+                    <span className="block text-transparent bg-clip-text bg-gradient-to-r from-yellow-500 to-yellow-600 dark:from-yellow-400 dark:to-yellow-100 drop-shadow-[0_0_30px_rgba(250,204,21,0.3)]">
+                      Customers.
+                    </span>
+                  </h1>
 
-                <p className="text-xl text-muted-foreground leading-relaxed max-w-md font-medium pt-8">
-                  And email them in seconds.<br />
-                  Start with 5 mins per day.
-                </p>
+                  <p className="text-xl text-muted-foreground leading-relaxed max-w-md font-medium pt-8">
+                    And email them in seconds.<br />
+                    Start with 5 mins per day.
+                  </p>
+                </div>
+                
+                {/* ANASTASIA Content */}
+                <div className={`transition-all duration-500 ${heroTab === "anastasia" ? "opacity-100" : "opacity-0 absolute pointer-events-none"}`}>
+                  <h1 className="text-6xl lg:text-8xl font-bold leading-[0.9] tracking-normal text-gray-800 dark:text-gray-200 font-serif">
+                    <span className="block mb-2">Meet</span>
+                    <span className="block text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-pink-500 dark:from-purple-400 dark:to-pink-400 drop-shadow-[0_0_30px_rgba(168,85,247,0.3)]">
+                      Anastasia.
+                    </span>
+                  </h1>
+
+                  <p className="text-xl text-muted-foreground leading-relaxed max-w-md font-medium pt-8">
+                    Your AI sales intelligence.<br />
+                    She learns your ICP, crafts personalized emails, and knows what works.
+                  </p>
+                </div>
               </div>
 
               <div className="flex flex-col gap-4 w-full max-w-md mt-4">
@@ -522,44 +563,96 @@ export default function LandingSimple() {
               </div>
             </div>
 
-            {/* Right Column - Demo Simulation */}
+            {/* Right Column - Demo Simulation or Anastasia Duck */}
             <div className="hidden lg:block -mt-16">
-              <div className="relative w-[520px]">
-                <div className="bg-gray-100 dark:bg-[#1a1814] rounded-xl overflow-hidden shadow-2xl border border-gray-200 dark:border-white/10">
-                  {/* Browser chrome header */}
-                  <div className="flex items-center gap-3 px-4 py-2 bg-gray-200 dark:bg-[#0f0e0c] border-b border-gray-300 dark:border-white/5">
-                    <div className="flex items-center gap-2">
-                      <div className="w-2.5 h-2.5 rounded-full bg-[#ff5f57]" />
-                      <div className="w-2.5 h-2.5 rounded-full bg-[#febc2e]" />
-                      <div className="w-2.5 h-2.5 rounded-full bg-[#28c840]" />
-                    </div>
-                    <div className="flex-1 flex items-center justify-center">
-                      <div className="flex items-center gap-2 px-3 py-1 bg-gray-300 dark:bg-white/5 rounded-md text-xs text-gray-500">
-                        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                        </svg>
-                        <span>app.5ducks.com</span>
+              {/* 5DUCKS Demo */}
+              <div className={`transition-all duration-500 ${heroTab === "5ducks" ? "opacity-100" : "opacity-0 absolute pointer-events-none"}`}>
+                <div className="relative w-[520px]">
+                  <div className="bg-gray-100 dark:bg-[#1a1814] rounded-xl overflow-hidden shadow-2xl border border-gray-200 dark:border-white/10">
+                    {/* Browser chrome header */}
+                    <div className="flex items-center gap-3 px-4 py-2 bg-gray-200 dark:bg-[#0f0e0c] border-b border-gray-300 dark:border-white/5">
+                      <div className="flex items-center gap-2">
+                        <div className="w-2.5 h-2.5 rounded-full bg-[#ff5f57]" />
+                        <div className="w-2.5 h-2.5 rounded-full bg-[#febc2e]" />
+                        <div className="w-2.5 h-2.5 rounded-full bg-[#28c840]" />
                       </div>
+                      <div className="flex-1 flex items-center justify-center">
+                        <div className="flex items-center gap-2 px-3 py-1 bg-gray-300 dark:bg-white/5 rounded-md text-xs text-gray-500">
+                          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                          </svg>
+                          <span>app.5ducks.com</span>
+                        </div>
+                      </div>
+                      <div className="w-[44px]" />
                     </div>
-                    <div className="w-[44px]" />
+                    
+                    <DemoSimulationPlayer
+                      simulation="search-composer-demo"
+                      width={520}
+                      height={520}
+                      showControls={false}
+                      className="!rounded-none !shadow-none"
+                    />
                   </div>
-                  
-                  <DemoSimulationPlayer
-                    simulation="search-composer-demo"
-                    width={520}
-                    height={520}
-                    showControls={false}
-                    className="!rounded-none !shadow-none"
-                  />
+                </div>
+                
+                {/* Try search link */}
+                <div className="mt-4 flex items-center justify-center">
+                  <a href="/app" className="flex items-center gap-2 text-gray-500 dark:text-gray-400 text-sm hover:text-gray-700 dark:hover:text-gray-200 transition-colors">
+                    <span>Tryout search directly</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </a>
                 </div>
               </div>
               
-              {/* Try search link */}
-              <div className="mt-4 flex items-center justify-center">
-                <a href="/app" className="flex items-center gap-2 text-gray-500 dark:text-gray-400 text-sm hover:text-gray-700 dark:hover:text-gray-200 transition-colors">
-                  <span>Tryout search directly</span>
-                  <ArrowRight className="w-4 h-4" />
-                </a>
+              {/* ANASTASIA Duck with Floating Elements */}
+              <div className={`transition-all duration-500 ${heroTab === "anastasia" ? "opacity-100" : "opacity-0 absolute pointer-events-none"}`}>
+                <div className="relative w-[520px] h-[520px] flex items-center justify-center">
+                  {/* Glow effect behind duck */}
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="w-80 h-80 bg-purple-500/30 rounded-full blur-[100px] animate-pulse" />
+                  </div>
+                  
+                  {/* Duck image with CSS bob animation */}
+                  <img 
+                    src={duckImage} 
+                    alt="Anastasia AI Assistant" 
+                    className="relative z-10 w-full max-w-[320px] drop-shadow-2xl animate-[float_4s_ease-in-out_infinite]"
+                    style={{ filter: "drop-shadow(0 30px 60px rgba(0,0,0,0.6))" }}
+                  />
+                  
+                  {/* Floating Card - Top Right: AI Learning */}
+                  <div className="absolute top-8 right-0 bg-black/40 backdrop-blur-md border border-white/10 p-4 rounded-2xl z-20 shadow-2xl flex items-center gap-3 w-48 animate-[floatCard1_3s_ease-in-out_infinite]">
+                    <div className="w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center text-xl border border-purple-500/30">
+                      🧠
+                    </div>
+                    <div>
+                      <p className="text-[10px] uppercase tracking-wider text-gray-400 font-bold">Learning</p>
+                      <p className="text-sm font-bold text-gray-200">Your ICP</p>
+                    </div>
+                  </div>
+
+                  {/* Floating Card - Bottom Left: Email Optimization */}
+                  <div className="absolute bottom-24 -left-4 bg-black/40 backdrop-blur-md border border-white/10 p-4 rounded-2xl z-20 shadow-2xl flex items-center gap-3 w-52 animate-[floatCard2_4s_ease-in-out_infinite]">
+                    <div className="w-10 h-10 rounded-full bg-green-500/20 flex items-center justify-center text-xl border border-green-500/30">
+                      ✨
+                    </div>
+                    <div>
+                      <p className="text-[10px] uppercase tracking-wider text-gray-400 font-bold">Optimizing</p>
+                      <p className="text-sm font-bold text-gray-200">Email Copy</p>
+                    </div>
+                  </div>
+
+                  {/* Floating Card - Bottom Right: Success Rate */}
+                  <div className="absolute -bottom-2 right-12 bg-black/40 backdrop-blur-md border border-white/10 text-gray-200 p-3 rounded-2xl z-30 shadow-xl flex items-center gap-2 animate-[floatCard3_2.5s_ease-in-out_infinite]">
+                    <span className="text-xl">📈</span>
+                    <div className="leading-tight">
+                      <p className="text-xs font-black uppercase opacity-80">Reply Rate</p>
+                      <p className="text-sm font-bold">+47% Higher</p>
+                    </div>
+                  </div>
+                </div>
               </div>
               
               {/* Certifications - positioned below demo */}
