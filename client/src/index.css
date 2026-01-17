@@ -265,7 +265,7 @@ input[type="checkbox"]:indeterminate::before {
 
     /* Light Theme Colors - warm brownish tones */
     --background: 42 26% 85%;
-    --foreground: 30 10% 10%;
+    --foreground: 42 15% 12%;
 
     --primary: 45 93% 47%;
     --primary-foreground: 30 10% 10%;
