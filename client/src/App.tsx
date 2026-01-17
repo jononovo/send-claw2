@@ -62,6 +62,7 @@ const Support = lazy(() => import("@/pages/support"));
 const Levels = lazy(() => import("@/pages/levels"));
 const Privacy = lazy(() => import("@/pages/privacy"));
 const Changelog = lazy(() => import("@/pages/changelog"));
+const PricingNew = lazy(() => import("@/pages/pricing-new"));
 
 // Lazy import for guidance engine (heavy feature - only load on /quests)
 const QuestsPage = lazy(() => import("@/features/guidance-engine").then(module => ({ default: module.QuestsPage })));
@@ -286,6 +287,12 @@ function Router() {
             </div>
           </Layout>
         </Route>
+
+        <Route path="/pricing-new" component={() => 
+          <Suspense fallback={null}>
+            <PricingNew />
+          </Suspense>
+        } />
 
         <Route path="/quests">
           <Suspense fallback={null}>
