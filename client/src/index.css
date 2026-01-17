@@ -289,7 +289,7 @@ input[type="checkbox"]:indeterminate::before {
     --popover-foreground: 30 10% 10%;
 
     --border: 35 8% 88%;
-    --input: 35 8% 88%;
+    --input: 30 30% 96%;
     --ring: 45 93% 47% / 0.05;
 
     --destructive: 0 84% 60%;
@@ -325,7 +325,7 @@ input[type="checkbox"]:indeterminate::before {
     --popover-foreground: 35 10% 98%;
 
     --border: 30 6% 16%;
-    --input: 30 6% 16%;
+    --input: 25 15% 12%;
     --ring: 45 93% 47% / 0.05;
 
     --destructive: 0 63% 31%;
