@@ -25,17 +25,6 @@ export function FooterStealth() {
                 </Link>
               </li>
               <li>
-                <a 
-                  href="/contact#vibe-coding" 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
-                  className="text-gray-400 hover:text-white transition-colors" 
-                  data-testid="link-footer-vibe-coding"
-                >
-                  Vibe-Coding
-                </a>
-              </li>
-              <li>
                 <Link href="/blog" className="text-gray-400 hover:text-white transition-colors" data-testid="link-footer-blog">
                   Blog
                 </Link>

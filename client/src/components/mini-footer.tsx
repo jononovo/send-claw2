@@ -8,14 +8,9 @@ export function MiniFooter() {
           <span className="text-xs text-slate-600 dark:text-slate-400 italic">
             Soli Deo Gloria
           </span>
-          <a
-            href="/contact#vibe-coding"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-xs text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 cursor-pointer transition-colors"
-          >
-            Vibe-coded with ♥️ in NYC
-          </a>
+          <span className="text-xs text-slate-600 dark:text-slate-400">
+            Made with ♥️ in NYC
+          </span>
           <a
             href="https://www.linkedin.com/company/5ducks/"
             target="_blank"
