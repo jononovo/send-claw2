@@ -53,6 +53,15 @@ export class SearchJobService {
   }
 
   /**
+   * Check if job is terminated and throw if so (for early exit during execution)
+   */
+  private static async checkTerminated(jobId: string): Promise<void> {
+    if (await this.isJobTerminated(jobId)) {
+      throw new Error(`Job ${jobId} was terminated`);
+    }
+  }
+
+  /**
    * Execute a search job (can be called synchronously or by background processor)
    */
   static async executeJob(jobId: string): Promise<void> {
@@ -111,6 +120,9 @@ export class SearchJobService {
       });
 
       console.log(`[SearchJobService] Starting execution of job ${jobId}`);
+
+      // Check for termination before starting
+      await this.checkTerminated(jobId);
 
       let savedCompanies = [];
       let contacts: any[] = [];
@@ -177,6 +189,9 @@ export class SearchJobService {
         message: 'Discovering matching companies'
       });
 
+      // Check for termination before expensive API call
+      await this.checkTerminated(jobId);
+
       const discoveredCompanies = await discoverCompanies(job.query);
       console.log(`[SearchJobService] Discovered ${discoveredCompanies.length} companies for job ${jobId}`);
 
@@ -224,6 +239,9 @@ export class SearchJobService {
       
       // Phase 3: Parallel company details and contact discovery
       if (job.searchType === 'contacts' || job.searchType === 'emails') {
+        // Check for termination before contact search
+        await this.checkTerminated(jobId);
+        
         currentPhase++;
         
         // Prepare and START parallel tasks immediately (work runs during "Companies ready!" and joke display)
@@ -1179,6 +1197,51 @@ export class SearchJobService {
     });
     
     console.log(`[SearchJobService] Cancelled job ${jobId}`);
+  }
+
+  /**
+   * Terminate a job (works for pending or processing jobs)
+   * This sets status to 'terminated' which will be checked during execution
+   */
+  static async terminateJob(jobId: string, userId: number): Promise<{ success: boolean; message: string }> {
+    const job = await storage.getSearchJobByJobId(jobId);
+    
+    if (!job) {
+      return { success: false, message: `Job ${jobId} not found` };
+    }
+    
+    // Only the job owner can terminate it
+    if (job.userId !== userId) {
+      return { success: false, message: 'Not authorized to terminate this job' };
+    }
+    
+    // Can only terminate pending or processing jobs
+    if (job.status !== 'pending' && job.status !== 'processing') {
+      return { success: false, message: `Cannot terminate job with status: ${job.status}` };
+    }
+    
+    await storage.updateSearchJob(job.id, {
+      status: 'terminated',
+      error: 'Job terminated by user',
+      completedAt: new Date(),
+      progress: {
+        phase: 'Terminated',
+        completed: 0,
+        total: 1,
+        message: 'Search was stopped'
+      }
+    });
+    
+    console.log(`[SearchJobService] Terminated job ${jobId}`);
+    return { success: true, message: 'Job terminated successfully' };
+  }
+
+  /**
+   * Check if a job has been terminated
+   */
+  static async isJobTerminated(jobId: string): Promise<boolean> {
+    const job = await storage.getSearchJobByJobId(jobId);
+    return job?.status === 'terminated';
   }
 
   /**

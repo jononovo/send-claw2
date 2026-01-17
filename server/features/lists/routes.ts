@@ -21,6 +21,31 @@ export function registerSearchListsRoutes(app: Application, requireAuth: any) {
     res.json(lists);
   });
 
+  // Search for cached list by prompt (for parallel cache check)
+  router.get('/by-prompt', async (req: Request, res: Response) => {
+    const prompt = req.query.prompt as string;
+    
+    if (!prompt || typeof prompt !== 'string') {
+      res.status(400).json({ message: "Missing or invalid prompt parameter" });
+      return;
+    }
+    
+    const userIsAuthenticated = checkAuth(req);
+    const userId = userIsAuthenticated ? getUserId(req) : 1;
+    
+    const cachedList = await SearchListsService.findRecentSearchByPrompt(
+      prompt, 
+      userId, 
+      userIsAuthenticated
+    );
+    
+    if (cachedList) {
+      res.json(cachedList);
+    } else {
+      res.json(null);
+    }
+  });
+
   // Get specific list - PUBLIC access for SEO (emails masked for unauthenticated)
   router.get('/:listId', async (req: Request, res: Response) => {
     const userIsAuthenticated = checkAuth(req);

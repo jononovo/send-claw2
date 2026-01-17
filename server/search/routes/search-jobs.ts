@@ -250,6 +250,37 @@ export function registerSearchJobRoutes(app: Express) {
   });
 
   /**
+   * Terminate a pending or processing job (stop it immediately)
+   * Used for: cache hits, user clicking stop button, etc.
+   */
+  app.post("/api/search-jobs/:jobId/terminate", async (req: Request, res: Response) => {
+    try {
+      const userId = getUserId(req);
+      const { jobId } = req.params;
+
+      const result = await SearchJobService.terminateJob(jobId, userId);
+      
+      if (!result.success) {
+        res.status(400).json({
+          error: result.message
+        });
+        return;
+      }
+
+      res.json({
+        message: result.message,
+        terminated: true
+      });
+
+    } catch (error) {
+      console.error("[SearchJobRoutes] Error terminating search job:", error);
+      res.status(500).json({
+        error: error instanceof Error ? error.message : "Failed to terminate search job"
+      });
+    }
+  });
+
+  /**
    * Create a contact-only search job (search contacts for existing companies)
    */
   app.post("/api/search-jobs/contacts", async (req: Request, res: Response) => {
