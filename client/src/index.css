@@ -264,7 +264,7 @@ input[type="checkbox"]:indeterminate::before {
     --font-code: 'Courier New', monospace;
 
     /* Light Theme Colors - warm brownish tones */
-    --background: 25 35% 92%;
+    --background: 38 30% 92%;
     --foreground: 30 10% 10%;
 
     --primary: 45 93% 47%;
@@ -302,7 +302,7 @@ input[type="checkbox"]:indeterminate::before {
 
   /* Dark Theme Colors - warm brownish-gray tones */
   .dark {
-    --background: 25 22% 8%;
+    --background: 38 18% 8%;
     --foreground: 35 10% 98%;
 
     --primary: 45 93% 52%;
