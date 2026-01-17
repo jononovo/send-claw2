@@ -549,6 +549,7 @@ export default function LandingSimple() {
                     width={520}
                     height={520}
                     showControls={false}
+                    className="!rounded-none !shadow-none"
                   />
                 </div>
               </div>
