@@ -288,6 +288,8 @@ input[type="checkbox"]:indeterminate::before {
     --popover: 40 15% 99%;
     --popover-foreground: 30 10% 10%;
 
+    --panel-background: 30 25% 94%;
+
     --border: 35 8% 88%;
     --input: 30 30% 96%;
     --ring: 45 93% 47% / 0.05;
@@ -323,6 +325,8 @@ input[type="checkbox"]:indeterminate::before {
 
     --popover: 30 8% 6%;
     --popover-foreground: 35 10% 98%;
+
+    --panel-background: 25 12% 11%;
 
     --border: 30 6% 16%;
     --input: 25 15% 12%;
