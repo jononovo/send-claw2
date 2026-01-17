@@ -264,7 +264,7 @@ input[type="checkbox"]:indeterminate::before {
     --font-code: 'Courier New', monospace;
 
     /* Light Theme Colors - warm brownish tones */
-    --background: 28 25% 94%;
+    --background: 25 35% 92%;
     --foreground: 30 10% 10%;
 
     --primary: 45 93% 47%;
