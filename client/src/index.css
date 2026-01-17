@@ -263,34 +263,34 @@ input[type="checkbox"]:indeterminate::before {
     --font-serif: 'DM Serif Display', serif;
     --font-code: 'Courier New', monospace;
 
-    /* Light Theme Colors (default) */
-    --background: 40 15% 95%;
-    --foreground: 240 10% 4%;
+    /* Light Theme Colors - warm brownish tones */
+    --background: 35 12% 96%;
+    --foreground: 30 10% 10%;
 
     --primary: 45 93% 47%;
-    --primary-foreground: 240 10% 4%;
+    --primary-foreground: 30 10% 10%;
 
-    --secondary: 240 5% 96%;
-    --secondary-foreground: 240 6% 10%;
+    --secondary: 35 8% 94%;
+    --secondary-foreground: 30 8% 15%;
 
-    --muted: 240 5% 96%;
-    --muted-foreground: 240 4% 46%;
+    --muted: 35 8% 94%;
+    --muted-foreground: 30 6% 45%;
 
     --accent: 45 93% 47%;
-    --accent-foreground: 240 10% 4%;
+    --accent-foreground: 30 10% 10%;
     --accent-hover: 45 93% 47% / 0.1;
     --accent-active: 45 93% 47% / 0.15;
     --accent-border-hover: 45 93% 47% / 0.3;
 
-    --card: 0 0% 100%;
-    --card-foreground: 240 10% 4%;
+    --card: 40 15% 99%;
+    --card-foreground: 30 10% 10%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 4%;
+    --popover: 40 15% 99%;
+    --popover-foreground: 30 10% 10%;
 
-    --border: 240 6% 90%;
-    --input: 240 6% 90%;
-    --ring: 217 100% 50% / 0.05;
+    --border: 35 8% 88%;
+    --input: 35 8% 88%;
+    --ring: 45 93% 47% / 0.05;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
