@@ -1354,12 +1354,12 @@ export default function PromptEditor({
                   >
                     {isSearchActive ? (
                       <>
-                        {/* Default state: Searching */}
-                        <Loader2 className="h-4 w-4 animate-spin group-hover:hidden" />
-                        <span className="group-hover:hidden">Searching</span>
-                        {/* Hover state: Stop */}
-                        <Square className="h-4 w-4 hidden group-hover:block" />
-                        <span className="hidden group-hover:block">Stop</span>
+                        {/* Desktop: Searching by default, Stop on hover */}
+                        <Loader2 className="h-4 w-4 animate-spin hidden md:block md:group-hover:hidden" />
+                        <span className="hidden md:block md:group-hover:hidden">Searching</span>
+                        {/* Desktop hover + Mobile default: Stop */}
+                        <Square className="h-4 w-4 block md:hidden md:group-hover:block" />
+                        <span className="block md:hidden md:group-hover:block">Stop</span>
                       </>
                     ) : (
                       <>
