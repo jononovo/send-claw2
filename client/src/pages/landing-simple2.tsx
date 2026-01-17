@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Award, Bot, Check, Clock, CreditCard, Database, Filter, Lock, Map, Moon, Search, Shield, Sparkles, Star, Sun, Zap } from "lucide-react";
+import { ArrowRight, Award, Check, Clock, CreditCard, Database, Filter, Lock, Map, Moon, Search, Shield, Sparkles, Star, Sun, Zap } from "lucide-react";
 import { useRegistrationModal } from "@/hooks/use-registration-modal";
 import { useAuth } from "@/hooks/use-auth";
 import { FooterStealth } from "@/components/footer-stealth";
@@ -470,7 +470,7 @@ export default function LandingSimple() {
                         : "text-gray-600/50 hover:text-gray-500/70 border border-transparent"
                     }`}
                   >
-                    <Bot className="w-4 h-4" />
+                    <span className="text-base">🐥</span>
                     ANASTASIA
                   </button>
                 </div>
