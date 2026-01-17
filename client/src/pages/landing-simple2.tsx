@@ -650,12 +650,12 @@ export default function LandingSimple() {
                   <img 
                     src={duckImage} 
                     alt="Anastasia AI Assistant" 
-                    className="relative z-10 w-full max-w-[320px] drop-shadow-2xl animate-[float_4s_ease-in-out_infinite]"
+                    className="relative z-10 w-full max-w-[320px] drop-shadow-2xl animate-[float_8s_ease-in-out_infinite]"
                     style={{ filter: "drop-shadow(0 30px 60px rgba(0,0,0,0.6))" }}
                   />
                   
                   {/* Floating Card - Top Right: AI Learning */}
-                  <div className="absolute top-8 right-0 bg-black/40 backdrop-blur-md border border-white/10 p-4 rounded-2xl z-20 shadow-2xl flex items-center gap-3 w-48 animate-[floatCard1_3s_ease-in-out_infinite]">
+                  <div className="absolute top-8 right-0 bg-black/40 backdrop-blur-md border border-white/10 p-4 rounded-2xl z-20 shadow-2xl flex items-center gap-3 w-48 animate-[floatCard1_6s_ease-in-out_infinite]">
                     <div className="w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center text-xl border border-purple-500/30">
                       🧠
                     </div>
@@ -666,7 +666,7 @@ export default function LandingSimple() {
                   </div>
 
                   {/* Floating Card - Bottom Left: Email Optimization */}
-                  <div className="absolute bottom-24 -left-4 bg-black/40 backdrop-blur-md border border-white/10 p-4 rounded-2xl z-20 shadow-2xl flex items-center gap-3 w-52 animate-[floatCard2_4s_ease-in-out_infinite]">
+                  <div className="absolute bottom-24 -left-4 bg-black/40 backdrop-blur-md border border-white/10 p-4 rounded-2xl z-20 shadow-2xl flex items-center gap-3 w-52 animate-[floatCard2_7s_ease-in-out_infinite]">
                     <div className="w-10 h-10 rounded-full bg-green-500/20 flex items-center justify-center text-xl border border-green-500/30">
                       ✨
                     </div>
@@ -677,7 +677,7 @@ export default function LandingSimple() {
                   </div>
 
                   {/* Floating Card - Bottom Right: Success Rate */}
-                  <div className="absolute -bottom-2 right-12 bg-black/40 backdrop-blur-md border border-white/10 text-gray-200 p-3 rounded-2xl z-30 shadow-xl flex items-center gap-2 animate-[floatCard3_2.5s_ease-in-out_infinite]">
+                  <div className="absolute -bottom-2 right-12 bg-black/40 backdrop-blur-md border border-white/10 text-gray-200 p-3 rounded-2xl z-30 shadow-xl flex items-center gap-2 animate-[floatCard3_5s_ease-in-out_infinite]">
                     <span className="text-xl">📈</span>
                     <div className="leading-tight">
                       <p className="text-xs font-black uppercase opacity-80">Reply Rate</p>
