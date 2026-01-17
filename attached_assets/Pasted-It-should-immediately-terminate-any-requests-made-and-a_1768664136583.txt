@@ -1,0 +1,116 @@
+It should immediately terminate any requests made, and any results received if the cache is found , does that make sense?
+
+10:33 AM
+Yes, that makes total sense. If we find a cache hit, we should immediately abort the in-flight search request rather than letting it run to completion (wasting API credits, compute, etc.) and just ignoring the results.
+
+Let me revise the approach:
+
+Revised Plan: Immediate Termination on Cache Hit
+Why AbortController IS Needed
+You're right to push back. Even though the duplicate prevention would prevent a duplicate list, the search would still:
+
+Consume API credits (Perplexity, Apollo, Hunter calls)
+Use server compute for contact enrichment
+Create orphaned companies/contacts in the database
+Waste user's time if the real search is slower than cache
+The Correct Flow
+User clicks Search
+        │
+        ├─────────────────────────────────────┐
+        ▼                                     ▼
+   START REAL SEARCH                    CHECK CACHE
+   (with AbortController)               GET /api/lists/by-prompt
+        │                                     │
+        │                                     ▼
+        │                              ┌──────────────┐
+        │                              │ Cache Hit?   │
+        │                              └──────┬───────┘
+        │                                Yes  │  No
+        │                                 ▼   │   ▼
+        │                          ABORT ─────┘   (let search
+        │                          controller     continue)
+        │                               │
+        │                               ▼
+        │                      Load cached list via
+        │                      handleLoadSavedSearch()
+        │                               │
+        │                               ▼
+        │                      Show toast "Cached results"
+        │
+        ▼
+   (If not aborted, search continues normally)
+Implementation
+Frontend (prompt-editor.tsx):
+
+typescript
+// Add ref for abort controller
+const searchAbortControllerRef = useRef<AbortController | null>(null);
+
+const handleSearch = async () => {
+  // Cancel any previous in-flight search
+  if (searchAbortControllerRef.current) {
+    searchAbortControllerRef.current.abort();
+  }
+  
+  // Create new abort controller for this search
+  const abortController = new AbortController();
+  searchAbortControllerRef.current = abortController;
+  
+  // Start BOTH in parallel
+  const cacheCheckPromise = fetch(
+    `/api/lists/by-prompt?prompt=${encodeURIComponent(value)}`
+  )
+    .then(r => r.json())
+    .catch(() => null);
+  
+  // Start real search
+  onAnalyze();
+  quickSearchMutation.mutate(value, {
+    // Pass abort signal to the mutation
+    signal: abortController.signal
+  });
+  
+  // Wait for cache check (this should be fast - just a DB lookup)
+  const cachedList = await cacheCheckPromise;
+  
+  if (cachedList?.listId && !abortController.signal.aborted) {
+    console.log('🎯 Cache hit! Aborting search and loading cached results');
+    
+    // ABORT the real search immediately
+    abortController.abort();
+    
+    // Stop polling if it started
+    isPollingRef.current = false;
+    setIsPolling(false);
+    
+    // Load cached results
+    onCacheHit?.(cachedList);
+  }
+};
+The mutation also needs to respect the abort signal:
+
+In quickSearchMutation, the mutationFn should pass the signal to the API request:
+
+typescript
+const quickSearchMutation = useMutation({
+  mutationFn: async (searchQuery: string, { signal }: { signal?: AbortSignal }) => {
+    // Pass signal to API request
+    const res = await apiRequest("POST", "/api/search/quick", {
+      query: searchQuery,
+      // ... other params
+    }, { signal });
+    
+    return res;
+  },
+  // ...
+});
+Backend should also handle abort gracefully:
+
+The search job should check if the request was aborted and terminate early if possible (though this depends on your job queue implementation).
+
+Summary of Changes
+File	Change
+server/features/lists/routes.ts	+15 lines: Add GET /by-prompt endpoint
+server/features/lists/service.ts	+10 lines: Add findRecentSearchByPrompt()
+client/src/components/prompt-editor.tsx	+25 lines: AbortController + parallel cache check
+client/src/pages/home.tsx	+10 lines: onCacheHit prop + handler
