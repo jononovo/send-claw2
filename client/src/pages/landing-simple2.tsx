@@ -424,7 +424,7 @@ export default function LandingSimple() {
           {/* Pricing, Login Link & Theme Toggle */}
           <div className="absolute top-4 right-6 md:top-6 md:right-10 z-30 flex items-center gap-4">
             <a 
-              href="/pricing"
+              href="/pricing-new"
               className="text-sm text-foreground/30 hover:text-foreground/60 transition-colors font-bold uppercase tracking-widest"
             >
               Pricing
