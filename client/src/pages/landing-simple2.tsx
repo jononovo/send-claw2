@@ -615,27 +615,34 @@ export default function LandingSimple() {
                   </div>
                   
                   {/* Handwritten note with arrow */}
-                  <div className="absolute -top-12 left-16 z-30 flex flex-col items-start animate-[floatCard1_3s_ease-in-out_infinite]">
-                    <span 
-                      className="text-gray-300/80 text-xl whitespace-nowrap -rotate-6"
-                      style={{ fontFamily: "'Caveat', cursive" }}
-                    >
-                      This is Anastasia!
-                    </span>
-                    {/* Hand-drawn arrow pointing down-right */}
+                  <div className="absolute -top-8 left-12 z-30 flex flex-col items-start">
+                    {/* Text on subtle arc using SVG textPath */}
+                    <svg width="180" height="40" viewBox="0 0 180 40" className="overflow-visible">
+                      <defs>
+                        <path id="textArc" d="M 0 30 Q 90 15, 180 28" fill="none" />
+                      </defs>
+                      <text 
+                        className="fill-gray-300/80" 
+                        style={{ fontFamily: "'Caveat', cursive", fontSize: '26px' }}
+                      >
+                        <textPath href="#textArc">This is Anastasia!</textPath>
+                      </text>
+                    </svg>
+                    {/* Hand-drawn curved arrow */}
                     <svg 
-                      width="60" 
-                      height="60" 
-                      viewBox="0 0 60 60" 
-                      className="text-gray-300/70 -mt-1 ml-8"
+                      width="35" 
+                      height="35" 
+                      viewBox="0 0 35 35" 
+                      className="text-gray-300/70 ml-20 -mt-1"
                       fill="none" 
                       stroke="currentColor" 
-                      strokeWidth="2"
+                      strokeWidth="1.5"
                       strokeLinecap="round"
                       strokeLinejoin="round"
                     >
-                      <path d="M5 5 C 20 20, 35 35, 50 50" />
-                      <path d="M40 45 L 52 52 L 45 40" />
+                      <path d="M3 3 C 8 12, 18 20, 28 28" />
+                      <path d="M20 25 Q 26 27, 29 29" />
+                      <path d="M26 20 Q 27 26, 29 29" />
                     </svg>
                   </div>
                   
