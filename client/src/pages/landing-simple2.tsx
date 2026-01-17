@@ -615,27 +615,27 @@ export default function LandingSimple() {
                   </div>
                   
                   {/* Handwritten note with arrow */}
-                  <div className="absolute -top-2 left-1/2 -translate-x-1/2 z-30 flex flex-col items-center animate-[floatCard1_3s_ease-in-out_infinite]">
+                  <div className="absolute -top-12 left-16 z-30 flex flex-col items-start animate-[floatCard1_3s_ease-in-out_infinite]">
                     <span 
-                      className="text-gray-300/80 text-lg whitespace-nowrap -rotate-6"
+                      className="text-gray-300/80 text-xl whitespace-nowrap -rotate-6"
                       style={{ fontFamily: "'Caveat', cursive" }}
                     >
                       This is Anastasia!
                     </span>
-                    {/* Hand-drawn arrow pointing down */}
+                    {/* Hand-drawn arrow pointing down-right */}
                     <svg 
-                      width="40" 
-                      height="50" 
-                      viewBox="0 0 40 50" 
-                      className="text-gray-300/70 mt-1 rotate-12"
+                      width="60" 
+                      height="60" 
+                      viewBox="0 0 60 60" 
+                      className="text-gray-300/70 -mt-1 ml-8"
                       fill="none" 
                       stroke="currentColor" 
                       strokeWidth="2"
                       strokeLinecap="round"
                       strokeLinejoin="round"
                     >
-                      <path d="M20 5 C 15 15, 25 25, 20 40" />
-                      <path d="M12 32 L 20 42 L 28 32" />
+                      <path d="M5 5 C 20 20, 35 35, 50 50" />
+                      <path d="M40 45 L 52 52 L 45 40" />
                     </svg>
                   </div>
                   
