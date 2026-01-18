@@ -490,11 +490,11 @@ export default function PromptEditor({
       roleAutoHideTimerRef.current = null;
     }
     
-    // Auto-hide role selector 1.5 seconds after selection
+    // Auto-hide role selector 600ms after selection
     roleAutoHideTimerRef.current = setTimeout(() => {
       setShowRoleSelector(false);
       roleAutoHideTimerRef.current = null;
-    }, 1500);
+    }, 600);
   }, []);
 
   // Track input changes to update UI accordingly
