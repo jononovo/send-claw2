@@ -1239,7 +1239,7 @@ export default function PromptEditor({
             }}
             placeholder="Recently exited startups in Miami "
             rows={2}
-            className={`md:rounded-md rounded-md resize-none pb-12 text-base md:text-lg text-foreground hover:border-border md:focus-visible:border-border ${isFromLandingPage ? 'racing-light-effect' : ''} ${showGradientText ? 'gradient-text-input' : ''}`}
+            className={`md:rounded-md rounded-md resize-none pb-12 text-base md:text-lg text-foreground placeholder:text-muted-foreground/50 hover:border-border md:focus-visible:border-border ${isFromLandingPage ? 'racing-light-effect' : ''} ${showGradientText ? 'gradient-text-input' : ''}`}
             data-testid="search-input"
           />
           
