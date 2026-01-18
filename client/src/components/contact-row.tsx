@@ -47,7 +47,7 @@ export function ContactRow({
   return (
     <div
       className={cn(
-        "group flex items-center p-2 rounded-md cursor-pointer hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200",
+        "group flex items-center p-2 rounded-md cursor-pointer bg-card hover:bg-card-hover hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200",
         isHighlighted
           ? contact.email
             ? "border-l-4 border-dashed border-yellow-400/40 border-4 border-yellow-400/20 border-dashed shadow-md"
