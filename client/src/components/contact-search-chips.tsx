@@ -242,9 +242,7 @@ function ContactSearchChips({
                   : ''
                 }
                 ${config.enableCoreLeadership 
-                  ? (hasSearchResults && !inputHasChanged)
-                    ? 'bg-muted text-muted-foreground hover:bg-muted-hover'
-                    : 'bg-amber-50 text-amber-700 hover:bg-amber-100'
+                  ? 'bg-secondary text-secondary-foreground hover:bg-secondary-hover'
                   : 'bg-muted text-muted-foreground hover:bg-muted-hover'
                 }
                 ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
@@ -286,9 +284,7 @@ function ContactSearchChips({
                   : ''
                 }
                 ${config.enableDepartmentHeads 
-                  ? (hasSearchResults && !inputHasChanged)
-                    ? 'bg-muted text-muted-foreground hover:bg-muted-hover'
-                    : 'bg-blue-50 text-blue-700 hover:bg-blue-100'
+                  ? 'bg-secondary text-secondary-foreground hover:bg-secondary-hover'
                   : 'bg-muted text-muted-foreground hover:bg-muted-hover'
                 }
                 ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
@@ -330,9 +326,7 @@ function ContactSearchChips({
                   : ''
                 }
                 ${config.enableMiddleManagement 
-                  ? (hasSearchResults && !inputHasChanged)
-                    ? 'bg-muted text-muted-foreground hover:bg-muted-hover'
-                    : 'bg-green-50 text-green-700 hover:bg-green-100'
+                  ? 'bg-secondary text-secondary-foreground hover:bg-secondary-hover'
                   : 'bg-muted text-muted-foreground hover:bg-muted-hover'
                 }
                 ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
@@ -367,8 +361,8 @@ function ContactSearchChips({
 
       {/* Custom Input Expanded */}
       {isCustomInputExpanded && (
-        <div className="flex items-center gap-2 px-3 py-2 rounded-lg border border-purple-300 bg-purple-50">
-          <Target className="h-3 w-3 text-purple-600" />
+        <div className="flex items-center gap-2 px-3 py-2 rounded-lg border border-border bg-secondary">
+          <Target className="h-3 w-3 text-secondary-foreground" />
           <Input
             value={customInputValue}
             onChange={(e) => setCustomInputValue(e.target.value.slice(0, 22))}
@@ -397,7 +391,7 @@ function ContactSearchChips({
           <button
             onClick={handleCustomInputSave}
             disabled={disabled}
-            className="text-purple-600 hover:text-purple-700"
+            className="text-secondary-foreground hover:text-foreground"
           >
             <Save className="h-3 w-3" />
           </button>
@@ -411,7 +405,7 @@ function ContactSearchChips({
               setCustomInputValue("");
             }}
             disabled={disabled}
-            className="text-red-500 hover:text-red-700"
+            className="text-destructive hover:text-destructive/80"
           >
             <X className="h-3 w-3" />
           </button>
@@ -439,9 +433,7 @@ function ContactSearchChips({
                     : ''
                   }
                   ${config.enableCustomSearch 
-                    ? (hasSearchResults && !inputHasChanged)
-                      ? 'bg-muted text-muted-foreground hover:bg-muted-hover'
-                      : 'bg-purple-50 text-purple-700 hover:bg-purple-100'
+                    ? 'bg-secondary text-secondary-foreground hover:bg-secondary-hover'
                     : 'bg-muted text-muted-foreground hover:bg-muted-hover'
                   }
                   ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
@@ -495,7 +487,7 @@ function ContactSearchChips({
 
       {/* Second Custom Input Expanded */}
       {isCustomInput2Expanded && (
-        <div className="flex items-center gap-2 px-3 py-2 rounded-lg border border-purple-300 bg-purple-50">
+        <div className="flex items-center gap-2 px-3 py-2 rounded-lg border border-border bg-secondary">
           <input
             type="text"
             value={customInput2Value}
@@ -525,7 +517,7 @@ function ContactSearchChips({
           <button
             onClick={handleCustomInput2Save}
             disabled={disabled}
-            className="text-purple-600 hover:text-purple-700"
+            className="text-secondary-foreground hover:text-foreground"
           >
             <Save className="h-3 w-3" />
           </button>
@@ -539,7 +531,7 @@ function ContactSearchChips({
               setCustomInput2Value("");
             }}
             disabled={disabled}
-            className="text-red-500 hover:text-red-700"
+            className="text-destructive hover:text-destructive/80"
           >
             <X className="h-3 w-3" />
           </button>
@@ -567,9 +559,7 @@ function ContactSearchChips({
                     : ''
                   }
                   ${config.enableCustomSearch2 
-                    ? (hasSearchResults && !inputHasChanged)
-                      ? 'bg-muted text-muted-foreground hover:bg-muted-hover'
-                      : 'bg-purple-50 text-purple-700 hover:bg-purple-100'
+                    ? 'bg-secondary text-secondary-foreground hover:bg-secondary-hover'
                     : 'bg-muted text-muted-foreground hover:bg-muted-hover'
                   }
                   ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
