@@ -1345,7 +1345,7 @@ export default function PromptEditor({
                       rounded-md group
                       transition-all duration-300 flex items-center gap-2
                       ${!value?.trim() || (lastExecutedQuery && !inputHasChanged && !isSearchActive)
-                        ? 'bg-accent/20 hover:bg-accent/30 shadow-md hover:shadow-lg text-accent' 
+                        ? 'bg-secondary hover:bg-secondary-hover shadow-md hover:shadow-lg text-muted-foreground' 
                         : 'bg-gradient-to-r from-accent-light to-accent hover:from-accent hover:to-accent-dark text-white shadow-md hover:shadow-lg'
                       }
                     `}
