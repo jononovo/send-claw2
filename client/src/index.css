@@ -280,6 +280,7 @@ input[type="checkbox"]:indeterminate::before {
     --muted-foreground: 42 12% 55%;
 
     --accent: 25 55% 35%;
+    --accent-light: 25 60% 55%;
     --accent-foreground: 25 55% 95%;
     --accent-hover: 25 55% 35% / 0.1;
     --accent-active: 25 55% 35% / 0.15;
@@ -322,6 +323,7 @@ input[type="checkbox"]:indeterminate::before {
     --muted-foreground: 42 8% 60%;
 
     --accent: 25 45% 55%;
+    --accent-light: 25 55% 70%;
     --accent-foreground: 25 20% 10%;
     --accent-hover: 25 45% 55% / 0.1;
     --accent-active: 25 45% 55% / 0.15;

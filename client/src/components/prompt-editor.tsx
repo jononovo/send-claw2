@@ -1251,8 +1251,8 @@ export default function PromptEditor({
                   rounded-md
                   transition-all duration-300 flex items-center gap-2
                   ${lastExecutedQuery && !inputHasChanged 
-                    ? 'bg-gray-200 hover:bg-gray-300 dark:bg-gray-400 dark:hover:bg-gray-500 shadow-md hover:shadow-lg text-gray-700 dark:text-gray-900' 
-                    : 'bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 shadow-md hover:shadow-lg'
+                    ? 'bg-secondary hover:bg-secondary-hover shadow-md hover:shadow-lg text-muted-foreground' 
+                    : 'bg-gradient-to-r from-accent-light to-accent hover:from-accent hover:to-accent text-white shadow-md hover:shadow-lg'
                   }
                 `}
                 aria-label="Search"
