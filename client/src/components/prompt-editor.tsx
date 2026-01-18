@@ -470,12 +470,12 @@ export default function PromptEditor({
       roleAutoHideTimerRef.current = null;
     }
     
-    // If showing the selector, set 12-second auto-hide timer
+    // If showing the selector, set 6-second auto-hide timer
     if (newState) {
       roleAutoHideTimerRef.current = setTimeout(() => {
         setShowRoleSelector(false);
         roleAutoHideTimerRef.current = null;
-      }, 12000);
+      }, 6000);
     }
   }, [showRoleSelector]);
 
