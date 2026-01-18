@@ -28,7 +28,7 @@ import {
   Layers,
   Check,
   Linkedin,
-  MessageSquare
+  FileText
 } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -195,7 +195,7 @@ const CompanyCard: React.FC<CompanyCardProps> = ({
                       aria-label="Show company description"
                       data-testid={`button-info-company-${company.id}`}
                     >
-                      <MessageSquare className="h-3.5 w-3.5" />
+                      <FileText className="h-3.5 w-3.5" />
                     </button>
                   )}
                 </h3>
