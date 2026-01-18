@@ -76,17 +76,17 @@ export function SearchTypeSelector({ selectedType, onTypeChange, disabled = fals
       {/* Search Type Icons in Input Field */}
       <div 
         data-testid="search-options-button"
-        className={`flex items-center gap-1 px-2 py-1 cursor-pointer hover:bg-gray-50 rounded transition-colors ${
+        className={`flex items-center gap-1 px-2 py-1 cursor-pointer hover:bg-muted-hover rounded transition-colors ${
           disabled ? 'opacity-50 cursor-not-allowed' : ''
         }`}
         onClick={() => !disabled && setIsModalOpen(true)}
       >
         {selectedConfig.icons.map((icon, index) => (
-          <div key={index} className="text-gray-400">
+          <div key={index} className="text-muted-foreground">
             {icon}
           </div>
         ))}
-        <ChevronDown className="h-3 w-3 md:h-[14px] md:w-[14px] lg:h-[18px] lg:w-[18px] text-gray-400" />
+        <ChevronDown className="h-3 w-3 md:h-[14px] md:w-[14px] lg:h-[18px] lg:w-[18px] text-muted-foreground" />
       </div>
 
       {/* Search Type Selection Modal */}
@@ -103,8 +103,8 @@ export function SearchTypeSelector({ selectedType, onTypeChange, disabled = fals
                 data-testid={`search-type-option-${config.type}`}
                 className={`flex items-center justify-between py-2 px-3 rounded-lg border cursor-pointer transition-all ${
                   selectedType === config.type 
-                    ? 'border-blue-300 bg-blue-50 hover:bg-blue-100' 
-                    : 'border-gray-200 bg-gray-50 hover:bg-gray-100'
+                    ? 'border-accent/30 bg-accent-hover hover:bg-accent-active' 
+                    : 'border-border bg-muted hover:bg-muted-hover'
                 }`}
                 onClick={() => handleTypeSelect(config.type)}
               >
@@ -112,23 +112,23 @@ export function SearchTypeSelector({ selectedType, onTypeChange, disabled = fals
                   <div className="flex items-center gap-1">
                     {config.icons.map((icon, index) => (
                       <div key={index} className={`${
-                        selectedType === config.type ? 'text-blue-600' : 'text-gray-600'
+                        selectedType === config.type ? 'text-accent' : 'text-muted-foreground'
                       }`}>
                         {icon}
                       </div>
                     ))}
                   </div>
                   <span className={`text-base font-medium ${
-                    selectedType === config.type ? 'text-blue-900' : 'text-gray-900'
+                    selectedType === config.type ? 'text-accent' : 'text-foreground'
                   }`}>
                     {config.label}
                   </span>
                 </div>
                 <div className="text-right">
-                  <span className="text-xs text-gray-500 font-mono">
+                  <span className="text-xs text-muted-foreground font-mono">
                     ~{config.estimatedTime}
                   </span>
-                  <div className="text-[10px] text-gray-400">
+                  <div className="text-[10px] text-muted-foreground/70">
                     {config.creditCost} credits
                   </div>
                 </div>

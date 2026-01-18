@@ -243,9 +243,9 @@ function ContactSearchChips({
                 }
                 ${config.enableCoreLeadership 
                   ? (hasSearchResults && !inputHasChanged)
-                    ? 'bg-gray-50 text-gray-600 hover:bg-gray-100'
+                    ? 'bg-muted text-muted-foreground hover:bg-muted-hover'
                     : 'bg-amber-50 text-amber-700 hover:bg-amber-100'
-                  : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
+                  : 'bg-muted text-muted-foreground hover:bg-muted-hover'
                 }
                 ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
               `}
@@ -287,9 +287,9 @@ function ContactSearchChips({
                 }
                 ${config.enableDepartmentHeads 
                   ? (hasSearchResults && !inputHasChanged)
-                    ? 'bg-gray-50 text-gray-600 hover:bg-gray-100'
+                    ? 'bg-muted text-muted-foreground hover:bg-muted-hover'
                     : 'bg-blue-50 text-blue-700 hover:bg-blue-100'
-                  : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
+                  : 'bg-muted text-muted-foreground hover:bg-muted-hover'
                 }
                 ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
               `}
@@ -331,9 +331,9 @@ function ContactSearchChips({
                 }
                 ${config.enableMiddleManagement 
                   ? (hasSearchResults && !inputHasChanged)
-                    ? 'bg-gray-50 text-gray-600 hover:bg-gray-100'
+                    ? 'bg-muted text-muted-foreground hover:bg-muted-hover'
                     : 'bg-green-50 text-green-700 hover:bg-green-100'
-                  : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
+                  : 'bg-muted text-muted-foreground hover:bg-muted-hover'
                 }
                 ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
               `}
@@ -355,8 +355,8 @@ function ContactSearchChips({
           onClick={() => handleMobileChipClick(handleCustomInputExpand)}
           disabled={disabled}
           className={`
-            flex items-center justify-center px-3 py-2 rounded-full border border-dashed border-gray-300 
-            text-gray-600 hover:bg-gray-50 transition-all duration-200 min-w-[40px]
+            flex items-center justify-center px-3 py-2 rounded-full border border-dashed border-border 
+            text-muted-foreground hover:bg-muted-hover transition-all duration-200 min-w-[40px]
             max-md:w-10 max-md:h-10 max-md:px-0
             ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
           `}
@@ -440,9 +440,9 @@ function ContactSearchChips({
                   }
                   ${config.enableCustomSearch 
                     ? (hasSearchResults && !inputHasChanged)
-                      ? 'bg-gray-50 text-gray-600 hover:bg-gray-100'
+                      ? 'bg-muted text-muted-foreground hover:bg-muted-hover'
                       : 'bg-purple-50 text-purple-700 hover:bg-purple-100'
-                    : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
+                    : 'bg-muted text-muted-foreground hover:bg-muted-hover'
                   }
                   ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
                 `}
@@ -455,7 +455,7 @@ function ContactSearchChips({
                     e.stopPropagation();
                     handleCustomInputExpand();
                   }}
-                  className="ml-1 text-gray-400 hover:text-gray-600 cursor-pointer"
+                  className="ml-1 text-muted-foreground/60 hover:text-muted-foreground cursor-pointer"
                   role="button"
                   tabIndex={0}
                   onKeyDown={(e) => {
@@ -483,8 +483,8 @@ function ContactSearchChips({
           onClick={() => handleMobileChipClick(handleCustomInput2Expand)}
           disabled={disabled}
           className={`
-            flex items-center justify-center px-3 py-2 rounded-full border border-dashed border-gray-300 
-            text-gray-600 hover:bg-gray-50 transition-all duration-200 min-w-[40px]
+            flex items-center justify-center px-3 py-2 rounded-full border border-dashed border-border 
+            text-muted-foreground hover:bg-muted-hover transition-all duration-200 min-w-[40px]
             max-md:w-10 max-md:h-10 max-md:px-0
             ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
           `}
@@ -568,9 +568,9 @@ function ContactSearchChips({
                   }
                   ${config.enableCustomSearch2 
                     ? (hasSearchResults && !inputHasChanged)
-                      ? 'bg-gray-50 text-gray-600 hover:bg-gray-100'
+                      ? 'bg-muted text-muted-foreground hover:bg-muted-hover'
                       : 'bg-purple-50 text-purple-700 hover:bg-purple-100'
-                    : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
+                    : 'bg-muted text-muted-foreground hover:bg-muted-hover'
                   }
                   ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
                 `}
@@ -583,7 +583,7 @@ function ContactSearchChips({
                     e.stopPropagation();
                     handleCustomInput2Expand();
                   }}
-                  className="ml-1 text-gray-400 hover:text-gray-600 cursor-pointer"
+                  className="ml-1 text-muted-foreground/60 hover:text-muted-foreground cursor-pointer"
                   role="button"
                   tabIndex={0}
                   onKeyDown={(e) => {
