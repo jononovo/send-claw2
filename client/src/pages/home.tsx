@@ -1502,7 +1502,7 @@ export default function Home({ isNewSearch = false }: HomeProps) {
       )}
       
       {/* Main Content Container - will be compressed when drawer opens on desktop */}
-      <div className={`flex-1 overflow-y-auto main-content-compressed ${emailDrawer.isOpen && currentResults && currentResults.length > 0 ? 'compressed-view' : ''}`}>
+      <div className={`flex-1 overflow-y-auto main-content-compressed ${emailDrawer.isOpen ? 'compressed-view' : ''}`}>
         <div className="container mx-auto py-6 px-0 md:px-6">
           {/* Intro tour modal has been removed */}
 
@@ -1552,7 +1552,7 @@ export default function Home({ isNewSearch = false }: HomeProps) {
             >
               <div className="px-3 md:px-6 py-1"> {/* Reduced mobile padding, matched desktop padding with CardHeader (p-6) */}
                 {/* Collapse button when expanded */}
-                {!searchSectionCollapsed && currentResults && currentResults.length > 0 && (
+                {!searchSectionCollapsed && (emailDrawer.isOpen || (currentResults && currentResults.length > 0)) && (
                   <button
                     onClick={() => setSearchSectionCollapsed(true)}
                     className="absolute right-3 md:right-6 top-2 z-10 p-1.5 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors group"
