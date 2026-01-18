@@ -303,6 +303,8 @@ input[type="checkbox"]:indeterminate::before {
     --destructive-foreground: 0 0% 100%;
 
     --radius: 0.5rem;
+    --radius-button: 0.5rem;
+    --radius-chip: 0.375rem;
   }
 
   /* Dark Theme Colors - warm brownish-gray tones */
