@@ -54,4 +54,4 @@ integrations = ["javascript_sendgrid:1.0.0", "javascript_database:1.0.0", "javas
 [userenv.shared]
 
 [objectStorage]
-defaultBucketID = "replit-objstore-9a4b35db-8614-4cd7-a390-56402ad15404"
+defaultBucketID = "replit-objstore-c3e7ac47-9b72-446d-87d1-9a72e57ad880"
