@@ -144,7 +144,7 @@ export default function EmailForm({
                       "h-8 text-xs transition-all duration-300 ease-out overflow-hidden",
                       isGmailButtonHovered 
                         ? "px-3 bg-blue-50 text-blue-700 border-blue-300 hover:bg-blue-100" 
-                        : "px-2 w-8 bg-gray-50 text-gray-500 border-gray-200 hover:bg-gray-100"
+                        : "px-2 w-8 bg-muted text-muted-foreground border-border hover:bg-muted-hover"
                     )}
                     data-testid="button-gmail-connect"
                   >
