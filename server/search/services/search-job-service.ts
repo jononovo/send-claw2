@@ -189,6 +189,34 @@ export class SearchJobService {
         message: 'Discovering matching companies'
       });
 
+      // Start joke display timer (2 seconds from now, runs in parallel with company discovery)
+      let jokeDisplayed = false;
+      const jokeDisplayPromise = (async () => {
+        if (hasJoke && joke) {
+          await delay(2000); // Wait 2 seconds from search start
+          
+          // Show joke setup
+          await this.updateJobProgress(job.id, {
+            phase: `Joke: ${joke.setup}`,
+            completed: currentPhase,
+            total: totalPhases,
+            message: 'A little humor while we search...'
+          });
+          await delay(4500); // Display joke for 4.5 seconds
+          
+          // Show punchline immediately after
+          await this.updateJobProgress(job.id, {
+            phase: `Punchline: ${joke.punchline}`,
+            completed: currentPhase,
+            total: totalPhases,
+            message: '...wait for it!'
+          });
+          await delay(4500); // Display punchline for 4.5 seconds
+          
+          jokeDisplayed = true;
+        }
+      })();
+
       // Check for termination before expensive API call
       await this.checkTerminated(jobId);
 
@@ -270,17 +298,6 @@ export class SearchJobService {
         // Wait for "Companies ready!" to display (work is running in parallel)
         await delay(2000);
         
-        // Show joke setup as temporary phase label override (if available)
-        if (hasJoke && joke) {
-          await this.updateJobProgress(job.id, {
-            phase: `Joke: ${joke.setup}`,
-            completed: currentPhase,
-            total: totalPhases,
-            message: 'A little humor while we search...'
-          });
-          await delay(4500);
-        }
-        
         // Now show the real phase label
         await this.updateJobProgress(job.id, {
           phase: 'Finding contacts',
@@ -345,29 +362,11 @@ export class SearchJobService {
         if (job.searchType === 'emails' && contacts.length > 0) {
           currentPhase++;
           
-          // Show punchline as temporary phase label override (if available)
-          if (hasJoke && joke) {
-            await this.updateJobProgress(job.id, {
-              phase: `Punchline: ${joke.punchline}`,
-              completed: currentPhase,
-              total: totalPhases,
-              message: '...wait for it!'
-            });
-          }
-          
-          // Calculate when progress updates can resume (after punchline display)
-          const suppressProgressUntil = hasJoke && joke ? Date.now() + 4500 : 0;
-          
-          // Start email enrichment work (runs in parallel with punchline display)
+          // Start email enrichment work
           console.log(`[SearchJobService] Starting email search (Apollo/Perplexity/Hunter) for ${contacts.length} contacts`);
-          const emailPromise = this.enrichContactsWithEmails(job, contacts, savedCompanies, totalPhases, currentPhase, suppressProgressUntil);
+          const emailPromise = this.enrichContactsWithEmails(job, contacts, savedCompanies, totalPhases, currentPhase, 0);
           
-          // Wait for punchline to display (work is running in parallel)
-          if (hasJoke && joke) {
-            await delay(4500);
-          }
-          
-          // Now show the real phase label
+          // Show the real phase label
           await this.updateJobProgress(job.id, {
             phase: 'Finding emails',
             completed: currentPhase,
