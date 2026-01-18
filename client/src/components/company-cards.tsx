@@ -27,7 +27,8 @@ import {
   ScrollText,
   Layers,
   Check,
-  Linkedin
+  Linkedin,
+  AlignLeft
 } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -188,16 +189,13 @@ const CompanyCard: React.FC<CompanyCardProps> = ({
                         "p-0.5 rounded transition-all border relative",
                         "before:absolute before:inset-[-8px] before:content-['']",
                         showDescription 
-                          ? "text-yellow-700 dark:text-yellow-500 bg-yellow-400/20 border-yellow-400/50" 
-                          : "text-muted-foreground border-transparent hover:text-yellow-700 dark:hover:text-yellow-500 hover:bg-yellow-400/10 hover:border-yellow-400/30"
+                          ? "text-foreground/70 border-transparent" 
+                          : "text-muted-foreground border-transparent hover:text-foreground/70"
                       )}
                       aria-label="Show company description"
                       data-testid={`button-info-company-${company.id}`}
                     >
-                      <ChevronDown className={cn(
-                        "h-3.5 w-3.5 transition-transform",
-                        showDescription && "rotate-180"
-                      )} />
+                      <AlignLeft className="h-3.5 w-3.5" />
                     </button>
                   )}
                 </h3>

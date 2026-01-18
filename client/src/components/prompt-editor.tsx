@@ -1239,7 +1239,7 @@ export default function PromptEditor({
             }}
             placeholder="Recently exited startups in Miami "
             rows={2}
-            className={`md:rounded-md rounded-md resize-none pb-12 text-base md:text-lg text-foreground hover:border-border md:focus-visible:border-border ${isFromLandingPage ? 'racing-light-effect' : ''} ${showGradientText ? 'gradient-text-input' : ''}`}
+            className={`md:rounded-md rounded-md resize-none pb-12 text-base md:text-lg text-foreground placeholder:text-muted-foreground/50 hover:border-border md:focus-visible:border-border ${isFromLandingPage ? 'racing-light-effect' : ''} ${showGradientText ? 'gradient-text-input' : ''}`}
             data-testid="search-input"
           />
           
@@ -1344,7 +1344,7 @@ export default function PromptEditor({
                     className={`
                       rounded-md group
                       transition-all duration-300 flex items-center gap-2
-                      ${lastExecutedQuery && !inputHasChanged && !isSearchActive
+                      ${!value?.trim() || (lastExecutedQuery && !inputHasChanged && !isSearchActive)
                         ? 'bg-secondary hover:bg-secondary-hover shadow-md hover:shadow-lg text-muted-foreground' 
                         : 'bg-gradient-to-r from-accent-light to-accent hover:from-accent hover:to-accent-dark text-white shadow-md hover:shadow-lg'
                       }

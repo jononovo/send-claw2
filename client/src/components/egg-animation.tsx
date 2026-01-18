@@ -21,19 +21,19 @@ export function EggAnimation() {
   useEffect(() => {
     // Starting act (warmup) sequence with updated timings
     const startSequence = setTimeout(() => {
-      // Start after 4 seconds initial delay
+      // Start after 7 seconds initial delay
       setState('hatching');
-    }, 4000);
+    }, 7000);
 
     const chickTimeout = setTimeout(() => {
       // Transform to chick 3 seconds after hatching starts
       setState('chick');
-    }, 7000); // 4s initial + 3s hatching
+    }, 10000); // 7s initial + 3s hatching
 
     const settleTimeout = setTimeout(() => {
       // Settle after 2 seconds of bouncing
       setState('settled');
-    }, 12000); // 4s initial + 3s hatching + 3s chick appearance + 2s bounce
+    }, 15000); // 7s initial + 3s hatching + 3s chick appearance + 2s bounce
 
     return () => {
       clearTimeout(startSequence);

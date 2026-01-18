@@ -66,17 +66,16 @@ export function StreakButton() {
           <Link href="/streak">
             <Button
               variant="ghost"
-              size="sm"
-              className="h-8 px-2 hover:bg-accent-hover"
+              className="group relative flex items-center text-sm font-medium h-auto p-2 hover:bg-accent-hover hover:text-accent-foreground transition-all overflow-hidden"
               data-testid="button-streak"
             >
-              <div className="flex items-center gap-1.5">
-                <Flame className={cn(
-                  "h-4 w-4 transition-colors",
-                  isLoading ? "animate-pulse text-gray-400" : getFlameColor()
-                )} />
+              <Flame className={cn(
+                "h-4 w-4 transition-all",
+                isLoading ? "animate-pulse text-gray-400" : getFlameColor()
+              )} />
+              <div className="flex items-center max-w-0 opacity-0 group-hover:max-w-[60px] group-hover:opacity-100 transition-all duration-200 ease-in-out overflow-hidden">
                 <span className={cn(
-                  "text-sm font-medium",
+                  "text-sm font-medium ml-2",
                   streakCount === 0 ? "text-muted-foreground" : "text-foreground"
                 )}>
                   {isLoading ? "..." : streakCount}
