@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { MessageSquare, Star, ThumbsDown, Linkedin } from "lucide-react";
+import { MessageSquare, Star, ThumbsDown, Linkedin, Phone } from "lucide-react";
 import { ContactActionColumn } from "@/components/contact-action-column";
 import { ComprehensiveSearchButton } from "@/components/comprehensive-email-search";
 import { cn } from "@/lib/utils";
@@ -105,6 +105,23 @@ export function ContactRow({
                     >
                       <Linkedin className="h-3 w-3" />
                     </a>
+                  )}
+                  {contact.phoneNumber && (
+                    <TooltipProvider delayDuration={300}>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <span 
+                            className="text-muted-foreground/60 hover:text-green-500 transition-colors cursor-help"
+                            data-testid={`phone-${contact.id}`}
+                          >
+                            <Phone className="h-3 w-3" />
+                          </span>
+                        </TooltipTrigger>
+                        <TooltipContent side="top" className="text-xs">
+                          <p>{contact.phoneNumber}</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
                   )}
                 </>
               ) : (

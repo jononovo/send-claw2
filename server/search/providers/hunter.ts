@@ -86,6 +86,12 @@ export async function hunterSearch(req: Request, res: Response) {
       companyId: contact.companyId
     });
 
+    if (!contact.companyId) {
+      console.error('Contact has no company ID:', contact.id);
+      res.status(400).json({ message: "Contact has no associated company" });
+      return;
+    }
+
     const company = await storage.getCompany(contact.companyId, userId);
     if (!company) {
       console.error('Company not found in database for ID:', contact.companyId);
