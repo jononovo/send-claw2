@@ -27,7 +27,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
-interface SavedSearchesDrawerProps {
+interface LeftMenuDrawerProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onLoadSearch: (list: SearchList) => void;
@@ -35,7 +35,7 @@ interface SavedSearchesDrawerProps {
   onOpenCompose?: () => void;
 }
 
-export function SavedSearchesDrawer({ open, onOpenChange, onLoadSearch, onNewSearch, onOpenCompose }: SavedSearchesDrawerProps) {
+export function LeftMenuDrawer({ open, onOpenChange, onLoadSearch, onNewSearch, onOpenCompose }: LeftMenuDrawerProps) {
   const { data: lists = [] } = useQuery<SearchList[]>({
     queryKey: ["/api/lists"],
     enabled: open,
@@ -53,7 +53,7 @@ export function SavedSearchesDrawer({ open, onOpenChange, onLoadSearch, onNewSea
         />
         {/* Custom sheet content */}
         <SheetPrimitive.Content
-          className="fixed z-50 gap-4 bg-background shadow-lg transition ease-in-out data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:duration-300 data-[state=open]:duration-500 inset-y-0 left-0 h-full w-3/4 border-r data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left sm:max-w-sm w-[80%] max-w-[384px] !pt-3 !px-0 !pb-6 sm:max-w-[384px] !top-[52px] !h-[calc(100vh-52px)] !rounded-tr-2xl"
+          className="fixed z-50 gap-4 bg-panel-background shadow-lg transition ease-in-out data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:duration-300 data-[state=open]:duration-500 inset-y-0 left-0 h-full w-3/4 border-r data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left sm:max-w-sm w-[80%] max-w-[384px] !pt-3 !px-0 !pb-6 sm:max-w-[384px] !top-[52px] !h-[calc(100vh-52px)] !rounded-tr-2xl"
           onMouseLeave={() => {
             // Auto-close drawer when mouse leaves (desktop only)
             if (window.innerWidth >= 640) {

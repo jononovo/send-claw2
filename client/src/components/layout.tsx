@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Footer } from "@/components/footer";
 import { MiniFooter } from "@/components/mini-footer";
-import { SavedSearchesDrawer } from "@/components/saved-searches-drawer";
+import { LeftMenuDrawer } from "@/components/left-menu-drawer";
 import { useLocation } from "wouter";
 
 interface LayoutProps {
@@ -86,8 +86,8 @@ export function AppLayout({ children }: LayoutProps) {
       </div>
       {!shouldHideFooter && <MiniFooter />}
       
-      {/* Global SavedSearchesDrawer - available on all app pages */}
-      <SavedSearchesDrawer 
+      {/* Global LeftMenuDrawer - available on all app pages */}
+      <LeftMenuDrawer 
         open={savedSearchesDrawerOpen}
         onOpenChange={setSavedSearchesDrawerOpen}
         onLoadSearch={handleLoadSearch}

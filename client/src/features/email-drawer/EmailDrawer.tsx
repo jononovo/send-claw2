@@ -74,7 +74,7 @@ export function EmailDrawer({
   );
 
   const renderHeader = () => (
-    <div className="sticky top-0 bg-background px-4 py-1.5 z-10">
+    <div className="sticky top-0 bg-panel-background px-4 py-1.5 z-10">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <button
@@ -156,7 +156,7 @@ export function EmailDrawer({
 
   const renderMinimizedBar = () => (
     <div 
-      className="fixed bottom-0 right-16 z-50 bg-background border border-b-0 rounded-t-lg shadow-lg cursor-pointer hover:shadow-xl transition-shadow"
+      className="fixed bottom-0 right-16 z-50 bg-panel-background border border-b-0 rounded-t-lg shadow-lg cursor-pointer hover:shadow-xl transition-shadow"
       onClick={onRestore}
       data-testid="minimized-drawer-bar"
     >
@@ -200,7 +200,7 @@ export function EmailDrawer({
         data-testid="expanded-drawer-backdrop"
       />
       <div 
-        className="fixed top-[5%] left-1/2 -translate-x-1/2 z-50 w-full max-w-3xl h-[90vh] bg-background border rounded-lg shadow-2xl overflow-hidden"
+        className="fixed top-[5%] left-1/2 -translate-x-1/2 z-50 w-full max-w-3xl h-[90vh] bg-panel-background border rounded-lg shadow-2xl overflow-hidden"
         data-testid="expanded-drawer"
       >
         <div className="h-full overflow-y-auto pb-2">
@@ -242,7 +242,7 @@ export function EmailDrawer({
             open 
               ? 'fixed md:absolute top-[2.5rem] md:top-0 right-0 bottom-auto max-h-[calc(100vh-2.5rem)] md:max-h-screen w-[90%] sm:w-[400px] z-50' 
               : 'fixed md:absolute w-0 right-0 top-0'
-          } overflow-hidden border-l border-t border-b rounded-tl-lg rounded-bl-lg bg-background shadow-xl`} 
+          } overflow-hidden border-l border-t border-b rounded-tl-lg rounded-bl-lg bg-panel-background shadow-xl`} 
           style={{ 
             ...(open && typeof window !== 'undefined' && window.innerWidth >= 768 ? { width: `${width}px` } : {}),
             ...(isResizing ? { transition: 'none' } : {})

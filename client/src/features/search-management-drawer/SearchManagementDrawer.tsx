@@ -31,7 +31,7 @@ export function SearchManagementDrawer({
   if (!open) return null;
 
   const renderHeader = () => (
-    <div className="sticky top-0 bg-background px-4 py-1.5 z-10">
+    <div className="sticky top-0 bg-panel-background px-4 py-1.5 z-10">
       {/* Top row - Tabs and close */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
@@ -141,7 +141,7 @@ export function SearchManagementDrawer({
           open 
             ? 'fixed top-[2.5rem] right-0 bottom-auto max-h-[calc(100vh-2.5rem)] w-[90%] sm:w-[400px] z-40' 
             : 'fixed w-0 right-0 top-[2.5rem]'
-        } overflow-hidden border-l border-t border-b rounded-tl-lg rounded-bl-lg bg-background shadow-xl`} 
+        } overflow-hidden border-l border-t border-b rounded-tl-lg rounded-bl-lg bg-panel-background shadow-xl`} 
         style={{ 
           ...(open && typeof window !== 'undefined' && window.innerWidth >= 768 ? { width: `${width}px` } : {}),
           ...(isResizing ? { transition: 'none' } : {})
@@ -185,7 +185,7 @@ export function SearchManagementDrawer({
           open 
             ? 'fixed top-[2.5rem] right-0 bottom-auto max-h-[calc(100vh-2.5rem)] w-[90%] sm:w-[400px] z-40' 
             : 'fixed w-0 right-0 top-[2.5rem]'
-        } overflow-hidden border-l border-t border-b rounded-tl-lg rounded-bl-lg bg-background shadow-xl`}
+        } overflow-hidden border-l border-t border-b rounded-tl-lg rounded-bl-lg bg-panel-background shadow-xl`}
       >
         {open && (
           <div className="overflow-y-auto max-h-[calc(100vh-2.5rem)]" style={{ minWidth: '400px' }}>
