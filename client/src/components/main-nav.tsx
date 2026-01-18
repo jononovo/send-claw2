@@ -61,7 +61,7 @@ export function MainNav() {
               data-testid="button-open-drawer"
             >
               <PanelLeft 
-                className="text-gray-500" 
+                className="text-muted-foreground" 
                 style={{ width: '22px', height: '22px' }}
                 strokeWidth={1.5}
               />
@@ -75,8 +75,8 @@ export function MainNav() {
             <CreditUpgradeDropdown />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="h-8 w-8">
-                  <Menu className="h-4 w-4" />
+                <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-accent-hover">
+                  <Menu className="h-4 w-4 text-muted-foreground" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
