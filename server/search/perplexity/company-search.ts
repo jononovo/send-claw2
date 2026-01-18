@@ -13,7 +13,7 @@ function delay(ms: number): Promise<void> {
 }
 
 // Fast discovery - just get names and websites for immediate display (5-7 seconds)
-export async function discoverCompanies(query: string, excludeCompanies: string[] = []): Promise<Array<{name: string, website: string | null}>> {
+export async function discoverCompanies(query: string, excludeCompanies: string[] = []): Promise<Array<{name: string, website: string | null, city: string | null, country: string | null}>> {
   console.log(`[PERPLEXITY API CALL] discoverCompanies called with query: "${query}"`);
   console.log(`[PERPLEXITY API CALL] Excluding ${excludeCompanies.length} companies:`, excludeCompanies);
   console.log(`[PERPLEXITY API CALL] Timestamp: ${new Date().toISOString()}`);
@@ -26,13 +26,13 @@ export async function discoverCompanies(query: string, excludeCompanies: string[
   const messages: PerplexityMessage[] = [
     {
       role: "system",
-      content: "Be precise and concise. Return results immediately. Website: Only include the official domain." 
+      content: "Be precise and concise. Return results immediately. Website: Only include the official domain. Location: Include headquarters city and country if known." 
     },
     {
       role: "user",
       content: `List 7 companies matching: ${query}${excludeInstruction}
-Return ONLY company names and websites. Be concise.
-Format: JSON array with "name" and "website" fields.`
+Return company names, websites, and headquarters location. Be concise.
+Format: JSON array with "name", "website", "city", and "country" fields.`
     }
   ];
 
@@ -59,9 +59,11 @@ Format: JSON array with "name" and "website" fields.`
                             (parsed.companies && Array.isArray(parsed.companies) ? parsed.companies : null);
         
         if (companiesArray) {
-          const companies = companiesArray.slice(0, 7).map((company: {name: string, website?: string}) => ({
+          const companies = companiesArray.slice(0, 7).map((company: {name: string, website?: string, city?: string, country?: string}) => ({
             name: company.name,
-            website: company.website || null
+            website: company.website || null,
+            city: company.city || null,
+            country: company.country || null
           }));
           console.log(`Successfully discovered ${companies.length} companies in ${elapsed}ms`);
           return companies;
@@ -70,9 +72,11 @@ Format: JSON array with "name" and "website" fields.`
         console.error('JSON parsing failed in discovery:', jsonError);
       }
       
-      // Fallback parsing for just names and websites
+      // Fallback parsing for names, websites, city, and country
       const nameMatches = cleanedResponse.match(/"name":\s*"([^"]*)"/g) || [];
       const websiteMatches = cleanedResponse.match(/"website":\s*"([^"]*)"/g) || [];
+      const cityMatches = cleanedResponse.match(/"city":\s*"([^"]*)"/g) || [];
+      const countryMatches = cleanedResponse.match(/"country":\s*"([^"]*)"/g) || [];
       
       const companies = [];
       for (let i = 0; i < nameMatches.length && companies.length < 7; i++) {
@@ -83,9 +87,21 @@ Format: JSON array with "name" and "website" fields.`
             const websiteMatch = websiteMatches[i].match(/"website":\s*"([^"]*)"/);
             website = websiteMatch && websiteMatch[1] ? websiteMatch[1].trim() : null;
           }
+          let city = null;
+          if (i < cityMatches.length) {
+            const cityMatch = cityMatches[i].match(/"city":\s*"([^"]*)"/);
+            city = cityMatch && cityMatch[1] ? cityMatch[1].trim() : null;
+          }
+          let country = null;
+          if (i < countryMatches.length) {
+            const countryMatch = countryMatches[i].match(/"country":\s*"([^"]*)"/);
+            country = countryMatch && countryMatch[1] ? countryMatch[1].trim() : null;
+          }
           companies.push({
             name: nameMatch[1].trim(),
-            website: website
+            website: website,
+            city: city,
+            country: country
           });
         }
       }

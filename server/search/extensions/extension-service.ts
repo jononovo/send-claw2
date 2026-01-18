@@ -55,7 +55,9 @@ export class ExtensionSearchService {
         listId,
         additionalCompanies: additionalCompanies.map(c => ({
           name: c.name,
-          website: c.website
+          website: c.website,
+          city: c.city,
+          country: c.country
         }))
       },
       priority: 1
@@ -90,12 +92,14 @@ export class ExtensionSearchService {
     // Phase 1: Save companies immediately
     const savedCompanies: any[] = [];
     for (const company of metadata.additionalCompanies) {
-      const companyData = {
+      const companyData: any = {
         name: company.name,
         website: company.website || null,
         description: null, // Will be enriched later
         userId: job.userId,
-        listId: metadata.listId || null
+        listId: metadata.listId || null,
+        city: company.city || null,
+        country: company.country || null
       };
       const savedCompany = await storage.createCompany(companyData);
       savedCompanies.push(savedCompany);
