@@ -1148,7 +1148,7 @@ export default function PromptEditor({
             }}
             placeholder="Recently exited startups in Miami "
             rows={2}
-            className={`md:rounded-md rounded-md resize-none pb-12 text-base md:text-lg text-gray-700 hover:border-gray-300 md:focus-visible:border-gray-400 ${isFromLandingPage ? 'racing-light-effect' : ''} ${showGradientText ? 'gradient-text-input' : ''}`}
+            className={`md:rounded-md rounded-md resize-none pb-12 text-base md:text-lg text-foreground hover:border-border md:focus-visible:border-border ${isFromLandingPage ? 'racing-light-effect' : ''} ${showGradientText ? 'gradient-text-input' : ''}`}
             data-testid="search-input"
           />
           
@@ -1169,7 +1169,7 @@ export default function PromptEditor({
                   return (
                     <button
                       onClick={toggleRoleSelector}
-                      className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full bg-gray-100 text-gray-600 text-sm hover:bg-gray-200 transition-colors cursor-pointer"
+                      className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full bg-muted text-muted-foreground text-sm hover:bg-muted-hover transition-colors cursor-pointer"
                     >
                       <Crown className="h-3.5 w-3.5" />
                       <span className="font-medium">Leadership</span>
@@ -1179,7 +1179,7 @@ export default function PromptEditor({
                   return (
                     <button
                       onClick={toggleRoleSelector}
-                      className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full bg-gray-100 text-gray-600 text-sm hover:bg-gray-200 transition-colors cursor-pointer"
+                      className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full bg-muted text-muted-foreground text-sm hover:bg-muted-hover transition-colors cursor-pointer"
                     >
                       <Building className="h-3.5 w-3.5" />
                       <span className="font-medium">Marketing</span>
@@ -1189,7 +1189,7 @@ export default function PromptEditor({
                   return (
                     <button
                       onClick={toggleRoleSelector}
-                      className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full bg-gray-100 text-gray-600 text-sm hover:bg-gray-200 transition-colors cursor-pointer"
+                      className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full bg-muted text-muted-foreground text-sm hover:bg-muted-hover transition-colors cursor-pointer"
                     >
                       <Users className="h-3.5 w-3.5" />
                       <span className="font-medium">CTO</span>
@@ -1199,7 +1199,7 @@ export default function PromptEditor({
                   return (
                     <button
                       onClick={toggleRoleSelector}
-                      className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full bg-gray-100 text-gray-600 text-sm hover:bg-gray-200 transition-colors cursor-pointer"
+                      className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full bg-muted text-muted-foreground text-sm hover:bg-muted-hover transition-colors cursor-pointer"
                     >
                       <Target className="h-3.5 w-3.5" />
                       <span className="font-medium">{contactSearchConfig.customSearchTarget}</span>
@@ -1209,7 +1209,7 @@ export default function PromptEditor({
                   return (
                     <button
                       onClick={toggleRoleSelector}
-                      className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full bg-gray-100 text-gray-600 text-sm hover:bg-gray-200 transition-colors cursor-pointer"
+                      className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full bg-muted text-muted-foreground text-sm hover:bg-muted-hover transition-colors cursor-pointer"
                     >
                       <Target className="h-3.5 w-3.5" />
                       <span className="font-medium">{contactSearchConfig.customSearchTarget2}</span>
@@ -1226,7 +1226,7 @@ export default function PromptEditor({
                     <TooltipTrigger asChild>
                       <button
                         onClick={onOpenSearchDrawer}
-                        className="flex items-center justify-center p-2 rounded-full text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-colors cursor-pointer"
+                        className="flex items-center justify-center p-2 rounded-full text-muted-foreground hover:bg-muted-hover hover:text-foreground transition-colors cursor-pointer"
                         aria-label="Search Management"
                         data-testid="button-search-management"
                       >
