@@ -53,9 +53,10 @@ export async function searchApolloDirect(contact: any, company: any, apiKey: str
           role: person.title || contact.role,
           linkedinUrl: person.linkedin_url || contact.linkedinUrl,
           phoneNumber: person.phone_numbers?.[0]?.sanitized_number || contact.phoneNumber,
-          city: person.city || null,
-          state: person.state || null,
-          country: person.country || null
+          // Apollo data takes priority, falls back to existing (Perplexity) data
+          city: person.city || contact.city || null,
+          state: person.state || contact.state || null,
+          country: person.country || contact.country || null
         },
         company: {
           city: organization.city || null,
