@@ -10,6 +10,7 @@ import { SemiProtectedRoute } from "@/lib/semi-protected-route";
 import { AuthProvider } from "@/hooks/use-auth";
 import { RegistrationModalProvider } from "@/hooks/use-registration-modal";
 import { RegistrationModalContainer } from "@/components/registration-modal-container";
+import { StrategyOverlayProvider } from "@/features/strategy-chat";
 import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from "@/hooks/use-theme";
 import { InsufficientCreditsProvider } from "@/contexts/insufficient-credits-context";
@@ -465,9 +466,11 @@ function App() {
         <InsufficientCreditsProvider>
           <AuthProvider>
             <RegistrationModalProvider>
-              <Router />
-              <DeferredGuidance />
-              <RegistrationModalContainer />
+              <StrategyOverlayProvider>
+                <Router />
+                <DeferredGuidance />
+                <RegistrationModalContainer />
+              </StrategyOverlayProvider>
               <Toaster />
             </RegistrationModalProvider>
             <InsufficientCreditsModal />
