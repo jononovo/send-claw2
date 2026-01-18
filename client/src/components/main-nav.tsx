@@ -61,7 +61,7 @@ export function MainNav() {
               data-testid="button-open-drawer"
             >
               <PanelLeft 
-                className="text-gray-500" 
+                className="text-muted-foreground" 
                 style={{ width: '22px', height: '22px' }}
                 strokeWidth={1.5}
               />
@@ -75,26 +75,26 @@ export function MainNav() {
             <CreditUpgradeDropdown />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="h-8 w-8">
-                  <Menu className="h-4 w-4" />
+                <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-accent-hover">
+                  <Menu className="h-4 w-4 text-muted-foreground" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <Link href="/account">
-                  <DropdownMenuItem>
+                  <DropdownMenuItem className="text-muted-foreground hover:text-foreground">
                     <User className="h-4 w-4 mr-2" />
                     <span>Account</span>
                   </DropdownMenuItem>
                 </Link>
                 <Link href="/strategy">
-                  <DropdownMenuItem>
+                  <DropdownMenuItem className="text-muted-foreground hover:text-foreground">
                     <Target className="h-4 w-4 mr-2" />
                     <span>Strategy</span>
                   </DropdownMenuItem>
                 </Link>
                 <DropdownMenuItem
                   onClick={() => setFeedbackDialogOpen(true)}
-                  className="cursor-pointer"
+                  className="cursor-pointer text-muted-foreground hover:text-foreground"
                   data-testid="menu-item-support"
                 >
                   <LifeBuoy className="h-4 w-4 mr-2" />
@@ -102,7 +102,7 @@ export function MainNav() {
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 {logoutMutation && (
-                  <DropdownMenuItem onClick={() => logoutMutation.mutate()}>
+                  <DropdownMenuItem onClick={() => logoutMutation.mutate()} className="text-muted-foreground hover:text-foreground">
                     <LogOut className="h-4 w-4 mr-2" />
                     <span>Logout</span>
                   </DropdownMenuItem>

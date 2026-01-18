@@ -148,7 +148,7 @@ const CompanyCard: React.FC<CompanyCardProps> = ({
     <Card
       className={cn(
         "rounded-none md:rounded-lg transition-all duration-200 cursor-pointer",
-        "bg-[hsl(40,10%,96%)] dark:bg-[hsl(40,10%,8%)] hover:bg-white dark:hover:bg-gray-950 hover:shadow-md hover:border-gray-300 dark:hover:border-gray-600",
+        "bg-card hover:bg-card-hover hover:shadow-md hover:border-border",
         isSelected && "border-blue-400 dark:border-blue-600",
         !isSelected && "border-border"
       )}
@@ -314,7 +314,7 @@ const CompanyCard: React.FC<CompanyCardProps> = ({
                       e.stopPropagation(); // Prevent card toggle
                       onToggleShowAllContacts();
                     }}
-                    className="w-full text-xs text-muted-foreground hover:text-gray-600 dark:hover:text-gray-400 hover:bg-accent/50 transition-all py-2 rounded-md"
+                    className="w-full text-xs text-muted-foreground hover:text-foreground hover:bg-accent-hover transition-all py-2 rounded-md"
                   >
                     {showAllContacts 
                       ? "Show fewer contacts" 
@@ -640,8 +640,8 @@ export default function CompanyCards({
                   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
                   "ml-2 mr-2 flex items-center justify-center",
                   isFullySelected && "bg-primary border-primary",
-                  isPartiallySelected && "border-primary bg-white dark:bg-gray-950",
-                  isEmpty && "border-input bg-white dark:bg-gray-950 hover:border-primary/50"
+                  isPartiallySelected && "border-primary bg-card",
+                  isEmpty && "border-input bg-card hover:border-primary/50"
                 )}
                 aria-label={
                   isFullySelected ? "Deselect all contacts" :
@@ -678,8 +678,8 @@ export default function CompanyCards({
               className={cn(
                 "px-2 h-6 text-[11px] font-medium transition-all",
                 viewMode === 'scroll' 
-                  ? "bg-background text-gray-600 shadow-sm" 
-                  : "hover:bg-muted/50 text-gray-400/60 hover:text-gray-500"
+                  ? "bg-background text-foreground shadow-sm" 
+                  : "hover:bg-muted-hover text-muted-foreground/60 hover:text-muted-foreground"
               )}
             >
               <ScrollText className="h-3 w-3 mr-0.5" />
@@ -698,8 +698,8 @@ export default function CompanyCards({
               className={cn(
                 "px-2 h-6 text-[11px] font-medium transition-all",
                 viewMode === 'slides' 
-                  ? "bg-background text-gray-600 shadow-sm" 
-                  : "hover:bg-muted/50 text-gray-400/60 hover:text-gray-500"
+                  ? "bg-background text-foreground shadow-sm" 
+                  : "hover:bg-muted-hover text-muted-foreground/60 hover:text-muted-foreground"
               )}
             >
               <Layers className="h-3 w-3 mr-0.5" />
@@ -727,7 +727,7 @@ export default function CompanyCards({
           {onShowReport && (
             <button
               onClick={onShowReport}
-              className="text-[11px] text-gray-400 hover:text-gray-600 hover:underline ml-2 transition-colors"
+              className="text-[11px] text-muted-foreground/60 hover:text-muted-foreground hover:underline ml-2 transition-colors"
               data-testid="link-show-report"
             >
               Report

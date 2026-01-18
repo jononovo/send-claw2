@@ -58,7 +58,7 @@ export function TopProspectsCard({
             <Button
               variant="ghost"
               onClick={() => setIsExpanded(!isExpanded)}
-              className="w-full text-xs text-muted-foreground hover:text-gray-600 dark:hover:text-gray-400 hover:bg-accent/50 transition-all py-2 rounded-md"
+              className="w-full text-xs text-muted-foreground hover:text-foreground hover:bg-accent-hover transition-all py-2 rounded-md"
               data-testid="button-toggle-prospects"
             >
               {isExpanded ? (

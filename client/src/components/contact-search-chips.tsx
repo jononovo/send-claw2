@@ -231,7 +231,7 @@ function ContactSearchChips({
               }))}
               disabled={disabled}
               className={`
-                flex items-center gap-2 px-3 py-2 rounded-full transition-all duration-200
+                flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-200
                 md:gap-2 gap-1 md:px-3 px-2
                 ${!isMobileExpanded ? 
                   `max-md:justify-center ${
@@ -242,10 +242,8 @@ function ContactSearchChips({
                   : ''
                 }
                 ${config.enableCoreLeadership 
-                  ? (hasSearchResults && !inputHasChanged)
-                    ? 'bg-gray-50 text-gray-600 hover:bg-gray-100'
-                    : 'bg-amber-50 text-amber-700 hover:bg-amber-100'
-                  : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
+                  ? 'bg-secondary text-secondary-foreground hover:bg-secondary-hover'
+                  : 'bg-muted text-muted-foreground hover:bg-muted-hover'
                 }
                 ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
               `}
@@ -275,7 +273,7 @@ function ContactSearchChips({
               }))}
               disabled={disabled}
               className={`
-                flex items-center gap-2 px-3 py-2 rounded-full transition-all duration-200
+                flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-200
                 md:gap-2 gap-1 md:px-3 px-2
                 ${!isMobileExpanded ? 
                   `max-md:justify-center ${
@@ -286,10 +284,8 @@ function ContactSearchChips({
                   : ''
                 }
                 ${config.enableDepartmentHeads 
-                  ? (hasSearchResults && !inputHasChanged)
-                    ? 'bg-gray-50 text-gray-600 hover:bg-gray-100'
-                    : 'bg-blue-50 text-blue-700 hover:bg-blue-100'
-                  : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
+                  ? 'bg-secondary text-secondary-foreground hover:bg-secondary-hover'
+                  : 'bg-muted text-muted-foreground hover:bg-muted-hover'
                 }
                 ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
               `}
@@ -319,7 +315,7 @@ function ContactSearchChips({
               }))}
               disabled={disabled}
               className={`
-                flex items-center gap-2 px-3 py-2 rounded-full transition-all duration-200
+                flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-200
                 md:gap-2 gap-1 md:px-3 px-2
                 ${!isMobileExpanded ? 
                   `max-md:justify-center ${
@@ -330,10 +326,8 @@ function ContactSearchChips({
                   : ''
                 }
                 ${config.enableMiddleManagement 
-                  ? (hasSearchResults && !inputHasChanged)
-                    ? 'bg-gray-50 text-gray-600 hover:bg-gray-100'
-                    : 'bg-green-50 text-green-700 hover:bg-green-100'
-                  : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
+                  ? 'bg-secondary text-secondary-foreground hover:bg-secondary-hover'
+                  : 'bg-muted text-muted-foreground hover:bg-muted-hover'
                 }
                 ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
               `}
@@ -355,8 +349,8 @@ function ContactSearchChips({
           onClick={() => handleMobileChipClick(handleCustomInputExpand)}
           disabled={disabled}
           className={`
-            flex items-center justify-center px-3 py-2 rounded-full border border-dashed border-gray-300 
-            text-gray-600 hover:bg-gray-50 transition-all duration-200 min-w-[40px]
+            flex items-center justify-center px-3 py-2 rounded-lg border border-dashed border-border 
+            text-muted-foreground hover:bg-muted-hover transition-all duration-200 min-w-[40px]
             max-md:w-10 max-md:h-10 max-md:px-0
             ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
           `}
@@ -367,8 +361,8 @@ function ContactSearchChips({
 
       {/* Custom Input Expanded */}
       {isCustomInputExpanded && (
-        <div className="flex items-center gap-2 px-3 py-2 rounded-full border border-purple-300 bg-purple-50">
-          <Target className="h-3 w-3 text-purple-600" />
+        <div className="flex items-center gap-2 px-3 py-2 rounded-lg border border-border bg-secondary">
+          <Target className="h-3 w-3 text-secondary-foreground" />
           <Input
             value={customInputValue}
             onChange={(e) => setCustomInputValue(e.target.value.slice(0, 22))}
@@ -397,7 +391,7 @@ function ContactSearchChips({
           <button
             onClick={handleCustomInputSave}
             disabled={disabled}
-            className="text-purple-600 hover:text-purple-700"
+            className="text-secondary-foreground hover:text-foreground"
           >
             <Save className="h-3 w-3" />
           </button>
@@ -411,7 +405,7 @@ function ContactSearchChips({
               setCustomInputValue("");
             }}
             disabled={disabled}
-            className="text-red-500 hover:text-red-700"
+            className="text-destructive hover:text-destructive/80"
           >
             <X className="h-3 w-3" />
           </button>
@@ -427,7 +421,7 @@ function ContactSearchChips({
                 onClick={() => handleMobileChipClick(toggleCustomSearch)}
                 disabled={disabled}
                 className={`
-                  flex items-center gap-2 px-3 py-2 rounded-full transition-all duration-200
+                  flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-200
                   md:gap-2 gap-1 md:px-3 px-2
                   ${!isMobileExpanded ? 
                     `max-md:justify-center ${
@@ -439,10 +433,8 @@ function ContactSearchChips({
                     : ''
                   }
                   ${config.enableCustomSearch 
-                    ? (hasSearchResults && !inputHasChanged)
-                      ? 'bg-gray-50 text-gray-600 hover:bg-gray-100'
-                      : 'bg-purple-50 text-purple-700 hover:bg-purple-100'
-                    : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
+                    ? 'bg-secondary text-secondary-foreground hover:bg-secondary-hover'
+                    : 'bg-muted text-muted-foreground hover:bg-muted-hover'
                   }
                   ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
                 `}
@@ -455,7 +447,7 @@ function ContactSearchChips({
                     e.stopPropagation();
                     handleCustomInputExpand();
                   }}
-                  className="ml-1 text-gray-400 hover:text-gray-600 cursor-pointer"
+                  className="ml-1 text-muted-foreground/60 hover:text-muted-foreground cursor-pointer"
                   role="button"
                   tabIndex={0}
                   onKeyDown={(e) => {
@@ -483,8 +475,8 @@ function ContactSearchChips({
           onClick={() => handleMobileChipClick(handleCustomInput2Expand)}
           disabled={disabled}
           className={`
-            flex items-center justify-center px-3 py-2 rounded-full border border-dashed border-gray-300 
-            text-gray-600 hover:bg-gray-50 transition-all duration-200 min-w-[40px]
+            flex items-center justify-center px-3 py-2 rounded-lg border border-dashed border-border 
+            text-muted-foreground hover:bg-muted-hover transition-all duration-200 min-w-[40px]
             max-md:w-10 max-md:h-10 max-md:px-0
             ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
           `}
@@ -495,7 +487,7 @@ function ContactSearchChips({
 
       {/* Second Custom Input Expanded */}
       {isCustomInput2Expanded && (
-        <div className="flex items-center gap-2 px-3 py-2 rounded-full border border-purple-300 bg-purple-50">
+        <div className="flex items-center gap-2 px-3 py-2 rounded-lg border border-border bg-secondary">
           <input
             type="text"
             value={customInput2Value}
@@ -525,7 +517,7 @@ function ContactSearchChips({
           <button
             onClick={handleCustomInput2Save}
             disabled={disabled}
-            className="text-purple-600 hover:text-purple-700"
+            className="text-secondary-foreground hover:text-foreground"
           >
             <Save className="h-3 w-3" />
           </button>
@@ -539,7 +531,7 @@ function ContactSearchChips({
               setCustomInput2Value("");
             }}
             disabled={disabled}
-            className="text-red-500 hover:text-red-700"
+            className="text-destructive hover:text-destructive/80"
           >
             <X className="h-3 w-3" />
           </button>
@@ -555,7 +547,7 @@ function ContactSearchChips({
                 onClick={() => handleMobileChipClick(toggleCustomSearch2)}
                 disabled={disabled}
                 className={`
-                  flex items-center gap-2 px-3 py-2 rounded-full transition-all duration-200
+                  flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-200
                   md:gap-2 gap-1 md:px-3 px-2
                   ${!isMobileExpanded ? 
                     `max-md:justify-center ${
@@ -567,10 +559,8 @@ function ContactSearchChips({
                     : ''
                   }
                   ${config.enableCustomSearch2 
-                    ? (hasSearchResults && !inputHasChanged)
-                      ? 'bg-gray-50 text-gray-600 hover:bg-gray-100'
-                      : 'bg-purple-50 text-purple-700 hover:bg-purple-100'
-                    : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
+                    ? 'bg-secondary text-secondary-foreground hover:bg-secondary-hover'
+                    : 'bg-muted text-muted-foreground hover:bg-muted-hover'
                   }
                   ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
                 `}
@@ -583,7 +573,7 @@ function ContactSearchChips({
                     e.stopPropagation();
                     handleCustomInput2Expand();
                   }}
-                  className="ml-1 text-gray-400 hover:text-gray-600 cursor-pointer"
+                  className="ml-1 text-muted-foreground/60 hover:text-muted-foreground cursor-pointer"
                   role="button"
                   tabIndex={0}
                   onKeyDown={(e) => {

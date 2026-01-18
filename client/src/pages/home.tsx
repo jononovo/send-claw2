@@ -240,9 +240,9 @@ export default function Home({ isNewSearch = false }: HomeProps) {
     emailDrawer.setSelectedContact(newContact);
   };
 
-  // Auto-collapse search section when email drawer opens or when search results exist
+  // Auto-collapse search section when email drawer opens with results, or when search results exist
   useEffect(() => {
-    if (emailDrawer.isOpen) {
+    if (emailDrawer.isOpen && currentResults && currentResults.length > 0) {
       setSearchSectionCollapsed(true);
     } else if (currentResults && currentResults.length > 0) {
       // Also collapse when search results are shown
@@ -1502,7 +1502,7 @@ export default function Home({ isNewSearch = false }: HomeProps) {
       )}
       
       {/* Main Content Container - will be compressed when drawer opens on desktop */}
-      <div className={`flex-1 overflow-y-auto main-content-compressed ${emailDrawer.isOpen ? 'compressed-view' : ''}`}>
+      <div className={`flex-1 overflow-y-auto main-content-compressed ${emailDrawer.isOpen && currentResults && currentResults.length > 0 ? 'compressed-view' : ''}`}>
         <div className="container mx-auto py-6 px-0 md:px-6">
           {/* Intro tour modal has been removed */}
 
@@ -1552,7 +1552,7 @@ export default function Home({ isNewSearch = false }: HomeProps) {
             >
               <div className="px-3 md:px-6 py-1"> {/* Reduced mobile padding, matched desktop padding with CardHeader (p-6) */}
                 {/* Collapse button when expanded */}
-                {!searchSectionCollapsed && (emailDrawer.isOpen || (currentResults && currentResults.length > 0)) && (
+                {!searchSectionCollapsed && currentResults && currentResults.length > 0 && (
                   <button
                     onClick={() => setSearchSectionCollapsed(true)}
                     className="absolute right-3 md:right-6 top-2 z-10 p-1.5 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors group"
@@ -1567,7 +1567,7 @@ export default function Home({ isNewSearch = false }: HomeProps) {
                   <div className="flex flex-col-reverse md:flex-row items-center gap-4 mb-3">
                     <div className="flex items-center gap-3">
                       <EggAnimation />
-                      <h2 className="text-2xl sm:text-3xl md:text-4xl mt-2 md:mt-0 font-serif text-amber-800 dark:text-amber-200">Find your ideal <em>business</em> customers</h2>
+                      <h2 className="text-2xl sm:text-3xl md:text-4xl mt-2 md:mt-0 font-serif text-accent dark:text-accent">Find your ideal <em>business</em> customers</h2>
                     </div>
                   </div>
                 )}
@@ -1687,7 +1687,7 @@ export default function Home({ isNewSearch = false }: HomeProps) {
                             setCurrentQuery(suggestion);
                             setInputHasChanged(true);
                           }}
-                          className="px-3 py-1.5 text-sm bg-gray-100 hover:bg-gray-200 rounded-full transition-colors hover:shadow-sm"
+                          className="px-3 py-1.5 text-sm bg-transparent border border-secondary-foreground/60 hover:border-secondary-foreground text-secondary-foreground/60 hover:text-secondary-foreground rounded-lg transition-colors"
                           data-testid={`button-suggestion-${suggestion.toLowerCase().replace(/\s+/g, '-').slice(0, 30)}`}
                         >
                           {suggestion}

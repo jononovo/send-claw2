@@ -264,31 +264,36 @@ input[type="checkbox"]:indeterminate::before {
     --font-code: 'Courier New', monospace;
 
     /* Light Theme Colors - warm brownish tones */
-    --background: 42 26% 85%;
-    --foreground: 30 10% 10%;
+    --background: 42 22% 90%;
+    --background-hover: 42 20% 87%;
+    --foreground: 42 15% 12%;
 
     --primary: 45 93% 47%;
     --primary-foreground: 30 10% 10%;
 
     --secondary: 35 8% 94%;
+    --secondary-hover: 42 12% 88%;
     --secondary-foreground: 30 8% 15%;
 
-    --muted: 35 8% 94%;
-    --muted-foreground: 30 6% 45%;
+    --muted: 42 15% 94%;
+    --muted-hover: 42 18% 90%;
+    --muted-foreground: 42 12% 55%;
 
-    --accent: 45 93% 47%;
-    --accent-foreground: 30 10% 10%;
-    --accent-hover: 45 93% 47% / 0.1;
-    --accent-active: 45 93% 47% / 0.15;
-    --accent-border-hover: 45 93% 47% / 0.3;
+    --accent: 25 55% 35%;
+    --accent-light: 25 60% 55%;
+    --accent-foreground: 25 55% 95%;
+    --accent-hover: 25 55% 35% / 0.1;
+    --accent-active: 25 55% 35% / 0.15;
+    --accent-border-hover: 25 55% 35% / 0.3;
 
-    --card: 40 15% 99%;
+    --card: 42 18% 96%;
+    --card-hover: 40 15% 99%;
     --card-foreground: 30 10% 10%;
 
     --popover: 40 15% 99%;
     --popover-foreground: 30 10% 10%;
 
-    --panel-background: 42 24% 82%;
+    --panel-background: 42 20% 86%;
 
     --border: 35 8% 88%;
     --input: 30 30% 96%;
@@ -303,30 +308,35 @@ input[type="checkbox"]:indeterminate::before {
   /* Dark Theme Colors - warm brownish-gray tones */
   .dark {
     --background: 42 18% 7%;
+    --background-hover: 42 16% 10%;
     --foreground: 35 10% 98%;
 
     --primary: 45 93% 52%;
     --primary-foreground: 30 8% 6%;
 
     --secondary: 30 6% 14%;
+    --secondary-hover: 42 8% 18%;
     --secondary-foreground: 35 10% 98%;
 
-    --muted: 30 6% 14%;
-    --muted-foreground: 35 8% 60%;
+    --muted: 42 8% 16%;
+    --muted-hover: 42 10% 20%;
+    --muted-foreground: 42 8% 60%;
 
-    --accent: 45 93% 47%;
-    --accent-foreground: 30 8% 6%;
-    --accent-hover: 45 93% 52% / 0.1;
-    --accent-active: 45 93% 52% / 0.15;
-    --accent-border-hover: 45 93% 52% / 0.3;
+    --accent: 25 45% 55%;
+    --accent-light: 25 55% 70%;
+    --accent-foreground: 25 20% 10%;
+    --accent-hover: 25 45% 55% / 0.1;
+    --accent-active: 25 45% 55% / 0.15;
+    --accent-border-hover: 25 45% 55% / 0.3;
 
     --card: 30 8% 6%;
+    --card-hover: 42 10% 10%;
     --card-foreground: 35 10% 98%;
 
     --popover: 30 8% 6%;
     --popover-foreground: 35 10% 98%;
 
-    --panel-background: 42 14% 5%;
+    --panel-background: 42 14% 12%;
 
     --border: 30 6% 16%;
     --input: 25 15% 12%;

@@ -69,11 +69,11 @@ export function LeftMenuDrawer({ open, onOpenChange, onLoadSearch, onNewSearch, 
                 onNewSearch();
                 onOpenChange(false);
               }}
-              className="w-full flex items-center gap-3 px-3 py-2 text-left rounded-lg hover:shadow-md hover:-translate-y-0.5 hover:bg-blue-50 transition-all duration-200 group"
+              className="w-full flex items-center gap-3 px-3 py-2 text-left rounded-lg hover:shadow-md hover:-translate-y-0.5 hover:bg-secondary-hover transition-all duration-200 group"
               data-testid="drawer-new-search"
             >
               <Plus className="h-6 w-6 text-blue-500" strokeWidth={3} />
-              <span className="text-sm font-medium text-gray-700">New Search</span>
+              <span className="text-sm font-medium text-muted-foreground group-hover:text-foreground">New Search</span>
             </button>
           </div>
           
@@ -86,10 +86,10 @@ export function LeftMenuDrawer({ open, onOpenChange, onLoadSearch, onNewSearch, 
                   onOpenCompose();
                   onOpenChange(false);
                 }}
-                className="w-full flex items-center gap-3 px-3 py-2 text-left rounded-lg hover:shadow-md hover:-translate-y-0.5 hover:bg-purple-50 transition-all duration-200 group"
+                className="w-full flex items-center gap-3 px-3 py-2 text-left rounded-lg hover:shadow-md hover:-translate-y-0.5 hover:bg-secondary-hover transition-all duration-200 group"
               >
                 <Pencil className="h-5 w-5 text-purple-500 group-hover:text-purple-600" />
-                <span className="text-sm font-medium text-gray-700 group-hover:text-gray-900">Compose</span>
+                <span className="text-sm font-medium text-muted-foreground group-hover:text-foreground">Compose</span>
               </button>
             </div>
           )}
@@ -99,11 +99,11 @@ export function LeftMenuDrawer({ open, onOpenChange, onLoadSearch, onNewSearch, 
             <Link href="/streak">
               <button
                 onClick={() => onOpenChange(false)}
-                className="w-full flex items-center gap-3 px-3 py-2 text-left rounded-lg hover:shadow-md hover:bg-gray-100 hover:-translate-y-0.5 transition-all duration-200 group"
+                className="w-full flex items-center gap-3 px-3 py-2 text-left rounded-lg hover:shadow-md hover:bg-secondary-hover hover:-translate-y-0.5 transition-all duration-200 group"
                 data-testid="drawer-nav-streak"
               >
-                <Zap className="h-5 w-5 text-gray-500 group-hover:text-yellow-600" />
-                <span className="text-sm font-medium text-gray-700 group-hover:text-gray-900">Streak</span>
+                <Zap className="h-5 w-5 text-muted-foreground group-hover:text-yellow-600" />
+                <span className="text-sm font-medium text-muted-foreground group-hover:text-foreground">Streak</span>
               </button>
             </Link>
           </div>
@@ -113,11 +113,11 @@ export function LeftMenuDrawer({ open, onOpenChange, onLoadSearch, onNewSearch, 
             <Link href="/campaigns">
               <button
                 onClick={() => onOpenChange(false)}
-                className="w-full flex items-center gap-3 px-3 py-2 text-left rounded-lg hover:shadow-md hover:bg-gray-100 hover:-translate-y-0.5 transition-all duration-200 group"
+                className="w-full flex items-center gap-3 px-3 py-2 text-left rounded-lg hover:shadow-md hover:bg-secondary-hover hover:-translate-y-0.5 transition-all duration-200 group"
                 data-testid="drawer-nav-campaigns"
               >
-                <Send className="h-5 w-5 text-gray-500 group-hover:text-green-600" />
-                <span className="text-sm font-medium text-gray-700 group-hover:text-gray-900">Campaigns</span>
+                <Send className="h-5 w-5 text-muted-foreground group-hover:text-green-600" />
+                <span className="text-sm font-medium text-muted-foreground group-hover:text-foreground">Campaigns</span>
               </button>
             </Link>
           </div>
@@ -127,15 +127,16 @@ export function LeftMenuDrawer({ open, onOpenChange, onLoadSearch, onNewSearch, 
             <Link href="/contacts">
               <button
                 onClick={() => onOpenChange(false)}
-                className="w-full flex items-center gap-3 px-3 py-2 text-left rounded-lg hover:shadow-md hover:bg-gray-100 hover:-translate-y-0.5 transition-all duration-200 group"
+                className="w-full flex items-center gap-3 px-3 py-2 text-left rounded-lg hover:shadow-md hover:bg-secondary-hover hover:-translate-y-0.5 transition-all duration-200 group"
                 data-testid="drawer-nav-contacts"
               >
-                <Users className="h-5 w-5 text-gray-500 group-hover:text-blue-600" />
-                <span className="text-sm font-medium text-gray-700 group-hover:text-gray-900">Contact Lists</span>
+                <Users className="h-5 w-5 text-muted-foreground group-hover:text-blue-600" />
+                <span className="text-sm font-medium text-muted-foreground group-hover:text-foreground">Contact Lists</span>
               </button>
             </Link>
           </div>
           
+          <div className="bg-muted mt-2 rounded-lg mx-2">
           <Table>
             <TableHeader>
               <TableRow className="border-t-0">
@@ -147,7 +148,7 @@ export function LeftMenuDrawer({ open, onOpenChange, onLoadSearch, onNewSearch, 
               {lists.map((list: SearchList) => (
                 <TableRow 
                   key={list.id}
-                  className={`cursor-pointer hover:bg-muted border-0 ${clickedId === list.id ? 'bg-blue-100 dark:bg-blue-900/30' : ''}`}
+                  className={`cursor-pointer hover:bg-muted-hover border-0 ${clickedId === list.id ? 'bg-blue-100 dark:bg-blue-900/30' : ''}`}
                   onClick={() => {
                     setClickedId(list.id);
                     // Load the search data immediately for instant hydration
@@ -158,7 +159,7 @@ export function LeftMenuDrawer({ open, onOpenChange, onLoadSearch, onNewSearch, 
                     setLocation(searchUrl);
                   }}
                 >
-                  <TableCell className="text-sm font-medium text-gray-500 py-3 pr-2">
+                  <TableCell className="text-sm font-medium text-muted-foreground py-3 pr-2">
                     <TooltipProvider delayDuration={1500}>
                       <Tooltip>
                         <TooltipTrigger asChild>
@@ -170,7 +171,7 @@ export function LeftMenuDrawer({ open, onOpenChange, onLoadSearch, onNewSearch, 
                       </Tooltip>
                     </TooltipProvider>
                   </TableCell>
-                  <TableCell className="text-right text-sm font-medium text-gray-700 py-3 pr-3">{list.resultCount}</TableCell>
+                  <TableCell className="text-right text-sm font-medium text-foreground py-3 pr-3">{list.resultCount}</TableCell>
                 </TableRow>
               ))}
               {lists.length === 0 && (
@@ -182,6 +183,7 @@ export function LeftMenuDrawer({ open, onOpenChange, onLoadSearch, onNewSearch, 
               )}
             </TableBody>
           </Table>
+          </div>
         </div>
         </SheetPrimitive.Content>
       </SheetPrimitive.Portal>

@@ -47,7 +47,7 @@ export function ContactRow({
   return (
     <div
       className={cn(
-        "group flex items-center p-2 rounded-md cursor-pointer hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200",
+        "group flex items-center p-2 rounded-md cursor-pointer bg-card hover:bg-card-hover hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200",
         isHighlighted
           ? contact.email
             ? "border-l-4 border-dashed border-yellow-400/40 border-4 border-yellow-400/20 border-dashed shadow-md"
@@ -87,14 +87,14 @@ export function ContactRow({
             <div className="text-xs mt-1 flex items-center gap-1.5">
               {contact.email ? (
                 <>
-                  <span className="text-gray-600">{contact.email}</span>
+                  <span className="text-muted-foreground">{contact.email}</span>
                   {contact.linkedinUrl && (
                     <a
                       href={contact.linkedinUrl}
                       target="_blank"
                       rel="noopener noreferrer"
                       onClick={(e) => e.stopPropagation()}
-                      className="text-gray-400 hover:text-blue-500 transition-colors"
+                      className="text-muted-foreground/60 hover:text-blue-500 transition-colors"
                       data-testid={`linkedin-link-${contact.id}`}
                     >
                       <Linkedin className="h-3 w-3" />
