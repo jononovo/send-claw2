@@ -706,6 +706,7 @@ Your task is to identify the leadership team members at the specified company.`;
 For each person, provide their:
 - Full name (first and last name)
 - Current role/position
+- Location (city and country if known)
 
 IMPORTANT: If you cannot find data, return an empty array. Do NOT make up data.`;
 
@@ -718,7 +719,9 @@ IMPORTANT: If you cannot find data, return an empty array. Do NOT make up data.`
   "leaders": [
     {
       "name": "John Smith", 
-      "role": "Chief Executive Officer"
+      "role": "Chief Executive Officer",
+      "city": "San Francisco",
+      "country": "USA"
     }
   ]
 }`;
@@ -799,6 +802,7 @@ ${industryContext}
 For each person, provide their:
 - Full name (first and last name)
 - Current role/position
+- Location (city and country if known)
 
 IMPORTANT: If you cannot find data, return an empty array. Do NOT make up data.`;
 
@@ -806,7 +810,9 @@ IMPORTANT: If you cannot find data, return an empty array. Do NOT make up data.`
   "marketingLeaders": [
     {
       "name": "Jane Doe", 
-      "role": "Chief Marketing Officer"
+      "role": "Chief Marketing Officer",
+      "city": "New York",
+      "country": "USA"
     }
   ]
 }`;
@@ -842,6 +848,7 @@ Your task is to identify the CTO and other key technical decision-makers at the 
 For each person, provide their:
 - Full name (first and last name)
 - Current role/position
+- Location (city and country if known)
 
 IMPORTANT: If you cannot find data, return an empty array. Do NOT make up data.`;
 
@@ -856,7 +863,9 @@ ${industryRoles.join("\n")}`;
   "technicalLeaders": [
     {
       "name": "Alice Johnson", 
-      "role": "Chief Technology Officer"
+      "role": "Chief Technology Officer",
+      "city": "Austin",
+      "country": "USA"
     }
   ]
 }`;
@@ -891,6 +900,7 @@ Look for variations and similar positions, such as:
 For each person, provide their:
 - Full name (first and last name)
 - Current role/position
+- Location (city and country if known)
 
 IMPORTANT: If you cannot find data, return an empty array. Do NOT make up data.`;
 
@@ -903,7 +913,9 @@ IMPORTANT: If you cannot find data, return an empty array. Do NOT make up data.`
   "targetContacts": [
     {
       "name": "John Smith", 
-      "role": "${targetRole} or related position"
+      "role": "${targetRole} or related position",
+      "city": "Chicago",
+      "country": "USA"
     }
   ]
 }`;
@@ -967,7 +979,7 @@ function parseContactsFromResponse(
     
     // Process each person
     for (const person of people) {
-      const { name, role } = person;
+      const { name, role, city, country } = person;
       
       // Skip if name is missing or a placeholder
       if (!name || isPlaceholderName(name)) continue;
@@ -998,6 +1010,8 @@ function parseContactsFromResponse(
       contacts.push({
         name,
         role: role || null,
+        city: city || null,
+        country: country || null,
         probability,
         nameConfidenceScore: validationResult.score,
         verificationSource: `ai_${source}`,

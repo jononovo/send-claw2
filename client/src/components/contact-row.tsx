@@ -78,6 +78,12 @@ export function ContactRow({
             <div className="font-medium text-sm">{contact.name}</div>
             <div className="text-xs text-muted-foreground mt-0.5">
               {contact.role || "No role specified"}
+              {(contact.city || contact.country) && (
+                <span className="text-muted-foreground/70">
+                  {" • "}
+                  {[contact.city, contact.country].filter(Boolean).join(", ")}
+                </span>
+              )}
             </div>
             {showCompanyName && contact.companyName && (
               <div className="text-xs text-muted-foreground/70 mt-0.5">
