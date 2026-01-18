@@ -53,6 +53,15 @@ export class SearchJobService {
   }
 
   /**
+   * Check if job is terminated and throw if so (for early exit during execution)
+   */
+  private static async checkTerminated(jobId: string): Promise<void> {
+    if (await this.isJobTerminated(jobId)) {
+      throw new Error(`Job ${jobId} was terminated`);
+    }
+  }
+
+  /**
    * Execute a search job (can be called synchronously or by background processor)
    */
   static async executeJob(jobId: string): Promise<void> {
@@ -111,6 +120,9 @@ export class SearchJobService {
       });
 
       console.log(`[SearchJobService] Starting execution of job ${jobId}`);
+
+      // Check for termination before starting
+      await this.checkTerminated(jobId);
 
       let savedCompanies = [];
       let contacts: any[] = [];
@@ -177,6 +189,9 @@ export class SearchJobService {
         message: 'Discovering matching companies'
       });
 
+      // Check for termination before expensive API call
+      await this.checkTerminated(jobId);
+
       const discoveredCompanies = await discoverCompanies(job.query);
       console.log(`[SearchJobService] Discovered ${discoveredCompanies.length} companies for job ${jobId}`);
 
@@ -224,6 +239,9 @@ export class SearchJobService {
       
       // Phase 3: Parallel company details and contact discovery
       if (job.searchType === 'contacts' || job.searchType === 'emails') {
+        // Check for termination before contact search
+        await this.checkTerminated(jobId);
+        
         currentPhase++;
         
         // Prepare and START parallel tasks immediately (work runs during "Companies ready!" and joke display)
@@ -252,13 +270,22 @@ export class SearchJobService {
         // Wait for "Companies ready!" to display (work is running in parallel)
         await delay(2000);
         
-        // Show joke setup as temporary phase label override (if available)
+        // Show joke setup followed immediately by punchline (if available)
         if (hasJoke && joke) {
           await this.updateJobProgress(job.id, {
             phase: `Joke: ${joke.setup}`,
             completed: currentPhase,
             total: totalPhases,
             message: 'A little humor while we search...'
+          });
+          await delay(4500);
+          
+          // Punchline immediately after
+          await this.updateJobProgress(job.id, {
+            phase: `Punchline: ${joke.punchline}`,
+            completed: currentPhase,
+            total: totalPhases,
+            message: '...wait for it!'
           });
           await delay(4500);
         }
@@ -327,29 +354,11 @@ export class SearchJobService {
         if (job.searchType === 'emails' && contacts.length > 0) {
           currentPhase++;
           
-          // Show punchline as temporary phase label override (if available)
-          if (hasJoke && joke) {
-            await this.updateJobProgress(job.id, {
-              phase: `Punchline: ${joke.punchline}`,
-              completed: currentPhase,
-              total: totalPhases,
-              message: '...wait for it!'
-            });
-          }
-          
-          // Calculate when progress updates can resume (after punchline display)
-          const suppressProgressUntil = hasJoke && joke ? Date.now() + 4500 : 0;
-          
-          // Start email enrichment work (runs in parallel with punchline display)
+          // Start email enrichment work
           console.log(`[SearchJobService] Starting email search (Apollo/Perplexity/Hunter) for ${contacts.length} contacts`);
-          const emailPromise = this.enrichContactsWithEmails(job, contacts, savedCompanies, totalPhases, currentPhase, suppressProgressUntil);
+          const emailPromise = this.enrichContactsWithEmails(job, contacts, savedCompanies, totalPhases, currentPhase, 0);
           
-          // Wait for punchline to display (work is running in parallel)
-          if (hasJoke && joke) {
-            await delay(4500);
-          }
-          
-          // Now show the real phase label
+          // Show the real phase label
           await this.updateJobProgress(job.id, {
             phase: 'Finding emails',
             completed: currentPhase,
@@ -1179,6 +1188,51 @@ export class SearchJobService {
     });
     
     console.log(`[SearchJobService] Cancelled job ${jobId}`);
+  }
+
+  /**
+   * Terminate a job (works for pending or processing jobs)
+   * This sets status to 'terminated' which will be checked during execution
+   */
+  static async terminateJob(jobId: string, userId: number): Promise<{ success: boolean; message: string }> {
+    const job = await storage.getSearchJobByJobId(jobId);
+    
+    if (!job) {
+      return { success: false, message: `Job ${jobId} not found` };
+    }
+    
+    // Only the job owner can terminate it
+    if (job.userId !== userId) {
+      return { success: false, message: 'Not authorized to terminate this job' };
+    }
+    
+    // Can only terminate pending or processing jobs
+    if (job.status !== 'pending' && job.status !== 'processing') {
+      return { success: false, message: `Cannot terminate job with status: ${job.status}` };
+    }
+    
+    await storage.updateSearchJob(job.id, {
+      status: 'terminated',
+      error: 'Job terminated by user',
+      completedAt: new Date(),
+      progress: {
+        phase: 'Terminated',
+        completed: 0,
+        total: 1,
+        message: 'Search was stopped'
+      }
+    });
+    
+    console.log(`[SearchJobService] Terminated job ${jobId}`);
+    return { success: true, message: 'Job terminated successfully' };
+  }
+
+  /**
+   * Check if a job has been terminated
+   */
+  static async isJobTerminated(jobId: string): Promise<boolean> {
+    const job = await storage.getSearchJobByJobId(jobId);
+    return job?.status === 'terminated';
   }
 
   /**

@@ -6,7 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Search, HelpCircle, Crown, Building, Users, Target, Settings } from "lucide-react";
+import { Loader2, Search, HelpCircle, Crown, Building, Users, Target, Settings, Square } from "lucide-react";
 
 
 import { useConfetti } from "@/hooks/use-confetti";
@@ -28,6 +28,13 @@ import {
 } from "@/components/ui/tooltip";
 import type { SearchProgressState } from "@/features/search-progress";
 
+interface CachedSearchResult {
+  listId: number;
+  prompt: string;
+  resultCount: number;
+  createdAt: Date;
+}
+
 interface PromptEditorProps {
   onAnalyze: () => void;
   onComplete: () => void;
@@ -46,6 +53,7 @@ interface PromptEditorProps {
   onSearchMetricsUpdate?: (metrics: any, showSummary: boolean) => void; // Callback to update search metrics in parent
   onOpenSearchDrawer?: () => void; // Callback to open the search management drawer
   onProgressUpdate?: (progress: SearchProgressState) => void; // Callback to report progress changes to parent
+  onCacheHit?: (cachedResult: CachedSearchResult) => void; // Callback when a cached search is found
 }
 
 export default function PromptEditor({ 
@@ -65,7 +73,8 @@ export default function PromptEditor({
   hideRoleButtons = false,
   onSearchMetricsUpdate,
   onOpenSearchDrawer,
-  onProgressUpdate
+  onProgressUpdate,
+  onCacheHit
 }: PromptEditorProps) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -171,6 +180,8 @@ export default function PromptEditor({
   const pollingIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const isPollingRef = useRef(false);
   const debounceTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const currentJobIdRef = useRef<string | null>(null);
+  const cacheHitRef = useRef(false);
 
   // Stable callback refs to prevent useEffect dependencies
   const stableOnSearchResults = useRef(onSearchResults);
@@ -562,6 +573,18 @@ export default function PromptEditor({
     onSuccess: (data) => {
       // Now we get a jobId instead of companies directly
       console.log(`Job created with ID: ${data.jobId}`);
+      
+      // Track job ID for potential termination (cache hit or stop button)
+      currentJobIdRef.current = data.jobId;
+      
+      // Check if cache hit already happened - if so, terminate this job
+      if (cacheHitRef.current) {
+        console.log('Cache hit already occurred, terminating new job');
+        apiRequest("POST", `/api/search-jobs/${data.jobId}/terminate`).catch(() => {});
+        isPollingRef.current = false;
+        setIsPolling(false);
+        return;
+      }
       
       // Reset input changed state since job is created
       setInputHasChanged(false);
@@ -1127,9 +1150,77 @@ export default function PromptEditor({
         openForProtectedRoute();
       }, 35000);
     }
+    
+    // Parallel cache check - runs alongside the search
+    cacheHitRef.current = false;
+    const cacheCheck = async () => {
+      try {
+        const response = await fetch(`/api/lists/by-prompt?prompt=${encodeURIComponent(value)}`);
+        const cachedResult = await response.json();
+        
+        if (cachedResult && cachedResult.listId && !cacheHitRef.current) {
+          console.log(`🎯 Cache hit! Found cached search (listId: ${cachedResult.listId})`);
+          cacheHitRef.current = true;
+          
+          // Terminate the running job if we have one
+          if (currentJobIdRef.current) {
+            try {
+              await apiRequest("POST", `/api/search-jobs/${currentJobIdRef.current}/terminate`);
+              console.log(`Terminated job ${currentJobIdRef.current} due to cache hit`);
+            } catch (e) {
+              console.log('Job termination skipped (may have already completed)');
+            }
+          }
+          
+          // Stop polling
+          isPollingRef.current = false;
+          setIsPolling(false);
+          
+          // Notify parent of cache hit
+          if (onCacheHit) {
+            onCacheHit(cachedResult);
+          }
+          
+          toast({
+            title: "Loaded cached results",
+            description: `Found ${cachedResult.resultCount} companies from a previous search.`,
+          });
+        }
+      } catch (error) {
+        console.log('Cache check failed, continuing with fresh search');
+      }
+    };
+    
+    // Start cache check in parallel (non-blocking)
+    cacheCheck();
   };
 
-
+  // Stop button handler - allows user to manually stop a search
+  const handleStopSearch = async () => {
+    console.log('User requested search stop');
+    
+    // Stop polling first
+    isPollingRef.current = false;
+    setIsPolling(false);
+    
+    // Terminate the job if we have one
+    if (currentJobIdRef.current) {
+      try {
+        await apiRequest("POST", `/api/search-jobs/${currentJobIdRef.current}/terminate`);
+        console.log(`Terminated job ${currentJobIdRef.current}`);
+        toast({
+          title: "Search stopped",
+          description: "The search has been cancelled.",
+        });
+      } catch (e) {
+        console.log('Job termination failed');
+      }
+    }
+    
+    // Reset state
+    currentJobIdRef.current = null;
+    onComplete();
+  };
 
   return (
     <div className="pl-0 pr-1 pt-1 pb-1 shadow-none"> {/* Container with no padding */}
@@ -1241,35 +1332,44 @@ export default function PromptEditor({
               )}
             </div>
             
-            {/* Right side: Search button */}
+            {/* Right side: Search/Stop button */}
             <div className="pointer-events-auto">
-              <Button 
-                type="submit"
-                onClick={handleSearch} 
-                disabled={isAnalyzing || quickSearchMutation.isPending}
-                className={`
-                  rounded-md
-                  transition-all duration-300 flex items-center gap-2
-                  ${lastExecutedQuery && !inputHasChanged 
-                    ? 'bg-secondary hover:bg-secondary-hover shadow-md hover:shadow-lg text-muted-foreground' 
-                    : 'bg-gradient-to-r from-accent-light to-accent hover:from-accent hover:to-accent text-white shadow-md hover:shadow-lg'
-                  }
-                `}
-                aria-label="Search"
-                data-testid="search-button"
-              >
-                {(isAnalyzing || quickSearchMutation.isPending) ? (
-                  <>
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                    <span>Searching...</span>
-                  </>
-                ) : (
-                  <>
-                    <Search className="h-4 w-4" />
-                    <span>Search</span>
-                  </>
-                )}
-              </Button>
+              {(() => {
+                const isSearchActive = isAnalyzing || quickSearchMutation.isPending || isPolling;
+                return (
+                  <Button 
+                    type={isSearchActive ? "button" : "submit"}
+                    onClick={isSearchActive ? handleStopSearch : handleSearch}
+                    disabled={!isSearchActive && (isAnalyzing || quickSearchMutation.isPending)}
+                    className={`
+                      rounded-md group
+                      transition-all duration-300 flex items-center gap-2
+                      ${lastExecutedQuery && !inputHasChanged && !isSearchActive
+                        ? 'bg-gray-200 hover:bg-gray-300 dark:bg-gray-400 dark:hover:bg-gray-500 shadow-md hover:shadow-lg text-gray-700 dark:text-gray-900' 
+                        : 'bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 shadow-md hover:shadow-lg'
+                      }
+                    `}
+                    aria-label={isSearchActive ? "Stop Search" : "Search"}
+                    data-testid={isSearchActive ? "stop-search-button" : "search-button"}
+                  >
+                    {isSearchActive ? (
+                      <>
+                        {/* Desktop: Searching by default, Stop on hover */}
+                        <Loader2 className="h-4 w-4 animate-spin hidden md:block md:group-hover:hidden" />
+                        <span className="hidden md:block md:group-hover:hidden">Searching</span>
+                        {/* Desktop hover + Mobile default: Stop */}
+                        <Square className="h-4 w-4 block md:hidden md:group-hover:block" />
+                        <span className="block md:hidden md:group-hover:block">Stop</span>
+                      </>
+                    ) : (
+                      <>
+                        <Search className="h-4 w-4" />
+                        <span>Search</span>
+                      </>
+                    )}
+                  </Button>
+                );
+              })()}
             </div>
           </div>
         </div>

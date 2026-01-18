@@ -1650,6 +1650,24 @@ export default function Home({ isNewSearch = false }: HomeProps) {
                     }}
                     onOpenSearchDrawer={() => searchManagementDrawer.openDrawer()}
                     onProgressUpdate={setPromptEditorProgress}
+                    onCacheHit={async (cachedResult) => {
+                      console.log(`🎯 Cache hit detected, loading list ${cachedResult.listId}`);
+                      setIsAnalyzing(false);
+                      
+                      // Fetch the full list data and load it
+                      try {
+                        const listData = await queryClient.fetchQuery({
+                          queryKey: [`/api/lists/${cachedResult.listId}`]
+                        }) as SearchList;
+                        
+                        if (listData) {
+                          await handleLoadSavedSearch(listData);
+                          setMainSummaryVisible(true);
+                        }
+                      } catch (error) {
+                        console.error('Failed to load cached list:', error);
+                      }
+                    }}
                   />
                 
                 {/* Search suggestions - shown only when no results and not actively searching */}
