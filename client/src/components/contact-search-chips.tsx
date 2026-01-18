@@ -231,7 +231,7 @@ function ContactSearchChips({
               }))}
               disabled={disabled}
               className={`
-                flex items-center gap-2 px-3 py-2 rounded-full transition-all duration-200
+                flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-200
                 md:gap-2 gap-1 md:px-3 px-2
                 ${!isMobileExpanded ? 
                   `max-md:justify-center ${
@@ -275,7 +275,7 @@ function ContactSearchChips({
               }))}
               disabled={disabled}
               className={`
-                flex items-center gap-2 px-3 py-2 rounded-full transition-all duration-200
+                flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-200
                 md:gap-2 gap-1 md:px-3 px-2
                 ${!isMobileExpanded ? 
                   `max-md:justify-center ${
@@ -319,7 +319,7 @@ function ContactSearchChips({
               }))}
               disabled={disabled}
               className={`
-                flex items-center gap-2 px-3 py-2 rounded-full transition-all duration-200
+                flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-200
                 md:gap-2 gap-1 md:px-3 px-2
                 ${!isMobileExpanded ? 
                   `max-md:justify-center ${
@@ -355,7 +355,7 @@ function ContactSearchChips({
           onClick={() => handleMobileChipClick(handleCustomInputExpand)}
           disabled={disabled}
           className={`
-            flex items-center justify-center px-3 py-2 rounded-full border border-dashed border-border 
+            flex items-center justify-center px-3 py-2 rounded-lg border border-dashed border-border 
             text-muted-foreground hover:bg-muted-hover transition-all duration-200 min-w-[40px]
             max-md:w-10 max-md:h-10 max-md:px-0
             ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
@@ -367,7 +367,7 @@ function ContactSearchChips({
 
       {/* Custom Input Expanded */}
       {isCustomInputExpanded && (
-        <div className="flex items-center gap-2 px-3 py-2 rounded-full border border-purple-300 bg-purple-50">
+        <div className="flex items-center gap-2 px-3 py-2 rounded-lg border border-purple-300 bg-purple-50">
           <Target className="h-3 w-3 text-purple-600" />
           <Input
             value={customInputValue}
@@ -427,7 +427,7 @@ function ContactSearchChips({
                 onClick={() => handleMobileChipClick(toggleCustomSearch)}
                 disabled={disabled}
                 className={`
-                  flex items-center gap-2 px-3 py-2 rounded-full transition-all duration-200
+                  flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-200
                   md:gap-2 gap-1 md:px-3 px-2
                   ${!isMobileExpanded ? 
                     `max-md:justify-center ${
@@ -483,7 +483,7 @@ function ContactSearchChips({
           onClick={() => handleMobileChipClick(handleCustomInput2Expand)}
           disabled={disabled}
           className={`
-            flex items-center justify-center px-3 py-2 rounded-full border border-dashed border-border 
+            flex items-center justify-center px-3 py-2 rounded-lg border border-dashed border-border 
             text-muted-foreground hover:bg-muted-hover transition-all duration-200 min-w-[40px]
             max-md:w-10 max-md:h-10 max-md:px-0
             ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
@@ -495,7 +495,7 @@ function ContactSearchChips({
 
       {/* Second Custom Input Expanded */}
       {isCustomInput2Expanded && (
-        <div className="flex items-center gap-2 px-3 py-2 rounded-full border border-purple-300 bg-purple-50">
+        <div className="flex items-center gap-2 px-3 py-2 rounded-lg border border-purple-300 bg-purple-50">
           <input
             type="text"
             value={customInput2Value}
@@ -555,7 +555,7 @@ function ContactSearchChips({
                 onClick={() => handleMobileChipClick(toggleCustomSearch2)}
                 disabled={disabled}
                 className={`
-                  flex items-center gap-2 px-3 py-2 rounded-full transition-all duration-200
+                  flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-200
                   md:gap-2 gap-1 md:px-3 px-2
                   ${!isMobileExpanded ? 
                     `max-md:justify-center ${
