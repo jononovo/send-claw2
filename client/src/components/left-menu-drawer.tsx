@@ -136,6 +136,7 @@ export function LeftMenuDrawer({ open, onOpenChange, onLoadSearch, onNewSearch, 
             </Link>
           </div>
           
+          <div className="bg-muted mt-2 rounded-lg mx-2">
           <Table>
             <TableHeader>
               <TableRow className="border-t-0">
@@ -147,7 +148,7 @@ export function LeftMenuDrawer({ open, onOpenChange, onLoadSearch, onNewSearch, 
               {lists.map((list: SearchList) => (
                 <TableRow 
                   key={list.id}
-                  className={`cursor-pointer hover:bg-muted border-0 ${clickedId === list.id ? 'bg-blue-100 dark:bg-blue-900/30' : ''}`}
+                  className={`cursor-pointer hover:bg-muted-foreground/10 border-0 ${clickedId === list.id ? 'bg-blue-100 dark:bg-blue-900/30' : ''}`}
                   onClick={() => {
                     setClickedId(list.id);
                     // Load the search data immediately for instant hydration
@@ -182,6 +183,7 @@ export function LeftMenuDrawer({ open, onOpenChange, onLoadSearch, onNewSearch, 
               )}
             </TableBody>
           </Table>
+          </div>
         </div>
         </SheetPrimitive.Content>
       </SheetPrimitive.Portal>

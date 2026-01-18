@@ -273,7 +273,7 @@ input[type="checkbox"]:indeterminate::before {
     --secondary: 35 8% 94%;
     --secondary-foreground: 30 8% 15%;
 
-    --muted: 35 8% 94%;
+    --muted: 42 15% 94%;
     --muted-foreground: 42 12% 55%;
 
     --accent: 25 55% 35%;
@@ -311,8 +311,8 @@ input[type="checkbox"]:indeterminate::before {
     --secondary: 30 6% 14%;
     --secondary-foreground: 35 10% 98%;
 
-    --muted: 30 6% 14%;
-    --muted-foreground: 35 8% 60%;
+    --muted: 42 8% 16%;
+    --muted-foreground: 42 8% 60%;
 
     --accent: 25 45% 55%;
     --accent-foreground: 25 20% 10%;
