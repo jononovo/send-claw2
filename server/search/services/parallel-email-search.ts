@@ -56,6 +56,11 @@ async function tryApollo(contact: any, company: any, userId: number): Promise<Em
         email: result.contact.email,
         role: result.contact.role || contact.role,
         linkedinUrl: result.contact.linkedinUrl || contact.linkedinUrl,
+        phoneNumber: result.contact.phoneNumber || contact.phoneNumber,
+        companyPhoneNumber: result.contact.companyPhoneNumber || contact.companyPhoneNumber,
+        city: result.contact.city || contact.city,
+        state: result.contact.state || contact.state,
+        country: result.contact.country || contact.country,
         completedSearches: [...(contact.completedSearches || []), 'apollo_search'],
         lastValidated: new Date()
       });
