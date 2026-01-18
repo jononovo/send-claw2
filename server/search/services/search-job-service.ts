@@ -189,34 +189,6 @@ export class SearchJobService {
         message: 'Discovering matching companies'
       });
 
-      // Start joke display timer (2 seconds from now, runs in parallel with company discovery)
-      let jokeDisplayed = false;
-      const jokeDisplayPromise = (async () => {
-        if (hasJoke && joke) {
-          await delay(2000); // Wait 2 seconds from search start
-          
-          // Show joke setup
-          await this.updateJobProgress(job.id, {
-            phase: `Joke: ${joke.setup}`,
-            completed: currentPhase,
-            total: totalPhases,
-            message: 'A little humor while we search...'
-          });
-          await delay(4500); // Display joke for 4.5 seconds
-          
-          // Show punchline immediately after
-          await this.updateJobProgress(job.id, {
-            phase: `Punchline: ${joke.punchline}`,
-            completed: currentPhase,
-            total: totalPhases,
-            message: '...wait for it!'
-          });
-          await delay(4500); // Display punchline for 4.5 seconds
-          
-          jokeDisplayed = true;
-        }
-      })();
-
       // Check for termination before expensive API call
       await this.checkTerminated(jobId);
 
@@ -297,6 +269,26 @@ export class SearchJobService {
         
         // Wait for "Companies ready!" to display (work is running in parallel)
         await delay(2000);
+        
+        // Show joke setup followed immediately by punchline (if available)
+        if (hasJoke && joke) {
+          await this.updateJobProgress(job.id, {
+            phase: `Joke: ${joke.setup}`,
+            completed: currentPhase,
+            total: totalPhases,
+            message: 'A little humor while we search...'
+          });
+          await delay(4500);
+          
+          // Punchline immediately after
+          await this.updateJobProgress(job.id, {
+            phase: `Punchline: ${joke.punchline}`,
+            completed: currentPhase,
+            total: totalPhases,
+            message: '...wait for it!'
+          });
+          await delay(4500);
+        }
         
         // Now show the real phase label
         await this.updateJobProgress(job.id, {
