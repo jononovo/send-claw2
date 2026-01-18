@@ -1169,9 +1169,9 @@ export default function PromptEditor({
                   return (
                     <button
                       onClick={toggleRoleSelector}
-                      className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full bg-muted text-muted-foreground text-sm hover:bg-muted-hover transition-colors cursor-pointer"
+                      className="flex items-center gap-1 px-2 py-1 rounded text-muted-foreground text-sm hover:bg-muted-hover transition-colors cursor-pointer"
                     >
-                      <Crown className="h-3.5 w-3.5" />
+                      <Crown className="h-3 w-3 md:h-[14px] md:w-[14px] lg:h-[18px] lg:w-[18px]" />
                       <span className="font-medium">Leadership</span>
                     </button>
                   );
@@ -1179,9 +1179,9 @@ export default function PromptEditor({
                   return (
                     <button
                       onClick={toggleRoleSelector}
-                      className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full bg-muted text-muted-foreground text-sm hover:bg-muted-hover transition-colors cursor-pointer"
+                      className="flex items-center gap-1 px-2 py-1 rounded text-muted-foreground text-sm hover:bg-muted-hover transition-colors cursor-pointer"
                     >
-                      <Building className="h-3.5 w-3.5" />
+                      <Building className="h-3 w-3 md:h-[14px] md:w-[14px] lg:h-[18px] lg:w-[18px]" />
                       <span className="font-medium">Marketing</span>
                     </button>
                   );
@@ -1189,9 +1189,9 @@ export default function PromptEditor({
                   return (
                     <button
                       onClick={toggleRoleSelector}
-                      className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full bg-muted text-muted-foreground text-sm hover:bg-muted-hover transition-colors cursor-pointer"
+                      className="flex items-center gap-1 px-2 py-1 rounded text-muted-foreground text-sm hover:bg-muted-hover transition-colors cursor-pointer"
                     >
-                      <Users className="h-3.5 w-3.5" />
+                      <Users className="h-3 w-3 md:h-[14px] md:w-[14px] lg:h-[18px] lg:w-[18px]" />
                       <span className="font-medium">CTO</span>
                     </button>
                   );
@@ -1199,9 +1199,9 @@ export default function PromptEditor({
                   return (
                     <button
                       onClick={toggleRoleSelector}
-                      className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full bg-muted text-muted-foreground text-sm hover:bg-muted-hover transition-colors cursor-pointer"
+                      className="flex items-center gap-1 px-2 py-1 rounded text-muted-foreground text-sm hover:bg-muted-hover transition-colors cursor-pointer"
                     >
-                      <Target className="h-3.5 w-3.5" />
+                      <Target className="h-3 w-3 md:h-[14px] md:w-[14px] lg:h-[18px] lg:w-[18px]" />
                       <span className="font-medium">{contactSearchConfig.customSearchTarget}</span>
                     </button>
                   );
@@ -1209,9 +1209,9 @@ export default function PromptEditor({
                   return (
                     <button
                       onClick={toggleRoleSelector}
-                      className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full bg-muted text-muted-foreground text-sm hover:bg-muted-hover transition-colors cursor-pointer"
+                      className="flex items-center gap-1 px-2 py-1 rounded text-muted-foreground text-sm hover:bg-muted-hover transition-colors cursor-pointer"
                     >
-                      <Target className="h-3.5 w-3.5" />
+                      <Target className="h-3 w-3 md:h-[14px] md:w-[14px] lg:h-[18px] lg:w-[18px]" />
                       <span className="font-medium">{contactSearchConfig.customSearchTarget2}</span>
                     </button>
                   );
