@@ -87,14 +87,14 @@ export function ContactRow({
             <div className="text-xs mt-1 flex items-center gap-1.5">
               {contact.email ? (
                 <>
-                  <span className="text-gray-600">{contact.email}</span>
+                  <span className="text-muted-foreground">{contact.email}</span>
                   {contact.linkedinUrl && (
                     <a
                       href={contact.linkedinUrl}
                       target="_blank"
                       rel="noopener noreferrer"
                       onClick={(e) => e.stopPropagation()}
-                      className="text-gray-400 hover:text-blue-500 transition-colors"
+                      className="text-muted-foreground/60 hover:text-blue-500 transition-colors"
                       data-testid={`linkedin-link-${contact.id}`}
                     >
                       <Linkedin className="h-3 w-3" />
