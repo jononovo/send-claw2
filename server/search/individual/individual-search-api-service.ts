@@ -293,6 +293,9 @@ export class IndividualSearchApiService {
       differentiation: null,
       totalScore: candidate.score || null,
       snapshot: null,
+      city: null,
+      state: null,
+      country: null,
       listId
     };
 
@@ -311,6 +314,9 @@ export class IndividualSearchApiService {
       phoneNumber: null,
       department: null,
       location: null,
+      city: null,
+      state: null,
+      country: null,
       verificationSource: 'individual_search_api',
       nameConfidenceScore: candidate.score,
       userFeedbackScore: null,

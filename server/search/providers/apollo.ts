@@ -41,17 +41,29 @@ export async function searchApolloDirect(contact: any, company: any, apiKey: str
 
     if (response.data?.person?.email) {
       console.log(`[Apollo] ✅ Email found for ${contact.name}: ${response.data.person.email}`);
+      
+      const person = response.data.person;
+      const organization = person.organization || {};
+      
       return {
         success: true,
         contact: {
           ...contact,
-          email: response.data.person.email,
-          role: response.data.person.title || contact.role,
-          linkedinUrl: response.data.person.linkedin_url || contact.linkedinUrl,
-          phoneNumber: response.data.person.phone_numbers?.[0]?.sanitized_number || contact.phoneNumber
+          email: person.email,
+          role: person.title || contact.role,
+          linkedinUrl: person.linkedin_url || contact.linkedinUrl,
+          phoneNumber: person.phone_numbers?.[0]?.sanitized_number || contact.phoneNumber,
+          city: person.city || null,
+          state: person.state || null,
+          country: person.country || null
+        },
+        company: {
+          city: organization.city || null,
+          state: organization.state || null,
+          country: organization.country || null
         },
         metadata: {
-          confidence: response.data.person.email_confidence || 75,
+          confidence: person.email_confidence || 75,
           searchDate: new Date().toISOString()
         }
       };
@@ -119,6 +131,12 @@ export async function apolloSearch(req: Request, res: Response) {
       companyId: contact.companyId
     });
 
+    if (!contact.companyId) {
+      console.error('Contact has no company ID:', contactId);
+      res.status(404).json({ message: "Contact has no associated company" });
+      return;
+    }
+
     const company = await storage.getCompany(contact.companyId, userId);
     if (!company) {
       console.error('Company not found in database for ID:', contact.companyId);
@@ -163,13 +181,56 @@ export async function apolloSearch(req: Request, res: Response) {
         const emailUpdates = mergeEmailData(contact, searchResult.contact.email);
         Object.assign(updateData, emailUpdates);
       }
+      
+      // Update contact location fields if provided by Apollo
+      if (searchResult.contact.city) {
+        updateData.city = searchResult.contact.city;
+      }
+      if (searchResult.contact.state) {
+        updateData.state = searchResult.contact.state;
+      }
+      if (searchResult.contact.country) {
+        updateData.country = searchResult.contact.country;
+      }
+      // Also update the legacy location field as a composite string
+      if (searchResult.contact.city || searchResult.contact.state || searchResult.contact.country) {
+        const locationParts = [
+          searchResult.contact.city,
+          searchResult.contact.state,
+          searchResult.contact.country
+        ].filter(Boolean);
+        if (locationParts.length > 0 && !contact.location) {
+          updateData.location = locationParts.join(', ');
+        }
+      }
 
       const updatedContact = await storage.updateContact(contactId, updateData);
+      
+      // Update company location fields if provided by Apollo
+      if (searchResult.company && (searchResult.company.city || searchResult.company.state || searchResult.company.country)) {
+        const companyUpdateData: any = {};
+        if (searchResult.company.city && !company.city) {
+          companyUpdateData.city = searchResult.company.city;
+        }
+        if (searchResult.company.state && !company.state) {
+          companyUpdateData.state = searchResult.company.state;
+        }
+        if (searchResult.company.country && !company.country) {
+          companyUpdateData.country = searchResult.company.country;
+        }
+        
+        if (Object.keys(companyUpdateData).length > 0) {
+          await storage.updateCompany(company.id, companyUpdateData);
+          console.log(`[Apollo] Updated company ${company.name} with location:`, companyUpdateData);
+        }
+      }
       
       console.log('Apollo search completed:', {
         success: true,
         emailFound: !!updatedContact?.email,
-        confidence: searchResult.metadata.confidence
+        confidence: searchResult.metadata.confidence,
+        contactLocation: { city: searchResult.contact.city, state: searchResult.contact.state, country: searchResult.contact.country },
+        companyLocation: searchResult.company
       });
 
       res.json(updatedContact);
