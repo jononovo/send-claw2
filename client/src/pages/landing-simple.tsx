@@ -52,7 +52,7 @@ const freshDataTabs = [
     icon: Map,
     title: "Search the Unsearchable",
     summary: "Queries nobody else can run",
-    fullDescription: "Traditional databases can only filter by industry, location, and company size. We can find \"recently-exited startups\" or \"beach-side hotels\" — context that exists nowhere else.",
+    fullDescription: "Context that exists nowhere else. Try it.",
   },
 ];
 
