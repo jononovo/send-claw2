@@ -1404,19 +1404,6 @@ export default function Home({ isNewSearch = false }: HomeProps) {
         description: data.message || "Results will arrive in 5-15 minutes",
       });
       
-      // Update the contact in currentResults with the new data
-      if (data.contact && currentResults) {
-        setCurrentResults(prevResults => {
-          if (!prevResults) return prevResults;
-          return prevResults.map(company => ({
-            ...company,
-            contacts: company.contacts?.map(c => 
-              c.id === contactId ? { ...c, ...data.contact } : c
-            )
-          }));
-        });
-      }
-      
       // Invalidate list queries to update the contact's status
       if (currentListId) {
         queryClient.invalidateQueries({ queryKey: [`/api/lists/${currentListId}/companies`] });
