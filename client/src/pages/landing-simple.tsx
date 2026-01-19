@@ -9,6 +9,7 @@ import { StealthOnboardingModal } from "@/features/landing-stealth/StealthOnboar
 import danThumb from "@/features/landing-stealth/assets/professional_headshot_of_dan_hartmann_thumb.jpg";
 import sarahThumb from "@/features/landing-stealth/assets/professional_headshot_of_sarah_chen_thumb.jpg";
 import alexThumb from "@/features/landing-stealth/assets/natural_outdoor_portrait_of_older_alex_rivera_with_beard_thumb.jpg";
+import fiveMinutesImage from "@assets/generated_images/founder_with_duck_doing_quick_sales.png";
 
 const testimonials = [
   {
@@ -55,43 +56,18 @@ const freshDataTabs = [
   },
 ];
 
-function ComparisonChart() {
+function FiveMinutesGraphic() {
   return (
     <div className="w-full h-full flex items-center justify-center p-6">
-      <div className="w-full max-w-md">
-        <div className="flex items-end justify-center gap-8 h-48">
-          <div className="flex flex-col items-center">
-            <div className="relative">
-              <div className="w-20 bg-red-500/20 border border-red-500/40 rounded-t-lg h-32 flex items-end justify-center pb-2">
-                <Database className="w-8 h-8 text-red-400/60" />
-              </div>
-              <div className="absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap">
-                <span className="text-red-400 text-sm font-mono">300M+</span>
-              </div>
-            </div>
-            <span className="text-gray-500 text-sm mt-3 text-center">Stale DB</span>
-            <span className="text-gray-600 text-xs">12-18 months old</span>
-          </div>
-          
-          <div className="flex flex-col items-center">
-            <div className="relative">
-              <div className="w-20 bg-green-500/20 border border-green-500/40 rounded-t-lg h-16 flex items-end justify-center pb-2">
-                <Zap className="w-8 h-8 text-green-400" />
-              </div>
-              <div className="absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap">
-                <span className="text-green-400 text-sm font-mono">Fresh</span>
-              </div>
-            </div>
-            <span className="text-gray-400 text-sm mt-3 text-center">Live Search</span>
-            <span className="text-green-400/80 text-xs">Real-time</span>
-          </div>
-        </div>
-        
-        <div className="mt-8 text-center">
-          <p className="text-gray-500 text-sm">
-            <span className="text-yellow-400">Quality</span> over quantity
-          </p>
-        </div>
+      <div className="w-full max-w-sm text-center">
+        <img 
+          src={fiveMinutesImage} 
+          alt="Relaxed founder doing quick sales with duck mascot" 
+          className="w-full h-auto rounded-xl mb-4 opacity-90"
+        />
+        <p className="text-gray-400 text-sm">
+          ☕ Coffee. Laptop. <span className="text-yellow-400">Done.</span>
+        </p>
       </div>
     </div>
   );
@@ -170,7 +146,7 @@ function SearchExamples() {
   );
 }
 
-const freshDataGraphics = [ComparisonChart, PromptVsFilters, SearchExamples];
+const freshDataGraphics = [FiveMinutesGraphic, PromptVsFilters, SearchExamples];
 
 function FreshDataSection({ activeTab, onTabClick }: { activeTab: number; onTabClick: (index: number) => void }) {
   const GraphicComponent = freshDataGraphics[activeTab];
