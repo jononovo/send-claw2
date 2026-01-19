@@ -8,7 +8,6 @@ import { pool } from "./db";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-import { searchCompanies } from "./search/perplexity/company-search";
 // import { extractContacts } from "./lib/perplexity"; // File doesn't exist
 // import { parseCompanyData } from "./lib/results-analysis/company-parser"; // File doesn't exist
 import { queryPerplexity } from "./search/perplexity/perplexity-client";
