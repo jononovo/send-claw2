@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { ClickToCopyText } from "@/components/ui/click-to-copy-text";
 import { MessageSquare, Star, ThumbsDown, Linkedin, Phone, Loader2 } from "lucide-react";
 import { ContactActionColumn } from "@/components/contact-action-column";
 import { ComprehensiveSearchButton } from "@/components/comprehensive-email-search";
@@ -123,12 +124,11 @@ export function ContactRow({
               )}
               {/* Phone action - always visible */}
               {contact.phoneNumber ? (
-                <span 
+                <ClickToCopyText
+                  text={contact.phoneNumber}
                   className="text-muted-foreground text-xs"
                   data-testid={`phone-${contact.id}`}
-                >
-                  {contact.phoneNumber}
-                </span>
+                />
               ) : (contact as any).mobilePhoneStatus === 'pending' || (pendingPhoneRevealIds?.has(contact.id) && !(contact as any).mobilePhoneStatus) ? (
                 <TooltipProvider delayDuration={300}>
                   <Tooltip>
