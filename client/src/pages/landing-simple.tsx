@@ -158,7 +158,7 @@ function FreshDataSection({ activeTab, onTabClick }: { activeTab: number; onTabC
       
       <div className="container mx-auto px-6 relative z-10">
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-5xl font-serif text-gray-800 dark:text-white mb-4">Fresh Data. Zero Bloat.</h2>
+          <h2 className="text-3xl md:text-5xl font-serif text-gray-800 dark:text-white mb-4">Fresh Data. Fresh Relationships.</h2>
           <p className="text-xl text-gray-500 italic">
             While competitors rely on stale databases, we search fresh — every time.
           </p>
