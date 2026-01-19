@@ -123,26 +123,18 @@ export function ContactRow({
               )}
               {/* Phone action - always visible */}
               {contact.phoneNumber ? (
-                <TooltipProvider delayDuration={300}>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <span 
-                        className="text-green-500 cursor-help"
-                        data-testid={`phone-${contact.id}`}
-                      >
-                        <Phone className="h-3 w-3" />
-                      </span>
-                    </TooltipTrigger>
-                    <TooltipContent side="top" className="text-xs">
-                      <p>{contact.phoneNumber}</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
+                <span 
+                  className="text-green-600 text-xs flex items-center gap-0.5"
+                  data-testid={`phone-${contact.id}`}
+                >
+                  <Phone className="h-3 w-3" />
+                  <span>{contact.phoneNumber}</span>
+                </span>
               ) : (contact as any).mobilePhoneStatus === 'pending' || (pendingPhoneRevealIds?.has(contact.id) && !(contact as any).mobilePhoneStatus) ? (
                 <TooltipProvider delayDuration={300}>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <span className="text-yellow-500 flex items-center gap-0.5 cursor-help">
+                      <span className="text-yellow-500 flex items-center gap-0.5">
                         <Loader2 className="h-3 w-3 animate-spin" />
                       </span>
                     </TooltipTrigger>
@@ -155,7 +147,7 @@ export function ContactRow({
                 <TooltipProvider delayDuration={300}>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <span className="text-muted-foreground/60 cursor-help">
+                      <span className="text-muted-foreground/60">
                         <Phone className="h-3 w-3" />
                       </span>
                     </TooltipTrigger>
