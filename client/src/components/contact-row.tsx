@@ -124,11 +124,10 @@ export function ContactRow({
               {/* Phone action - always visible */}
               {contact.phoneNumber ? (
                 <span 
-                  className="text-green-600 text-xs flex items-center gap-0.5"
+                  className="text-muted-foreground text-xs"
                   data-testid={`phone-${contact.id}`}
                 >
-                  <Phone className="h-3 w-3" />
-                  <span>{contact.phoneNumber}</span>
+                  {contact.phoneNumber}
                 </span>
               ) : (contact as any).mobilePhoneStatus === 'pending' || (pendingPhoneRevealIds?.has(contact.id) && !(contact as any).mobilePhoneStatus) ? (
                 <TooltipProvider delayDuration={300}>
