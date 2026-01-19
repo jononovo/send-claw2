@@ -287,7 +287,11 @@ export const contacts = pgTable("contacts", {
   // ICP feedback fields
   feedbackType: text("feedback_type"), // 'excellent' | 'terrible'
   ispContext: text("isp_context"), // User's explanation of why ideal/not ideal
-  feedbackAt: timestamp("feedback_at", { withTimezone: true })
+  feedbackAt: timestamp("feedback_at", { withTimezone: true }),
+  // Apollo mobile phone webhook fields
+  apolloPersonId: text("apollo_person_id"), // Apollo's person ID for webhook correlation
+  mobilePhoneStatus: text("mobile_phone_status"), // 'pending' | 'found' | 'not_found' | null
+  mobilePhoneRequestedAt: timestamp("mobile_phone_requested_at", { withTimezone: true })
 }, (table) => [
   index('idx_contacts_company_id').on(table.companyId),
   index('idx_contacts_user_id').on(table.userId),
@@ -450,7 +454,11 @@ const contactSchema = z.object({
   userFeedbackScore: z.number().min(0).max(100).nullable(),
   feedbackCount: z.number().min(0).nullable(),
   alternativeEmails: z.array(z.string()).optional(),
-  completedSearches: z.array(z.string()).optional()
+  completedSearches: z.array(z.string()).optional(),
+  // Apollo mobile phone webhook fields
+  apolloPersonId: z.string().nullable().optional(),
+  mobilePhoneStatus: z.enum(['pending', 'found', 'not_found']).nullable().optional(),
+  mobilePhoneRequestedAt: z.date().nullable().optional()
 });
 
 /* INACTIVE FEATURE SCHEMA - CONTACT FEEDBACK
