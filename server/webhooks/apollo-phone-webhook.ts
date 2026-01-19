@@ -12,7 +12,7 @@ export async function handleApolloPhoneWebhook(req: Request, res: Response) {
     const payload = req.body;
     console.log('[Apollo Webhook] Received payload:', JSON.stringify(payload, null, 2));
 
-    const person = payload.person;
+    const person = payload.people?.[0];
     if (!person) {
       console.error('[Apollo Webhook] No person in payload');
       return res.status(400).json({ error: 'No person data' });
@@ -22,7 +22,7 @@ export async function handleApolloPhoneWebhook(req: Request, res: Response) {
     const phones = person.phone_numbers || person.phones || [];
     
     const mobilePhone = phones.find((p: any) => 
-      p.type === 'mobile' || p.type === 'cell' || p.type === 'personal'
+      p.type_cd === 'mobile' || p.type_cd === 'cell' || p.type === 'mobile'
     ) || phones[0];
 
     const contact = await storage.findContactByApolloPersonId(apolloPersonId);

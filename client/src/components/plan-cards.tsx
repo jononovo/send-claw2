@@ -50,7 +50,7 @@ export function PlanCards({ onClose }: PlanCardsProps) {
     {
       id: 'ugly-duckling',
       name: 'The Duckling',
-      credits: 2000,
+      credits: 5000,
       bonus: 3000,
       price: 18.95,
       icon: Zap,
@@ -59,8 +59,8 @@ export function PlanCards({ onClose }: PlanCardsProps) {
     {
       id: 'duckin-awesome',
       name: "Mama Duck",
-      credits: 5000,
-      bonus: 10000,
+      credits: 10000,
+      bonus: 12000,
       price: 44.95,
       icon: Crown,
       color: 'from-purple-600 to-pink-600'
@@ -184,7 +184,7 @@ export function PlanCards({ onClose }: PlanCardsProps) {
                   ) : (
                     <>
                       <span className="transition-all duration-700 delay-1000 group-hover:opacity-0 group-hover:scale-95">
-                        Start Selling
+                        Upgrade
                       </span>
                       <span className="absolute transition-all duration-700 delay-1000 opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100">
                         Let's Go

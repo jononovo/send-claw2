@@ -489,10 +489,10 @@ export default function CompanyCards({
       clearTimeout(hoverTimer);
     }
     
-    // Set new timer for 1.5s
+    // Set new timer for 5s
     const timer = setTimeout(() => {
       setHoveredContactId(contactId);
-    }, 1500);
+    }, 5000);
     
     setHoverTimer(timer);
   };
