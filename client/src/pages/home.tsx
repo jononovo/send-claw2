@@ -1552,7 +1552,7 @@ export default function Home({ isNewSearch = false }: HomeProps) {
       
       {/* Main Content Container - will be compressed when drawer opens on desktop */}
       <div className={`flex-1 overflow-y-auto main-content-compressed ${emailDrawer.isOpen && currentResults && currentResults.length > 0 ? 'compressed-view' : ''}`}>
-        <div className="container mx-auto py-6 px-0 md:px-6 max-w-6xl">
+        <div className="container mx-auto py-6 px-0 md:px-6 max-w-4xl">
           {/* Intro tour modal has been removed */}
 
           <div className="grid grid-cols-12 gap-3 md:gap-6">
