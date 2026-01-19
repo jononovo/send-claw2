@@ -184,7 +184,7 @@ export function PlanCards({ onClose }: PlanCardsProps) {
                   ) : (
                     <>
                       <span className="transition-all duration-700 delay-1000 group-hover:opacity-0 group-hover:scale-95">
-                        Start Selling
+                        Upgrade
                       </span>
                       <span className="absolute transition-all duration-700 delay-1000 opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100">
                         Let's Go
