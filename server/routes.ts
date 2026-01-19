@@ -60,6 +60,8 @@ import { registerFeedbackRoutes } from "./features/feedback/routes";
 import { registerFindIdealCustomerRoutes } from "./features/find-ideal-customer/routes";
 import { attributionRoutes } from "./features/attribution";
 import { registerPricingPromoRoutes } from "./features/pricing-promos";
+import { handleApolloPhoneWebhook } from "./webhooks/apollo-phone-webhook";
+import { findMobilePhone } from "./features/search-phone/routes";
 
 
 // Import centralized auth utilities
@@ -143,6 +145,12 @@ export function registerRoutes(app: Express) {
   
   // Register onboarding flow routes
   registerOnboardingRoutes(app, requireAuth);
+  
+  // Apollo phone webhook (no auth - external webhook from Apollo)
+  app.post("/api/webhooks/apollo/phone", handleApolloPhoneWebhook);
+  
+  // Find mobile phone route (requires auth)
+  app.post("/api/contacts/:contactId/find-mobile-phone", requireAuth, findMobilePhone);
 
   // Serve static files from the static directory
   app.use('/static', express.static(path.join(__dirname, '../static')));
