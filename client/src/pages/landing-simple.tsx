@@ -52,7 +52,6 @@ const freshDataTabs = [
     icon: Map,
     title: "Search the Unsearchable",
     summary: "Queries nobody else can run",
-    fullDescription: "Context that exists nowhere else. Try it.",
   },
 ];
 
