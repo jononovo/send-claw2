@@ -9,7 +9,7 @@ import { StealthOnboardingModal } from "@/features/landing-stealth/StealthOnboar
 import danThumb from "@/features/landing-stealth/assets/professional_headshot_of_dan_hartmann_thumb.jpg";
 import sarahThumb from "@/features/landing-stealth/assets/professional_headshot_of_sarah_chen_thumb.jpg";
 import alexThumb from "@/features/landing-stealth/assets/natural_outdoor_portrait_of_older_alex_rivera_with_beard_thumb.jpg";
-import fiveMinutesImage from "@/features/landing-stealth/assets/calendar_showing_5min_sales_slot.png";
+import fiveMinutesImage from "@/features/landing-stealth/assets/playful_duck_with_email_task_card.png";
 
 const testimonials = [
   {
@@ -62,7 +62,7 @@ function FiveMinutesGraphic() {
       <div className="w-full max-w-sm text-center">
         <img 
           src={fiveMinutesImage} 
-          alt="Calendar showing 5-minute daily sales slot with suggested emails" 
+          alt="Playful duck mascot with daily email task card" 
           className="w-full h-auto rounded-xl mb-4 opacity-90"
         />
         <p className="text-gray-400 text-sm">
