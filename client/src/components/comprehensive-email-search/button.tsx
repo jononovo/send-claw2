@@ -35,17 +35,17 @@ export function ComprehensiveSearchButton({
 
   const renderIcon = () => {
     if (state === 'pending') {
-      return <Loader2 className={cn(iconSize, "animate-spin")} />;
+      return <Loader2 className={cn(iconSize, "animate-spin text-blue-500")} />;
     }
     if (state === 'failed') {
       return (
         <div className="flex items-center gap-0.5">
-          <Mail className={iconSize} />
-          <Ban style={{ width: '10px', height: '10px' }} />
+          <Mail className={cn(iconSize, "text-gray-400 group-hover:text-yellow-500 hover:text-blue-500 transition-colors")} />
+          <Ban className="text-gray-400" style={{ width: '10px', height: '10px' }} />
         </div>
       );
     }
-    return <Mail className={iconSize} />;
+    return <Mail className={cn(iconSize, "text-gray-400 group-hover:text-green-600/70 hover:text-blue-500 transition-colors")} />;
   };
 
   if (displayMode === 'text') {
@@ -53,9 +53,9 @@ export function ComprehensiveSearchButton({
     const buttonText = state === 'failed' ? 'No email found' : state === 'pending' ? 'Searching...' : 'Find email';
     
     return (
-      <Button
-        variant="small-search-action"
+      <button
         className={cn(
+          "flex items-center gap-1.5 text-muted-foreground hover:text-blue-600 transition-colors",
           state === 'failed' && "opacity-75",
           className
         )}
@@ -64,8 +64,8 @@ export function ComprehensiveSearchButton({
         title={tooltipMessage}
       >
         {renderIcon()}
-        <span className="text-xs ml-0.5">{buttonText}</span>
-      </Button>
+        <span className="text-xs">{buttonText}</span>
+      </button>
     );
   }
 
@@ -76,8 +76,9 @@ export function ComprehensiveSearchButton({
         <TooltipTrigger asChild>
           <span className="inline-block">
             <Button
-              variant="small-search-action"
-              className={cn("h-4 w-4", className)}
+              variant="ghost"
+              size="sm"
+              className={cn("h-4 w-4 p-0", className)}
               onClick={handleClick}
               disabled={isPending}
             >
