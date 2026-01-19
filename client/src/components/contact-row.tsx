@@ -167,7 +167,7 @@ export function ContactRow({
                     <TooltipTrigger asChild>
                       <Button
                         variant="small-search-action"
-                        className="group/phone flex items-center gap-0.5"
+                        className="group/phone flex items-center gap-0"
                         onClick={(e) => {
                           e.stopPropagation();
                           handleFindMobilePhone(contact.id);
@@ -179,7 +179,7 @@ export function ContactRow({
                         ) : (
                           <>
                             <Phone className="h-3 w-3" />
-                            <span className="hidden group-hover/phone:inline text-xs">Find Phone</span>
+                            <span className="hidden group-hover/phone:inline text-xs ml-0.5">Find Phone</span>
                           </>
                         )}
                       </Button>

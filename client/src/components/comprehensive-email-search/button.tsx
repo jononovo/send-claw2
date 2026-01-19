@@ -56,7 +56,7 @@ export function ComprehensiveSearchButton({
       <Button
         variant="small-search-action"
         className={cn(
-          "flex items-center gap-1 leading-none",
+          "flex items-center gap-0 leading-none",
           state === 'failed' && "opacity-75",
           className
         )}
@@ -65,7 +65,7 @@ export function ComprehensiveSearchButton({
         title={tooltipMessage}
       >
         {renderIcon()}
-        <span className="text-xs">{buttonText}</span>
+        <span className="text-xs ml-0.5">{buttonText}</span>
       </Button>
     );
   }
