@@ -76,7 +76,7 @@
     }
     
     .card-animate {
-      animation: slideInFromLeft 0.2s ease-out forwards; /* 0.4s / 2 for SPEED=2 */
+      animation: slideInFromLeft 0.27s ease-out forwards; /* 0.4s / 1.5 for SPEED=1.5 */
       opacity: 0;
     }
     
@@ -109,7 +109,7 @@
     }
     
     .slide-down {
-      animation: slideDown 0.15s ease-out forwards; /* 0.3s / 2 for SPEED=2 */
+      animation: slideDown 0.2s ease-out forwards; /* 0.3s / 1.5 for SPEED=1.5 */
       overflow: hidden;
     }
     
@@ -232,7 +232,7 @@
     }
     
     #compose-slider.open {
-      animation: bounceIn 0.25s ease-out forwards; /* 0.5s / 2 for SPEED=2 */
+      animation: bounceIn 0.33s ease-out forwards; /* 0.5s / 1.5 for SPEED=1.5 */
     }
     
     @keyframes slideInRight {
@@ -274,7 +274,7 @@
     }
     
     #success-toast.show {
-      animation: successPop 0.2s ease-out forwards; /* 0.4s / 2 for SPEED=2 */
+      animation: successPop 0.27s ease-out forwards; /* 0.4s / 1.5 for SPEED=1.5 */
     }
     
     /* Replay overlay */
@@ -376,7 +376,7 @@
     }
     
     .title-overlay.visible {
-      animation: overlaySequence 1.25s ease-out forwards; /* 2.5s / 2 for SPEED=2 */
+      animation: overlaySequence 1.67s ease-out forwards; /* 2.5s / 1.5 for SPEED=1.5 */
     }
     
     .title-overlay h2 {
@@ -1402,7 +1402,7 @@
     // SPEED MULTIPLIER - Adjust this to control demo speed
     // 1 = normal speed, 2 = 2x faster (50% time), 1.5 = 1.5x faster, etc.
     // ========================================
-    const SPEED = 2;
+    const SPEED = 1.5;
     
     // Helper function for all delays - automatically applies speed multiplier
     const wait = (ms) => new Promise(r => setTimeout(r, ms / SPEED));
