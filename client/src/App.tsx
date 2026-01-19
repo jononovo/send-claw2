@@ -302,7 +302,7 @@ function Router() {
           </Layout>
         </Route>
 
-        <Route path="/pricing-new" component={() => 
+        <Route path="/pricing" component={() => 
           <Suspense fallback={null}>
             <PricingNew />
           </Suspense>

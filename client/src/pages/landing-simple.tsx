@@ -392,6 +392,12 @@ export default function LandingSimple() {
 
           {/* Login Link & Theme Toggle */}
           <div className="absolute top-4 right-6 md:top-6 md:right-10 z-30 flex items-center gap-4">
+            <a 
+              href="/pricing"
+              className="text-sm text-foreground/30 hover:text-foreground/60 transition-colors font-bold uppercase tracking-widest"
+            >
+              Pricing
+            </a>
             <button 
               type="button"
               onClick={() => setIsDarkMode(!isDarkMode)}
