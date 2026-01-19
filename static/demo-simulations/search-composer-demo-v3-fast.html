@@ -1,0 +1,2055 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>5Ducks Demo Simulation V3 Fast</title>
+  
+  <style>
+/* Tailwind CSS (purged) */
+*,::backdrop,:after,:before{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:#3b82f680;--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/*! tailwindcss v3.4.14 | MIT License | https://tailwindcss.com*/*,:after,:before{box-sizing:border-box;border:0 solid #e5e7eb}:after,:before{--tw-content:""}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;-o-tab-size:4;tab-size:4;font-family:ui-sans-serif,system-ui,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji;font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,Courier New,monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:initial}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:initial;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:initial}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0}fieldset,legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::-moz-placeholder,textarea::-moz-placeholder{opacity:1;color:#9ca3af}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.container{width:100%}@media (min-width:640px){.container{max-width:640px}}@media (min-width:768px){.container{max-width:768px}}@media (min-width:1024px){.container{max-width:1024px}}@media (min-width:1280px){.container{max-width:1280px}}@media (min-width:1536px){.container{max-width:1536px}}.visible{visibility:visible}.collapse{visibility:collapse}.fixed{position:fixed}.absolute{position:absolute}.relative{position:relative}.mx-auto{margin-left:auto;margin-right:auto}.mb-1{margin-bottom:.25rem}.mb-16{margin-bottom:4rem}.mb-2{margin-bottom:.5rem}.mb-3{margin-bottom:.75rem}.mb-4{margin-bottom:1rem}.mb-6{margin-bottom:1.5rem}.mr-3{margin-right:.75rem}.mt-0\.5{margin-top:.125rem}.mt-2{margin-top:.5rem}.mt-6{margin-top:1.5rem}.block{display:block}.flex{display:flex}.hidden{display:none}.h-1\.5{height:.375rem}.h-10{height:2.5rem}.h-3\.5{height:.875rem}.h-4{height:1rem}.h-5{height:1.25rem}.h-8{height:2rem}.h-9{height:2.25rem}.h-full{height:100%}.min-h-\[200px\]{min-height:200px}.min-h-\[24px\]{min-height:24px}.min-h-\[32px\]{min-height:32px}.w-10{width:2.5rem}.w-3\.5{width:.875rem}.w-4{width:1rem}.w-5{width:1.25rem}.w-8{width:2rem}.w-9{width:2.25rem}.w-full{width:100%}.flex-1{flex:1 1 0%}.rotate-90{--tw-rotate:90deg}.rotate-90,.transform{transform:translate(var(--tw-translate-x),var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.cursor-pointer{cursor:pointer}.items-center{align-items:center}.justify-end{justify-content:flex-end}.justify-center{justify-content:center}.justify-between{justify-content:space-between}.gap-1{gap:.25rem}.gap-1\.5{gap:.375rem}.gap-2{gap:.5rem}.gap-3{gap:.75rem}.gap-4{gap:1rem}.space-y-2>:not([hidden])~:not([hidden]){--tw-space-y-reverse:0;margin-top:calc(.5rem*(1 - var(--tw-space-y-reverse)));margin-bottom:calc(.5rem*var(--tw-space-y-reverse))}.overflow-hidden{overflow:hidden}.rounded{border-radius:.25rem}.rounded-full{border-radius:9999px}.rounded-lg{border-radius:.5rem}.border{border-width:1px}.border-2{border-width:2px}.border-b{border-bottom-width:1px}.border-t{border-top-width:1px}.border-dashed{border-style:dashed}.border-amber-200{--tw-border-opacity:1;border-color:rgb(253 230 138/var(--tw-border-opacity))}.border-green-200{--tw-border-opacity:1;border-color:rgb(187 247 208/var(--tw-border-opacity))}.border-slate-100{--tw-border-opacity:1;border-color:rgb(241 245 249/var(--tw-border-opacity))}.border-slate-200{--tw-border-opacity:1;border-color:rgb(226 232 240/var(--tw-border-opacity))}.border-slate-300{--tw-border-opacity:1;border-color:rgb(203 213 225/var(--tw-border-opacity))}.bg-amber-400{--tw-bg-opacity:1;background-color:rgb(251 191 36/var(--tw-bg-opacity))}.bg-amber-50{--tw-bg-opacity:1;background-color:rgb(255 251 235/var(--tw-bg-opacity))}.bg-green-100{--tw-bg-opacity:1;background-color:rgb(220 252 231/var(--tw-bg-opacity))}.bg-green-50{--tw-bg-opacity:1;background-color:rgb(240 253 244/var(--tw-bg-opacity))}.bg-slate-100{--tw-bg-opacity:1;background-color:rgb(241 245 249/var(--tw-bg-opacity))}.bg-slate-200{--tw-bg-opacity:1;background-color:rgb(226 232 240/var(--tw-bg-opacity))}.bg-slate-50{--tw-bg-opacity:1;background-color:rgb(248 250 252/var(--tw-bg-opacity))}.bg-white{--tw-bg-opacity:1;background-color:rgb(255 255 255/var(--tw-bg-opacity))}.bg-gradient-to-r{background-image:linear-gradient(to right,var(--tw-gradient-stops))}.from-cyan-400{--tw-gradient-from:#22d3ee var(--tw-gradient-from-position);--tw-gradient-to:#22d3ee00 var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from),var(--tw-gradient-to)}.to-blue-500{--tw-gradient-to:#3b82f6 var(--tw-gradient-to-position)}.p-1{padding:.25rem}.p-1\.5{padding:.375rem}.p-3{padding:.75rem}.p-4{padding:1rem}.px-3{padding-left:.75rem;padding-right:.75rem}.px-4{padding-left:1rem;padding-right:1rem}.px-5{padding-left:1.25rem;padding-right:1.25rem}.py-1{padding-top:.25rem;padding-bottom:.25rem}.py-1\.5{padding-top:.375rem;padding-bottom:.375rem}.py-2{padding-top:.5rem;padding-bottom:.5rem}.py-2\.5{padding-top:.625rem;padding-bottom:.625rem}.py-3{padding-top:.75rem;padding-bottom:.75rem}.pb-2{padding-bottom:.5rem}.pb-3{padding-bottom:.75rem}.pt-4{padding-top:1rem}.text-center{text-align:center}.font-serif{font-family:ui-serif,Georgia,Cambria,Times New Roman,Times,serif}.text-2xl{font-size:1.5rem;line-height:2rem}.text-4xl{font-size:2.25rem;line-height:2.5rem}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:.875rem;line-height:1.25rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.text-xs{font-size:.75rem;line-height:1rem}.font-medium{font-weight:500}.font-semibold{font-weight:600}.text-amber-600{--tw-text-opacity:1;color:rgb(217 119 6/var(--tw-text-opacity))}.text-amber-700{--tw-text-opacity:1;color:rgb(180 83 9/var(--tw-text-opacity))}.text-green-600{--tw-text-opacity:1;color:rgb(22 163 74/var(--tw-text-opacity))}.text-slate-300{--tw-text-opacity:1;color:rgb(203 213 225/var(--tw-text-opacity))}.text-slate-400{--tw-text-opacity:1;color:rgb(148 163 184/var(--tw-text-opacity))}.text-slate-500{--tw-text-opacity:1;color:rgb(100 116 139/var(--tw-text-opacity))}.text-slate-600{--tw-text-opacity:1;color:rgb(71 85 105/var(--tw-text-opacity))}.text-slate-700{--tw-text-opacity:1;color:rgb(51 65 85/var(--tw-text-opacity))}.text-slate-800{--tw-text-opacity:1;color:rgb(30 41 59/var(--tw-text-opacity))}.text-white{--tw-text-opacity:1;color:rgb(255 255 255/var(--tw-text-opacity))}.opacity-75{opacity:.75}.shadow-sm{--tw-shadow:0 1px 2px 0 #0000000d;--tw-shadow-colored:0 1px 2px 0 var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow,0 0 #0000),var(--tw-ring-shadow,0 0 #0000),var(--tw-shadow)}.drop-shadow{--tw-drop-shadow:drop-shadow(0 1px 2px #0000001a) drop-shadow(0 1px 1px #0000000f)}.drop-shadow,.filter{filter:var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow)}.transition{transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,backdrop-filter;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}.transition-all{transition-property:all;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}.transition-colors{transition-property:color,background-color,border-color,text-decoration-color,fill,stroke;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}.transition-transform{transition-property:transform;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}.duration-200{transition-duration:.2s}.ease-out{transition-timing-function:cubic-bezier(0,0,.2,1)}.hover\:bg-amber-100:hover{--tw-bg-opacity:1;background-color:rgb(254 243 199/var(--tw-bg-opacity))}.hover\:bg-slate-100:hover{--tw-bg-opacity:1;background-color:rgb(241 245 249/var(--tw-bg-opacity))}.hover\:bg-slate-50:hover{--tw-bg-opacity:1;background-color:rgb(248 250 252/var(--tw-bg-opacity))}.hover\:text-slate-700:hover{--tw-text-opacity:1;color:rgb(51 65 85/var(--tw-text-opacity))}
+
+    /* Prevent white flash - warm brownish background immediately */
+    html, body {
+      background-color: hsl(42, 18%, 12%);
+      margin: 0;
+      padding: 0;
+    }
+    
+    /* Elegant dark scrollbars */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(100, 90, 80, 0.3);
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(100, 90, 80, 0.5);
+    }
+    * {
+      scrollbar-width: thin;
+      scrollbar-color: rgba(100, 90, 80, 0.3) transparent;
+    }
+    
+    * { box-sizing: border-box; }
+    
+    /* Warm color overrides - replace cold grays with warm tones */
+    .text-slate-400 { color: hsl(35, 12%, 55%) !important; }
+    .text-slate-500 { color: hsl(35, 12%, 48%) !important; }
+    .text-slate-600 { color: hsl(35, 14%, 40%) !important; }
+    .text-slate-700 { color: hsl(35, 16%, 32%) !important; }
+    .text-slate-800 { color: hsl(35, 18%, 22%) !important; }
+    .bg-slate-50 { background-color: hsl(40, 15%, 97%) !important; }
+    .bg-slate-100 { background-color: hsl(40, 14%, 94%) !important; }
+    .bg-slate-200 { background-color: hsl(40, 12%, 88%) !important; }
+    .border-slate-100 { border-color: hsl(40, 14%, 92%) !important; }
+    .border-slate-200 { border-color: hsl(40, 12%, 85%) !important; }
+    .border-slate-300 { border-color: hsl(40, 10%, 78%) !important; }
+    .hover\:bg-slate-50:hover { background-color: hsl(40, 15%, 96%) !important; }
+    
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes slideInFromLeft {
+      from { opacity: 0; transform: translateX(-30px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+    
+    @keyframes bounceIn {
+      0% { transform: translateX(100%); }
+      60% { transform: translateX(-10px); }
+      80% { transform: translateX(5px); }
+      100% { transform: translateX(0); }
+    }
+    
+    @keyframes buttonPulse {
+      0% { box-shadow: 0 0 0 0 rgba(140, 120, 100, 0.4); }
+      70% { box-shadow: 0 0 0 8px rgba(140, 120, 100, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(140, 120, 100, 0); }
+    }
+    
+    .card-animate {
+      animation: slideInFromLeft 0.2s ease-out forwards; /* 0.4s / 2 for SPEED=2 */
+      opacity: 0;
+    }
+    
+    .btn-pulse {
+      animation: buttonPulse 1s ease-out infinite;
+    }
+    
+    @keyframes slideDown {
+      from { opacity: 0; max-height: 0; }
+      to { opacity: 1; max-height: 500px; }
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    @keyframes blink {
+      0%, 50% { opacity: 1; }
+      51%, 100% { opacity: 0; }
+    }
+    
+    @keyframes cursorClick {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(0.9); }
+    }
+    
+    @keyframes progressBar {
+      0% { width: 0%; }
+      100% { width: 100%; }
+    }
+    
+    .slide-down {
+      animation: slideDown 0.15s ease-out forwards; /* 0.3s / 2 for SPEED=2 */
+      overflow: hidden;
+    }
+    
+    .cursor-blink {
+      animation: blink 0.8s infinite;
+    }
+    
+    .spinner {
+      animation: spin 1s linear infinite;
+    }
+    
+    .cursor-click {
+      animation: cursorClick 0.15s ease-out;
+    }
+    
+    .progress-animate {
+      animation: progressBar 1.5s ease-out forwards;
+    }
+    
+    #fake-cursor {
+      position: absolute;
+      width: 24px;
+      height: 24px;
+      pointer-events: none;
+      z-index: 400;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      filter: drop-shadow(1px 1px 2px rgba(0,0,0,0.3));
+    }
+    
+    #fake-cursor.visible {
+      opacity: 1;
+    }
+    
+    /* I-beam text cursor - hidden by default */
+    #fake-cursor .ibeam-cursor {
+      display: none;
+    }
+    
+    #fake-cursor .hand-cursor {
+      display: block;
+    }
+    
+    /* Text mode: show I-beam, hide hand */
+    #fake-cursor.text-mode .ibeam-cursor {
+      display: block;
+    }
+    
+    #fake-cursor.text-mode .hand-cursor {
+      display: none;
+    }
+    
+    
+    .company-header.cursor-hover {
+      background-color: hsl(40, 15%, 95%) !important;
+    }
+    
+    .search-card {
+      background: white;
+      border-radius: 0.75rem;
+      border: 1px solid hsl(40, 12%, 87%);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    
+    /* Tighter spacing for input areas */
+    .search-card > div:first-child {
+      margin-bottom: 4px !important;
+    }
+    
+    #search-input {
+      padding-top: 4px !important;
+      padding-bottom: 4px !important;
+    }
+    
+    #product-input {
+      margin-bottom: 4px !important;
+    }
+    
+    .search-bar-compressed {
+      background: white;
+      border-radius: 0.5rem;
+      border: 1px solid hsl(40, 12%, 87%);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+    }
+    
+    #search-btn.cursor-hover {
+      filter: brightness(1.05);
+      transform: scale(1.02);
+    }
+    
+    .role-chip.cursor-hover {
+      background-color: hsl(40, 12%, 88%) !important;
+    }
+    
+    .role-option.cursor-hover {
+      background-color: hsl(40, 14%, 93%) !important;
+    }
+    
+    .contact-row.cursor-hover {
+      background-color: hsl(40, 15%, 95%) !important;
+    }
+    
+    .btn-hover {
+      filter: brightness(1.05);
+      transform: scale(1.02);
+    }
+    
+    /* Compose slider */
+    #compose-slider {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 420px;
+      height: 100%;
+      background: hsl(40, 15%, 95%);
+      border-left: 1px solid #e5e5e5;
+      z-index: 150;
+      transform: translateX(100%);
+      overflow-y: auto;
+    }
+    
+    #compose-slider.open {
+      animation: bounceIn 0.25s ease-out forwards; /* 0.5s / 2 for SPEED=2 */
+    }
+    
+    @keyframes slideInRight {
+      from { transform: translateX(100%); }
+      to { transform: translateX(0); }
+    }
+    
+    @keyframes confetti {
+      0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(-100px) rotate(720deg); opacity: 0; }
+    }
+    
+    @keyframes successPop {
+      0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+      50% { transform: translate(-50%, -50%) scale(1.1); }
+      100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+    }
+    
+    .confetti {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      animation: confetti 1s ease-out forwards;
+    }
+    
+    #success-toast {
+      position: absolute;
+      top: 60%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      background: white;
+      border-radius: 12px;
+      padding: 12px 20px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+      z-index: 300;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    #success-toast.show {
+      animation: successPop 0.2s ease-out forwards; /* 0.4s / 2 for SPEED=2 */
+    }
+    
+    /* Replay overlay */
+    #replay-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(255, 255, 255, 0.7);
+      z-index: 350;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+    }
+    
+    #replay-overlay.visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    
+    #replay-overlay button {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 24px;
+      background: linear-gradient(135deg, hsl(45, 93%, 47%), hsl(35, 80%, 45%));
+      color: hsl(30, 10%, 10%);
+      border: none;
+      border-radius: 0.5rem;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(180, 130, 50, 0.4);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    
+    #replay-overlay button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 20px rgba(180, 130, 50, 0.5);
+    }
+    
+    #replay-overlay p {
+      margin-top: 12px;
+      color: hsl(35, 12%, 48%);
+      font-size: 13px;
+    }
+    
+    /* Title overlays */
+    @keyframes overlaySequence {
+      0% {
+        opacity: 1;
+        background-color: hsl(42, 18%, 12%);
+      }
+      70% {
+        opacity: 1;
+        background-color: hsla(42, 18%, 12%, 0.7);
+      }
+      100% {
+        opacity: 0;
+        background-color: hsla(42, 18%, 12%, 0.5);
+      }
+    }
+    
+    .title-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: hsl(42, 18%, 12%);
+      z-index: 300;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+    }
+    
+    .title-overlay.preload {
+      opacity: 1;
+    }
+    
+    .title-overlay::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: 
+        radial-gradient(ellipse at bottom right, rgba(251, 191, 36, 0.35) 0%, transparent 50%),
+        radial-gradient(ellipse at top left, rgba(245, 158, 11, 0.2) 0%, transparent 40%);
+      pointer-events: none;
+    }
+    
+    .title-overlay.visible {
+      animation: overlaySequence 1.25s ease-out forwards; /* 2.5s / 2 for SPEED=2 */
+    }
+    
+    .title-overlay h2 {
+      font-size: 36px;
+      font-weight: 600;
+      text-align: center;
+      padding: 0 60px;
+      margin: 0 20px;
+      margin-top: -80px;
+      line-height: 1.5;
+      max-width: 420px;
+      background: linear-gradient(135deg, hsl(45, 93%, 70%) 0%, hsl(40, 85%, 65%) 60%, hsl(35, 80%, 55%) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      filter: drop-shadow(0 2px 10px rgba(0, 0, 0, 0.4));
+    }
+    
+    /* Viewport container - like a video frame */
+    #demo-viewport {
+      width: 520px;
+      height: 520px;
+      margin: 0 auto;
+      overflow: hidden;
+      background: hsl(40, 15%, 95%);
+      position: relative;
+    }
+    
+    #demo-content {
+      width: 520px;
+      min-height: 520px;
+      transform-origin: center center;
+      transition: transform 0.6s ease-out;
+      position: relative;
+      z-index: 1;
+    }
+  </style>
+</head>
+<body>
+  
+  <!-- Viewport container (the "camera frame") -->
+  <div id="demo-viewport">
+    <!-- Fake Pointer Hand Cursor -->
+    <div id="fake-cursor">
+      <!-- Hand pointer cursor -->
+      <svg class="hand-cursor" viewBox="0 0 24 24" fill="white" stroke="black" stroke-width="0.5">
+        <path d="M6.5 1.5 L6.5 10 L4.5 10 L4.5 14 C4.5 18 7.5 21 11.5 21 L14 21 C17 21 19.5 18.5 19.5 15.5 L19.5 8.5 C19.5 7.7 18.8 7 18 7 C17.2 7 16.5 7.7 16.5 8.5 L16.5 7.5 C16.5 6.7 15.8 6 15 6 C14.2 6 13.5 6.7 13.5 7.5 L13.5 7 C13.5 6.2 12.8 5.5 12 5.5 C11.2 5.5 10.5 6.2 10.5 7 L10.5 7.5 L10.5 2.5 C10.5 1.4 9.6 0.5 8.5 0.5 C7.4 0.5 6.5 1.4 6.5 2.5 Z" fill="white" stroke="black" stroke-width="1"/>
+      </svg>
+      <!-- I-beam text cursor -->
+      <svg class="ibeam-cursor" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2">
+        <path d="M8 4h2a2 2 0 012 2v12a2 2 0 01-2 2H8M16 4h-2a2 2 0 00-2 2v12a2 2 0 002 2h2M12 4v16" stroke="black" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+    </div>
+    
+    
+    <!-- Success Toast -->
+    <div id="success-toast">
+      <div class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center">
+        <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+        </svg>
+      </div>
+      <div>
+        <p class="font-semibold text-slate-800 text-sm">Email sent!</p>
+        <p class="text-xs text-slate-500">Your message to Gleb was delivered</p>
+      </div>
+    </div>
+    
+    <!-- Title Overlays -->
+    <div id="title-overlay-1" class="title-overlay preload">
+      <h2>Find any company in seconds</h2>
+    </div>
+    <div id="title-overlay-2" class="title-overlay">
+      <h2>and email them</h2>
+    </div>
+    
+    <!-- Replay Overlay -->
+    <div id="replay-overlay">
+      <button id="replay-overlay-btn">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+        </svg>
+        Watch Again
+      </button>
+      <p>See how easy sales can be</p>
+    </div>
+    
+    <!-- Demo content that can be zoomed/panned -->
+    <div id="demo-content">
+  
+  <div id="demo-container" class="w-full mx-auto relative pt-4 px-3">
+    
+    <!-- ==================== -->
+    <!-- STATE 1: Search Input -->
+    <!-- ==================== -->
+    <div id="search-state">
+      <!-- Progress bar (hidden by default) -->
+      <div id="progress-container" class="hidden mb-4">
+        <div class="flex items-center justify-between mb-1">
+          <span class="text-sm text-slate-600">Finding emails</span>
+          <span id="progress-percent" class="text-sm text-slate-600">0%</span>
+        </div>
+        <div class="w-full h-1.5 bg-slate-200 rounded-full overflow-hidden">
+          <div id="progress-bar" class="h-full bg-amber-400 rounded-full" style="width: 0%"></div>
+        </div>
+      </div>
+      
+      <!-- Header with duck emoji -->
+      <div id="duck-header" class="flex items-center gap-3 mt-4 mb-3">
+        <span class="text-4xl">🐥</span>
+        <h2 style="color: hsl(25, 55%, 35%); font-family: 'DM Serif Display', serif; font-weight: 500; font-size: 28px; white-space: nowrap;">Find your ideal <em>business</em> customers</h2>
+      </div>
+      
+      <!-- Large Search Card -->
+      <div class="search-card p-4 pb-3">
+        <!-- Input area -->
+        <div class="mb-1">
+          <div id="search-input" class="text-xl text-slate-800 min-h-[32px] py-1">
+            <span id="typed-text"></span><span id="cursor" class="cursor-blink text-slate-400">|</span>
+          </div>
+        </div>
+        
+        <!-- Bottom toolbar row -->
+        <div class="flex items-center justify-between">
+          <!-- Left side controls -->
+          <div class="flex items-center gap-3">
+            <!-- Icon group with dropdown -->
+            <div class="flex items-center gap-1 text-slate-400">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+              </svg>
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+              </svg>
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+              </svg>
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+              </svg>
+            </div>
+            
+            <!-- Role selector chip -->
+            <button id="role-chip" class="role-chip flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 text-slate-700 text-sm bg-white transition-colors">
+              <svg id="role-icon" class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
+              </svg>
+              <span id="role-text" class="font-medium">Leadership</span>
+            </button>
+          </div>
+          
+          <!-- Search button -->
+          <button id="search-btn" class="rounded-lg px-5 py-2.5 flex items-center gap-2 font-medium transition-all" style="background: linear-gradient(135deg, hsl(45, 93%, 47%), hsl(35, 80%, 45%)); color: hsl(30, 10%, 10%);">
+            <svg id="search-icon" class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+            </svg>
+            <span id="btn-text">Search</span>
+          </button>
+        </div>
+      </div>
+      
+      <!-- Role selector dropdown (hidden by default) -->
+      <div id="role-dropdown" class="hidden mt-2 flex items-center gap-2">
+        <button id="role-leadership" class="role-option flex items-center gap-2 px-3 py-2 rounded-lg border border-slate-200 bg-white text-slate-700 text-sm transition-colors">
+          <svg class="h-4 w-4 text-green-600 checkmark" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+          </svg>
+          <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
+          </svg>
+          <span class="font-medium">Leadership</span>
+        </button>
+        
+        <button id="role-marketing" class="role-option flex items-center gap-2 px-3 py-2 rounded-lg border border-slate-200 bg-white text-slate-700 text-sm transition-colors">
+          <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+          </svg>
+          <span class="font-medium">Marketing</span>
+        </button>
+        
+        <button id="role-cto" class="role-option flex items-center gap-2 px-3 py-2 rounded-lg border border-slate-200 bg-white text-slate-700 text-sm transition-colors">
+          <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+          </svg>
+          <span class="font-medium">CTO</span>
+        </button>
+        
+        <button class="flex items-center justify-center w-10 h-10 rounded-lg border border-dashed border-slate-300 text-slate-400">
+          <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+    
+    <!-- ==================== -->
+    <!-- STATE 2: Results View (First Search) -->
+    <!-- ==================== -->
+    <div id="results-state" class="hidden">
+      
+      <!-- Compressed Search Bar -->
+      <div id="compressed-search-bar" class="search-bar-compressed flex items-center px-4 py-3 mb-4 cursor-pointer transition-colors hover:bg-slate-50">
+        <svg class="w-5 h-5 text-slate-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+        </svg>
+        <span id="results-query" class="flex-1 text-slate-700">Private credit asset managers in NYC</span>
+        <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/>
+        </svg>
+      </div>
+      
+      <!-- Action Toolbar -->
+      <div class="flex items-center gap-4 mb-4 text-sm text-slate-500">
+        <div class="w-5 h-5 border-2 border-slate-300 rounded"></div>
+        <div class="flex items-center gap-1.5 text-slate-700">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+          </svg>
+          <span class="font-medium">Scroll</span>
+        </div>
+        <div class="flex items-center gap-1.5 text-slate-400">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+          </svg>
+          <span>Slides</span>
+        </div>
+        <div class="flex items-center gap-1.5 text-slate-400">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+          </svg>
+          <span>Find Emails</span>
+        </div>
+        <div class="flex items-center gap-1.5 text-slate-400">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+          </svg>
+          <span>5 More</span>
+        </div>
+        <span class="text-slate-400">Report</span>
+      </div>
+      
+      <!-- Results area (First search results) -->
+      <div id="results-area-1" class="space-y-2">
+        
+        <!-- Company 1: Quilvest Capital Partners -->
+        <div class="company-card" data-company="1">
+          <div class="rounded-lg border border-slate-200 bg-white overflow-hidden shadow-sm">
+            <div class="company-header flex items-center justify-between p-4 transition-colors cursor-pointer" data-company-header="1">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded bg-slate-100 flex items-center justify-center">
+                  <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                  </svg>
+                </div>
+                <div>
+                  <div class="flex items-center gap-2">
+                    <h4 class="font-semibold text-slate-800 text-lg">Quilvest Capital Partners</h4>
+                    <svg class="w-4 h-4 text-slate-400 chevron-icon transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                  </div>
+                  <div class="flex items-center gap-3 text-sm text-slate-500">
+                    <div class="flex items-center gap-1">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/>
+                      </svg>
+                      <span>quilvestcapital.com</span>
+                    </div>
+                    <div class="flex items-center gap-1">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+                      </svg>
+                      <span>10 contacts</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="flex items-center gap-2">
+                <button class="expand-btn w-9 h-9 rounded-lg border border-slate-200 flex items-center justify-center text-slate-400 hover:bg-slate-50 transition-transform duration-200">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/>
+                  </svg>
+                </button>
+                <button class="w-9 h-9 rounded-lg border border-slate-200 flex items-center justify-center text-slate-400 hover:bg-slate-50">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+            
+            <!-- Contacts List -->
+            <div class="contacts-list border-t border-slate-100" data-contacts="1">
+              <div class="flex items-center justify-between px-4 py-3 hover:bg-slate-50 border-b border-slate-100">
+                <div>
+                  <h5 class="font-medium text-slate-800">Richard Berke</h5>
+                  <p class="text-sm text-slate-500">Managing Director: Global Head of HR</p>
+                  <div class="flex items-center gap-2 mt-0.5">
+                    <span class="text-sm text-slate-500">r.berke@quilvest.com</span>
+                    <svg class="w-4 h-4 text-slate-400" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                    </svg>
+                  </div>
+                </div>
+                <div class="flex items-center gap-3">
+                  <span class="text-sm font-medium text-slate-600">89%</span>
+                  <svg class="w-5 h-5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                  </svg>
+                </div>
+              </div>
+              
+              <div class="flex items-center justify-between px-4 py-3 hover:bg-slate-50 border-b border-slate-100">
+                <div>
+                  <h5 class="font-medium text-slate-800">Carlos Heneine</h5>
+                  <p class="text-sm text-slate-500">CEO Quilvest Dubai</p>
+                  <div class="flex items-center gap-2 mt-0.5">
+                    <span class="text-sm text-slate-500">c.heneine@quilvest.com</span>
+                    <svg class="w-4 h-4 text-slate-400" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                    </svg>
+                  </div>
+                </div>
+                <div class="flex items-center gap-3">
+                  <span class="text-sm font-medium text-slate-600">89%</span>
+                  <svg class="w-5 h-5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                  </svg>
+                </div>
+              </div>
+              
+              <div class="flex items-center justify-between px-4 py-3 hover:bg-slate-50">
+                <div>
+                  <h5 class="font-medium text-slate-800">John Eggleston</h5>
+                  <p class="text-sm text-slate-500">Partner, Chief Operating Officer</p>
+                  <div class="flex items-center gap-2 mt-0.5">
+                    <span class="text-sm text-slate-500">j.eggleston@quilvest.com</span>
+                    <svg class="w-4 h-4 text-slate-400" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                    </svg>
+                  </div>
+                </div>
+                <div class="flex items-center gap-3">
+                  <span class="text-sm font-medium text-slate-600">86%</span>
+                  <svg class="w-5 h-5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Company 2: GoldenTree (collapsed) -->
+        <div class="company-card" data-company="2">
+          <div class="rounded-lg border border-slate-200 bg-white overflow-hidden shadow-sm">
+            <div class="company-header flex items-center justify-between p-4 transition-colors cursor-pointer" data-company-header="2">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded bg-slate-100 flex items-center justify-center">
+                  <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                  </svg>
+                </div>
+                <div>
+                  <div class="flex items-center gap-2">
+                    <h4 class="font-semibold text-slate-800 text-lg">GoldenTree Asset Management</h4>
+                    <svg class="w-4 h-4 text-slate-400 chevron-icon transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                  </div>
+                  <div class="flex items-center gap-3 text-sm text-slate-500">
+                    <div class="flex items-center gap-1">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/>
+                      </svg>
+                      <span>goldentree.com</span>
+                    </div>
+                    <div class="flex items-center gap-1">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+                      </svg>
+                      <span>8 contacts</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="flex items-center gap-2">
+                <button class="expand-btn w-9 h-9 rounded-lg border border-slate-200 flex items-center justify-center text-slate-400 hover:bg-slate-50">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                  </svg>
+                </button>
+                <button class="w-9 h-9 rounded-lg border border-slate-200 flex items-center justify-center text-slate-400 hover:bg-slate-50">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+            
+            <div class="contacts-list border-t border-slate-100 hidden" data-contacts="2">
+              <div class="flex items-center justify-between px-4 py-3 hover:bg-slate-50">
+                <div>
+                  <h5 class="font-medium text-slate-800">Steven Tananbaum</h5>
+                  <p class="text-sm text-slate-500">Founder & Chief Investment Officer</p>
+                  <div class="flex items-center gap-2 mt-0.5">
+                    <span class="text-sm text-slate-500">s.tananbaum@goldentree.com</span>
+                    <svg class="w-4 h-4 text-slate-400" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                    </svg>
+                  </div>
+                </div>
+                <div class="flex items-center gap-3">
+                  <span class="text-sm font-medium text-slate-600">92%</span>
+                  <svg class="w-5 h-5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Company 3: Apollo Global (collapsed) -->
+        <div class="company-card">
+          <div class="rounded-lg border border-slate-200 bg-white overflow-hidden shadow-sm">
+            <div class="company-header flex items-center justify-between p-4">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded bg-slate-100 flex items-center justify-center">
+                  <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                </div>
+                <div>
+                  <div class="flex items-center gap-2">
+                    <h4 class="font-semibold text-slate-800 text-lg">Apollo Global Management</h4>
+                    <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                  </div>
+                  <div class="flex items-center gap-3 text-sm text-slate-500">
+                    <span>apollo.com</span>
+                    <span>·</span>
+                    <span>12 contacts</span>
+                  </div>
+                </div>
+              </div>
+              <div class="flex items-center gap-2">
+                <button class="w-9 h-9 rounded-lg border border-slate-200 flex items-center justify-center text-slate-400"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button>
+                <button class="w-9 h-9 rounded-lg border border-slate-200 flex items-center justify-center text-slate-400"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Company 4: Ares Management (collapsed) -->
+        <div class="company-card">
+          <div class="rounded-lg border border-slate-200 bg-white overflow-hidden shadow-sm">
+            <div class="company-header flex items-center justify-between p-4">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded bg-slate-100 flex items-center justify-center">
+                  <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                </div>
+                <div>
+                  <div class="flex items-center gap-2">
+                    <h4 class="font-semibold text-slate-800 text-lg">Ares Management</h4>
+                    <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                  </div>
+                  <div class="flex items-center gap-3 text-sm text-slate-500">
+                    <span>aresmgmt.com</span>
+                    <span>·</span>
+                    <span>9 contacts</span>
+                  </div>
+                </div>
+              </div>
+              <div class="flex items-center gap-2">
+                <button class="w-9 h-9 rounded-lg border border-slate-200 flex items-center justify-center text-slate-400"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button>
+                <button class="w-9 h-9 rounded-lg border border-slate-200 flex items-center justify-center text-slate-400"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Company 5: Blue Owl Capital (collapsed) -->
+        <div class="company-card">
+          <div class="rounded-lg border border-slate-200 bg-white overflow-hidden shadow-sm">
+            <div class="company-header flex items-center justify-between p-4">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded bg-slate-100 flex items-center justify-center">
+                  <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                </div>
+                <div>
+                  <div class="flex items-center gap-2">
+                    <h4 class="font-semibold text-slate-800 text-lg">Blue Owl Capital</h4>
+                    <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                  </div>
+                  <div class="flex items-center gap-3 text-sm text-slate-500">
+                    <span>blueowl.com</span>
+                    <span>·</span>
+                    <span>7 contacts</span>
+                  </div>
+                </div>
+              </div>
+              <div class="flex items-center gap-2">
+                <button class="w-9 h-9 rounded-lg border border-slate-200 flex items-center justify-center text-slate-400"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button>
+                <button class="w-9 h-9 rounded-lg border border-slate-200 flex items-center justify-center text-slate-400"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Company 6: Blackstone Credit (collapsed) -->
+        <div class="company-card">
+          <div class="rounded-lg border border-slate-200 bg-white overflow-hidden shadow-sm">
+            <div class="company-header flex items-center justify-between p-4">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded bg-slate-100 flex items-center justify-center">
+                  <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                </div>
+                <div>
+                  <div class="flex items-center gap-2">
+                    <h4 class="font-semibold text-slate-800 text-lg">Blackstone Credit</h4>
+                    <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                  </div>
+                  <div class="flex items-center gap-3 text-sm text-slate-500">
+                    <span>blackstone.com</span>
+                    <span>·</span>
+                    <span>15 contacts</span>
+                  </div>
+                </div>
+              </div>
+              <div class="flex items-center gap-2">
+                <button class="w-9 h-9 rounded-lg border border-slate-200 flex items-center justify-center text-slate-400"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button>
+                <button class="w-9 h-9 rounded-lg border border-slate-200 flex items-center justify-center text-slate-400"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Company 7: HPS Investment Partners (collapsed) -->
+        <div class="company-card">
+          <div class="rounded-lg border border-slate-200 bg-white overflow-hidden shadow-sm">
+            <div class="company-header flex items-center justify-between p-4">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded bg-slate-100 flex items-center justify-center">
+                  <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                </div>
+                <div>
+                  <div class="flex items-center gap-2">
+                    <h4 class="font-semibold text-slate-800 text-lg">HPS Investment Partners</h4>
+                    <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                  </div>
+                  <div class="flex items-center gap-3 text-sm text-slate-500">
+                    <span>hpspartners.com</span>
+                    <span>·</span>
+                    <span>11 contacts</span>
+                  </div>
+                </div>
+              </div>
+              <div class="flex items-center gap-2">
+                <button class="w-9 h-9 rounded-lg border border-slate-200 flex items-center justify-center text-slate-400"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button>
+                <button class="w-9 h-9 rounded-lg border border-slate-200 flex items-center justify-center text-slate-400"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Results area 2 (Second search results - biotech) -->
+      <div id="results-area-2" class="hidden space-y-2">
+        
+        <!-- Company 1: Maxwell Biosciences (expanded initially, will be collapsed) -->
+        <div class="company-card" data-company="1">
+          <div class="rounded-lg border border-slate-200 bg-white overflow-hidden shadow-sm">
+            <div class="company-header flex items-center justify-between p-4 transition-colors cursor-pointer" data-company-header="1">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded bg-slate-100 flex items-center justify-center">
+                  <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                  </svg>
+                </div>
+                <div>
+                  <div class="flex items-center gap-2">
+                    <h4 class="font-semibold text-slate-800 text-lg">Maxwell Biosciences</h4>
+                    <svg class="w-4 h-4 text-slate-400 chevron-icon transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                  </div>
+                  <div class="flex items-center gap-3 text-sm text-slate-500">
+                    <div class="flex items-center gap-1">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/>
+                      </svg>
+                      <span>maxwellbio.com</span>
+                    </div>
+                    <div class="flex items-center gap-1">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+                      </svg>
+                      <span>10 contacts</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="flex items-center gap-2">
+                <button class="expand-btn w-9 h-9 rounded-lg border border-slate-200 flex items-center justify-center text-slate-400 hover:bg-slate-50 transition-transform duration-200">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/>
+                  </svg>
+                </button>
+                <button class="w-9 h-9 rounded-lg border border-slate-200 flex items-center justify-center text-slate-400 hover:bg-slate-50">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+            
+            <!-- Contacts List (visible initially) -->
+            <div class="contacts-list border-t border-slate-100" data-contacts="1">
+              <div class="flex items-center justify-between px-4 py-3 hover:bg-slate-50 border-b border-slate-100">
+                <div>
+                  <h5 class="font-medium text-slate-800">Dr. David Mancini</h5>
+                  <p class="text-sm text-slate-500">CEO & Co-Founder</p>
+                  <div class="flex items-center gap-2 mt-0.5">
+                    <span class="text-sm text-slate-500">d.mancini@maxwellbio.com</span>
+                    <svg class="w-4 h-4 text-slate-400" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                    </svg>
+                  </div>
+                </div>
+                <div class="flex items-center gap-3">
+                  <span class="text-sm font-medium text-slate-600">92%</span>
+                  <svg class="w-5 h-5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                  </svg>
+                </div>
+              </div>
+              
+              <div class="flex items-center justify-between px-4 py-3 hover:bg-slate-50 border-b border-slate-100">
+                <div>
+                  <h5 class="font-medium text-slate-800">Dr. Sarah Chen</h5>
+                  <p class="text-sm text-slate-500">Chief Scientific Officer</p>
+                  <div class="flex items-center gap-2 mt-0.5">
+                    <span class="text-sm text-slate-500">s.chen@maxwellbio.com</span>
+                    <svg class="w-4 h-4 text-slate-400" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                    </svg>
+                  </div>
+                </div>
+                <div class="flex items-center gap-3">
+                  <span class="text-sm font-medium text-slate-600">88%</span>
+                  <svg class="w-5 h-5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                  </svg>
+                </div>
+              </div>
+              
+              <div class="flex items-center justify-between px-4 py-3 hover:bg-slate-50">
+                <div>
+                  <h5 class="font-medium text-slate-800">Michael Torres</h5>
+                  <p class="text-sm text-slate-500">VP of Business Development</p>
+                  <div class="flex items-center gap-2 mt-0.5">
+                    <span class="text-sm text-slate-500">m.torres@maxwellbio.com</span>
+                    <svg class="w-4 h-4 text-slate-400" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                    </svg>
+                  </div>
+                </div>
+                <div class="flex items-center gap-3">
+                  <span class="text-sm font-medium text-slate-600">85%</span>
+                  <svg class="w-5 h-5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Company 2: Manifold Labs (collapsed initially, will be expanded) -->
+        <div class="company-card" data-company="2">
+          <div class="rounded-lg border border-slate-200 bg-white overflow-hidden shadow-sm">
+            <div class="company-header flex items-center justify-between p-4 transition-colors cursor-pointer" data-company-header="2">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded bg-slate-100 flex items-center justify-center">
+                  <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                  </svg>
+                </div>
+                <div>
+                  <div class="flex items-center gap-2">
+                    <h4 class="font-semibold text-slate-800 text-lg">Manifold Labs</h4>
+                    <svg class="w-4 h-4 text-slate-400 chevron-icon transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                  </div>
+                  <div class="flex items-center gap-3 text-sm text-slate-500">
+                    <div class="flex items-center gap-1">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/>
+                      </svg>
+                      <span>manifoldlabs.bio</span>
+                    </div>
+                    <div class="flex items-center gap-1">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+                      </svg>
+                      <span>10 contacts</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="flex items-center gap-2">
+                <button class="expand-btn w-9 h-9 rounded-lg border border-slate-200 flex items-center justify-center text-slate-400 hover:bg-slate-50">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                  </svg>
+                </button>
+                <button class="w-9 h-9 rounded-lg border border-slate-200 flex items-center justify-center text-slate-400 hover:bg-slate-50">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+            
+            <!-- Contacts List (hidden initially) -->
+            <div class="contacts-list border-t border-slate-100 hidden" data-contacts="2">
+              <div id="contact-gleb" class="contact-row flex items-center justify-between px-4 py-3 hover:bg-slate-50 border-b border-slate-100 cursor-pointer transition-colors">
+                <div>
+                  <h5 class="font-medium text-slate-800">Gleb Kuznetsov</h5>
+                  <p class="text-sm text-slate-500">Co-Founder & CEO</p>
+                  <div class="flex items-center gap-1 mt-0.5 text-slate-400">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                    </svg>
+                    <span class="text-sm">gleb@manifoldlabs.bio</span>
+                  </div>
+                </div>
+                <div class="flex items-center gap-3">
+                  <span class="text-sm font-medium text-slate-600">89%</span>
+                  <svg class="w-5 h-5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                  </svg>
+                </div>
+              </div>
+              
+              <div class="flex items-center justify-between px-4 py-3 hover:bg-slate-50 border-b border-slate-100">
+                <div>
+                  <h5 class="font-medium text-slate-800">Pierce Ogden</h5>
+                  <p class="text-sm text-slate-500">Co-Founder & CTO</p>
+                  <div class="flex items-center gap-1 mt-0.5 text-slate-400">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                    </svg>
+                    <span class="text-sm">pierce@manifoldlabs.bio</span>
+                  </div>
+                </div>
+                <div class="flex items-center gap-3">
+                  <span class="text-sm font-medium text-slate-600">89%</span>
+                  <svg class="w-5 h-5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                  </svg>
+                </div>
+              </div>
+              
+              <div class="flex items-center justify-between px-4 py-3 hover:bg-slate-50 border-b border-slate-100">
+                <div>
+                  <h5 class="font-medium text-slate-800">Shane Lofgren</h5>
+                  <p class="text-sm text-slate-500">Co-Founder & Head of Portfolio Development and Strategy</p>
+                  <div class="flex items-center gap-1 mt-0.5 text-slate-400">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                    </svg>
+                    <span class="text-sm">shane@manifoldlabs.bio</span>
+                  </div>
+                </div>
+                <div class="flex items-center gap-3">
+                  <span class="text-sm font-medium text-slate-600">89%</span>
+                  <svg class="w-5 h-5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                  </svg>
+                </div>
+              </div>
+              
+              <!-- More contacts available -->
+              <div class="px-4 py-3 text-center text-sm text-slate-500">
+                +7 more contacts available
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Company: QbDVision (collapsed) -->
+        <div class="company-card">
+          <div class="rounded-lg border border-slate-200 bg-white overflow-hidden shadow-sm">
+            <div class="company-header flex items-center justify-between p-4">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded bg-slate-100 flex items-center justify-center">
+                  <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                </div>
+                <div>
+                  <div class="flex items-center gap-2">
+                    <h4 class="font-semibold text-slate-800 text-lg">QbDVision</h4>
+                    <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                  </div>
+                  <div class="flex items-center gap-3 text-sm text-slate-500">
+                    <span>qbdvision.com</span>
+                    <span>·</span>
+                    <span>9 contacts</span>
+                  </div>
+                </div>
+              </div>
+              <div class="flex items-center gap-2">
+                <button class="w-9 h-9 rounded-lg border border-slate-200 flex items-center justify-center text-slate-400"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button>
+                <button class="w-9 h-9 rounded-lg border border-slate-200 flex items-center justify-center text-slate-400"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Company: Genprex (collapsed) -->
+        <div class="company-card">
+          <div class="rounded-lg border border-slate-200 bg-white overflow-hidden shadow-sm">
+            <div class="company-header flex items-center justify-between p-4">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded bg-slate-100 flex items-center justify-center">
+                  <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                </div>
+                <div>
+                  <div class="flex items-center gap-2">
+                    <h4 class="font-semibold text-slate-800 text-lg">Genprex</h4>
+                    <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                  </div>
+                  <div class="flex items-center gap-3 text-sm text-slate-500">
+                    <span>genprex.com</span>
+                    <span>·</span>
+                    <span>6 contacts</span>
+                  </div>
+                </div>
+              </div>
+              <div class="flex items-center gap-2">
+                <button class="w-9 h-9 rounded-lg border border-slate-200 flex items-center justify-center text-slate-400"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button>
+                <button class="w-9 h-9 rounded-lg border border-slate-200 flex items-center justify-center text-slate-400"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Company: Jurata Thin Film (collapsed) -->
+        <div class="company-card">
+          <div class="rounded-lg border border-slate-200 bg-white overflow-hidden shadow-sm">
+            <div class="company-header flex items-center justify-between p-4">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded bg-slate-100 flex items-center justify-center">
+                  <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                </div>
+                <div>
+                  <div class="flex items-center gap-2">
+                    <h4 class="font-semibold text-slate-800 text-lg">Jurata Thin Film</h4>
+                    <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                  </div>
+                  <div class="flex items-center gap-3 text-sm text-slate-500">
+                    <span>juratatf.com</span>
+                    <span>·</span>
+                    <span>5 contacts</span>
+                  </div>
+                </div>
+              </div>
+              <div class="flex items-center gap-2">
+                <button class="w-9 h-9 rounded-lg border border-slate-200 flex items-center justify-center text-slate-400"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button>
+                <button class="w-9 h-9 rounded-lg border border-slate-200 flex items-center justify-center text-slate-400"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Company: Willow Laboratories (collapsed) -->
+        <div class="company-card">
+          <div class="rounded-lg border border-slate-200 bg-white overflow-hidden shadow-sm">
+            <div class="company-header flex items-center justify-between p-4">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded bg-slate-100 flex items-center justify-center">
+                  <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                </div>
+                <div>
+                  <div class="flex items-center gap-2">
+                    <h4 class="font-semibold text-slate-800 text-lg">Willow Laboratories</h4>
+                    <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                  </div>
+                  <div class="flex items-center gap-3 text-sm text-slate-500">
+                    <span>willowlabs.io</span>
+                    <span>·</span>
+                    <span>8 contacts</span>
+                  </div>
+                </div>
+              </div>
+              <div class="flex items-center gap-2">
+                <button class="w-9 h-9 rounded-lg border border-slate-200 flex items-center justify-center text-slate-400"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button>
+                <button class="w-9 h-9 rounded-lg border border-slate-200 flex items-center justify-center text-slate-400"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Company: NuProbe Global (collapsed) -->
+        <div class="company-card">
+          <div class="rounded-lg border border-slate-200 bg-white overflow-hidden shadow-sm">
+            <div class="company-header flex items-center justify-between p-4">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded bg-slate-100 flex items-center justify-center">
+                  <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                </div>
+                <div>
+                  <div class="flex items-center gap-2">
+                    <h4 class="font-semibold text-slate-800 text-lg">NuProbe Global</h4>
+                    <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                  </div>
+                  <div class="flex items-center gap-3 text-sm text-slate-500">
+                    <span>nuprobe.com</span>
+                    <span>·</span>
+                    <span>7 contacts</span>
+                  </div>
+                </div>
+              </div>
+              <div class="flex items-center gap-2">
+                <button class="w-9 h-9 rounded-lg border border-slate-200 flex items-center justify-center text-slate-400"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button>
+                <button class="w-9 h-9 rounded-lg border border-slate-200 flex items-center justify-center text-slate-400"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Replay button -->
+    <button id="replay-btn" class="hidden items-center gap-1.5 text-sm text-slate-500 hover:text-slate-700 transition-colors cursor-pointer mt-6 mx-auto">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+      </svg>
+      Replay demo
+    </button>
+  </div>
+  
+  <!-- ==================== -->
+  <!-- COMPOSE SLIDER -->
+  <!-- ==================== -->
+  <div id="compose-slider">
+    <div id="compose-content" class="p-4 pb-2">
+      <!-- Header - simplified -->
+      <div class="flex items-center justify-between mb-4">
+        <div class="flex items-center gap-2 text-slate-700">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+          </svg>
+          <span class="font-medium">Compose</span>
+        </div>
+        <div class="flex items-center gap-2 text-slate-400">
+          <button class="p-1 hover:bg-slate-100 rounded"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"/></svg></button>
+          <button class="p-1 hover:bg-slate-100 rounded"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/></svg></button>
+          <button class="p-1 hover:bg-slate-100 rounded"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button>
+        </div>
+      </div>
+      
+      <!-- Product input area -->
+      <div class="bg-white rounded-lg p-3 mb-4 border border-slate-200">
+        <div id="product-input" class="text-slate-500 min-h-[24px] mb-1">
+          <span id="product-text" class="text-slate-800"></span><span id="product-placeholder" class="text-slate-400">Add your product</span><span id="product-cursor" class="hidden cursor-blink text-slate-400">|</span>
+        </div>
+        
+        <!-- Icon row -->
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-1.5">
+            <button class="p-1.5 rounded border border-slate-200 bg-white text-slate-400 hover:bg-slate-50"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg></button>
+            <button class="p-1.5 rounded border border-amber-200 bg-white text-amber-600"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg></button>
+          </div>
+          <button id="generate-btn" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-amber-200 bg-amber-50 text-amber-700 text-sm font-medium transition-all hover:bg-amber-100">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+            Generate Email
+          </button>
+        </div>
+      </div>
+      
+      <!-- Email field -->
+      <div class="flex items-center gap-3 p-3 bg-white rounded-lg border border-slate-200 mb-3">
+        <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+        <span class="text-slate-800">gleb@manifoldlabs.bio</span>
+      </div>
+      
+      <!-- Subject field -->
+      <div class="flex items-center gap-3 p-3 bg-white rounded-lg border border-slate-200 mb-3">
+        <span class="text-slate-400 text-lg font-serif">T</span>
+        <span id="subject-text" class="text-slate-400">Email Subject</span>
+      </div>
+      
+      <!-- Body field -->
+      <div class="p-3 bg-white rounded-lg border border-slate-200 mb-2 min-h-[200px]">
+        <p id="body-text" class="text-slate-400">Enter or edit the generated email content...</p>
+      </div>
+      
+      <!-- Bottom row - simplified -->
+      <div id="send-row" class="flex items-center justify-end mb-16">
+        <button id="send-btn" class="flex items-center gap-2 px-4 py-2 rounded-lg border border-green-200 bg-green-50 text-slate-600 transition-all">
+          <svg class="w-4 h-4 rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
+          Send Email
+        </button>
+      </div>
+    </div>
+  </div><!-- end compose-slider -->
+  
+  </div><!-- end demo-content -->
+  </div><!-- end demo-viewport -->
+
+  <script>
+    // ========================================
+    // SPEED MULTIPLIER - Adjust this to control demo speed
+    // 1 = normal speed, 2 = 2x faster (50% time), 1.5 = 1.5x faster, etc.
+    // ========================================
+    const SPEED = 2;
+    
+    // Helper function for all delays - automatically applies speed multiplier
+    const wait = (ms) => new Promise(r => setTimeout(r, ms / SPEED));
+    
+    // Demo configuration
+    const DEMO_QUERY_1 = "Private credit asset managers in NYC";
+    const DEMO_QUERY_2 = "biotech series A startups in austin";
+    const TYPING_SPEED = 38 / SPEED;
+    const SEARCH_DELAY = 1125 / SPEED;
+    const START_DELAY = 600 / SPEED;
+    const CURSOR_MOVE_DURATION = 375 / SPEED;
+    const CURSOR_HOVER_DELAY = 225 / SPEED;
+    
+    // State
+    let isRunning = false;
+    let currentQuery = DEMO_QUERY_1;
+    let currentRole = 'leadership';
+    
+    // Elements
+    const demoContainer = document.getElementById('demo-container');
+    const demoViewport = document.getElementById('demo-viewport');
+    const demoContent = document.getElementById('demo-content');
+    const searchState = document.getElementById('search-state');
+    const resultsState = document.getElementById('results-state');
+    const typedText = document.getElementById('typed-text');
+    const cursor = document.getElementById('cursor');
+    const searchBtn = document.getElementById('search-btn');
+    const searchIcon = document.getElementById('search-icon');
+    const btnText = document.getElementById('btn-text');
+    const replayBtn = document.getElementById('replay-btn');
+    const resultsQuery = document.getElementById('results-query');
+    const fakeCursor = document.getElementById('fake-cursor');
+    const roleChip = document.getElementById('role-chip');
+    const roleText = document.getElementById('role-text');
+    const roleIcon = document.getElementById('role-icon');
+    const roleDropdown = document.getElementById('role-dropdown');
+    const compressedSearchBar = document.getElementById('compressed-search-bar');
+    const progressContainer = document.getElementById('progress-container');
+    const progressBar = document.getElementById('progress-bar');
+    const progressPercent = document.getElementById('progress-percent');
+    const duckHeader = document.getElementById('duck-header');
+    const resultsArea1 = document.getElementById('results-area-1');
+    const resultsArea2 = document.getElementById('results-area-2');
+    
+    // Compose elements
+    const composeSlider = document.getElementById('compose-slider');
+    const contactGleb = document.getElementById('contact-gleb');
+    const productText = document.getElementById('product-text');
+    const productPlaceholder = document.getElementById('product-placeholder');
+    const productCursor = document.getElementById('product-cursor');
+    const productInput = document.getElementById('product-input');
+    const generateBtn = document.getElementById('generate-btn');
+    const subjectText = document.getElementById('subject-text');
+    const bodyText = document.getElementById('body-text');
+    const sendBtn = document.getElementById('send-btn');
+    const successToast = document.getElementById('success-toast');
+    const replayOverlay = document.getElementById('replay-overlay');
+    const replayOverlayBtn = document.getElementById('replay-overlay-btn');
+    const titleOverlay1 = document.getElementById('title-overlay-1');
+    const titleOverlay2 = document.getElementById('title-overlay-2');
+    
+    // Email content
+    const PRODUCT_INPUT_TEXT = "crocs for business meetings";
+    const GENERATED_SUBJECT = "Elevate Your Team's Style with Crocs";
+    const GENERATED_BODY = `Hi Gleb,
+
+I hope this message finds you well! I came across Manifold Labs and was impressed by your innovative work in the biotech space.
+
+I wanted to reach out because I believe our professional Crocs collection could be a great fit for your team. Our business-appropriate footwear combines comfort with style, perfect for those long days in the lab or office.
+
+Would you be open to a quick call this week to discuss how we could support your team?
+
+Best regards,
+Alex`;
+    
+    const EDITED_BODY = `Hi Gleb,
+
+I hope this message finds you well! I came across Manifold Labs and was impressed by your groundbreaking work in the biotech space.
+
+I wanted to reach out because I believe our professional Crocs collection could be a perfect fit for your team. Our business-appropriate footwear combines comfort with style, perfect for those long days in the lab or office.
+
+Would you be open to a quick call this week to discuss how we could support your team?
+
+Best regards,
+Alex`;
+    
+    function typeText(text, index = 0) {
+      return new Promise((resolve) => {
+        if (index < text.length) {
+          typedText.textContent = text.slice(0, index + 1);
+          setTimeout(() => {
+            typeText(text, index + 1).then(resolve);
+          }, TYPING_SPEED);
+        } else {
+          resolve();
+        }
+      });
+    }
+    
+    function clearText() {
+      return new Promise((resolve) => {
+        const text = typedText.textContent;
+        if (text.length > 0) {
+          typedText.textContent = text.slice(0, -1);
+          setTimeout(() => {
+            clearText().then(resolve);
+          }, 30 / SPEED);
+        } else {
+          resolve();
+        }
+      });
+    }
+    
+    function moveCursorTo(targetElement, offsetX = 0.5, offsetY = 0.5) {
+      return new Promise((resolve) => {
+        const viewportRect = demoViewport.getBoundingClientRect();
+        const targetRect = targetElement.getBoundingClientRect();
+        
+        // Calculate position relative to viewport
+        const targetX = targetRect.left - viewportRect.left + targetRect.width * offsetX;
+        const targetY = targetRect.top - viewportRect.top + targetRect.height * offsetY;
+        
+        fakeCursor.style.transition = `left ${CURSOR_MOVE_DURATION}ms ease-out, top ${CURSOR_MOVE_DURATION}ms ease-out`;
+        fakeCursor.style.left = targetX + 'px';
+        fakeCursor.style.top = targetY + 'px';
+        
+        setTimeout(resolve, CURSOR_MOVE_DURATION);
+      });
+    }
+    
+    function simulateClick() {
+      return new Promise((resolve) => {
+        fakeCursor.classList.add('cursor-click');
+        setTimeout(() => {
+          fakeCursor.classList.remove('cursor-click');
+          resolve();
+        }, 150 / SPEED);
+      });
+    }
+    
+    function animateProgress() {
+      return new Promise((resolve) => {
+        progressContainer.classList.remove('hidden');
+        duckHeader.classList.add('hidden');
+        
+        let progress = 0;
+        const interval = setInterval(() => {
+          progress += 2;
+          if (progress > 80) {
+            clearInterval(interval);
+            setTimeout(() => {
+              progressBar.style.width = '100%';
+              progressPercent.textContent = '100%';
+              setTimeout(resolve, 200 / SPEED);
+            }, 200 / SPEED);
+          } else {
+            progressBar.style.width = progress + '%';
+            progressPercent.textContent = progress + '%';
+          }
+        }, 30 / SPEED);
+      });
+    }
+    
+    function hideProgress() {
+      progressContainer.classList.add('hidden');
+      progressBar.style.width = '0%';
+      progressPercent.textContent = '0%';
+      duckHeader.classList.remove('hidden');
+    }
+    
+    function showResults(resultsNum) {
+      searchState.classList.add('hidden');
+      resultsState.classList.remove('hidden');
+      resultsQuery.textContent = currentQuery;
+      
+      if (resultsNum === 1) {
+        resultsArea1.classList.remove('hidden');
+        resultsArea2.classList.add('hidden');
+        animateCards(resultsArea1);
+      } else {
+        resultsArea1.classList.add('hidden');
+        resultsArea2.classList.remove('hidden');
+        animateCards(resultsArea2);
+      }
+    }
+    
+    function animateCards(container) {
+      const cards = container.querySelectorAll('.company-card');
+      cards.forEach((card, index) => {
+        card.classList.remove('card-animate');
+        card.style.opacity = '0';
+        card.style.animationDelay = `${index * 0.12 / SPEED}s`;
+        setTimeout(() => {
+          card.classList.add('card-animate');
+        }, 50 / SPEED);
+      });
+    }
+    
+    function showSearchState() {
+      resultsState.classList.add('hidden');
+      searchState.classList.remove('hidden');
+      typedText.textContent = currentQuery;
+      cursor.classList.remove('hidden');
+    }
+    
+    function collapseCompany(companyNum) {
+      const contacts = document.querySelector(`[data-contacts="${companyNum}"]`);
+      const header = document.querySelector(`[data-company-header="${companyNum}"]`);
+      const chevron = header?.querySelector('.chevron-icon');
+      const expandBtn = header?.querySelector('.expand-btn svg');
+      
+      if (contacts) contacts.classList.add('hidden');
+      if (chevron) chevron.style.transform = '';
+      if (expandBtn) {
+        expandBtn.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>';
+      }
+    }
+    
+    function expandCompany(companyNum) {
+      const contacts = document.querySelector(`[data-contacts="${companyNum}"]`);
+      const header = document.querySelector(`[data-company-header="${companyNum}"]`);
+      const chevron = header?.querySelector('.chevron-icon');
+      const expandBtn = header?.querySelector('.expand-btn svg');
+      
+      if (contacts) {
+        contacts.classList.remove('hidden');
+        contacts.classList.add('slide-down');
+      }
+      if (chevron) chevron.style.transform = 'rotate(180deg)';
+      if (expandBtn) {
+        expandBtn.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/>';
+      }
+    }
+    
+    function showRoleDropdown() {
+      roleDropdown.classList.remove('hidden');
+    }
+    
+    function hideRoleDropdown() {
+      roleDropdown.classList.add('hidden');
+    }
+    
+    function setRole(role) {
+      currentRole = role;
+      const leadershipCheck = document.querySelector('#role-leadership .checkmark');
+      
+      if (role === 'cto') {
+        roleText.textContent = 'CTO';
+        roleIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>';
+        if (leadershipCheck) leadershipCheck.classList.add('hidden');
+      }
+    }
+    
+    function openComposer() {
+      composeSlider.classList.add('open');
+    }
+    
+    function scrollComposerTo(element) {
+      const slider = document.getElementById('compose-slider');
+      // Scroll to element, then add a bit more to show padding below
+      element.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      // Add extra scroll after a short delay
+      setTimeout(() => {
+        slider.scrollTop += 40;
+      }, 300 / SPEED);
+    }
+    
+    function typeInElement(element, text, index = 0) {
+      return new Promise((resolve) => {
+        if (index < text.length) {
+          element.textContent = text.slice(0, index + 1);
+          setTimeout(() => {
+            typeInElement(element, text, index + 1).then(resolve);
+          }, TYPING_SPEED); // Already scaled by SPEED
+        } else {
+          resolve();
+        }
+      });
+    }
+    
+    function showConfetti() {
+      const colors = ['#fbbf24', '#34d399', '#60a5fa', '#f472b6', '#a78bfa'];
+      const viewportWidth = demoViewport.offsetWidth || 800;
+      const viewportHeight = demoViewport.offsetHeight || 600;
+      for (let i = 0; i < 150; i++) {
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti';
+        confetti.style.left = Math.random() * viewportWidth + 'px';
+        confetti.style.top = Math.random() * (viewportHeight * 0.7) + (viewportHeight * 0.15) + 'px';
+        confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        confetti.style.animationDelay = (Math.random() * 0.6 / SPEED) + 's';
+        confetti.style.animationDuration = (1 / SPEED) + 's';
+        demoViewport.appendChild(confetti);
+        setTimeout(() => confetti.remove(), 1200 / SPEED);
+      }
+    }
+    
+    function showSuccess() {
+      successToast.classList.add('show');
+      showConfetti();
+      
+      // Auto-dismiss after 3 seconds (scaled)
+      setTimeout(() => {
+        successToast.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+        successToast.style.opacity = '0';
+        setTimeout(() => {
+          successToast.classList.remove('show');
+          successToast.style.opacity = '';
+          successToast.style.transform = 'translate(-50%, -50%) scale(0)';
+        }, 300 / SPEED);
+      }, 3000 / SPEED);
+    }
+    
+    function resetDemo() {
+      currentQuery = DEMO_QUERY_2;
+      currentRole = 'leadership';
+      
+      // Reset viewport scroll position
+      demoViewport.scrollTop = 0;
+      demoViewport.scrollLeft = 0;
+      
+      searchState.classList.remove('hidden');
+      typedText.textContent = '';
+      cursor.classList.remove('hidden');
+      searchBtn.classList.remove('opacity-75');
+      searchBtn.classList.remove('cursor-hover');
+      roleDropdown.classList.add('hidden');
+      hideProgress();
+      
+      roleText.textContent = 'Leadership';
+      roleIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>';
+      
+      const leadershipCheck = document.querySelector('#role-leadership .checkmark');
+      if (leadershipCheck) leadershipCheck.classList.remove('hidden');
+      
+      resultsState.classList.add('hidden');
+      
+      // Reset companies in results-area-2: expand company 1, collapse company 2
+      const contacts1 = document.querySelector('#results-area-2 [data-contacts="1"]');
+      const contacts2 = document.querySelector('#results-area-2 [data-contacts="2"]');
+      if (contacts1) contacts1.classList.remove('hidden');
+      if (contacts2) contacts2.classList.add('hidden');
+      
+      document.querySelectorAll('.contacts-list').forEach(el => {
+        el.classList.remove('slide-down');
+      });
+      
+      fakeCursor.classList.remove('visible');
+      fakeCursor.classList.remove('text-mode');
+      fakeCursor.style.transition = 'none';
+      
+      
+      replayBtn.classList.add('hidden');
+      replayBtn.classList.remove('flex');
+      
+      // Hide replay overlay (for standalone mode)
+      replayOverlay.classList.remove('visible');
+      
+      // Reset compose slider
+      composeSlider.classList.remove('open');
+      composeSlider.style.transform = 'translateX(100%)';
+      productText.textContent = '';
+      productPlaceholder.classList.remove('hidden');
+      productCursor.classList.add('hidden');
+      subjectText.textContent = 'Email Subject';
+      subjectText.classList.add('text-slate-400');
+      subjectText.classList.remove('text-slate-800');
+      bodyText.textContent = 'Enter or edit the generated email content...';
+      bodyText.classList.add('text-slate-400');
+      bodyText.classList.remove('text-slate-800');
+      bodyText.style.whiteSpace = 'normal';
+      successToast.classList.remove('show');
+      successToast.style.transform = 'translate(-50%, -50%) scale(0)';
+      successToast.style.opacity = '';
+      // Reset title overlays for replays - must clear animation state first
+      titleOverlay1.classList.remove('visible');
+      titleOverlay1.style.animation = 'none';
+      titleOverlay1.offsetHeight; // Trigger reflow to reset animation
+      titleOverlay1.style.animation = '';
+      titleOverlay1.classList.add('preload'); // Show immediately for replay
+      titleOverlay2.classList.remove('visible');
+      titleOverlay2.style.animation = 'none';
+      titleOverlay2.offsetHeight;
+      titleOverlay2.style.animation = '';
+    }
+    
+    async function runDemo() {
+      if (isRunning) return;
+      isRunning = true;
+      
+      resetDemo();
+      
+      await wait(START_DELAY * SPEED); // START_DELAY already divided, so multiply back for wait()
+      
+      // First title overlay is already visible via preload class
+      // Switch from preload to visible to start the animation sequence
+      titleOverlay1.classList.remove('preload');
+      titleOverlay1.classList.add('visible');
+      
+      // Wait 1.5 seconds then start typing while overlay continues fading
+      await wait(1500);
+      
+      // ===== PHASE 1: Type biotech search query =====
+      // Start typing while overlay is still fading out
+      currentQuery = DEMO_QUERY_2;
+      
+      // Remove overlay after a short delay (let it fade naturally while typing starts)
+      setTimeout(() => {
+        titleOverlay1.classList.remove('visible');
+      }, 1000 / SPEED);
+      
+      await typeText(DEMO_QUERY_2);
+      await wait(300);
+      
+      // ===== PHASE 2: Open role selector and select CTO =====
+      fakeCursor.style.left = '260px';
+      fakeCursor.style.top = '150px';
+      fakeCursor.classList.add('visible');
+      await wait(150);
+      
+      await moveCursorTo(roleChip, 0.5, 0.5);
+      roleChip.classList.add('cursor-hover');
+      await wait(CURSOR_HOVER_DELAY * SPEED); // Already divided, multiply back
+      await simulateClick();
+      roleChip.classList.remove('cursor-hover');
+      
+      showRoleDropdown();
+      await wait(300);
+      
+      const ctoOption = document.getElementById('role-cto');
+      await moveCursorTo(ctoOption, 0.5, 0.5);
+      ctoOption.classList.add('cursor-hover');
+      await wait(CURSOR_HOVER_DELAY * SPEED);
+      await simulateClick();
+      ctoOption.classList.remove('cursor-hover');
+      
+      setRole('cto');
+      hideRoleDropdown();
+      await wait(300);
+      
+      // ===== PHASE 3: Click search button =====
+      await moveCursorTo(searchBtn, 0.5, 0.5);
+      searchBtn.classList.add('cursor-hover');
+      searchBtn.classList.add('btn-pulse');
+      await wait(CURSOR_HOVER_DELAY * SPEED + 225);
+      await simulateClick();
+      searchBtn.classList.remove('cursor-hover');
+      searchBtn.classList.remove('btn-pulse');
+      fakeCursor.classList.remove('visible');
+      
+      cursor.classList.add('hidden');
+      await animateProgress();
+      hideProgress();
+      
+      showResults(2);
+      await wait(450);
+      
+      // ===== PHASE 4: Interact with results - collapse first, expand second =====
+      fakeCursor.style.transition = 'none';
+      fakeCursor.style.left = '300px';
+      fakeCursor.style.top = '200px';
+      fakeCursor.classList.add('visible');
+      await wait(150);
+      
+      // Click first company header to collapse it
+      const company1Header = document.querySelector('#results-area-2 [data-company-header="1"]');
+      await moveCursorTo(company1Header, 0.3, 0.5);
+      company1Header.classList.add('cursor-hover');
+      await wait(CURSOR_HOVER_DELAY * SPEED);
+      await simulateClick();
+      company1Header.classList.remove('cursor-hover');
+      
+      // Collapse company 1 in results-area-2
+      const contacts1 = document.querySelector('#results-area-2 [data-contacts="1"]');
+      if (contacts1) contacts1.classList.add('hidden');
+      await wait(300);
+      
+      // Click second company header to expand it
+      const company2Header = document.querySelector('#results-area-2 [data-company-header="2"]');
+      await moveCursorTo(company2Header, 0.3, 0.5);
+      company2Header.classList.add('cursor-hover');
+      await wait(CURSOR_HOVER_DELAY * SPEED);
+      await simulateClick();
+      company2Header.classList.remove('cursor-hover');
+      
+      // Expand company 2 in results-area-2
+      const contacts2 = document.querySelector('#results-area-2 [data-contacts="2"]');
+      if (contacts2) {
+        contacts2.classList.remove('hidden');
+        contacts2.classList.add('slide-down');
+      }
+      await wait(450);
+      
+      // Show second title overlay - animation handles dark to light to fade
+      titleOverlay2.classList.add('visible');
+      await wait(2500);
+      titleOverlay2.classList.remove('visible');
+      
+      // ===== PHASE 5: Click on contact to open composer =====
+      await moveCursorTo(contactGleb, 0.3, 0.5);
+      contactGleb.classList.add('cursor-hover');
+      await wait(CURSOR_HOVER_DELAY * SPEED);
+      await simulateClick();
+      contactGleb.classList.remove('cursor-hover');
+      
+      openComposer();
+      await wait(375);
+      
+      // ===== PHASE 6: Type product =====
+      await moveCursorTo(productInput, 0.3, 0.5);
+      await wait(150);
+      await simulateClick();
+      
+      productPlaceholder.classList.add('hidden');
+      productCursor.classList.remove('hidden');
+      await wait(150);
+      
+      await typeInElement(productText, PRODUCT_INPUT_TEXT);
+      await wait(300);
+      productCursor.classList.add('hidden');
+      
+      // ===== PHASE 7: Click Generate =====
+      await moveCursorTo(generateBtn, 0.5, 0.5);
+      generateBtn.classList.add('btn-hover');
+      generateBtn.classList.add('btn-pulse');
+      await wait(CURSOR_HOVER_DELAY * SPEED + 225);
+      await simulateClick();
+      generateBtn.classList.remove('btn-hover');
+      generateBtn.classList.remove('btn-pulse');
+      
+      // Generate content
+      await wait(450);
+      subjectText.textContent = GENERATED_SUBJECT;
+      subjectText.classList.remove('text-slate-400');
+      subjectText.classList.add('text-slate-800');
+      
+      await wait(225);
+      bodyText.textContent = GENERATED_BODY;
+      bodyText.classList.remove('text-slate-400');
+      bodyText.classList.add('text-slate-800');
+      bodyText.style.whiteSpace = 'pre-wrap';
+      
+      await wait(600);
+      
+      // ===== PHASE 8: Edit email body with backspace and retyping =====
+      // Switch to I-beam text cursor
+      fakeCursor.classList.add('text-mode');
+      
+      await moveCursorTo(bodyText, 0.9, 0.18);
+      await wait(225);
+      
+      // Click to place cursor in text
+      await simulateClick();
+      await wait(300);
+      
+      // Simulate deleting "innovative" and typing "groundbreaking"
+      const deleteWord = 'innovative';
+      const newWord = 'groundbreaking';
+      const wordIndex = GENERATED_BODY.indexOf(deleteWord);
+      const beforeWord = GENERATED_BODY.slice(0, wordIndex);
+      const afterWord = GENERATED_BODY.slice(wordIndex + deleteWord.length);
+      
+      // Delete character by character (backspace)
+      for (let i = deleteWord.length; i >= 0; i--) {
+        bodyText.textContent = beforeWord + deleteWord.slice(0, i) + afterWord;
+        await wait(38);
+      }
+      
+      await wait(150);
+      
+      // Type new word character by character
+      for (let i = 1; i <= newWord.length; i++) {
+        bodyText.textContent = beforeWord + newWord.slice(0, i) + afterWord;
+        await wait(45);
+      }
+      
+      await wait(300);
+      
+      // Apply final edited text (includes the second word change: great → perfect)
+      bodyText.textContent = EDITED_BODY;
+      
+      // Switch back to hand cursor
+      fakeCursor.classList.remove('text-mode');
+      await wait(375);
+      
+      // ===== PHASE 9: Send email =====
+      // Scroll to show send button
+      scrollComposerTo(sendBtn);
+      await wait(600);
+      
+      // Move cursor to fixed position at bottom-right where Send Email button appears
+      // (can't use getBoundingClientRect for elements inside scrollable drawer)
+      const viewportHeight = demoViewport.offsetHeight || 600;
+      const viewportWidth = demoViewport.offsetWidth || 520;
+      fakeCursor.style.transition = `left ${CURSOR_MOVE_DURATION}ms ease-out, top ${CURSOR_MOVE_DURATION}ms ease-out`;
+      fakeCursor.style.left = (viewportWidth - 80) + 'px';
+      fakeCursor.style.top = (viewportHeight + 230) + 'px';
+      await wait(CURSOR_MOVE_DURATION * SPEED);
+      sendBtn.classList.add('btn-hover');
+      sendBtn.classList.add('btn-pulse');
+      await wait(CURSOR_HOVER_DELAY * SPEED + 225);
+      await simulateClick();
+      sendBtn.classList.remove('btn-hover');
+      sendBtn.classList.remove('btn-pulse');
+      
+      fakeCursor.classList.remove('visible');
+      
+      // ===== PHASE 10: Success! =====
+      await wait(225);
+      showSuccess();
+      
+      // Wait for success toast to show, then notify parent
+      await wait(750);
+      
+      // Notify parent that demo is complete (for overlay in React component)
+      try {
+        window.parent.postMessage({ type: 'demoComplete' }, '*');
+      } catch (e) {
+        // Standalone mode - show internal overlay as fallback
+        replayOverlay.classList.add('visible');
+      }
+      
+      isRunning = false;
+    }
+    
+    // Listen for restart message from parent
+    window.addEventListener('message', (event) => {
+      if (event.data?.type === 'restartDemo') {
+        runDemo();
+      }
+    });
+    
+    // Legacy replay button (hidden, but keep for compatibility)
+    replayBtn.addEventListener('click', () => {
+      replayOverlay.classList.remove('visible');
+      runDemo();
+    });
+    
+    // Internal replay overlay button (fallback for standalone mode)
+    replayOverlayBtn.addEventListener('click', () => {
+      replayOverlay.classList.remove('visible');
+      runDemo();
+    });
+    
+    window.addEventListener('load', () => {
+      runDemo();
+    });
+  </script>
+</body>
+</html>
