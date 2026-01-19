@@ -138,7 +138,7 @@ export function ContactRow({
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
-              ) : (contact as any).mobilePhoneStatus === 'pending' || pendingPhoneRevealIds?.has(contact.id) ? (
+              ) : (contact as any).mobilePhoneStatus === 'pending' || (pendingPhoneRevealIds?.has(contact.id) && !(contact as any).mobilePhoneStatus) ? (
                 <TooltipProvider delayDuration={300}>
                   <Tooltip>
                     <TooltipTrigger asChild>
