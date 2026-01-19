@@ -9,6 +9,7 @@ import { StealthOnboardingModal } from "@/features/landing-stealth/StealthOnboar
 import danThumb from "@/features/landing-stealth/assets/professional_headshot_of_dan_hartmann_thumb.jpg";
 import sarahThumb from "@/features/landing-stealth/assets/professional_headshot_of_sarah_chen_thumb.jpg";
 import alexThumb from "@/features/landing-stealth/assets/natural_outdoor_portrait_of_older_alex_rivera_with_beard_thumb.jpg";
+import fiveMinutesImage from "@/features/landing-stealth/assets/5_contacts_no_title_with_duck_sml.png";
 
 const testimonials = [
   {
@@ -34,64 +35,34 @@ const testimonials = [
 const freshDataTabs = [
   {
     id: "fresh-data",
-    icon: Zap,
-    title: "0 Contacts in Our DB",
-    summary: "Fresh data, every search",
-    fullDescription: "The era of cold emailing 30k \"industry-related\" people is over. Find your ISP for THIS WEEK, maybe 10, 20 or 30, and email them.",
+    icon: Clock,
+    title: "5 Minutes per Day",
+    summary: "Making sales simple and fun again",
+    fullDescription: "No more tool overload. Just follow the checklist for the day.",
   },
   {
     id: "one-prompt",
     icon: Sparkles,
     title: "1 Prompt, Not 75 Filters",
     summary: "Just type what you want",
-    fullDescription: "No dropdown mazes. No endless checkboxes. No \"advanced search\" tutorials. Just describe your ideal customer in plain English and let AI do the rest.",
   },
   {
     id: "unsearchable",
     icon: Map,
     title: "Search the Unsearchable",
     summary: "Queries nobody else can run",
-    fullDescription: "Traditional databases can only filter by industry, location, and company size. We can find \"recently-exited startups\" or \"beach-side hotels\" — context that exists nowhere else.",
   },
 ];
 
-function ComparisonChart() {
+function FiveMinutesGraphic() {
   return (
     <div className="w-full h-full flex items-center justify-center p-6">
-      <div className="w-full max-w-md">
-        <div className="flex items-end justify-center gap-8 h-48">
-          <div className="flex flex-col items-center">
-            <div className="relative">
-              <div className="w-20 bg-red-500/20 border border-red-500/40 rounded-t-lg h-32 flex items-end justify-center pb-2">
-                <Database className="w-8 h-8 text-red-400/60" />
-              </div>
-              <div className="absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap">
-                <span className="text-red-400 text-sm font-mono">300M+</span>
-              </div>
-            </div>
-            <span className="text-gray-500 text-sm mt-3 text-center">Stale DB</span>
-            <span className="text-gray-600 text-xs">12-18 months old</span>
-          </div>
-          
-          <div className="flex flex-col items-center">
-            <div className="relative">
-              <div className="w-20 bg-green-500/20 border border-green-500/40 rounded-t-lg h-16 flex items-end justify-center pb-2">
-                <Zap className="w-8 h-8 text-green-400" />
-              </div>
-              <div className="absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap">
-                <span className="text-green-400 text-sm font-mono">Fresh</span>
-              </div>
-            </div>
-            <span className="text-gray-400 text-sm mt-3 text-center">Live Search</span>
-            <span className="text-green-400/80 text-xs">Real-time</span>
-          </div>
-        </div>
-        
-        <div className="mt-8 text-center">
-          <p className="text-gray-500 text-sm">
-            <span className="text-yellow-400">Quality</span> over quantity
-          </p>
-        </div>
+      <div className="w-full max-w-sm text-center">
+        <img 
+          src={fiveMinutesImage} 
+          alt="Playful duck mascot with daily email task card" 
+          className="w-full h-auto rounded-xl mb-4 opacity-90"
+        />
       </div>
     </div>
   );
@@ -170,7 +141,7 @@ function SearchExamples() {
   );
 }
 
-const freshDataGraphics = [ComparisonChart, PromptVsFilters, SearchExamples];
+const freshDataGraphics = [FiveMinutesGraphic, PromptVsFilters, SearchExamples];
 
 function FreshDataSection({ activeTab, onTabClick }: { activeTab: number; onTabClick: (index: number) => void }) {
   const GraphicComponent = freshDataGraphics[activeTab];
@@ -182,7 +153,7 @@ function FreshDataSection({ activeTab, onTabClick }: { activeTab: number; onTabC
       
       <div className="container mx-auto px-6 relative z-10">
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-5xl font-serif text-gray-800 dark:text-white mb-4">Fresh Data. Zero Bloat.</h2>
+          <h2 className="text-3xl md:text-5xl font-serif text-gray-800 dark:text-white mb-4">Fresh Data. Fresh Relationships.</h2>
           <p className="text-xl text-gray-500 italic">
             While competitors rely on stale databases, we search fresh — every time.
           </p>
