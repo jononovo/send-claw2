@@ -35,17 +35,11 @@ export type {
 // Type exports from gamification
 export type {
   EasterEgg,
-  NotificationConfig,
-  BadgeConfig,
-  EasterEggResult,
-  NotificationResult,
-  BadgeResult
+  EasterEggResult
 } from './gamification/types';
 
 export {
-  EASTER_EGGS,
-  BADGES,
-  NOTIFICATIONS
+  EASTER_EGGS
 } from './gamification/types';
 
 // Route registration

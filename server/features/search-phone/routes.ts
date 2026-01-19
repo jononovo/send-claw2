@@ -59,11 +59,21 @@ export async function findMobilePhone(req: Request, res: Response) {
     try {
       const result = await searchApolloDirect(contact, company, apolloApiKey, { revealPhone: true });
 
-      if (result.contact?.apolloPersonId) {
+      if (!result.success || !result.contact?.apolloPersonId) {
+        console.log('[FindMobilePhone] Apollo did not return a person match, marking as not_found');
         await storage.updateContact(contactId, {
-          apolloPersonId: result.contact.apolloPersonId,
+          mobilePhoneStatus: 'not_found',
+        });
+        const updatedContact = await storage.getContact(contactId, userId);
+        return res.json({
+          contact: updatedContact,
+          message: 'No matching person found in Apollo database.',
         });
       }
+
+      await storage.updateContact(contactId, {
+        apolloPersonId: result.contact.apolloPersonId,
+      });
 
       await CreditService.deductCredits(userId, 'phone_reveal', true);
 

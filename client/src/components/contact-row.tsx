@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { MessageSquare, Star, ThumbsDown, Linkedin, Phone } from "lucide-react";
+import { MessageSquare, Star, ThumbsDown, Linkedin, Phone, Loader2 } from "lucide-react";
 import { ContactActionColumn } from "@/components/contact-action-column";
 import { ComprehensiveSearchButton } from "@/components/comprehensive-email-search";
 import { cn } from "@/lib/utils";
@@ -24,8 +24,10 @@ export interface ContactRowProps {
   hasEmail?: boolean;
   handleContactView?: (contact: { id: number; slug?: string | null; name: string }) => void;
   handleComprehensiveEmailSearch?: (contactId: number) => void;
+  handleFindMobilePhone?: (contactId: number) => void;
   onContactFeedback?: (contactId: number, feedbackType: "excellent" | "terrible") => void;
   pendingComprehensiveSearchIds?: Set<number>;
+  pendingPhoneRevealIds?: Set<number>;
 }
 
 export function ContactRow({
@@ -41,8 +43,10 @@ export function ContactRow({
   isHighlighted = false,
   handleContactView,
   handleComprehensiveEmailSearch,
+  handleFindMobilePhone,
   onContactFeedback,
   pendingComprehensiveSearchIds,
+  pendingPhoneRevealIds,
 }: ContactRowProps) {
   return (
     <div
@@ -106,7 +110,7 @@ export function ContactRow({
                       <Linkedin className="h-3 w-3" />
                     </a>
                   )}
-                  {contact.phoneNumber && (
+                  {contact.phoneNumber ? (
                     <TooltipProvider delayDuration={300}>
                       <Tooltip>
                         <TooltipTrigger asChild>
@@ -122,7 +126,53 @@ export function ContactRow({
                         </TooltipContent>
                       </Tooltip>
                     </TooltipProvider>
-                  )}
+                  ) : (contact as any).mobilePhoneStatus === 'pending' ? (
+                    <TooltipProvider delayDuration={300}>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <span className="text-yellow-500 flex items-center gap-0.5 cursor-help">
+                            <Loader2 className="h-3 w-3 animate-spin" />
+                          </span>
+                        </TooltipTrigger>
+                        <TooltipContent side="top" className="text-xs">
+                          <p>Finding phone...</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  ) : (contact as any).mobilePhoneStatus === 'not_found' ? (
+                    <TooltipProvider delayDuration={300}>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <span className="text-gray-400 cursor-help">
+                            <Phone className="h-3 w-3" />
+                          </span>
+                        </TooltipTrigger>
+                        <TooltipContent side="top" className="text-xs">
+                          <p>No mobile found</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  ) : handleFindMobilePhone && !(contact as any).mobilePhoneStatus ? (
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      className="h-5 px-1.5 text-xs text-muted-foreground hover:text-green-600"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleFindMobilePhone(contact.id);
+                      }}
+                      disabled={pendingPhoneRevealIds?.has(contact.id)}
+                    >
+                      {pendingPhoneRevealIds?.has(contact.id) ? (
+                        <Loader2 className="h-3 w-3 animate-spin" />
+                      ) : (
+                        <>
+                          <Phone className="h-3 w-3 mr-0.5" />
+                          Find Phone
+                        </>
+                      )}
+                    </Button>
+                  ) : null}
                 </>
               ) : (
                 handleComprehensiveEmailSearch && (

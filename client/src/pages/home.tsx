@@ -1376,6 +1376,55 @@ export default function Home({ isNewSearch = false }: HomeProps) {
     });
   };
   
+  // State and handler for mobile phone reveal
+  const [pendingPhoneRevealIds, setPendingPhoneRevealIds] = useState<Set<number>>(new Set());
+  
+  const handleFindMobilePhone = async (contactId: number) => {
+    setPendingPhoneRevealIds(prev => new Set(prev).add(contactId));
+    try {
+      const response = await fetch(`/api/contacts/${contactId}/find-mobile-phone`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include'
+      });
+      
+      const data = await response.json();
+      
+      if (!response.ok) {
+        toast({
+          title: "Phone lookup failed",
+          description: data.error || "Could not initiate phone lookup",
+          variant: "destructive"
+        });
+        return;
+      }
+      
+      toast({
+        title: "Phone lookup started",
+        description: data.message || "Results will arrive in 5-15 minutes",
+      });
+      
+      // Invalidate list queries to update the contact's status
+      if (currentListId) {
+        queryClient.invalidateQueries({ queryKey: [`/api/lists/${currentListId}/companies`] });
+      }
+      queryClient.invalidateQueries({ queryKey: ['/api/lists'] });
+    } catch (error) {
+      console.error('Error finding mobile phone:', error);
+      toast({
+        title: "Error",
+        description: "Failed to initiate phone lookup",
+        variant: "destructive"
+      });
+    } finally {
+      setPendingPhoneRevealIds(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(contactId);
+        return newSet;
+      });
+    }
+  };
+  
   // Functions for checkbox selection
   const handleCheckboxChange = (contactId: number) => {
     setSelectedContacts(prev => {
@@ -1733,8 +1782,10 @@ export default function Home({ isNewSearch = false }: HomeProps) {
                       companies={currentResults || []}
                       handleCompanyView={handleCompanyView}
                       handleComprehensiveEmailSearch={handleComprehensiveEmailSearch}
+                      handleFindMobilePhone={handleFindMobilePhone}
                       pendingContactIds={pendingContactIds}
                       pendingComprehensiveSearchIds={pendingComprehensiveSearchIds}
+                      pendingPhoneRevealIds={pendingPhoneRevealIds}
                       onContactClick={handleContactClick}
                       onViewModeChange={setCompaniesViewMode}
                       selectedEmailContact={emailDrawer.selectedContact}
