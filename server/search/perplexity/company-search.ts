@@ -127,7 +127,7 @@ export async function enrichCompanyDetails(companies: Array<{name: string, websi
   const messages: PerplexityMessage[] = [
     {
       role: "system",
-      content: "Provide concise 1-2 sentence descriptions of what each company does." 
+      content: "Provide concise 1-2 sentence descriptions of what each company does. If no information is available, leave empty." 
     },
     {
       role: "user",
