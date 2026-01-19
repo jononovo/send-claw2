@@ -38,7 +38,7 @@ const freshDataTabs = [
     icon: Clock,
     title: "5 Minutes per Day",
     summary: "Making sales simple and fun again",
-    fullDescription: "No more tool overload. No more CRM wrestling. Just find your ideal customers, write a great email, and hit send. Founders are rediscovering that sales can actually be enjoyable.",
+    fullDescription: "No more tool overload. Just follow the checklist for the day.",
   },
   {
     id: "one-prompt",
