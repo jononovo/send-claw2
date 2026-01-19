@@ -65,9 +65,6 @@ function FiveMinutesGraphic() {
           alt="Playful duck mascot with daily email task card" 
           className="w-full h-auto rounded-xl mb-4 opacity-90"
         />
-        <p className="text-gray-400 text-sm">
-          Your daily 5 minutes. <span className="text-yellow-400">Emails ready to review.</span>
-        </p>
       </div>
     </div>
   );
