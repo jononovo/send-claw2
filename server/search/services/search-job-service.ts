@@ -1,5 +1,5 @@
 import { storage } from "../../storage";
-import { searchCompanies, discoverCompanies, enrichCompanyDetails } from "../perplexity/company-search";
+import { discoverCompanies, enrichCompanyDetails } from "../perplexity/company-search";
 import { findKeyDecisionMakers } from "../contacts/finder";
 import { CreditService, InsufficientCreditsError } from "../../features/billing/credits/service";
 import { CREDIT_COSTS, type SearchType } from "../../features/billing/credits/types";

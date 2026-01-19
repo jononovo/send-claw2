@@ -1,6 +1,6 @@
 import { storage } from '../../storage';
 import { queryPerplexity } from '../../search/perplexity/perplexity-client';
-import { searchCompanies } from '../../search/perplexity/company-search';
+import { discoverCompanies } from '../../search/perplexity/company-search';
 import { getEmailProvider } from '../../gmail-api-service';
 
 export interface TestResult {
@@ -81,9 +81,9 @@ export class HealthChecks {
   static async checkSearch(): Promise<TestResults> {
     const tests: TestResults = {};
 
-    // Test Company Overview Search
+    // Test Company Discovery Search
     try {
-      const companyResult = await searchCompanies("Apple");
+      const companyResult = await discoverCompanies("Apple");
       tests.companyOverview = {
         status: companyResult && companyResult.length > 0 ? 'passed' : 'warning',
         message: companyResult && companyResult.length > 0 
@@ -93,7 +93,7 @@ export class HealthChecks {
     } catch (error) {
       tests.companyOverview = {
         status: 'failed',
-        message: 'Company overview search failed',
+        message: 'Company discovery search failed',
         error: error instanceof Error ? error.message : String(error)
       };
     }
