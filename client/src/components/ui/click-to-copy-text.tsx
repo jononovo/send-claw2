@@ -59,7 +59,7 @@ export function ClickToCopyText({
             </button>
           </TooltipTrigger>
           {!showCopied && (
-            <TooltipContent side="top" className="text-xs">
+            <TooltipContent side="right" className="text-[10px] px-1.5 py-0.5">
               <p>{tooltipText}</p>
             </TooltipContent>
           )}
