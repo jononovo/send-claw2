@@ -27,7 +27,9 @@ export async function searchHunterDirect(contact: any, company: any, apiKey: str
         contact: {
           ...contact,
           email: response.data.data.email,
-          role: response.data.data.position || contact.role
+          role: response.data.data.position || contact.role,
+          phoneNumber: response.data.data.phone_number || contact.phoneNumber,
+          linkedinUrl: response.data.data.linkedin_url || contact.linkedinUrl
         },
         metadata: {
           confidence: response.data.data.score || 75,
@@ -84,6 +86,12 @@ export async function hunterSearch(req: Request, res: Response) {
       companyId: contact.companyId
     });
 
+    if (!contact.companyId) {
+      console.error('Contact has no company ID:', contact.id);
+      res.status(400).json({ message: "Contact has no associated company" });
+      return;
+    }
+
     const company = await storage.getCompany(contact.companyId, userId);
     if (!company) {
       console.error('Company not found in database for ID:', contact.companyId);
@@ -122,6 +130,16 @@ export async function hunterSearch(req: Request, res: Response) {
         const { mergeEmailData } = await import('../../lib/email-utils');
         const emailUpdates = mergeEmailData(contact, searchResult.contact.email);
         Object.assign(updateData, emailUpdates);
+      }
+
+      // Update phone number if found
+      if (searchResult.contact.phoneNumber) {
+        updateData.phoneNumber = searchResult.contact.phoneNumber;
+      }
+
+      // Update LinkedIn URL if found
+      if (searchResult.contact.linkedinUrl) {
+        updateData.linkedinUrl = searchResult.contact.linkedinUrl;
       }
 
       const updatedContact = await storage.updateContact(contactId, updateData);

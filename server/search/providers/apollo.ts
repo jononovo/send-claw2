@@ -53,6 +53,7 @@ export async function searchApolloDirect(contact: any, company: any, apiKey: str
           role: person.title || contact.role,
           linkedinUrl: person.linkedin_url || contact.linkedinUrl,
           phoneNumber: person.phone_numbers?.[0]?.sanitized_number || contact.phoneNumber,
+          companyPhoneNumber: organization.phone || contact.companyPhoneNumber || null,
           // Apollo data takes priority, falls back to existing (Perplexity) data
           city: person.city || contact.city || null,
           state: person.state || contact.state || null,
@@ -61,7 +62,8 @@ export async function searchApolloDirect(contact: any, company: any, apiKey: str
         company: {
           city: organization.city || null,
           state: organization.state || null,
-          country: organization.country || null
+          country: organization.country || null,
+          phone: organization.phone || null
         },
         metadata: {
           confidence: person.email_confidence || 75,
