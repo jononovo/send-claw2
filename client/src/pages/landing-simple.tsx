@@ -545,7 +545,7 @@ export default function LandingSimple() {
                   </div>
                   
                   <DemoSimulationPlayer
-                    simulation="search-composer-demo"
+                    simulation="search-composer-demo-v2"
                     width={520}
                     height={520}
                     showControls={false}
