@@ -20,7 +20,7 @@ const buttonVariants = cva(
         pink: "bg-[#FFC0CB]/30 text-[#D5006D] border border-[#FFC0CB]/50 hover:bg-[#FFC0CB]/40 hover:border-[#FFC0CB]/70 hover:text-[#C93384]",
         ghost: "hover:bg-accent-hover hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
-        "small-search-action": "text-muted-foreground/60 hover:text-primary cursor-pointer transition-colors bg-transparent p-0 h-auto min-h-0 font-normal leading-none align-baseline",
+        "small-search-action": "inline text-muted-foreground/60 hover:text-primary cursor-pointer transition-colors bg-transparent p-0 h-auto min-h-0 font-normal leading-none",
       },
       size: {
         default: "h-10 px-4 py-2",

@@ -162,33 +162,25 @@ export function ContactRow({
                   </Tooltip>
                 </TooltipProvider>
               ) : handleFindMobilePhone && !(contact as any).mobilePhoneStatus ? (
-                <TooltipProvider delayDuration={300}>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button
-                        variant="small-search-action"
-                        className="group/phone flex items-center gap-0"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleFindMobilePhone(contact.id);
-                        }}
-                        disabled={pendingPhoneRevealIds?.has(contact.id)}
-                      >
-                        {pendingPhoneRevealIds?.has(contact.id) ? (
-                          <Loader2 className="h-3 w-3 animate-spin" />
-                        ) : (
-                          <>
-                            <Phone className="h-3 w-3" />
-                            <span className="hidden group-hover/phone:inline text-xs ml-0.5">Find Phone</span>
-                          </>
-                        )}
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent side="top" className="text-xs">
-                      <p>Find mobile phone</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
+                <Button
+                  variant="small-search-action"
+                  className="group/phone"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleFindMobilePhone(contact.id);
+                  }}
+                  disabled={pendingPhoneRevealIds?.has(contact.id)}
+                  title="Find mobile phone"
+                >
+                  {pendingPhoneRevealIds?.has(contact.id) ? (
+                    <Loader2 className="h-3 w-3 animate-spin" />
+                  ) : (
+                    <>
+                      <Phone className="h-3 w-3" />
+                      <span className="hidden group-hover/phone:inline text-xs ml-0.5">Find Phone</span>
+                    </>
+                  )}
+                </Button>
               ) : null}
               {contact.alternativeEmails && contact.alternativeEmails.length > 0 && (
                 <div className="mt-0.5 space-y-0.5">
