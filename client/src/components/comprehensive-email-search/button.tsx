@@ -56,7 +56,7 @@ export function ComprehensiveSearchButton({
       <Button
         variant="small-search-action"
         className={cn(
-          "flex items-center gap-1.5",
+          "flex items-center gap-1 leading-none",
           state === 'failed' && "opacity-75",
           className
         )}

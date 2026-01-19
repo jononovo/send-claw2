@@ -94,7 +94,7 @@ export function ContactRow({
                 {contact.companyName}
               </div>
             )}
-            <div className="text-xs mt-1 flex items-center gap-1.5">
+            <div className="text-xs mt-1 flex items-center gap-1">
               {contact.email ? (
                 <span className="text-muted-foreground">{contact.email}</span>
               ) : (
