@@ -50,7 +50,7 @@ export function PlanCards({ onClose }: PlanCardsProps) {
     {
       id: 'ugly-duckling',
       name: 'The Duckling',
-      credits: 2000,
+      credits: 5000,
       bonus: 3000,
       price: 18.95,
       icon: Zap,
