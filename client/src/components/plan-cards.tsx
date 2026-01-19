@@ -59,8 +59,8 @@ export function PlanCards({ onClose }: PlanCardsProps) {
     {
       id: 'duckin-awesome',
       name: "Mama Duck",
-      credits: 5000,
-      bonus: 10000,
+      credits: 10000,
+      bonus: 12000,
       price: 44.95,
       icon: Crown,
       color: 'from-purple-600 to-pink-600'
