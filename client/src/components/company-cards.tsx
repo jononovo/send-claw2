@@ -58,8 +58,10 @@ interface CompanyCardsProps {
   companies: Array<Company & { contacts?: ContactWithCompanyInfo[] }>;
   handleCompanyView: (company: { id: number; slug?: string | null; name: string }) => void;
   handleComprehensiveEmailSearch?: (contactId: number) => void;
+  handleFindMobilePhone?: (contactId: number) => void;
   pendingContactIds?: Set<number>;
   pendingComprehensiveSearchIds?: Set<number>;
+  pendingPhoneRevealIds?: Set<number>;
   onContactClick?: (contact: ContactWithCompanyInfo, company: Company) => void;
   onViewModeChange?: (viewMode: 'scroll' | 'slides') => void;
   selectedEmailContact?: Contact | null;
@@ -91,8 +93,10 @@ interface CompanyCardProps {
   shouldShowCompanyCheckbox?: boolean;
   handleCompanyView: (company: { id: number; slug?: string | null; name: string }) => void;
   handleComprehensiveEmailSearch?: (contactId: number) => void;
+  handleFindMobilePhone?: (contactId: number) => void;
   pendingContactIds?: Set<number>;
   pendingComprehensiveSearchIds?: Set<number>;
+  pendingPhoneRevealIds?: Set<number>;
   onContactClick?: (contact: ContactWithCompanyInfo, company: Company) => void;
   onContactHover?: (contactId: number) => void;
   onContactLeave?: () => void;
@@ -120,8 +124,10 @@ const CompanyCard: React.FC<CompanyCardProps> = ({
   shouldShowCompanyCheckbox,
   handleCompanyView,
   handleComprehensiveEmailSearch,
+  handleFindMobilePhone,
   pendingContactIds,
   pendingComprehensiveSearchIds,
+  pendingPhoneRevealIds,
   onContactClick,
   onContactHover,
   onContactLeave,
@@ -305,7 +311,9 @@ const CompanyCard: React.FC<CompanyCardProps> = ({
                       setLocation(`/p/${slug}/${contact.id}`);
                     }}
                     handleComprehensiveEmailSearch={handleComprehensiveEmailSearch}
+                    handleFindMobilePhone={handleFindMobilePhone}
                     pendingComprehensiveSearchIds={pendingComprehensiveSearchIds}
+                    pendingPhoneRevealIds={pendingPhoneRevealIds}
                   />
                 </div>
               ))}
@@ -350,8 +358,10 @@ export default function CompanyCards({
   companies, 
   handleCompanyView,
   handleComprehensiveEmailSearch,
+  handleFindMobilePhone,
   pendingContactIds,
   pendingComprehensiveSearchIds,
+  pendingPhoneRevealIds,
   onContactClick,
   onViewModeChange,
   selectedEmailContact,
@@ -794,8 +804,10 @@ export default function CompanyCards({
               shouldShowCompanyCheckbox={shouldShowCompanyCheckbox(company.id)}
               handleCompanyView={handleCompanyView}
               handleComprehensiveEmailSearch={handleComprehensiveEmailSearch}
+              handleFindMobilePhone={handleFindMobilePhone}
               pendingContactIds={pendingContactIds}
               pendingComprehensiveSearchIds={pendingComprehensiveSearchIds}
+              pendingPhoneRevealIds={pendingPhoneRevealIds}
               onContactClick={handleContactCardClick}
               onContactHover={handleContactHover}
               onContactLeave={handleContactLeave}
@@ -832,8 +844,10 @@ export default function CompanyCards({
               shouldShowCompanyCheckbox={shouldShowCompanyCheckbox(companies[currentSlideIndex].id)}
               handleCompanyView={handleCompanyView}
               handleComprehensiveEmailSearch={handleComprehensiveEmailSearch}
+              handleFindMobilePhone={handleFindMobilePhone}
               pendingContactIds={pendingContactIds}
               pendingComprehensiveSearchIds={pendingComprehensiveSearchIds}
+              pendingPhoneRevealIds={pendingPhoneRevealIds}
               onContactClick={handleContactCardClick}
               onContactHover={handleContactHover}
               onContactLeave={handleContactLeave}

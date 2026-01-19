@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { MessageSquare, Star, ThumbsDown, Linkedin, Phone } from "lucide-react";
+import { MessageSquare, Star, ThumbsDown, Linkedin, Phone, Loader2 } from "lucide-react";
 import { ContactActionColumn } from "@/components/contact-action-column";
 import { ComprehensiveSearchButton } from "@/components/comprehensive-email-search";
 import { cn } from "@/lib/utils";
@@ -24,8 +24,10 @@ export interface ContactRowProps {
   hasEmail?: boolean;
   handleContactView?: (contact: { id: number; slug?: string | null; name: string }) => void;
   handleComprehensiveEmailSearch?: (contactId: number) => void;
+  handleFindMobilePhone?: (contactId: number) => void;
   onContactFeedback?: (contactId: number, feedbackType: "excellent" | "terrible") => void;
   pendingComprehensiveSearchIds?: Set<number>;
+  pendingPhoneRevealIds?: Set<number>;
 }
 
 export function ContactRow({
@@ -41,8 +43,10 @@ export function ContactRow({
   isHighlighted = false,
   handleContactView,
   handleComprehensiveEmailSearch,
+  handleFindMobilePhone,
   onContactFeedback,
   pendingComprehensiveSearchIds,
+  pendingPhoneRevealIds,
 }: ContactRowProps) {
   return (
     <div
@@ -106,23 +110,6 @@ export function ContactRow({
                       <Linkedin className="h-3 w-3" />
                     </a>
                   )}
-                  {contact.phoneNumber && (
-                    <TooltipProvider delayDuration={300}>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <span 
-                            className="text-muted-foreground/60 hover:text-green-500 transition-colors cursor-help"
-                            data-testid={`phone-${contact.id}`}
-                          >
-                            <Phone className="h-3 w-3" />
-                          </span>
-                        </TooltipTrigger>
-                        <TooltipContent side="top" className="text-xs">
-                          <p>{contact.phoneNumber}</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  )}
                 </>
               ) : (
                 handleComprehensiveEmailSearch && (
@@ -134,6 +121,64 @@ export function ContactRow({
                   />
                 )
               )}
+              {/* Phone action - always visible */}
+              {contact.phoneNumber ? (
+                <TooltipProvider delayDuration={300}>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <span 
+                        className="text-green-500 cursor-help"
+                        data-testid={`phone-${contact.id}`}
+                      >
+                        <Phone className="h-3 w-3" />
+                      </span>
+                    </TooltipTrigger>
+                    <TooltipContent side="top" className="text-xs">
+                      <p>{contact.phoneNumber}</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              ) : (contact as any).mobilePhoneStatus === 'pending' || pendingPhoneRevealIds?.has(contact.id) ? (
+                <TooltipProvider delayDuration={300}>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <span className="text-yellow-500 flex items-center gap-0.5 cursor-help">
+                        <Loader2 className="h-3 w-3 animate-spin" />
+                      </span>
+                    </TooltipTrigger>
+                    <TooltipContent side="top" className="text-xs">
+                      <p>Finding phone...</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              ) : (contact as any).mobilePhoneStatus === 'not_found' ? (
+                <TooltipProvider delayDuration={300}>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <span className="text-muted-foreground/60 cursor-help">
+                        <Phone className="h-3 w-3" />
+                      </span>
+                    </TooltipTrigger>
+                    <TooltipContent side="top" className="text-xs">
+                      <p>No mobile found</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              ) : handleFindMobilePhone ? (
+                <button
+                  className="group/phone flex items-center text-muted-foreground/60 hover:text-green-600 transition-all duration-200 focus:outline-none focus-visible:ring-1 focus-visible:ring-green-500 rounded"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleFindMobilePhone(contact.id);
+                  }}
+                  data-testid={`find-phone-${contact.id}`}
+                >
+                  <Phone className="h-3 w-3" />
+                  <span className="max-w-0 overflow-hidden group-hover/phone:max-w-[80px] group-focus-visible/phone:max-w-[80px] transition-all duration-200 whitespace-nowrap">
+                    <span className="ml-1">Find Phone</span>
+                  </span>
+                </button>
+              ) : null}
               {contact.alternativeEmails && contact.alternativeEmails.length > 0 && (
                 <div className="mt-0.5 space-y-0.5">
                   {contact.alternativeEmails.map((altEmail, index) => (

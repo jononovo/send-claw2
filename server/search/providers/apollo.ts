@@ -8,16 +8,32 @@ import { Request, Response } from "express";
 import { storage } from "../../storage";
 import { getUserId } from "../utils";
 
-export async function searchApolloDirect(contact: any, company: any, apiKey: string): Promise<any> {
+interface ApolloOptions {
+  revealPhone?: boolean;
+}
+
+export async function searchApolloDirect(contact: any, company: any, apiKey: string, options?: ApolloOptions): Promise<any> {
   try {
     console.log(`[Apollo] Starting search for ${contact.name} at ${company.name}`);
     
     const axios = (await import('axios')).default;
-    const requestData = {
+    
+    const webhookUrl = options?.revealPhone && process.env.APP_BASE_URL && process.env.APOLLO_PHONE_WEBHOOK_TOKEN
+      ? `${process.env.APP_BASE_URL}/api/webhooks/apollo/phone?token=${process.env.APOLLO_PHONE_WEBHOOK_TOKEN}`
+      : undefined;
+    
+    const requestData: any = {
       name: contact.name,
       organization_name: company.name,
       domain: company.website
     };
+    
+    if (options?.revealPhone) {
+      requestData.reveal_phone_number = true;
+      if (webhookUrl) {
+        requestData.webhook_url = webhookUrl;
+      }
+    }
     
     console.log(`[Apollo] Request data:`, JSON.stringify(requestData));
     
@@ -54,6 +70,7 @@ export async function searchApolloDirect(contact: any, company: any, apiKey: str
           linkedinUrl: person.linkedin_url || contact.linkedinUrl,
           phoneNumber: person.phone_numbers?.[0]?.sanitized_number || contact.phoneNumber,
           companyPhoneNumber: organization.phone || contact.companyPhoneNumber || null,
+          apolloPersonId: person.id || null,
           // Apollo data takes priority, falls back to existing (Perplexity) data
           city: person.city || contact.city || null,
           state: person.state || contact.state || null,

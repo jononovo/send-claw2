@@ -65,6 +65,7 @@ export interface IStorage {
   listContacts(userId: number): Promise<Contact[]>;
   listContactsWithCompanies(userId: number): Promise<(Contact & { companyName?: string })[]>;
   getContact(id: number, userId: number): Promise<Contact | undefined>;
+  findContactByApolloPersonId(apolloPersonId: string): Promise<Contact | undefined>;
   createContact(data: InsertContact): Promise<Contact>;
   updateContact(id: number, data: Partial<Contact>): Promise<Contact>;
   deleteContactsByCompany(companyId: number, userId: number): Promise<void>;
@@ -471,6 +472,20 @@ class DatabaseStorage implements IStorage {
       return result[0];
     } catch (error) {
       console.error('Error fetching contact:', error);
+      return undefined;
+    }
+  }
+
+  async findContactByApolloPersonId(apolloPersonId: string): Promise<Contact | undefined> {
+    try {
+      const result = await db
+        .select()
+        .from(contacts)
+        .where(eq(contacts.apolloPersonId, apolloPersonId))
+        .limit(1);
+      return result[0];
+    } catch (error) {
+      console.error('Error finding contact by Apollo person ID:', error);
       return undefined;
     }
   }
