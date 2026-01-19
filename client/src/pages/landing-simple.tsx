@@ -34,10 +34,10 @@ const testimonials = [
 const freshDataTabs = [
   {
     id: "fresh-data",
-    icon: Zap,
-    title: "0 Contacts in Our DB",
-    summary: "Fresh data, every search",
-    fullDescription: "The era of cold emailing 30k \"industry-related\" people is over. Find your ISP for THIS WEEK, maybe 10, 20 or 30, and email them.",
+    icon: Clock,
+    title: "5 Minutes per Day",
+    summary: "Making sales simple and fun again",
+    fullDescription: "No more tool overload. No more CRM wrestling. Just find your ideal customers, write a great email, and hit send. Founders are rediscovering that sales can actually be enjoyable.",
   },
   {
     id: "one-prompt",
