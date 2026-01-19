@@ -45,7 +45,7 @@ const freshDataTabs = [
     icon: Sparkles,
     title: "1 Prompt, Not 75 Filters",
     summary: "Just type what you want",
-    fullDescription: "No dropdown mazes. No endless checkboxes. No \"advanced search\" tutorials. Just describe your ideal customer in plain English and let AI do the rest.",
+    fullDescription: "No \"advanced search\" tutorials. Just describe your ideal customer in plain English.",
   },
   {
     id: "unsearchable",
