@@ -23,7 +23,8 @@ export function ClickToCopyText({
 }: ClickToCopyTextProps) {
   const [showCopied, setShowCopied] = useState(false);
 
-  const handleCopy = useCallback(async () => {
+  const handleCopy = useCallback(async (e: React.MouseEvent) => {
+    e.stopPropagation();
     try {
       if (navigator.clipboard && window.isSecureContext) {
         await navigator.clipboard.writeText(text);
