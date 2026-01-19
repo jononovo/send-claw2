@@ -28,7 +28,8 @@ import {
   Layers,
   Check,
   Linkedin,
-  AlignLeft
+  AlignLeft,
+  MapPin
 } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -210,7 +211,7 @@ const CompanyCard: React.FC<CompanyCardProps> = ({
                   </div>
                 )}
                 
-                <div className="flex items-center gap-2 mt-1">
+                <div className="flex items-center gap-2 mt-1 flex-wrap">
                   {company.website && (
                     <a
                       href={company.website.startsWith('http') ? company.website : `https://${company.website}`}
@@ -222,6 +223,12 @@ const CompanyCard: React.FC<CompanyCardProps> = ({
                       <Globe className="h-3 w-3" />
                       <span className="truncate max-w-[200px]">{company.website.replace(/^https?:\/\//, '').replace(/\/$/, '')}</span>
                     </a>
+                  )}
+                  {(company.city || company.country) && (
+                    <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                      <MapPin className="h-3 w-3" />
+                      <span>{[company.city, company.country].filter(Boolean).join(', ')}</span>
+                    </div>
                   )}
                   {company.contacts && company.contacts.length > 0 && (
                     <div className="flex items-center gap-1 text-xs text-muted-foreground">

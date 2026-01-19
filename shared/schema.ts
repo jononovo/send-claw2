@@ -239,6 +239,9 @@ export const companies = pgTable("companies", {
   differentiation: jsonb("differentiation").$type<string[]>().default([]),
   totalScore: integer("total_score"),
   snapshot: jsonb("snapshot"),
+  city: text("city"),
+  state: text("state"),
+  country: text("country"),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow()
 }, (table) => [
   index('idx_companies_user_id').on(table.userId),
@@ -262,6 +265,9 @@ export const contacts = pgTable("contacts", {
   phoneNumber: text("phone_number"),
   department: text("department"),
   location: text("location"),
+  city: text("city"),
+  state: text("state"),
+  country: text("country"),
   verificationSource: text("verification_source"),
   lastEnriched: timestamp("last_enriched", { withTimezone: true }),
   nameConfidenceScore: integer("name_confidence_score"), 
@@ -416,7 +422,10 @@ const companySchema = z.object({
   validationPoints: z.array(z.string()).nullable(),
   differentiation: z.array(z.string()).nullable(),
   totalScore: z.number().nullable(),
-  snapshot: z.record(z.unknown()).nullable()
+  snapshot: z.record(z.unknown()).nullable(),
+  city: z.string().nullable().optional(),
+  state: z.string().nullable().optional(),
+  country: z.string().nullable().optional()
 });
 
 const contactSchema = z.object({
@@ -431,6 +440,9 @@ const contactSchema = z.object({
   phoneNumber: z.string().nullable(),
   department: z.string().nullable(),
   location: z.string().nullable(),
+  city: z.string().nullable().optional(),
+  state: z.string().nullable().optional(),
+  country: z.string().nullable().optional(),
   verificationSource: z.string().nullable(),
   nameConfidenceScore: z.number().min(0).max(100).nullable(),
   userFeedbackScore: z.number().min(0).max(100).nullable(),
