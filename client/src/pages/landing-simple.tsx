@@ -9,7 +9,7 @@ import { StealthOnboardingModal } from "@/features/landing-stealth/StealthOnboar
 import danThumb from "@/features/landing-stealth/assets/professional_headshot_of_dan_hartmann_thumb.jpg";
 import sarahThumb from "@/features/landing-stealth/assets/professional_headshot_of_sarah_chen_thumb.jpg";
 import alexThumb from "@/features/landing-stealth/assets/natural_outdoor_portrait_of_older_alex_rivera_with_beard_thumb.jpg";
-import fiveMinutesImage from "@/features/landing-stealth/assets/no_lines_bigger_duck_white_bg.png";
+import fiveMinutesImage from "@/features/landing-stealth/assets/playful_confetti_email_preview_duck.png";
 
 const testimonials = [
   {
