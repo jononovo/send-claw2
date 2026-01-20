@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
+import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Award, Check, Clock, CreditCard, Database, Filter, Lock, Map, Moon, Search, Shield, Sparkles, Star, Sun, Zap } from "lucide-react";
 import { useRegistrationModal } from "@/hooks/use-registration-modal";
@@ -394,12 +395,12 @@ export default function LandingSimple() {
 
           {/* Pricing, Login Link & Theme Toggle */}
           <div className="absolute top-4 right-6 md:top-6 md:right-10 z-30 flex items-center gap-4">
-            <a 
+            <Link 
               href="/pricing"
               className="text-sm text-foreground/30 hover:text-foreground/60 transition-colors font-bold uppercase tracking-widest"
             >
               Pricing
-            </a>
+            </Link>
             <button 
               type="button"
               onClick={() => setIsDarkMode(!isDarkMode)}
