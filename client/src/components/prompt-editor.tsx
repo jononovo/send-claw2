@@ -555,6 +555,7 @@ export default function PromptEditor({
       ).id;
       
       setCurrentSessionId(sessionId);
+      setHasRestoredSession(true); // Prevent session restoration from interfering with new search
       console.log(`Created session ${sessionId} for query: ${searchQuery}`);
       
       // Use the standard search but optimize for quick company results
@@ -697,6 +698,9 @@ export default function PromptEditor({
                 queryClient.invalidateQueries({ queryKey: ['/api/credits'] });
               }
               
+              // Clear session ID to prevent session polling from restarting
+              setCurrentSessionId(null);
+              
               onComplete();
             } else if (jobData.status === 'failed') {
               console.error(`Job ${data.jobId} failed:`, jobData.error);
@@ -730,6 +734,9 @@ export default function PromptEditor({
               if (user) {
                 queryClient.invalidateQueries({ queryKey: ['/api/credits'] });
               }
+              
+              // Clear session ID to prevent session polling from restarting
+              setCurrentSessionId(null);
               
               onComplete();
             } else {
@@ -767,6 +774,9 @@ export default function PromptEditor({
                 if (user) {
                   queryClient.invalidateQueries({ queryKey: ['/api/credits'] });
                 }
+                
+                // Clear session ID to prevent session polling from restarting
+                setCurrentSessionId(null);
                 
                 onComplete();
               } else {
@@ -906,6 +916,7 @@ export default function PromptEditor({
               isPollingRef.current = false;
               setIsPolling(false);
               setIsIndividualSearching(false);
+              setCurrentSessionId(null); // Clear session ID
               
               const companies = jobData.results?.companies || [];
               const totalContacts = companies.reduce((sum: number, company: any) => 
@@ -924,6 +935,7 @@ export default function PromptEditor({
               isPollingRef.current = false;
               setIsPolling(false);
               setIsIndividualSearching(false);
+              setCurrentSessionId(null); // Clear session ID
               
               // Clear the progress display
               setSearchProgress(prev => ({ ...prev, phase: "", completed: 0, total: 5 }));
@@ -960,6 +972,7 @@ export default function PromptEditor({
                 isPollingRef.current = false;
                 setIsPolling(false);
                 setIsIndividualSearching(false);
+                setCurrentSessionId(null); // Clear session ID
                 
                 // Clear progress display
                 setSearchProgress(prev => ({ ...prev, phase: "", completed: 0, total: 5 }));
@@ -1219,6 +1232,7 @@ export default function PromptEditor({
     
     // Reset state
     currentJobIdRef.current = null;
+    setCurrentSessionId(null); // Clear session ID to prevent polling restart
     onComplete();
   };
 
