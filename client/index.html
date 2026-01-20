@@ -106,11 +106,8 @@
           s.parentNode.insertBefore(t,s)}(window, document,'script',
           'https://connect.facebook.net/en_US/fbevents.js');
           
-          var pixelId = window.__META_PIXEL_ID__;
-          if (pixelId) {
-            fbq('init', pixelId);
-            fbq('track', 'PageView');
-          }
+          fbq('init', '862009893284962');
+          fbq('track', 'PageView');
         }
         if ('requestIdleCallback' in window) {
           requestIdleCallback(loadMetaPixel, { timeout: 6000 });
@@ -168,7 +165,7 @@
     
     <!-- Meta Pixel (noscript) -->
     <noscript><img height="1" width="1" style="display:none"
-    src="https://www.facebook.com/tr?id=YOUR_PIXEL_ID&ev=PageView&noscript=1"/></noscript>
+    src="https://www.facebook.com/tr?id=862009893284962&ev=PageView&noscript=1"/></noscript>
     <!-- End Meta Pixel (noscript) -->
     
     <!-- Root div for React app must be at the top level -->
