@@ -78,7 +78,7 @@ export default function PromptEditor({
 }: PromptEditorProps) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const { triggerConfetti } = useConfetti();
+  const { fireCelebrateConfetti } = useConfetti();
   
   // Progress tracking state
   const [searchProgress, setSearchProgress] = useState({
@@ -403,9 +403,14 @@ export default function PromptEditor({
 
   // Check for existing sessions on mount - run only once
   useEffect(() => {
-    if (hasRestoredSession) return; // Prevent multiple executions
+    console.log('[SESSION-RESTORE] Effect triggered', { hasRestoredSession, currentSessionId, isPolling });
+    if (hasRestoredSession) {
+      console.log('[SESSION-RESTORE] Skipping - already restored');
+      return; // Prevent multiple executions
+    }
     
     const handleSessionRestore = async () => {
+      console.log('[SESSION-RESTORE] handleSessionRestore starting');
       const activeSessions = SearchSessionManager.getActiveSessions();
       const recentCompleteSession = SearchSessionManager.getMostRecentCompleteSession();
       
@@ -429,6 +434,7 @@ export default function PromptEditor({
         const session = activeSessions[0];
         console.log('Resuming active session:', session);
         
+        console.log('[SESSION-RESTORE] Resuming session, setting isPolling=true');
         setCurrentSessionId(session.id);
         setIsPolling(true);
         setHasRestoredSession(true);
@@ -555,6 +561,7 @@ export default function PromptEditor({
       ).id;
       
       setCurrentSessionId(sessionId);
+      setHasRestoredSession(true); // Prevent session restoration from interfering with new search
       console.log(`Created session ${sessionId} for query: ${searchQuery}`);
       
       // Use the standard search but optimize for quick company results
@@ -629,6 +636,7 @@ export default function PromptEditor({
             
             if (jobData.status === 'completed') {
               console.log(`Job ${data.jobId} completed`);
+              console.log('[POLLING] Job completed - setting isPolling=false, isPollingRef=false');
               isPollingRef.current = false;
               setIsPolling(false);
               
@@ -689,13 +697,17 @@ export default function PromptEditor({
                 }
                 
                 // Trigger confetti for contact/email searches
-                triggerConfetti();
+                fireCelebrateConfetti();
               }
               
               // Refresh credits display
               if (user) {
                 queryClient.invalidateQueries({ queryKey: ['/api/credits'] });
               }
+              
+              // Clear session ID to prevent session polling from restarting
+              console.log('[SESSION] Clearing currentSessionId on job completion');
+              setCurrentSessionId(null);
               
               onComplete();
             } else if (jobData.status === 'failed') {
@@ -730,6 +742,9 @@ export default function PromptEditor({
               if (user) {
                 queryClient.invalidateQueries({ queryKey: ['/api/credits'] });
               }
+              
+              // Clear session ID to prevent session polling from restarting
+              setCurrentSessionId(null);
               
               onComplete();
             } else {
@@ -767,6 +782,9 @@ export default function PromptEditor({
                 if (user) {
                   queryClient.invalidateQueries({ queryKey: ['/api/credits'] });
                 }
+                
+                // Clear session ID to prevent session polling from restarting
+                setCurrentSessionId(null);
                 
                 onComplete();
               } else {
@@ -906,6 +924,7 @@ export default function PromptEditor({
               isPollingRef.current = false;
               setIsPolling(false);
               setIsIndividualSearching(false);
+              setCurrentSessionId(null); // Clear session ID
               
               const companies = jobData.results?.companies || [];
               const totalContacts = companies.reduce((sum: number, company: any) => 
@@ -924,6 +943,7 @@ export default function PromptEditor({
               isPollingRef.current = false;
               setIsPolling(false);
               setIsIndividualSearching(false);
+              setCurrentSessionId(null); // Clear session ID
               
               // Clear the progress display
               setSearchProgress(prev => ({ ...prev, phase: "", completed: 0, total: 5 }));
@@ -960,6 +980,7 @@ export default function PromptEditor({
                 isPollingRef.current = false;
                 setIsPolling(false);
                 setIsIndividualSearching(false);
+                setCurrentSessionId(null); // Clear session ID
                 
                 // Clear progress display
                 setSearchProgress(prev => ({ ...prev, phase: "", completed: 0, total: 5 }));
@@ -1175,6 +1196,7 @@ export default function PromptEditor({
           // Stop polling
           isPollingRef.current = false;
           setIsPolling(false);
+          setCurrentSessionId(null); // Clear session ID on cache hit
           
           // Notify parent of cache hit
           if (onCacheHit) {
@@ -1219,6 +1241,7 @@ export default function PromptEditor({
     
     // Reset state
     currentJobIdRef.current = null;
+    setCurrentSessionId(null); // Clear session ID to prevent polling restart
     onComplete();
   };
 
@@ -1336,6 +1359,7 @@ export default function PromptEditor({
             <div className="pointer-events-auto">
               {(() => {
                 const isSearchActive = isAnalyzing || quickSearchMutation.isPending || isPolling;
+                console.log('[STATE] isSearchActive:', { isAnalyzing, isPending: quickSearchMutation.isPending, isPolling, result: isSearchActive });
                 return (
                   <Button 
                     type={isSearchActive ? "button" : "submit"}
