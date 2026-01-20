@@ -403,9 +403,14 @@ export default function PromptEditor({
 
   // Check for existing sessions on mount - run only once
   useEffect(() => {
-    if (hasRestoredSession) return; // Prevent multiple executions
+    console.log('[SESSION-RESTORE] Effect triggered', { hasRestoredSession, currentSessionId, isPolling });
+    if (hasRestoredSession) {
+      console.log('[SESSION-RESTORE] Skipping - already restored');
+      return; // Prevent multiple executions
+    }
     
     const handleSessionRestore = async () => {
+      console.log('[SESSION-RESTORE] handleSessionRestore starting');
       const activeSessions = SearchSessionManager.getActiveSessions();
       const recentCompleteSession = SearchSessionManager.getMostRecentCompleteSession();
       
@@ -429,6 +434,7 @@ export default function PromptEditor({
         const session = activeSessions[0];
         console.log('Resuming active session:', session);
         
+        console.log('[SESSION-RESTORE] Resuming session, setting isPolling=true');
         setCurrentSessionId(session.id);
         setIsPolling(true);
         setHasRestoredSession(true);
@@ -630,6 +636,7 @@ export default function PromptEditor({
             
             if (jobData.status === 'completed') {
               console.log(`Job ${data.jobId} completed`);
+              console.log('[POLLING] Job completed - setting isPolling=false, isPollingRef=false');
               isPollingRef.current = false;
               setIsPolling(false);
               
@@ -699,6 +706,7 @@ export default function PromptEditor({
               }
               
               // Clear session ID to prevent session polling from restarting
+              console.log('[SESSION] Clearing currentSessionId on job completion');
               setCurrentSessionId(null);
               
               onComplete();
@@ -1351,6 +1359,7 @@ export default function PromptEditor({
             <div className="pointer-events-auto">
               {(() => {
                 const isSearchActive = isAnalyzing || quickSearchMutation.isPending || isPolling;
+                console.log('[STATE] isSearchActive:', { isAnalyzing, isPending: quickSearchMutation.isPending, isPolling, result: isSearchActive });
                 return (
                   <Button 
                     type={isSearchActive ? "button" : "submit"}
