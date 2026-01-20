@@ -26,13 +26,13 @@ export async function discoverCompanies(query: string, excludeCompanies: string[
   const messages: PerplexityMessage[] = [
     {
       role: "system",
-      content: "Be precise and concise. Return results immediately. Website: Only include the official domain. Location: Include headquarters city and country if known." 
+      content: "Be precise and concise. Return results immediately. Website: Only include the official domain." 
     },
     {
       role: "user",
       content: `List 7 companies matching: ${query}${excludeInstruction}
-Return company names, websites, and headquarters location. Be concise.
-Format: JSON array with "name", "website", "city", and "country" fields.`
+Return ONLY company names and websites. Be concise.
+Format: JSON array with "name" and "website" fields.`
     }
   ];
 
