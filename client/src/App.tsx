@@ -17,6 +17,7 @@ import { InsufficientCreditsProvider } from "@/contexts/insufficient-credits-con
 import { InsufficientCreditsModal } from "@/components/insufficient-credits-modal";
 import { InsufficientCreditsHandlerSetup } from "@/components/insufficient-credits-handler-setup";
 import { useAnalytics } from "@/hooks/use-analytics";
+import { useMetaPixel } from "@/hooks/use-meta-pixel";
 import { useAttributionCapture } from "@/features/attribution";
 
 // Static pages (small components kept static)
@@ -140,6 +141,9 @@ function useHomePreload() {
 function Router() {
   // Track page views when routes change
   useAnalytics();
+  
+  // Track Meta Pixel page views on route changes
+  useMetaPixel();
   
   // Capture attribution data (UTM params, referrer, etc.) on first visit
   useAttributionCapture();
