@@ -1188,6 +1188,7 @@ export default function PromptEditor({
           // Stop polling
           isPollingRef.current = false;
           setIsPolling(false);
+          setCurrentSessionId(null); // Clear session ID on cache hit
           
           // Notify parent of cache hit
           if (onCacheHit) {
