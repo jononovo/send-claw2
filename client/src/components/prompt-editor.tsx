@@ -78,7 +78,7 @@ export default function PromptEditor({
 }: PromptEditorProps) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const { triggerConfetti } = useConfetti();
+  const { fireCelebrateConfetti } = useConfetti();
   
   // Progress tracking state
   const [searchProgress, setSearchProgress] = useState({
@@ -697,7 +697,7 @@ export default function PromptEditor({
                 }
                 
                 // Trigger confetti for contact/email searches
-                triggerConfetti();
+                fireCelebrateConfetti();
               }
               
               // Refresh credits display
