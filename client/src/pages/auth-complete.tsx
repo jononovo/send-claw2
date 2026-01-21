@@ -6,6 +6,7 @@ import { sendAttributionToServer, logConversionEvent } from "@/features/attribut
 import { queryClient } from "@/lib/queryClient";
 import { CheckCircle, Loader2, XCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { setNeedsPasswordSetup } from "@/features/top-nav-bar-ad-message";
 
 type AuthStatus = "loading" | "success" | "error" | "set-password";
 
@@ -138,6 +139,7 @@ export default function AuthCompletePage() {
       
       if (auth.currentUser) {
         await updatePassword(auth.currentUser, newPassword);
+        setNeedsPasswordSetup(false);
         toast({
           title: "Password Set!",
           description: "You can now log in with your email and password",
@@ -169,6 +171,7 @@ export default function AuthCompletePage() {
   };
 
   const handleSkipPassword = () => {
+    setNeedsPasswordSetup(true);
     setStatus("success");
     setTimeout(() => {
       setLocation('/app');

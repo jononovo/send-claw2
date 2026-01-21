@@ -14,7 +14,7 @@ function getDismissedOffers(): Set<string> {
 }
 
 function saveDismissedOffers(dismissed: Set<string>): void {
-  localStorage.setItem(DISMISSED_OFFERS_KEY, JSON.stringify([...dismissed]));
+  localStorage.setItem(DISMISSED_OFFERS_KEY, JSON.stringify(Array.from(dismissed)));
 }
 
 const TopNavAdContext = createContext<TopNavAdContextValue | null>(null);
