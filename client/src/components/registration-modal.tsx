@@ -537,10 +537,10 @@ export function RegistrationModal() {
                     
                     <Button 
                       variant="outline" 
-                      className="w-full justify-center relative bg-blue-500/20 hover:bg-blue-600/30 text-blue-300 border-2 border-blue-400 hover:border-blue-300"
+                      className="bg-transparent hover:bg-white/10 text-white border border-white/30 hover:border-white/50"
                       onClick={handleReturnToMain}
                     >
-                      Return to Sign In
+                      Back to Login
                     </Button>
                   </div>
                 )}
