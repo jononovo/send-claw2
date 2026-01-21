@@ -75,7 +75,6 @@ export function PasswordSetupModal() {
 
         setTimeout(() => {
           setIsOpen(false);
-          window.location.reload();
         }, 1500);
       } else {
         toast({

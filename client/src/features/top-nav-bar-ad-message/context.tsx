@@ -1,6 +1,6 @@
-import { createContext, useContext, useState, useCallback, useMemo, ReactNode } from 'react';
+import { createContext, useContext, useState, useCallback, useMemo, useEffect, ReactNode } from 'react';
 import { TopNavAdContextValue, Offer } from './types';
-import { createOffersRegistry, setNeedsPasswordSetup } from './registry';
+import { createOffersRegistry, setNeedsPasswordSetup, onPasswordSetupChanged } from './registry';
 
 const DISMISSED_OFFERS_KEY = 'dismissedOffers';
 
@@ -26,6 +26,12 @@ interface TopNavAdProviderProps {
 export function TopNavAdProvider({ children }: TopNavAdProviderProps) {
   const [dismissedOffers, setDismissedOffers] = useState<Set<string>>(() => getDismissedOffers());
   const [refreshTrigger, setRefreshTrigger] = useState(0);
+
+  useEffect(() => {
+    return onPasswordSetupChanged(() => {
+      setRefreshTrigger(prev => prev + 1);
+    });
+  }, []);
 
   const openPasswordSetupModal = useCallback(() => {
     window.dispatchEvent(new CustomEvent('openPasswordSetupModal'));
