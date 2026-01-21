@@ -15,9 +15,10 @@ export function RegistrationModal() {
   const [password, setPassword] = useState("");
   const [emailValid, setEmailValid] = useState(false);
   const [resetEmailSent, setResetEmailSent] = useState(false);
+  const [isRegistering, setIsRegistering] = useState(false);
 
-  const nameInputRef = useRef<HTMLInputElement>(null);
   const emailInputRef = useRef<HTMLInputElement>(null);
+  const nameInputRef = useRef<HTMLInputElement>(null);
   const loginEmailRef = useRef<HTMLInputElement>(null);
   const forgotPasswordEmailRef = useRef<HTMLInputElement>(null);
   
@@ -84,8 +85,8 @@ export function RegistrationModal() {
   // Focus the appropriate input field when the page changes
   useEffect(() => {
     if (currentPage === "main") {
-      // Focus the name input field on main page
-      setTimeout(() => nameInputRef.current?.focus(), 100);
+      // Focus the email input field on main page (email first, then name)
+      setTimeout(() => emailInputRef.current?.focus(), 100);
     } else if (currentPage === "login") {
       // Focus the email input field on the login page
       setTimeout(() => loginEmailRef.current?.focus(), 100);
@@ -96,6 +97,13 @@ export function RegistrationModal() {
       setResetEmailSent(false);
     }
   }, [currentPage]);
+  
+  // Focus name field when email becomes valid
+  useEffect(() => {
+    if (emailValid && currentPage === "main") {
+      setTimeout(() => nameInputRef.current?.focus(), 100);
+    }
+  }, [emailValid, currentPage]);
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -139,16 +147,25 @@ export function RegistrationModal() {
     }
   };
 
+  // Generate a secure random password for passwordless registration
+  const generateRandomPassword = () => {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*';
+    let password = '';
+    for (let i = 0; i < 32; i++) {
+      password += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return password;
+  };
+
   const handleSubmit = async () => {
     // Different validation rules for registration vs login
     if (!validateEmail(email)) return;
     
-    // For registration on main page, enforce 8+ character password only if email includes @
-    // This allows users to proceed if they haven't reached the password field yet
-    if (currentPage === "main" && email.includes('@') && password.length < 8) {
+    // For registration, only require email and name (no password needed)
+    if (currentPage === "main" && !name.trim()) {
       toast({
-        title: "Password Too Short",
-        description: "Password must be at least 8 characters",
+        title: "Name Required",
+        description: "Please enter your name",
         variant: "destructive",
       });
       return;
@@ -156,9 +173,12 @@ export function RegistrationModal() {
     
     if (currentPage === "main") {
       try {
+        setIsRegistering(true);
         // Mark as new user before auth completes
         setIsNewUser(true);
-        await registerWithEmail(email, password, name);
+        // Generate a random password - user can set their own later via password reset
+        const randomPassword = generateRandomPassword();
+        await registerWithEmail(email, randomPassword, name);
         
         // Push event to dataLayer for GTM to handle conversion tracking
         window.dataLayer?.push({ event: 'registration_complete' });
@@ -171,27 +191,15 @@ export function RegistrationModal() {
       } catch (error: any) {
         console.error("Registration error:", error);
         
-        // Check if email already exists - attempt login
+        // Check if email already exists - redirect to login
         if (error.code === 'auth/email-already-in-use') {
-          try {
-            // Mark as existing user (not new)
-            setIsNewUser(false);
-            await signInWithEmail(email, password);
-            toast({
-              title: "Welcome back!",
-              description: "Account already exists - Logging you in",
-              variant: "default",
-              duration: 4000,
-            });
-            closeModal();
-          } catch (loginError: any) {
-            console.error("Login attempt failed:", loginError);
-            toast({
-              title: "Account already exists",
-              description: "Please try logging in with the correct password",
-              variant: "destructive",
-            });
-          }
+          toast({
+            title: "Account already exists",
+            description: "Please log in with your password",
+            variant: "default",
+            duration: 4000,
+          });
+          setCurrentPage("login");
         } else if (error.code === 'auth/operation-not-allowed') {
           toast({
             title: "Email/Password Sign-up Not Enabled",
@@ -205,6 +213,8 @@ export function RegistrationModal() {
             variant: "destructive",
           });
         }
+      } finally {
+        setIsRegistering(false);
       }
     } else if (currentPage === "login") {
       try {
@@ -281,17 +291,8 @@ export function RegistrationModal() {
               </div>
 
               <div className="space-y-4 max-w-sm mx-auto px-2 sm:px-4">
-                {/* Registration form */}
+                {/* Registration form - Email first, then Name */}
                 <div className="space-y-4">
-                  <input
-                    ref={nameInputRef}
-                    type="text"
-                    placeholder="Full Name"
-                    className="w-full p-4 bg-white/10 border border-white/20 rounded-md text-white placeholder-gray-400 focus:outline-none focus:border-blue-300"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                  />
-                  
                   <input
                     ref={emailInputRef}
                     type="email"
@@ -301,39 +302,43 @@ export function RegistrationModal() {
                     onChange={handleEmailChange}
                   />
                   
-                  {/* Password field only appears after @ is typed in email */}
-                  {email.includes('@') && (
-                    <div>
-                      <input
-                        type="password"
-                        placeholder="Password"
-                        className="w-full p-4 bg-white/10 border border-white/20 rounded-md text-white placeholder-gray-400 focus:outline-none focus:border-blue-300"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        onKeyDown={(e) => {
-                          if (e.key === "Enter") {
-                            e.preventDefault();
-                            handleSubmit();
-                          }
-                        }}
-                      />
-                      <p className="text-xs text-gray-400 mt-1">Minimum 8 characters</p>
-                    </div>
+                  {/* Name field appears after email is valid */}
+                  {emailValid && (
+                    <input
+                      ref={nameInputRef}
+                      type="text"
+                      placeholder="Full Name"
+                      className="w-full p-4 bg-white/10 border border-white/20 rounded-md text-white placeholder-gray-400 focus:outline-none focus:border-blue-300"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          e.preventDefault();
+                          handleSubmit();
+                        }
+                      }}
+                    />
                   )}
                   
-                  {/* Create Account button always visible */}
+                  {/* Create Account button - enabled when email is valid and name is entered */}
                   <Button 
                     variant="outline" 
                     className={`w-full justify-center transition-all duration-300 group ${
-                      emailValid && (!email.includes('@') || password.length >= 8)
+                      emailValid && name.trim()
                         ? 'bg-gradient-to-r from-blue-800 via-indigo-800 to-purple-800 hover:from-blue-700 hover:via-indigo-700 hover:to-purple-700 text-white hover:text-white border-0 shadow-lg'
                         : 'bg-transparent hover:bg-white/10 text-white border border-white/30 hover:border-white/50'
                     }`}
                     onClick={handleSubmit}
-                    disabled={!emailValid || (email.includes('@') && password.length < 8)}
+                    disabled={!emailValid || !name.trim() || isRegistering}
                   >
-                    <span className="transition-all duration-700 delay-1000 group-hover:opacity-0 group-hover:scale-95">Create Account</span>
-                    <span className="absolute transition-all duration-700 delay-1000 opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100">Let's Go 🚀</span>
+                    {isRegistering ? (
+                      <span>Creating Account...</span>
+                    ) : (
+                      <>
+                        <span className="transition-all duration-700 delay-1000 group-hover:opacity-0 group-hover:scale-95">Create Account</span>
+                        <span className="absolute transition-all duration-700 delay-1000 opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100">Let's Go</span>
+                      </>
+                    )}
                   </Button>
                 </div>
 
