@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
 import { useRegistrationModal } from "@/hooks/use-registration-modal";
-import { ArrowLeft, X, Mail, CheckCircle } from "lucide-react";
+import { ArrowLeft, X, CheckCircle } from "lucide-react";
 import { loadFirebase } from "@/lib/firebase";
 import { useToast } from "@/hooks/use-toast";
 import { sendAttributionToServer, logConversionEvent } from "@/features/attribution";
@@ -207,8 +207,7 @@ export function SimplifiedRegistrationModal() {
           {currentPage === "email" && (
             <div className="w-full max-w-md mx-auto">
               <div className="text-center text-white mb-8">
-                <h2 className="text-3xl font-bold mb-3">Get Started</h2>
-                <p className="text-gray-200 text-lg">No password needed</p>
+                <h2 className="text-3xl font-bold mb-3">Sign up</h2>
               </div>
 
               <div className="space-y-4 max-w-sm mx-auto px-2 sm:px-4">
@@ -216,7 +215,7 @@ export function SimplifiedRegistrationModal() {
                   <input
                     ref={emailInputRef}
                     type="email"
-                    placeholder="Work Email"
+                    placeholder="Email"
                     className="w-full p-4 bg-white/10 border border-white/20 rounded-md text-white placeholder-gray-400 focus:outline-none focus:border-blue-300"
                     value={email}
                     onChange={handleEmailChange}
@@ -253,10 +252,7 @@ export function SimplifiedRegistrationModal() {
                     {isSending ? (
                       <span>Sending...</span>
                     ) : (
-                      <span className="flex items-center gap-2">
-                        <Mail className="h-4 w-4" />
-                        Send Magic Link
-                      </span>
+                      <span className="font-semibold">GO →</span>
                     )}
                   </Button>
                 </div>
