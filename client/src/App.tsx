@@ -43,6 +43,7 @@ const NotFound = lazy(() => import("@/pages/not-found"));
 const StrategyDashboard = lazy(() => import("@/features/strategy-chat").then(module => ({ default: module.StrategyDashboard })));
 const DailyOutreach = lazy(() => import("@/pages/DailyOutreach"));
 const Streak = lazy(() => import("@/pages/Streak"));
+const AuthComplete = lazy(() => import("@/pages/auth-complete"));
 const Contacts = lazy(() => import("@/pages/Contacts"));
 const ContactListDetail = lazy(() => import("@/pages/ContactListDetail"));
 const AllContacts = lazy(() => import("@/pages/AllContacts"));
@@ -325,6 +326,11 @@ function Router() {
             <div className="flex-1">
               <Switch>
                 <Route path="/auth" component={Auth} />
+                <Route path="/auth/complete">
+                  <Suspense fallback={<AppSkeleton />}>
+                    <AuthComplete />
+                  </Suspense>
+                </Route>
                 
                 {/* /search redirect to /app */}
                 <Route path="/search">
