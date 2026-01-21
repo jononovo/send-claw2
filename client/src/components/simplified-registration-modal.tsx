@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
+import { useRegistrationModal } from "@/hooks/use-registration-modal";
 import { ArrowLeft, X, Mail, CheckCircle } from "lucide-react";
 import { loadFirebase } from "@/lib/firebase";
 import { useToast } from "@/hooks/use-toast";
@@ -8,13 +9,8 @@ import { sendAttributionToServer, logConversionEvent } from "@/features/attribut
 
 type SimplifiedRegistrationPage = "email" | "checkEmail" | "login";
 
-interface SimplifiedRegistrationModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onSuccess?: (isNewUser: boolean) => void;
-}
-
-export function SimplifiedRegistrationModal({ isOpen, onClose, onSuccess }: SimplifiedRegistrationModalProps) {
+export function SimplifiedRegistrationModal() {
+  const { isOpen, closeModal: onClose, initialPage } = useRegistrationModal();
   const [currentPage, setCurrentPage] = useState<SimplifiedRegistrationPage>("email");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -33,9 +29,19 @@ export function SimplifiedRegistrationModal({ isOpen, onClose, onSuccess }: Simp
   useEffect(() => {
     if (user && isOpen) {
       onClose();
-      onSuccess?.(true);
     }
-  }, [user, isOpen, onClose, onSuccess]);
+  }, [user, isOpen, onClose]);
+  
+  // Set initial page based on initialPage from hook
+  useEffect(() => {
+    if (isOpen) {
+      if (initialPage === "login") {
+        setCurrentPage("login");
+      } else {
+        setCurrentPage("email");
+      }
+    }
+  }, [isOpen, initialPage]);
 
   // Lock body scroll when modal is open
   useEffect(() => {
@@ -89,7 +95,6 @@ export function SimplifiedRegistrationModal({ isOpen, onClose, onSuccess }: Simp
       }
       
       onClose();
-      onSuccess?.(isNewUser);
     } catch (error) {
       console.error("Google sign-in failed:", error);
     }
@@ -156,7 +161,6 @@ export function SimplifiedRegistrationModal({ isOpen, onClose, onSuccess }: Simp
     try {
       await signInWithEmail(email, password);
       onClose();
-      onSuccess?.(false);
     } catch (error: any) {
       console.error("Login error:", error);
       toast({
