@@ -64,15 +64,27 @@
       })();
     </script>
     
-    <!-- Initialize dataLayer and gtag for compatibility (GTM loaded after page idle) -->
+    <!-- Initialize dataLayer, gtag, and fbq queue early (before interaction) -->
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
+      
+      !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+      n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+      if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+      n.queue=[];}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+      
+      fbq('init', '862009893284962');
+      fbq('track', 'PageView');
     </script>
     
-    <!-- Deferred Google Tag Manager - loads after page is idle for better performance -->
+    <!-- GTM & Meta Pixel Scripts - Load on first user interaction (invisible to page load metrics) -->
     <script>
       (function() {
+        var triggered = false;
+        var fallbackTimer;
+        var events = ['scroll', 'click', 'mousemove', 'touchstart', 'keydown'];
+        
         function loadGTM() {
           if (window.__gtmLoaded) return;
           window.__gtmLoaded = true;
@@ -82,38 +94,32 @@
           s.src = 'https://www.googletagmanager.com/gtm.js?id=GTM-TNCXX3SG';
           document.head.appendChild(s);
         }
-        if ('requestIdleCallback' in window) {
-          requestIdleCallback(loadGTM, { timeout: 6000 });
-        } else {
-          setTimeout(loadGTM, 5500);
-        }
-      })();
-    </script>
-    
-    <!-- Meta Pixel Base Code - Deferred loading for performance -->
-    <script>
-      (function() {
-        function loadMetaPixel() {
+        
+        function loadMetaPixelScript() {
           if (window.__metaPixelLoaded) return;
           window.__metaPixelLoaded = true;
-          
-          !function(f,b,e,v,n,t,s)
-          {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-          n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-          if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-          n.queue=[];t=b.createElement(e);t.async=!0;
-          t.src=v;s=b.getElementsByTagName(e)[0];
-          s.parentNode.insertBefore(t,s)}(window, document,'script',
-          'https://connect.facebook.net/en_US/fbevents.js');
-          
-          fbq('init', '862009893284962');
-          fbq('track', 'PageView');
+          var t = document.createElement('script');
+          t.async = true;
+          t.src = 'https://connect.facebook.net/en_US/fbevents.js';
+          document.head.appendChild(t);
         }
-        if ('requestIdleCallback' in window) {
-          requestIdleCallback(loadMetaPixel, { timeout: 6000 });
-        } else {
-          setTimeout(loadMetaPixel, 5500);
+        
+        function triggerLoad() {
+          if (triggered) return;
+          triggered = true;
+          clearTimeout(fallbackTimer);
+          events.forEach(function(e) {
+            document.removeEventListener(e, triggerLoad, { passive: true });
+          });
+          loadGTM();
+          loadMetaPixelScript();
         }
+        
+        events.forEach(function(e) {
+          document.addEventListener(e, triggerLoad, { passive: true });
+        });
+        
+        fallbackTimer = setTimeout(triggerLoad, 20000);
       })();
     </script>
     
