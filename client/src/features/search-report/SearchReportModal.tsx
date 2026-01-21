@@ -1,12 +1,14 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { X, Users, Building2, Clock, TrendingUp, Mail } from "lucide-react";
+import { X, Users, Building2, Clock, TrendingUp, Mail, RefreshCw, Gift } from "lucide-react";
 import type { SearchReportModalProps } from "./types";
 
 export function SearchReportModal({
   metrics,
   isVisible,
-  onClose
+  onClose,
+  cachedInfo,
+  onRefresh
 }: SearchReportModalProps) {
   if (!isVisible) return null;
 
@@ -150,6 +152,36 @@ export function SearchReportModal({
               </div>
             )}
           </div>
+
+          {cachedInfo?.isCached && (
+            <div className="border-t pt-3 mt-3">
+              <div className="flex items-center justify-between bg-green-50 dark:bg-green-900/20 rounded-lg px-3 py-2">
+                <div className="flex items-center gap-2">
+                  <Gift className="h-4 w-4 text-green-600" />
+                  <div>
+                    <span className="text-xs font-medium text-green-700 dark:text-green-400">
+                      Saved search from {cachedInfo.cachedDate ? cachedInfo.cachedDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : 'earlier'}
+                    </span>
+                    <span className="text-xs text-green-600 dark:text-green-500 ml-1">• Free</span>
+                  </div>
+                </div>
+                {onRefresh && (
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    onClick={() => {
+                      onClose();
+                      onRefresh();
+                    }}
+                    className="h-7 px-2 text-xs text-green-700 hover:text-green-800 hover:bg-green-100 dark:text-green-400 dark:hover:bg-green-900/30"
+                  >
+                    <RefreshCw className="h-3.5 w-3.5 mr-1" />
+                    Search fresh
+                  </Button>
+                )}
+              </div>
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>

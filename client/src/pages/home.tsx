@@ -1537,6 +1537,26 @@ export default function Home({ isNewSearch = false }: HomeProps) {
             }}
             isVisible={mainSummaryVisible}
             onClose={() => setMainSummaryVisible(false)}
+            cachedInfo={cachedResultInfo}
+            onRefresh={() => {
+              const queryToRefresh = cachedResultInfo.query || lastExecutedQuery || currentQuery;
+              if (!queryToRefresh?.trim()) return;
+              
+              sessionStorage.setItem('forceBypassCache', 'true');
+              setCurrentQuery(queryToRefresh);
+              setSearchSectionCollapsed(false);
+              toast({
+                title: "Refreshing search",
+                description: "Getting fresh results...",
+              });
+              requestAnimationFrame(() => {
+                setTimeout(() => {
+                  window.dispatchEvent(new CustomEvent('triggerFreshSearch', { 
+                    detail: { query: queryToRefresh } 
+                  }));
+                }, 50);
+              });
+            }}
           />
         </Suspense>
       )}
