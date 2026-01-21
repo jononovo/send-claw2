@@ -122,11 +122,13 @@ export function SearchReportModal({
               <span className="text-sm font-bold text-purple-600">{successRate}%</span>
             </div>
             
-            <div className="flex items-center gap-2">
-              <Clock className="h-4 w-4 text-orange-600" />
-              <span className="text-sm font-medium">Search Duration:</span>
-              <span className="text-sm font-bold text-orange-600">{formatDuration(searchDuration)}</span>
-            </div>
+            {!cachedInfo?.isCached && (
+              <div className="flex items-center gap-2">
+                <Clock className="h-4 w-4 text-orange-600" />
+                <span className="text-sm font-medium">Search Duration:</span>
+                <span className="text-sm font-bold text-orange-600">{formatDuration(searchDuration)}</span>
+              </div>
+            )}
           </div>
 
           <div className="border-t pt-3 space-y-2">
