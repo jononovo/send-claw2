@@ -1172,9 +1172,23 @@ export default function PromptEditor({
       }, 35000);
     }
     
-    // Parallel cache check - runs alongside the search
+    // Parallel cache check - runs alongside the search (unless bypass flag is set)
     cacheHitRef.current = false;
+    const shouldBypassCache = sessionStorage.getItem('forceBypassCache') === 'true';
+    
+    // Clear the bypass flag immediately after reading it
+    if (shouldBypassCache) {
+      sessionStorage.removeItem('forceBypassCache');
+      console.log('🔄 Bypass cache flag detected - skipping cache check for fresh results');
+    }
+    
     const cacheCheck = async () => {
+      // Skip cache check if bypass flag was set
+      if (shouldBypassCache) {
+        console.log('🔄 Cache bypass active - fetching fresh results');
+        return;
+      }
+      
       try {
         const response = await fetch(`/api/lists/by-prompt?prompt=${encodeURIComponent(value)}`);
         const cachedResult = await response.json();
@@ -1216,6 +1230,27 @@ export default function PromptEditor({
     // Start cache check in parallel (non-blocking)
     cacheCheck();
   };
+
+  // Ref to hold the latest handleSearch function for event listener
+  const handleSearchRef = useRef<() => void>(() => {});
+  useEffect(() => {
+    handleSearchRef.current = handleSearch;
+  });
+
+  // Listen for triggerFreshSearch event from parent (cache refresh button)
+  useEffect(() => {
+    const handleTriggerFreshSearch = () => {
+      console.log('🔄 Fresh search triggered via event');
+      // Trigger the search using the ref to get the latest function
+      handleSearchRef.current();
+    };
+    
+    window.addEventListener('triggerFreshSearch', handleTriggerFreshSearch);
+    
+    return () => {
+      window.removeEventListener('triggerFreshSearch', handleTriggerFreshSearch);
+    };
+  }, []);
 
   // Stop button handler - allows user to manually stop a search
   const handleStopSearch = async () => {

@@ -45,7 +45,7 @@ import { logConversionEvent } from "@/features/attribution";
 import { useRegistrationModal } from "@/hooks/use-registration-modal";
 import { useNotifications } from "@/hooks/use-notifications";
 import { NotificationToast } from "@/components/ui/notification-toast";
-import { Search, ChevronDown, ChevronUp } from "lucide-react";
+import { Search, ChevronDown, ChevronUp, RefreshCw } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
@@ -120,6 +120,8 @@ export default function Home({ isNewSearch = false }: HomeProps) {
   const [inputHasChanged, setInputHasChanged] = useState(false);
   // Track current session ID for email search persistence
   const [currentSessionId, setCurrentSessionId] = useState<string | null>(null);
+  // Track if results are from cache, when they were cached, and the original query
+  const [cachedResultInfo, setCachedResultInfo] = useState<{ isCached: boolean; cachedDate: Date | null; query: string | null }>({ isCached: false, cachedDate: null, query: null });
   // Tour modal has been removed
   
   // Email drawer state management
@@ -1535,6 +1537,26 @@ export default function Home({ isNewSearch = false }: HomeProps) {
             }}
             isVisible={mainSummaryVisible}
             onClose={() => setMainSummaryVisible(false)}
+            cachedInfo={cachedResultInfo}
+            onRefresh={() => {
+              const queryToRefresh = cachedResultInfo.query || lastExecutedQuery || currentQuery;
+              if (!queryToRefresh?.trim()) return;
+              
+              sessionStorage.setItem('forceBypassCache', 'true');
+              setCurrentQuery(queryToRefresh);
+              setSearchSectionCollapsed(false);
+              toast({
+                title: "Refreshing search",
+                description: "Getting fresh results...",
+              });
+              requestAnimationFrame(() => {
+                setTimeout(() => {
+                  window.dispatchEvent(new CustomEvent('triggerFreshSearch', { 
+                    detail: { query: queryToRefresh } 
+                  }));
+                }, 50);
+              });
+            }}
           />
         </Suspense>
       )}
@@ -1574,21 +1596,86 @@ export default function Home({ isNewSearch = false }: HomeProps) {
           <div className="relative transition-all duration-300 ease-in-out">
             {/* Collapsed Header - Only visible when collapsed */}
             {searchSectionCollapsed && (
-              <button
-                onClick={() => setSearchSectionCollapsed(false)}
-                className="w-full px-3 md:px-6 py-2 bg-background border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors flex items-center justify-between group mb-2"
-                data-testid="button-expand-search"
-              >
-                <div className="flex items-center gap-2">
+              <div className="w-full px-3 md:px-6 py-2 bg-background border rounded-lg flex items-center justify-between mb-2">
+                <button
+                  onClick={() => setSearchSectionCollapsed(false)}
+                  className="flex-1 flex items-center gap-2 hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors rounded-l-lg group"
+                  data-testid="button-expand-search"
+                >
                   <Search className="h-4 w-4 text-muted-foreground" />
                   {currentQuery && (
                     <span className="text-sm text-muted-foreground truncate max-w-[200px] md:max-w-[400px]">
                       {currentQuery}
                     </span>
                   )}
+                </button>
+                
+                <div className="flex items-center gap-2">
+                  {/* Cached indicator with refresh button */}
+                  {cachedResultInfo.isCached && (
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              // Use the stored cached query (guaranteed to be the original search)
+                              const queryToRefresh = cachedResultInfo.query || lastExecutedQuery || currentQuery;
+                              if (!queryToRefresh?.trim()) {
+                                toast({
+                                  title: "Unable to refresh",
+                                  description: "No search query available",
+                                  variant: "destructive"
+                                });
+                                return;
+                              }
+                              
+                              // Set bypass cache flag BEFORE triggering the search
+                              sessionStorage.setItem('forceBypassCache', 'true');
+                              // Ensure the input has the correct query
+                              setCurrentQuery(queryToRefresh);
+                              // Expand the search section so user sees the search in progress
+                              setSearchSectionCollapsed(false);
+                              // Show toast feedback
+                              toast({
+                                title: "Refreshing search",
+                                description: "Getting fresh results...",
+                              });
+                              // Dispatch event to trigger fresh search after React has committed state updates
+                              // Note: cachedResultInfo is cleared in onAnalyze when search actually starts
+                              // Using requestAnimationFrame + setTimeout ensures React render cycle completes
+                              requestAnimationFrame(() => {
+                                setTimeout(() => {
+                                  window.dispatchEvent(new CustomEvent('triggerFreshSearch', { 
+                                    detail: { query: queryToRefresh } 
+                                  }));
+                                }, 50);
+                              });
+                            }}
+                            className="flex items-center gap-1.5 px-2 py-1 rounded text-xs text-muted-foreground hover:text-foreground hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                            data-testid="button-refresh-search"
+                          >
+                            <span className="hidden md:inline text-[10px] opacity-70">
+                              Search results from {cachedResultInfo.cachedDate && new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric' }).format(cachedResultInfo.cachedDate)}
+                            </span>
+                            <RefreshCw className="h-3.5 w-3.5" />
+                          </button>
+                        </TooltipTrigger>
+                        <TooltipContent side="bottom">
+                          <p>Results from {cachedResultInfo.cachedDate ? new Intl.DateTimeFormat('en-US', { month: 'long', day: 'numeric', year: 'numeric' }).format(cachedResultInfo.cachedDate) : 'cache'}. Click to search fresh.</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  )}
+                  
+                  <button
+                    onClick={() => setSearchSectionCollapsed(false)}
+                    className="p-1 hover:bg-gray-100 dark:hover:bg-gray-800 rounded transition-colors group"
+                  >
+                    <ChevronDown className="h-4 w-4 text-muted-foreground group-hover:text-foreground transition-colors" />
+                  </button>
                 </div>
-                <ChevronDown className="h-4 w-4 text-muted-foreground group-hover:text-foreground transition-colors" />
-              </button>
+              </div>
             )}
             
             {/* Expandable Search Content */}
@@ -1623,6 +1710,8 @@ export default function Home({ isNewSearch = false }: HomeProps) {
                 <PromptEditor
                     onAnalyze={() => {
                       setIsAnalyzing(true);
+                      // Clear cached result info when starting any new search
+                      setCachedResultInfo({ isCached: false, cachedDate: null, query: null });
                       // Clear list ID and results when starting a NEW search (different query)
                       if (currentQuery && currentQuery !== lastExecutedQuery) {
                         console.log('Starting new search - clearing list ID and results for query:', currentQuery);
@@ -1702,6 +1791,13 @@ export default function Home({ isNewSearch = false }: HomeProps) {
                     onCacheHit={async (cachedResult) => {
                       console.log(`🎯 Cache hit detected, loading list ${cachedResult.listId}`);
                       setIsAnalyzing(false);
+                      
+                      // Track that results are from cache with the cached date and original query
+                      setCachedResultInfo({ 
+                        isCached: true, 
+                        cachedDate: cachedResult.createdAt ? new Date(cachedResult.createdAt) : null,
+                        query: cachedResult.prompt || currentQuery
+                      });
                       
                       // Fetch the full list data and load it
                       try {

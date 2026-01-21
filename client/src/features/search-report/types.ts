@@ -29,8 +29,16 @@ export interface ContactData {
   probability?: number;
 }
 
+export interface CachedResultInfo {
+  isCached: boolean;
+  cachedDate: Date | null;
+  query: string | null;
+}
+
 export interface SearchReportModalProps {
   metrics: SearchReportMetrics;
   isVisible: boolean;
   onClose: () => void;
+  cachedInfo?: CachedResultInfo;
+  onRefresh?: () => void;
 }

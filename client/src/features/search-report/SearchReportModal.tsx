@@ -1,12 +1,14 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { X, Users, Building2, Clock, TrendingUp, Mail } from "lucide-react";
+import { X, Users, Building2, Clock, TrendingUp, Mail, RefreshCw, Gift } from "lucide-react";
 import type { SearchReportModalProps } from "./types";
 
 export function SearchReportModal({
   metrics,
   isVisible,
-  onClose
+  onClose,
+  cachedInfo,
+  onRefresh
 }: SearchReportModalProps) {
   if (!isVisible) return null;
 
@@ -120,11 +122,13 @@ export function SearchReportModal({
               <span className="text-sm font-bold text-purple-600">{successRate}%</span>
             </div>
             
-            <div className="flex items-center gap-2">
-              <Clock className="h-4 w-4 text-orange-600" />
-              <span className="text-sm font-medium">Search Duration:</span>
-              <span className="text-sm font-bold text-orange-600">{formatDuration(searchDuration)}</span>
-            </div>
+            {!cachedInfo?.isCached && (
+              <div className="flex items-center gap-2">
+                <Clock className="h-4 w-4 text-orange-600" />
+                <span className="text-sm font-medium">Search Duration:</span>
+                <span className="text-sm font-bold text-orange-600">{formatDuration(searchDuration)}</span>
+              </div>
+            )}
           </div>
 
           <div className="border-t pt-3 space-y-2">
@@ -150,7 +154,36 @@ export function SearchReportModal({
               </div>
             )}
           </div>
+
         </CardContent>
+
+        {cachedInfo?.isCached && (
+          <div className="flex items-center justify-between bg-amber-50 dark:bg-amber-900/20 px-4 py-2.5 rounded-b-lg border-t border-amber-200 dark:border-amber-800">
+            <div className="flex items-center gap-2">
+              <Gift className="h-4 w-4 text-amber-600" />
+              <div>
+                <span className="text-xs font-medium text-amber-700 dark:text-amber-400">
+                  Saved search from {cachedInfo.cachedDate ? cachedInfo.cachedDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : 'earlier'}
+                </span>
+                <span className="text-xs text-amber-600 dark:text-amber-500 ml-1">• Free</span>
+              </div>
+            </div>
+            {onRefresh && (
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={() => {
+                  onClose();
+                  onRefresh();
+                }}
+                className="h-7 px-2 text-xs text-amber-700 hover:text-amber-800 hover:bg-amber-100 dark:text-amber-400 dark:hover:bg-amber-900/30"
+              >
+                <RefreshCw className="h-3.5 w-3.5 mr-1" />
+                Search fresh
+              </Button>
+            )}
+          </div>
+        )}
       </Card>
     </div>
   );
