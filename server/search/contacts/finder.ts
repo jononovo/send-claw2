@@ -706,7 +706,6 @@ Your task is to identify the leadership team members at the specified company.`;
 For each person, provide their:
 - Full name (first and last name)
 - Current role/position
-- Location (city and country if known)
 
 IMPORTANT: If you cannot find data, return an empty array. Do NOT make up data.`;
 
@@ -719,9 +718,7 @@ IMPORTANT: If you cannot find data, return an empty array. Do NOT make up data.`
   "leaders": [
     {
       "name": "John Smith", 
-      "role": "Chief Executive Officer",
-      "city": "San Francisco",
-      "country": "USA"
+      "role": "Chief Executive Officer"
     }
   ]
 }`;
@@ -802,7 +799,6 @@ ${industryContext}
 For each person, provide their:
 - Full name (first and last name)
 - Current role/position
-- Location (city and country if known)
 
 IMPORTANT: If you cannot find data, return an empty array. Do NOT make up data.`;
 
@@ -810,9 +806,7 @@ IMPORTANT: If you cannot find data, return an empty array. Do NOT make up data.`
   "marketingLeaders": [
     {
       "name": "Jane Doe", 
-      "role": "Chief Marketing Officer",
-      "city": "New York",
-      "country": "USA"
+      "role": "Chief Marketing Officer"
     }
   ]
 }`;
@@ -848,7 +842,6 @@ Your task is to identify the CTO and other key technical decision-makers at the 
 For each person, provide their:
 - Full name (first and last name)
 - Current role/position
-- Location (city and country if known)
 
 IMPORTANT: If you cannot find data, return an empty array. Do NOT make up data.`;
 
@@ -863,9 +856,7 @@ ${industryRoles.join("\n")}`;
   "technicalLeaders": [
     {
       "name": "Alice Johnson", 
-      "role": "Chief Technology Officer",
-      "city": "Austin",
-      "country": "USA"
+      "role": "Chief Technology Officer"
     }
   ]
 }`;
@@ -900,7 +891,6 @@ Look for variations and similar positions, such as:
 For each person, provide their:
 - Full name (first and last name)
 - Current role/position
-- Location (city and country if known)
 
 IMPORTANT: If you cannot find data, return an empty array. Do NOT make up data.`;
 
@@ -913,9 +903,7 @@ IMPORTANT: If you cannot find data, return an empty array. Do NOT make up data.`
   "targetContacts": [
     {
       "name": "John Smith", 
-      "role": "${targetRole} or related position",
-      "city": "Chicago",
-      "country": "USA"
+      "role": "${targetRole} or related position"
     }
   ]
 }`;
