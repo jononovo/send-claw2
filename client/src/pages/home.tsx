@@ -1656,7 +1656,7 @@ export default function Home({ isNewSearch = false }: HomeProps) {
                             data-testid="button-refresh-search"
                           >
                             <span className="hidden md:inline text-[10px] opacity-70">
-                              Cached {cachedResultInfo.cachedDate && new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric' }).format(cachedResultInfo.cachedDate)}
+                              Search results from {cachedResultInfo.cachedDate && new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric' }).format(cachedResultInfo.cachedDate)}
                             </span>
                             <RefreshCw className="h-3.5 w-3.5" />
                           </button>
