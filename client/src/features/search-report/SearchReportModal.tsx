@@ -156,14 +156,14 @@ export function SearchReportModal({
         </CardContent>
 
         {cachedInfo?.isCached && (
-          <div className="flex items-center justify-between bg-green-50 dark:bg-green-900/20 px-4 py-2.5 rounded-b-lg border-t">
+          <div className="flex items-center justify-between bg-amber-50 dark:bg-amber-900/20 px-4 py-2.5 rounded-b-lg border-t border-amber-200 dark:border-amber-800">
             <div className="flex items-center gap-2">
-              <Gift className="h-4 w-4 text-green-600" />
+              <Gift className="h-4 w-4 text-amber-600" />
               <div>
-                <span className="text-xs font-medium text-green-700 dark:text-green-400">
+                <span className="text-xs font-medium text-amber-700 dark:text-amber-400">
                   Saved search from {cachedInfo.cachedDate ? cachedInfo.cachedDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : 'earlier'}
                 </span>
-                <span className="text-xs text-green-600 dark:text-green-500 ml-1">• Free</span>
+                <span className="text-xs text-amber-600 dark:text-amber-500 ml-1">• Free</span>
               </div>
             </div>
             {onRefresh && (
@@ -174,7 +174,7 @@ export function SearchReportModal({
                   onClose();
                   onRefresh();
                 }}
-                className="h-7 px-2 text-xs text-green-700 hover:text-green-800 hover:bg-green-100 dark:text-green-400 dark:hover:bg-green-900/30"
+                className="h-7 px-2 text-xs text-amber-700 hover:text-amber-800 hover:bg-amber-100 dark:text-amber-400 dark:hover:bg-amber-900/30"
               >
                 <RefreshCw className="h-3.5 w-3.5 mr-1" />
                 Search fresh
