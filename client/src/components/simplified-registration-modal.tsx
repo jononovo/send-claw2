@@ -191,19 +191,8 @@ export function SimplifiedRegistrationModal() {
         </button>
       </div>
       
-      <div className="bg-black/90 border border-white/10 rounded-lg w-full max-w-full sm:max-w-md mx-auto relative overflow-hidden">
-        <div 
-          className="absolute inset-0 bg-gradient-to-br from-blue-600/10 via-purple-600/5 to-pink-600/10"
-          style={{
-            backgroundImage: `
-              radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
-              radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
-              radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.2) 0%, transparent 50%)
-            `
-          }}
-        />
-        
-        <div className="relative p-8">
+      <div className="w-full max-w-full sm:max-w-md mx-auto relative">
+        <div className="p-8">
           {currentPage === "email" && (
             <div className="w-full max-w-md mx-auto">
               <div className="text-center text-white mb-8">
