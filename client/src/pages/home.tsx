@@ -120,8 +120,8 @@ export default function Home({ isNewSearch = false }: HomeProps) {
   const [inputHasChanged, setInputHasChanged] = useState(false);
   // Track current session ID for email search persistence
   const [currentSessionId, setCurrentSessionId] = useState<string | null>(null);
-  // Track if results are from cache and when they were cached
-  const [cachedResultInfo, setCachedResultInfo] = useState<{ isCached: boolean; cachedDate: Date | null }>({ isCached: false, cachedDate: null });
+  // Track if results are from cache, when they were cached, and the original query
+  const [cachedResultInfo, setCachedResultInfo] = useState<{ isCached: boolean; cachedDate: Date | null; query: string | null }>({ isCached: false, cachedDate: null, query: null });
   // Tour modal has been removed
   
   // Email drawer state management
@@ -1599,14 +1599,37 @@ export default function Home({ isNewSearch = false }: HomeProps) {
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
-                              // Clear cached info and trigger a fresh search
-                              setCachedResultInfo({ isCached: false, cachedDate: null });
-                              setSearchSectionCollapsed(false);
-                              // Set a flag to force bypass cache on next search
+                              // Use the stored cached query (guaranteed to be the original search)
+                              const queryToRefresh = cachedResultInfo.query || lastExecutedQuery || currentQuery;
+                              if (!queryToRefresh?.trim()) {
+                                toast({
+                                  title: "Unable to refresh",
+                                  description: "No search query available",
+                                  variant: "destructive"
+                                });
+                                return;
+                              }
+                              
+                              // Set bypass cache flag BEFORE triggering the search
                               sessionStorage.setItem('forceBypassCache', 'true');
+                              // Ensure the input has the correct query
+                              setCurrentQuery(queryToRefresh);
+                              // Expand the search section so user sees the search in progress
+                              setSearchSectionCollapsed(false);
+                              // Show toast feedback
                               toast({
-                                title: "Ready to refresh",
-                                description: "Click Search to get fresh results",
+                                title: "Refreshing search",
+                                description: "Getting fresh results...",
+                              });
+                              // Dispatch event to trigger fresh search after React has committed state updates
+                              // Note: cachedResultInfo is cleared in onAnalyze when search actually starts
+                              // Using requestAnimationFrame + setTimeout ensures React render cycle completes
+                              requestAnimationFrame(() => {
+                                setTimeout(() => {
+                                  window.dispatchEvent(new CustomEvent('triggerFreshSearch', { 
+                                    detail: { query: queryToRefresh } 
+                                  }));
+                                }, 50);
                               });
                             }}
                             className="flex items-center gap-1.5 px-2 py-1 rounded text-xs text-muted-foreground hover:text-foreground hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
@@ -1668,7 +1691,7 @@ export default function Home({ isNewSearch = false }: HomeProps) {
                     onAnalyze={() => {
                       setIsAnalyzing(true);
                       // Clear cached result info when starting any new search
-                      setCachedResultInfo({ isCached: false, cachedDate: null });
+                      setCachedResultInfo({ isCached: false, cachedDate: null, query: null });
                       // Clear list ID and results when starting a NEW search (different query)
                       if (currentQuery && currentQuery !== lastExecutedQuery) {
                         console.log('Starting new search - clearing list ID and results for query:', currentQuery);
@@ -1749,10 +1772,11 @@ export default function Home({ isNewSearch = false }: HomeProps) {
                       console.log(`🎯 Cache hit detected, loading list ${cachedResult.listId}`);
                       setIsAnalyzing(false);
                       
-                      // Track that results are from cache with the cached date
+                      // Track that results are from cache with the cached date and original query
                       setCachedResultInfo({ 
                         isCached: true, 
-                        cachedDate: cachedResult.createdAt ? new Date(cachedResult.createdAt) : null 
+                        cachedDate: cachedResult.createdAt ? new Date(cachedResult.createdAt) : null,
+                        query: cachedResult.prompt || currentQuery
                       });
                       
                       // Fetch the full list data and load it
