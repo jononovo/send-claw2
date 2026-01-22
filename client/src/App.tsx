@@ -11,6 +11,7 @@ import { AuthProvider } from "@/hooks/use-auth";
 import { RegistrationModalProvider } from "@/hooks/use-registration-modal";
 import { RegistrationModalContainer } from "@/components/registration-modal-container";
 import { StrategyOverlayProvider } from "@/features/strategy-chat";
+import { TopNavAdProvider, PasswordSetupModal } from "@/features/top-nav-bar-ad-message";
 import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from "@/hooks/use-theme";
 import { InsufficientCreditsProvider } from "@/contexts/insufficient-credits-context";
@@ -490,9 +491,12 @@ function App() {
           <AuthProvider>
             <RegistrationModalProvider>
               <StrategyOverlayProvider>
-                <Router />
-                <DeferredGuidance />
-                <RegistrationModalContainer />
+                <TopNavAdProvider>
+                  <Router />
+                  <DeferredGuidance />
+                  <RegistrationModalContainer />
+                  <PasswordSetupModal />
+                </TopNavAdProvider>
               </StrategyOverlayProvider>
               <Toaster />
             </RegistrationModalProvider>

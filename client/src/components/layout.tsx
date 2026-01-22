@@ -3,6 +3,7 @@ import { Footer } from "@/components/footer";
 import { MiniFooter } from "@/components/mini-footer";
 import { LeftMenuDrawer } from "@/components/left-menu-drawer";
 import { useLocation } from "wouter";
+import { TopNavAdMessage } from "@/features/top-nav-bar-ad-message";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -81,6 +82,7 @@ export function AppLayout({ children }: LayoutProps) {
   
   return (
     <div className="min-h-screen flex flex-col">
+      <TopNavAdMessage />
       <div className="flex-1">
         {children}
       </div>

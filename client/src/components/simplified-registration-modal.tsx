@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
 import { useRegistrationModal } from "@/hooks/use-registration-modal";
-import { ArrowLeft, X, Mail, CheckCircle } from "lucide-react";
+import { ArrowLeft, X, CheckCircle } from "lucide-react";
 import { loadFirebase } from "@/lib/firebase";
 import { useToast } from "@/hooks/use-toast";
 import { sendAttributionToServer, logConversionEvent } from "@/features/attribution";
@@ -64,12 +64,6 @@ export function SimplifiedRegistrationModal() {
     }
   }, [currentPage, isOpen]);
 
-  // Focus name field when email becomes valid
-  useEffect(() => {
-    if (emailValid && currentPage === "email") {
-      setTimeout(() => nameInputRef.current?.focus(), 100);
-    }
-  }, [emailValid, currentPage]);
 
   const validateEmail = (email: string) => {
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -179,7 +173,7 @@ export function SimplifiedRegistrationModal() {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-0 sm:p-4">
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-0 sm:p-4">
       {/* Close button */}
       <div className="absolute top-6 right-6 z-10">
         <button 
@@ -191,24 +185,13 @@ export function SimplifiedRegistrationModal() {
         </button>
       </div>
       
-      <div className="bg-black/90 border border-white/10 rounded-lg w-full max-w-full sm:max-w-md mx-auto relative overflow-hidden">
-        <div 
-          className="absolute inset-0 bg-gradient-to-br from-blue-600/10 via-purple-600/5 to-pink-600/10"
-          style={{
-            backgroundImage: `
-              radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
-              radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
-              radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.2) 0%, transparent 50%)
-            `
-          }}
-        />
-        
-        <div className="relative p-8">
+      <div className="w-full max-w-full sm:max-w-md mx-auto relative">
+        <div className="p-8">
           {currentPage === "email" && (
             <div className="w-full max-w-md mx-auto">
               <div className="text-center text-white mb-8">
-                <h2 className="text-3xl font-bold mb-3">Get Started</h2>
-                <p className="text-gray-200 text-lg">No password needed</p>
+                <h2 className="text-3xl font-bold mb-2">Sign up</h2>
+                <p className="text-gray-300 text-lg">Let's make life easier for you</p>
               </div>
 
               <div className="space-y-4 max-w-sm mx-auto px-2 sm:px-4">
@@ -216,7 +199,7 @@ export function SimplifiedRegistrationModal() {
                   <input
                     ref={emailInputRef}
                     type="email"
-                    placeholder="Work Email"
+                    placeholder="Email"
                     className="w-full p-4 bg-white/10 border border-white/20 rounded-md text-white placeholder-gray-400 focus:outline-none focus:border-blue-300"
                     value={email}
                     onChange={handleEmailChange}
@@ -253,26 +236,16 @@ export function SimplifiedRegistrationModal() {
                     {isSending ? (
                       <span>Sending...</span>
                     ) : (
-                      <span className="flex items-center gap-2">
-                        <Mail className="h-4 w-4" />
-                        Send Magic Link
-                      </span>
+                      <span className="font-semibold">GO →</span>
                     )}
                   </Button>
                 </div>
 
-                <div className="relative">
-                  <div className="absolute inset-0 flex items-center">
-                    <div className="w-full border-t border-white/20" />
-                  </div>
-                  <div className="relative flex justify-center text-sm">
-                    <span className="px-2 bg-black/70 text-gray-400">OR</span>
-                  </div>
-                </div>
+                <div className="w-full border-t border-white/20" />
 
                 <Button 
                   variant="outline" 
-                  className="w-full justify-center relative bg-white hover:bg-gray-100 text-gray-700 border border-gray-300"
+                  className="w-full justify-center relative bg-white hover:bg-gray-100 text-gray-700 border border-gray-300 opacity-50 hover:opacity-100 transition-opacity"
                   onClick={handleGoogleSignIn}
                 >
                   <svg className="h-5 w-5 mr-2" viewBox="0 0 24 24">
