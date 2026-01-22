@@ -25,8 +25,9 @@ export function BlurredEmailTeaser() {
           <div className="flex flex-col items-center gap-1.5">
             <p className="text-xs">Sign in to see email</p>
             <Button 
+              variant="ghost"
               size="sm" 
-              className="h-6 text-xs px-2"
+              className="h-6 text-xs px-2 text-[hsl(25,55%,50%)] hover:text-[hsl(25,55%,40%)] hover:bg-[hsl(25,55%,50%)]/10 font-medium"
               onClick={(e) => {
                 e.stopPropagation();
                 openModal();
