@@ -48,7 +48,9 @@ export interface IStorage {
   // Search Lists
   listSearchLists(userId: number): Promise<SearchList[]>;
   getSearchList(listId: number, userId: number): Promise<SearchList | undefined>;
+  getSearchListPublic(listId: number): Promise<SearchList | undefined>;
   listCompaniesBySearchList(listId: number, userId: number): Promise<Company[]>;
+  listCompaniesBySearchListPublic(listId: number): Promise<Company[]>;
   getNextSearchListId(): Promise<number>;
   createSearchList(data: InsertSearchList): Promise<SearchList>;
   updateCompanySearchList(companyId: number, listId: number): Promise<void>;
@@ -57,6 +59,7 @@ export interface IStorage {
   // Companies
   listCompanies(userId: number): Promise<Company[]>;
   getCompany(id: number, userId: number): Promise<Company | undefined>;
+  getCompanyPublic(id: number): Promise<Company | undefined>;
   createCompany(data: InsertCompany): Promise<Company>;
   updateCompany(id: number, data: Partial<Company>): Promise<Company | undefined>;
 
@@ -65,6 +68,7 @@ export interface IStorage {
   listContacts(userId: number): Promise<Contact[]>;
   listContactsWithCompanies(userId: number): Promise<(Contact & { companyName?: string })[]>;
   getContact(id: number, userId: number): Promise<Contact | undefined>;
+  getContactPublic(id: number): Promise<Contact | undefined>;
   findContactByApolloPersonId(apolloPersonId: string): Promise<Contact | undefined>;
   createContact(data: InsertContact): Promise<Contact>;
   updateContact(id: number, data: Partial<Contact>): Promise<Contact>;
@@ -306,10 +310,24 @@ class DatabaseStorage implements IStorage {
     return list;
   }
 
+  async getSearchListPublic(listId: number): Promise<SearchList | undefined> {
+    const [list] = await db
+      .select()
+      .from(searchLists)
+      .where(eq(searchLists.listId, listId));
+    return list;
+  }
+
   async listCompaniesBySearchList(listId: number, userId: number): Promise<Company[]> {
     return db.select()
       .from(companies)
       .where(and(eq(companies.listId, listId), eq(companies.userId, userId)));
+  }
+
+  async listCompaniesBySearchListPublic(listId: number): Promise<Company[]> {
+    return db.select()
+      .from(companies)
+      .where(eq(companies.listId, listId));
   }
 
   async getNextSearchListId(): Promise<number> {
@@ -367,6 +385,20 @@ class DatabaseStorage implements IStorage {
       return result[0];
     } catch (error) {
       console.error('Error fetching company:', error);
+      return undefined;
+    }
+  }
+
+  async getCompanyPublic(id: number): Promise<Company | undefined> {
+    try {
+      const result = await db
+        .select()
+        .from(companies)
+        .where(eq(companies.id, id))
+        .limit(1);
+      return result[0];
+    } catch (error) {
+      console.error('Error fetching public company:', error);
       return undefined;
     }
   }
@@ -472,6 +504,20 @@ class DatabaseStorage implements IStorage {
       return result[0];
     } catch (error) {
       console.error('Error fetching contact:', error);
+      return undefined;
+    }
+  }
+
+  async getContactPublic(id: number): Promise<Contact | undefined> {
+    try {
+      const result = await db
+        .select()
+        .from(contacts)
+        .where(eq(contacts.id, id))
+        .limit(1);
+      return result[0];
+    } catch (error) {
+      console.error('Error fetching public contact:', error);
       return undefined;
     }
   }
