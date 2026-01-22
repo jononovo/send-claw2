@@ -1,9 +1,16 @@
-import { Loader2, Sparkles, AlertCircle } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Loader2, Sparkles, AlertCircle, Save, Check } from 'lucide-react';
+import { useMutation } from '@tanstack/react-query';
 import { SuperSearchTable } from './SuperSearchTable';
+import { Button } from '@/components/ui/button';
+import { apiRequest, queryClient } from '@/lib/queryClient';
 import type { SuperSearchState, SearchPlan } from '../types';
 
 interface SuperSearchResultsProps {
   state: SuperSearchState;
+  query?: string;
+  onSaved?: (listId: number) => void;
+  alreadySaved?: boolean;
 }
 
 function formatFieldLabel(field: string): string {
@@ -41,8 +48,31 @@ function buildColumnsFromPlan(plan: SearchPlan): string[] {
   return columns;
 }
 
-export function SuperSearchResults({ state }: SuperSearchResultsProps) {
+export function SuperSearchResults({ state, query, onSaved, alreadySaved = false }: SuperSearchResultsProps) {
   const { status, plan, results, progressMessages, error, completionStats } = state;
+  const [isSaved, setIsSaved] = useState(alreadySaved);
+
+  // Sync alreadySaved prop to local state when it changes
+  useEffect(() => {
+    setIsSaved(alreadySaved);
+  }, [alreadySaved]);
+
+  const saveMutation = useMutation({
+    mutationFn: async () => {
+      if (!query || !plan) throw new Error('Missing query or plan');
+      const response = await apiRequest('POST', '/api/super-search/save', {
+        query,
+        plan,
+        results
+      });
+      return response.json();
+    },
+    onSuccess: (data) => {
+      setIsSaved(true);
+      queryClient.invalidateQueries({ queryKey: ['/api/lists'] });
+      onSaved?.(data.listId);
+    }
+  });
 
   if (status === 'idle') {
     return null;
@@ -107,9 +137,38 @@ export function SuperSearchResults({ state }: SuperSearchResultsProps) {
       )}
 
       {status === 'complete' && completionStats && (
-        <div className="text-sm text-muted-foreground bg-muted/50 rounded-lg p-3">
-          Search complete: {completionStats.totalResults} results found, 
-          {completionStats.companiesSaved} companies and {completionStats.contactsSaved} contacts saved.
+        <div className="flex items-center justify-between bg-muted/50 rounded-lg p-3">
+          <div className="text-sm text-muted-foreground">
+            Search complete: {completionStats.totalResults} results found, 
+            {completionStats.companiesSaved} companies and {completionStats.contactsSaved} contacts saved.
+          </div>
+          {query && !isSaved && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => saveMutation.mutate()}
+              disabled={saveMutation.isPending}
+              className="ml-4"
+            >
+              {saveMutation.isPending ? (
+                <>
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  Saving...
+                </>
+              ) : (
+                <>
+                  <Save className="h-4 w-4 mr-2" />
+                  Save Results
+                </>
+              )}
+            </Button>
+          )}
+          {isSaved && (
+            <div className="flex items-center gap-2 text-sm text-green-600 ml-4">
+              <Check className="h-4 w-4" />
+              Saved!
+            </div>
+          )}
         </div>
       )}
     </div>

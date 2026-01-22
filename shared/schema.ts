@@ -212,6 +212,21 @@ export const searchLists = pgTable("search_lists", {
   searchDurationSeconds: integer("search_duration_seconds"),
   sourceBreakdown: jsonb("source_breakdown").$type<{ Perplexity: number; Apollo: number; Hunter: number }>(),
   reportCompanies: jsonb("report_companies").$type<Array<{ id: number; name: string; contacts?: Array<{ id: number; name?: string; role?: string; email?: string; probability?: number }> }>>(),
+  searchType: text("search_type").default('normal').$type<'normal' | 'super'>(),
+  superSearchData: jsonb("super_search_data").$type<{
+    plan: {
+      queryType: 'company' | 'contact';
+      targetCount: number;
+      standardFields: string[];
+      customFields: { key: string; label: string }[];
+      searchStrategy: string;
+    };
+    results: Array<{
+      type: 'company' | 'contact';
+      name: string;
+      [key: string]: any;
+    }>;
+  }>(),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow()
 }, (table) => [
   index('idx_search_lists_user_id').on(table.userId),

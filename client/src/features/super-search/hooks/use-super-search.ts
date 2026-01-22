@@ -171,11 +171,27 @@ export function useSuperSearch() {
     reset();
   }, [reset]);
 
+  const loadFromSaved = useCallback((plan: SearchPlan, results: SuperSearchResult[]) => {
+    setState({
+      status: 'complete',
+      plan,
+      results,
+      progressMessages: [],
+      error: null,
+      completionStats: {
+        totalResults: results.length,
+        companiesSaved: results.filter(r => r.type === 'company').length,
+        contactsSaved: results.filter(r => r.type === 'contact').length
+      }
+    });
+  }, []);
+
   return {
     ...state,
     startSearch,
     cancel,
     reset,
+    loadFromSaved,
     isLoading: state.status === 'connecting' || state.status === 'streaming'
   };
 }

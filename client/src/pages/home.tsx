@@ -177,6 +177,7 @@ export default function Home({ isNewSearch = false }: HomeProps) {
   // Super Search state (lifted from PromptEditor for rendering results outside)
   const superSearch = useSuperSearch();
   const [isSuperSearchActive, setIsSuperSearchActive] = useState(false);
+  const [superSearchAlreadySaved, setSuperSearchAlreadySaved] = useState(false);
   
   // Track app page view for attribution (GTM handles Google Ads conversion via page view trigger on /app)
   useEffect(() => {
@@ -1040,8 +1041,31 @@ export default function Home({ isNewSearch = false }: HomeProps) {
     console.log('Loading saved search:', {
       searchName: list.prompt,
       listId: list.listId,
-      resultCount: list.resultCount
+      resultCount: list.resultCount,
+      searchType: (list as any).searchType
     });
+    
+    // Handle Super Search loading
+    if ((list as any).searchType === 'super' && (list as any).superSearchData) {
+      const superData = (list as any).superSearchData as {
+        plan: any;
+        results: any[];
+      };
+      
+      // Restore super search state
+      superSearch.loadFromSaved(superData.plan, superData.results);
+      setCurrentQuery(list.prompt);
+      setLastExecutedQuery(list.prompt);
+      setIsSuperSearchActive(true);
+      setSuperSearchAlreadySaved(true); // Mark as already saved
+      setCurrentResults(null); // Clear regular results
+      
+      console.log('Super Search loaded:', {
+        query: list.prompt,
+        resultCount: superData.results.length
+      });
+      return;
+    }
     
     try {
       // Force refetch to get fresh data from server (includes "5 More" companies)
@@ -1784,7 +1808,12 @@ export default function Home({ isNewSearch = false }: HomeProps) {
                       reset: superSearch.reset,
                       status: superSearch.status
                     }}
-                    onSuperSearchActive={setIsSuperSearchActive}
+                    onSuperSearchActive={(active) => {
+                      setIsSuperSearchActive(active);
+                      if (active) {
+                        setSuperSearchAlreadySaved(false); // Reset saved state for new search
+                      }
+                    }}
                     onCacheHit={async (cachedResult) => {
                       console.log(`🎯 Cache hit detected, loading list ${cachedResult.listId}`);
                       setIsAnalyzing(false);
@@ -1857,7 +1886,15 @@ export default function Home({ isNewSearch = false }: HomeProps) {
             <Card className="w-full rounded-none md:rounded-lg border-0 bg-background mt-4">
               <CardContent className="p-4 md:p-6">
                 <Suspense fallback={<TableSkeleton />}>
-                  <SuperSearchResults state={superSearch} />
+                  <SuperSearchResults 
+                    state={superSearch} 
+                    query={currentQuery || undefined}
+                    alreadySaved={superSearchAlreadySaved}
+                    onSaved={(listId) => {
+                      console.log(`Super Search saved with list ID: ${listId}`);
+                      setSuperSearchAlreadySaved(true);
+                    }}
+                  />
                 </Suspense>
                 {superSearch.status === 'complete' && (
                   <div className="mt-4 flex justify-end">

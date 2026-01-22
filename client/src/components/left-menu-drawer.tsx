@@ -16,7 +16,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { PanelLeft, Plus, Users, Send, Zap, Pencil } from "lucide-react";
+import { PanelLeft, Plus, Users, Send, Zap, Pencil, Sparkles } from "lucide-react";
 import type { SearchList } from "@shared/schema";
 import { generateListPromptOnly } from "@/lib/list-utils";
 import { generateSearchUrl } from "@/lib/url-utils";
@@ -163,10 +163,15 @@ export function LeftMenuDrawer({ open, onOpenChange, onLoadSearch, onNewSearch, 
                     <TooltipProvider delayDuration={1500}>
                       <Tooltip>
                         <TooltipTrigger asChild>
-                          <span className="cursor-pointer">{generateListPromptOnly(list)}</span>
+                          <span className="cursor-pointer flex items-center gap-1.5">
+                            {(list as any).searchType === 'super' && (
+                              <Sparkles className="h-3.5 w-3.5 text-amber-500 flex-shrink-0" />
+                            )}
+                            {generateListPromptOnly(list)}
+                          </span>
                         </TooltipTrigger>
                         <TooltipContent>
-                          <p>Search ID: {list.listId}</p>
+                          <p>{(list as any).searchType === 'super' ? 'Super Search' : 'Search'} ID: {list.listId}</p>
                         </TooltipContent>
                       </Tooltip>
                     </TooltipProvider>

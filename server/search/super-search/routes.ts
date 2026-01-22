@@ -1,7 +1,14 @@
 import { Express, Request, Response } from 'express';
 import { SuperSearchService } from './super-search-service';
 import { getUserId } from '../../utils/auth';
-import type { SuperSearchRequest } from './types';
+import { storage } from '../../storage';
+import type { SuperSearchRequest, SearchPlan, SuperSearchResult } from './types';
+
+interface SaveSuperSearchRequest {
+  query: string;
+  plan: SearchPlan;
+  results: SuperSearchResult[];
+}
 
 export function registerSuperSearchRoutes(app: Express, requireAuth: any) {
   app.post('/api/super-search/stream', requireAuth, async (req: Request, res: Response) => {
@@ -61,6 +68,49 @@ export function registerSuperSearchRoutes(app: Express, requireAuth: any) {
     } catch (error) {
       console.error('[SuperSearch] Credit check error:', error);
       res.status(500).json({ error: 'Failed to check credits' });
+    }
+  });
+
+  app.post('/api/super-search/save', requireAuth, async (req: Request, res: Response) => {
+    try {
+      const userId = getUserId(req);
+      const { query, plan, results }: SaveSuperSearchRequest = req.body;
+
+      if (!query || !plan || !results) {
+        res.status(400).json({ error: 'Missing required fields: query, plan, results' });
+        return;
+      }
+
+      const listId = await storage.getNextSearchListId();
+
+      const savedList = await storage.createSearchList({
+        userId,
+        listId,
+        prompt: query,
+        resultCount: results.length,
+        searchType: 'super' as const,
+        superSearchData: {
+          plan: {
+            queryType: plan.queryType,
+            targetCount: plan.targetCount,
+            standardFields: plan.standardFields,
+            customFields: plan.customFields,
+            searchStrategy: plan.searchStrategy
+          },
+          results: results
+        }
+      } as any);
+
+      console.log(`[SuperSearch] Saved super search ${listId} for user ${userId} with ${results.length} results`);
+
+      res.json({
+        success: true,
+        listId: savedList.listId,
+        id: savedList.id
+      });
+    } catch (error) {
+      console.error('[SuperSearch] Save error:', error);
+      res.status(500).json({ error: 'Failed to save super search results' });
     }
   });
 }
