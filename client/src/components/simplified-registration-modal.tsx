@@ -247,7 +247,7 @@ export function SimplifiedRegistrationModal() {
 
                 <Button 
                   variant="outline" 
-                  className="w-full justify-center relative bg-white hover:bg-gray-100 text-gray-700 border border-gray-300 opacity-50 hover:opacity-100 transition-opacity"
+                  className="w-full justify-center relative bg-white hover:bg-gray-100 text-gray-700 hover:text-gray-700 border border-gray-300 opacity-50 hover:opacity-100 transition-opacity"
                   onClick={handleGoogleSignIn}
                 >
                   <svg className="h-5 w-5 mr-2" viewBox="0 0 24 24">
