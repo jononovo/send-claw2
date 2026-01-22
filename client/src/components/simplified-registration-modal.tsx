@@ -190,8 +190,8 @@ export function SimplifiedRegistrationModal() {
           {currentPage === "email" && (
             <div className="w-full max-w-md mx-auto">
               <div className="text-center mb-8">
-                <h2 className="text-4xl font-bold mb-2 font-serif text-accent">Sign up</h2>
-                <p className="text-white/80 text-lg">to UNLOCK <span className="font-semibold text-accent">195 Credits</span></p>
+                <h2 className="text-4xl font-bold mb-2 font-serif text-[hsl(25,55%,50%)]">Sign up</h2>
+                <p className="text-white/80 text-lg">to UNLOCK <span className="font-semibold text-[hsl(25,55%,50%)]">195 Credits</span></p>
               </div>
 
               <div className="space-y-4 max-w-sm mx-auto px-2 sm:px-4">
