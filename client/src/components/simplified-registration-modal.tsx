@@ -247,6 +247,8 @@ export function SimplifiedRegistrationModal() {
                   </Button>
                 </div>
 
+                <div className="w-full border-t border-white/20" />
+
                 <Button 
                   variant="outline" 
                   className="w-full justify-center relative bg-white hover:bg-gray-100 text-gray-700 border border-gray-300 opacity-50 hover:opacity-100 transition-opacity"
