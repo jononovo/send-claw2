@@ -51,7 +51,8 @@ export type SearchType =
   | 'individual_email'
   | 'individual_search'
   | 'search_extension'
-  | 'phone_reveal';
+  | 'phone_reveal'
+  | 'super_search';
 
 export const CREDIT_COSTS: Record<SearchType, number> = {
   'company_search': 10,           // Only Companies search
@@ -60,7 +61,8 @@ export const CREDIT_COSTS: Record<SearchType, number> = {
   'individual_email': 20,         // Single contact email lookup
   'individual_search': 100,       // Find Individual search
   'search_extension': 110,        // Extend search with 5 more companies
-  'phone_reveal': 8               // Apollo mobile phone reveal
+  'phone_reveal': 8,              // Apollo mobile phone reveal
+  'super_search': 250             // AI-powered Super Search
 } as const;
 
 export const MONTHLY_CREDIT_ALLOWANCE = 250;

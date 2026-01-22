@@ -57,7 +57,7 @@ export class SuperSearchService {
 
       const savedResults = await this.saveResults(userId, listId, collectedResults);
 
-      await CreditService.deductCredits(userId, 'super_search' as any, true);
+      await CreditService.deductCredits(userId, 'super_search', true);
       console.log(`[SuperSearchService] Deducted ${this.CREDIT_COST} credits from user ${userId}`);
 
       yield {
