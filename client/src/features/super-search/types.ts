@@ -1,13 +1,20 @@
-export type QueryType = 'person' | 'role' | 'company' | 'signals';
-export type DisplayMode = 'company_list' | 'company_contacts' | 'contact_list' | 'table';
+export type QueryType = 'company' | 'contact';
 export type TargetCount = 5 | 10 | 20;
+
+export interface CustomField {
+  key: string;
+  label: string;
+}
 
 export interface SearchPlan {
   queryType: QueryType;
-  displayMode: DisplayMode;
   targetCount: TargetCount;
-  columns?: string[];
+  standardFields: string[];
+  customFields: CustomField[];
   searchStrategy: string;
+  // Legacy fields for backward compatibility
+  displayMode?: string;
+  columns?: string[];
 }
 
 export interface CompanyResult {
@@ -15,7 +22,11 @@ export interface CompanyResult {
   name: string;
   website?: string;
   city?: string;
+  state?: string;
   country?: string;
+  description?: string;
+  size?: number;
+  services?: string[];
   superSearchNote?: string;
   superSearchResearch?: string;
   superSearchMeta?: Record<string, any>;
@@ -29,7 +40,9 @@ export interface ContactResult {
   companyWebsite?: string;
   linkedinUrl?: string;
   city?: string;
+  state?: string;
   country?: string;
+  department?: string;
   superSearchNote?: string;
   superSearchResearch?: string;
   superSearchMeta?: Record<string, any>;

@@ -18,6 +18,33 @@ function createParseState(): ParseState {
   return { content: '' };
 }
 
+function normalizePlan(rawPlan: any): SearchPlan {
+  // Ensure standardFields and customFields exist with sensible defaults
+  const plan: SearchPlan = {
+    queryType: rawPlan.queryType || 'company',
+    targetCount: rawPlan.targetCount || 10,
+    standardFields: rawPlan.standardFields || [],
+    customFields: rawPlan.customFields || [],
+    searchStrategy: rawPlan.searchStrategy || '',
+  };
+
+  // Provide defaults if AI didn't specify standardFields
+  if (plan.standardFields.length === 0) {
+    if (plan.queryType === 'company') {
+      plan.standardFields = ['name', 'website', 'city', 'country'];
+    } else {
+      plan.standardFields = ['name', 'role', 'company', 'linkedinUrl'];
+    }
+  }
+
+  // Ensure 'name' is always first
+  if (!plan.standardFields.includes('name')) {
+    plan.standardFields.unshift('name');
+  }
+
+  return plan;
+}
+
 function parseStreamContent(state: ParseState, content: string, planEmitted: boolean): StreamEvent[] {
   state.content += content;
   const events: StreamEvent[] = [];
@@ -27,7 +54,8 @@ function parseStreamContent(state: ParseState, content: string, planEmitted: boo
     const planMatch = state.content.match(/###PLAN###\s*([\s\S]*?)\s*###END_PLAN###/);
     if (planMatch) {
       try {
-        const plan = JSON.parse(planMatch[1]) as SearchPlan;
+        const rawPlan = JSON.parse(planMatch[1]);
+        const plan = normalizePlan(rawPlan);
         events.push({ type: 'plan', data: plan });
         state.content = state.content.replace(planMatch[0], '');
         console.log('[SuperSearch] Parsed plan:', plan);

@@ -1,9 +1,44 @@
 import { Loader2, Sparkles, AlertCircle } from 'lucide-react';
 import { SuperSearchTable } from './SuperSearchTable';
-import type { SuperSearchState } from '../types';
+import type { SuperSearchState, SearchPlan } from '../types';
 
 interface SuperSearchResultsProps {
   state: SuperSearchState;
+}
+
+function formatFieldLabel(field: string): string {
+  const labelMap: Record<string, string> = {
+    name: 'Name',
+    website: 'Website',
+    city: 'City',
+    state: 'State',
+    country: 'Country',
+    description: 'Description',
+    size: 'Size',
+    services: 'Services',
+    role: 'Role',
+    company: 'Company',
+    companyWebsite: 'Website',
+    linkedinUrl: 'LinkedIn',
+    department: 'Department',
+  };
+  return labelMap[field] || field.charAt(0).toUpperCase() + field.slice(1);
+}
+
+function buildColumnsFromPlan(plan: SearchPlan): string[] {
+  const columns: string[] = [];
+  
+  // Add standard field labels
+  for (const field of plan.standardFields) {
+    columns.push(formatFieldLabel(field));
+  }
+  
+  // Add custom field labels
+  for (const customField of plan.customFields) {
+    columns.push(customField.label);
+  }
+  
+  return columns;
 }
 
 export function SuperSearchResults({ state }: SuperSearchResultsProps) {
@@ -31,6 +66,9 @@ export function SuperSearchResults({ state }: SuperSearchResultsProps) {
     );
   }
 
+  // Build columns from plan's standardFields + customFields
+  const columns = plan ? buildColumnsFromPlan(plan) : ['Name', 'Company', 'Role', 'Location', 'LinkedIn'];
+
   return (
     <div className="space-y-4">
       {plan && (
@@ -41,7 +79,7 @@ export function SuperSearchResults({ state }: SuperSearchResultsProps) {
               <h3 className="font-semibold text-foreground mb-1">Search Strategy</h3>
               <p className="text-sm text-muted-foreground">{plan.searchStrategy}</p>
               <div className="flex gap-4 mt-2 text-xs text-muted-foreground/80">
-                <span>Mode: {plan.displayMode.replace(/_/g, ' ')}</span>
+                <span>Mode: {plan.queryType} list</span>
                 <span>Target: {plan.targetCount} results</span>
               </div>
             </div>
@@ -57,14 +95,7 @@ export function SuperSearchResults({ state }: SuperSearchResultsProps) {
 
       {results.length > 0 && (
         <div className="bg-card border border-border rounded-lg overflow-hidden">
-          {plan?.displayMode === 'table' && plan.columns ? (
-            <SuperSearchTable columns={plan.columns} results={results} />
-          ) : (
-            <SuperSearchTable 
-              columns={['Name', 'Company', 'Role', 'Location', 'LinkedIn']} 
-              results={results} 
-            />
-          )}
+          <SuperSearchTable columns={columns} results={results} plan={plan} />
         </div>
       )}
 
