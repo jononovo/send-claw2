@@ -112,7 +112,13 @@ export function SuperSearchTable({ columns, results, plan }: SuperSearchTablePro
     if (colLower === 'services') {
       if (result.type === 'company') {
         const services = (result as CompanyResult).services;
-        return services && services.length > 0 ? services.join(', ') : '—';
+        if (Array.isArray(services) && services.length > 0) {
+          return services.join(', ');
+        }
+        if (typeof services === 'string') {
+          return services;
+        }
+        return '—';
       }
       return '—';
     }
