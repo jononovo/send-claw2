@@ -223,22 +223,24 @@ export function SimplifiedRegistrationModal() {
                     />
                   )}
                   
-                  <Button 
-                    variant="outline" 
-                    className={`w-full justify-center transition-all duration-300 ${
-                      emailValid && name.trim()
-                        ? 'bg-gradient-to-r from-blue-800 via-indigo-800 to-purple-800 hover:from-blue-700 hover:via-indigo-700 hover:to-purple-700 text-white hover:text-white border-0 shadow-lg'
-                        : 'bg-transparent hover:bg-white/10 text-white border border-white/30 hover:border-white/50'
-                    }`}
-                    onClick={handleSendEmailLink}
-                    disabled={!emailValid || !name.trim() || isSending}
-                  >
-                    {isSending ? (
-                      <span>Sending...</span>
-                    ) : (
-                      <span className="font-semibold">GO →</span>
-                    )}
-                  </Button>
+                  {email.length > 0 && (
+                    <Button 
+                      variant="outline" 
+                      className={`w-full justify-center transition-all duration-300 ${
+                        emailValid && name.trim()
+                          ? 'bg-gradient-to-r from-blue-800 via-indigo-800 to-purple-800 hover:from-blue-700 hover:via-indigo-700 hover:to-purple-700 text-white hover:text-white border-0 shadow-lg'
+                          : 'bg-transparent hover:bg-white/10 text-white border border-white/30 hover:border-white/50'
+                      }`}
+                      onClick={handleSendEmailLink}
+                      disabled={!emailValid || !name.trim() || isSending}
+                    >
+                      {isSending ? (
+                        <span>Sending...</span>
+                      ) : (
+                        <span className="font-semibold">GO →</span>
+                      )}
+                    </Button>
+                  )}
                 </div>
 
                 <div className="w-full border-t border-white/20" />
