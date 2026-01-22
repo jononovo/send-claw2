@@ -189,9 +189,9 @@ export function SimplifiedRegistrationModal() {
         <div className="p-8">
           {currentPage === "email" && (
             <div className="w-full max-w-md mx-auto">
-              <div className="text-center text-white mb-8">
-                <h2 className="text-3xl font-bold mb-2">Sign up</h2>
-                <p className="text-gray-300 text-lg">Let's make life easier for you</p>
+              <div className="text-center mb-8">
+                <h2 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-3 font-serif text-[hsl(25,55%,50%)]">Sign up</h2>
+                <p className="text-white/80 text-lg">to UNLOCK <span className="font-semibold text-[hsl(25,55%,50%)]">195</span> Credits</p>
               </div>
 
               <div className="space-y-4 max-w-sm mx-auto px-2 sm:px-4">
@@ -200,7 +200,7 @@ export function SimplifiedRegistrationModal() {
                     ref={emailInputRef}
                     type="email"
                     placeholder="Email"
-                    className="w-full p-4 bg-white/10 border border-white/20 rounded-md text-white placeholder-gray-400 focus:outline-none focus:border-blue-300"
+                    className="w-full p-4 bg-white/15 border border-white/20 rounded-md text-white placeholder-gray-500 focus:outline-none focus:bg-white/25 focus:border-white/50 transition-colors"
                     value={email}
                     onChange={handleEmailChange}
                   />
@@ -211,7 +211,7 @@ export function SimplifiedRegistrationModal() {
                       ref={nameInputRef}
                       type="text"
                       placeholder="Full Name"
-                      className="w-full p-4 bg-white/10 border border-white/20 rounded-md text-white placeholder-gray-400 focus:outline-none focus:border-blue-300"
+                      className="w-full p-4 bg-white/15 border border-white/20 rounded-md text-white placeholder-gray-500 focus:outline-none focus:bg-white/25 focus:border-white/50 transition-colors"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                       onKeyDown={(e) => {
@@ -223,29 +223,31 @@ export function SimplifiedRegistrationModal() {
                     />
                   )}
                   
-                  <Button 
-                    variant="outline" 
-                    className={`w-full justify-center transition-all duration-300 ${
-                      emailValid && name.trim()
-                        ? 'bg-gradient-to-r from-blue-800 via-indigo-800 to-purple-800 hover:from-blue-700 hover:via-indigo-700 hover:to-purple-700 text-white hover:text-white border-0 shadow-lg'
-                        : 'bg-transparent hover:bg-white/10 text-white border border-white/30 hover:border-white/50'
-                    }`}
-                    onClick={handleSendEmailLink}
-                    disabled={!emailValid || !name.trim() || isSending}
-                  >
-                    {isSending ? (
-                      <span>Sending...</span>
-                    ) : (
-                      <span className="font-semibold">GO →</span>
-                    )}
-                  </Button>
+                  {email.length > 0 && (
+                    <Button 
+                      variant="outline" 
+                      className={`w-full justify-center transition-all duration-300 ${
+                        emailValid && name.trim()
+                          ? 'bg-gradient-to-r from-blue-800 via-indigo-800 to-purple-800 hover:from-blue-700 hover:via-indigo-700 hover:to-purple-700 text-white hover:text-white border-0 shadow-lg'
+                          : 'bg-transparent hover:bg-white/10 text-white border border-white/30 hover:border-white/50'
+                      }`}
+                      onClick={handleSendEmailLink}
+                      disabled={!emailValid || !name.trim() || isSending}
+                    >
+                      {isSending ? (
+                        <span>Sending...</span>
+                      ) : (
+                        <span className="font-semibold">GO →</span>
+                      )}
+                    </Button>
+                  )}
                 </div>
 
                 <div className="w-full border-t border-white/20" />
 
                 <Button 
                   variant="outline" 
-                  className="w-full justify-center relative bg-white hover:bg-gray-100 text-gray-700 border border-gray-300 opacity-50 hover:opacity-100 transition-opacity"
+                  className="w-full justify-center relative bg-white hover:bg-gray-100 text-gray-700 hover:text-gray-700 border border-gray-300 opacity-50 hover:opacity-100 transition-opacity"
                   onClick={handleGoogleSignIn}
                 >
                   <svg className="h-5 w-5 mr-2" viewBox="0 0 24 24">
@@ -357,7 +359,7 @@ export function SimplifiedRegistrationModal() {
                     ref={loginEmailRef}
                     type="email"
                     placeholder="Email"
-                    className="w-full p-4 bg-white/10 border border-white/20 rounded-md text-white placeholder-gray-400 focus:outline-none focus:border-blue-300"
+                    className="w-full p-4 bg-white/15 border border-white/20 rounded-md text-white placeholder-gray-500 focus:outline-none focus:bg-white/25 focus:border-white/50 transition-colors"
                     value={email}
                     onChange={handleEmailChange}
                   />
@@ -365,7 +367,7 @@ export function SimplifiedRegistrationModal() {
                   <input
                     type="password"
                     placeholder="Password"
-                    className="w-full p-4 bg-white/10 border border-white/20 rounded-md text-white placeholder-gray-400 focus:outline-none focus:border-blue-300"
+                    className="w-full p-4 bg-white/15 border border-white/20 rounded-md text-white placeholder-gray-500 focus:outline-none focus:bg-white/25 focus:border-white/50 transition-colors"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     onKeyDown={(e) => {
