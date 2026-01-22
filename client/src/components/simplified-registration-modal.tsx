@@ -190,8 +190,8 @@ export function SimplifiedRegistrationModal() {
           {currentPage === "email" && (
             <div className="w-full max-w-md mx-auto">
               <div className="text-center mb-8">
-                <h2 className="text-4xl font-bold mb-2 font-serif text-[hsl(25,55%,50%)]">Sign up</h2>
-                <p className="text-white/80 text-lg">to UNLOCK <span className="font-semibold text-[hsl(25,55%,50%)]">195 Credits</span></p>
+                <h2 className="text-5xl font-bold mb-3 font-serif text-[hsl(25,55%,50%)]">Sign up</h2>
+                <p className="text-white/80 text-lg">to UNLOCK <span className="font-semibold text-[hsl(25,55%,50%)]">195</span> Credits</p>
               </div>
 
               <div className="space-y-4 max-w-sm mx-auto px-2 sm:px-4">
@@ -200,7 +200,7 @@ export function SimplifiedRegistrationModal() {
                     ref={emailInputRef}
                     type="email"
                     placeholder="Email"
-                    className="w-full p-4 bg-white/15 border border-white/20 rounded-md text-white placeholder-gray-400 focus:outline-none focus:bg-white/25 focus:border-white/50 transition-colors"
+                    className="w-full p-4 bg-white/15 border border-white/20 rounded-md text-white placeholder-gray-500 focus:outline-none focus:bg-white/25 focus:border-white/50 transition-colors"
                     value={email}
                     onChange={handleEmailChange}
                   />
@@ -211,7 +211,7 @@ export function SimplifiedRegistrationModal() {
                       ref={nameInputRef}
                       type="text"
                       placeholder="Full Name"
-                      className="w-full p-4 bg-white/15 border border-white/20 rounded-md text-white placeholder-gray-400 focus:outline-none focus:bg-white/25 focus:border-white/50 transition-colors"
+                      className="w-full p-4 bg-white/15 border border-white/20 rounded-md text-white placeholder-gray-500 focus:outline-none focus:bg-white/25 focus:border-white/50 transition-colors"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                       onKeyDown={(e) => {
@@ -359,7 +359,7 @@ export function SimplifiedRegistrationModal() {
                     ref={loginEmailRef}
                     type="email"
                     placeholder="Email"
-                    className="w-full p-4 bg-white/15 border border-white/20 rounded-md text-white placeholder-gray-400 focus:outline-none focus:bg-white/25 focus:border-white/50 transition-colors"
+                    className="w-full p-4 bg-white/15 border border-white/20 rounded-md text-white placeholder-gray-500 focus:outline-none focus:bg-white/25 focus:border-white/50 transition-colors"
                     value={email}
                     onChange={handleEmailChange}
                   />
@@ -367,7 +367,7 @@ export function SimplifiedRegistrationModal() {
                   <input
                     type="password"
                     placeholder="Password"
-                    className="w-full p-4 bg-white/15 border border-white/20 rounded-md text-white placeholder-gray-400 focus:outline-none focus:bg-white/25 focus:border-white/50 transition-colors"
+                    className="w-full p-4 bg-white/15 border border-white/20 rounded-md text-white placeholder-gray-500 focus:outline-none focus:bg-white/25 focus:border-white/50 transition-colors"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     onKeyDown={(e) => {
