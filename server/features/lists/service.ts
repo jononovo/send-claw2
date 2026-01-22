@@ -66,46 +66,14 @@ export class SearchListsService {
     }
   }
 
-  static async getSearchList(listId: number, userId: number, isAuthenticated: boolean) {
-    let list = null;
-    
-    // First try to find the list for the authenticated user
-    if (isAuthenticated) {
-      list = await storage.getSearchList(listId, userId);
-    }
-    
-    // If not found or not authenticated, check if it's a demo list
-    if (!list) {
-      list = await storage.getSearchList(listId, 1); // Check demo user (ID 1)
-    }
-    
-    // If still not found, try public access (any user's list for SEO)
-    if (!list) {
-      list = await storage.getSearchListPublic(listId);
-    }
-    
-    return list;
+  static async getSearchList(listId: number) {
+    // Public page - single query by ID (for SEO accessibility)
+    return storage.getSearchListPublic(listId);
   }
 
-  static async getSearchListCompanies(listId: number, userId: number, isAuthenticated: boolean) {
-    let companies = [];
-    
-    // First try to find companies for the authenticated user's list
-    if (isAuthenticated) {
-      companies = await storage.listCompaniesBySearchList(listId, userId);
-    }
-    
-    // If none found or not authenticated, check for demo list companies
-    if (companies.length === 0) {
-      companies = await storage.listCompaniesBySearchList(listId, 1); // Check demo user (ID 1)
-    }
-    
-    // If still none found, try public access (any user's companies for SEO)
-    if (companies.length === 0) {
-      companies = await storage.listCompaniesBySearchListPublic(listId);
-    }
-    
-    return companies;
+  static async getSearchListCompanies(listId: number) {
+    // Public page - single query by listId (for SEO accessibility)
+    return storage.listCompaniesBySearchListPublic(listId);
   }
 
   static async createSearchList(request: SearchListRequest, userId: number): Promise<SearchListResponse> {

@@ -47,28 +47,8 @@ export function registerContactRoutes(app: Express, requireAuth: any) {
         isAuthenticated: userIsAuthenticated
       });
 
-      let contact = null;
-      
-      // First try to find the contact for the authenticated user
-      if (userIsAuthenticated) {
-        contact = await storage.getContact(parseInt(req.params.id), userId);
-      }
-      
-      // If not found or not authenticated, check demo user's contacts
-      if (!contact) {
-        contact = await storage.getContact(parseInt(req.params.id), 1); // Demo user ID
-      }
-      
-      // If still not found, try public access (any user's contact for SEO)
-      if (!contact) {
-        contact = await storage.getContactPublic(parseInt(req.params.id));
-      }
-
-      console.log('GET /api/contacts/:id - Retrieved contact:', {
-        requested: req.params.id,
-        found: contact ? { id: contact.id, name: contact.name } : null,
-        isAuthenticated: userIsAuthenticated
-      });
+      // Public page - single query by ID (for SEO accessibility)
+      const contact = await storage.getContactPublic(parseInt(req.params.id));
 
       if (!contact) {
         res.status(404).json({ message: "Contact not found" });

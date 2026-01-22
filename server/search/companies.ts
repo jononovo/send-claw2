@@ -163,28 +163,8 @@ export function registerCompanyRoutes(app: Express, requireAuth: any) {
         isAuthenticated: isAuthenticated
       });
       
-      let company = null;
-      
-      // First try to find the company for the authenticated user
-      if (isAuthenticated) {
-        company = await storage.getCompany(companyId, (req as any).user!.id);
-      }
-      
-      // If not found or not authenticated, check if it's a demo company
-      if (!company) {
-        company = await storage.getCompany(companyId, 1); // Check demo user (ID 1)
-      }
-      
-      // If still not found, try public access (any user's company for SEO)
-      if (!company) {
-        company = await storage.getCompanyPublic(companyId);
-      }
-      
-      console.log('GET /api/companies/:id - Retrieved company:', {
-        requested: req.params.id,
-        found: company ? { id: company.id, name: company.name } : null,
-        isDemo: company && (!isAuthenticated || company.userId === 1)
-      });
+      // Public page - single query by ID (for SEO accessibility)
+      const company = await storage.getCompanyPublic(companyId);
 
       if (!company) {
         res.status(404).json({ message: "Company not found" });
