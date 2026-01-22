@@ -247,18 +247,9 @@ export function SimplifiedRegistrationModal() {
                   </Button>
                 </div>
 
-                <div className="relative">
-                  <div className="absolute inset-0 flex items-center">
-                    <div className="w-full border-t border-white/20" />
-                  </div>
-                  <div className="relative flex justify-center text-sm">
-                    <span className="px-2 bg-black/70 text-gray-400">OR</span>
-                  </div>
-                </div>
-
                 <Button 
                   variant="outline" 
-                  className="w-full justify-center relative bg-white hover:bg-gray-100 text-gray-700 border border-gray-300"
+                  className="w-full justify-center relative bg-white hover:bg-gray-100 text-gray-700 border border-gray-300 opacity-50 hover:opacity-100 transition-opacity"
                   onClick={handleGoogleSignIn}
                 >
                   <svg className="h-5 w-5 mr-2" viewBox="0 0 24 24">
