@@ -64,12 +64,6 @@ export function SimplifiedRegistrationModal() {
     }
   }, [currentPage, isOpen]);
 
-  // Focus name field when email becomes valid
-  useEffect(() => {
-    if (emailValid && currentPage === "email") {
-      setTimeout(() => nameInputRef.current?.focus(), 100);
-    }
-  }, [emailValid, currentPage]);
 
   const validateEmail = (email: string) => {
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
