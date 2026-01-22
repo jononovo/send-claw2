@@ -121,6 +121,7 @@ export async function* streamSuperSearch(
     let buffer = '';
     let planEmitted = false;
     let resultCount = 0;
+    let fullContent = ''; // DEBUG: Collect all content for logging
 
     while (true) {
       const { done, value } = await reader.read();
@@ -140,6 +141,8 @@ export async function* streamSuperSearch(
           const chunk: PerplexityStreamChunk = JSON.parse(data);
           const content = chunk.choices[0]?.delta?.content;
           if (!content) continue;
+
+          fullContent += content; // DEBUG: Accumulate content
 
           const events = parseStreamContent(parseState, content, planEmitted);
           for (const event of events) {
@@ -166,7 +169,12 @@ export async function* streamSuperSearch(
       }
     }
 
+    // DEBUG: Log the full raw response from Perplexity
     console.log(`[SuperSearch] Stream complete, ${resultCount} results`);
+    console.log(`[SuperSearch] Full Perplexity response (first 2000 chars):\n${fullContent.substring(0, 2000)}`);
+    if (fullContent.length > 2000) {
+      console.log(`[SuperSearch] ... (truncated, total length: ${fullContent.length} chars)`);
+    }
 
   } catch (error) {
     console.error('[SuperSearch] Stream error:', error);
