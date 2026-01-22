@@ -50,9 +50,8 @@ export function registerSearchListsRoutes(app: Application, requireAuth: any) {
   router.get('/:listId', async (req: Request, res: Response) => {
     const userIsAuthenticated = checkAuth(req);
     const listId = parseInt(req.params.listId);
-    const userId = userIsAuthenticated ? getUserId(req) : 1;
     
-    const list = await SearchListsService.getSearchList(listId, userId, userIsAuthenticated);
+    const list = await SearchListsService.getSearchList(listId);
     
     if (!list) {
       res.status(404).json({ message: "List not found" });
@@ -76,9 +75,8 @@ export function registerSearchListsRoutes(app: Application, requireAuth: any) {
   router.get('/:listId/companies', async (req: Request, res: Response) => {
     const userIsAuthenticated = checkAuth(req);
     const listId = parseInt(req.params.listId);
-    const userId = userIsAuthenticated ? getUserId(req) : 1;
     
-    const companies = await SearchListsService.getSearchListCompanies(listId, userId, userIsAuthenticated);
+    const companies = await SearchListsService.getSearchListCompanies(listId);
     
     // Mask contact emails for unauthenticated users
     const responseCompanies = userIsAuthenticated 
