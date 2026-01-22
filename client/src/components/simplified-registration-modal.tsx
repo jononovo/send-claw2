@@ -179,7 +179,7 @@ export function SimplifiedRegistrationModal() {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-0 sm:p-4">
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-0 sm:p-4">
       {/* Close button */}
       <div className="absolute top-6 right-6 z-10">
         <button 
