@@ -175,6 +175,11 @@ export function registerCompanyRoutes(app: Express, requireAuth: any) {
         company = await storage.getCompany(companyId, 1); // Check demo user (ID 1)
       }
       
+      // If still not found, try public access (any user's company for SEO)
+      if (!company) {
+        company = await storage.getCompanyPublic(companyId);
+      }
+      
       console.log('GET /api/companies/:id - Retrieved company:', {
         requested: req.params.id,
         found: company ? { id: company.id, name: company.name } : null,

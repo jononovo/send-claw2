@@ -79,6 +79,11 @@ export class SearchListsService {
       list = await storage.getSearchList(listId, 1); // Check demo user (ID 1)
     }
     
+    // If still not found, try public access (any user's list for SEO)
+    if (!list) {
+      list = await storage.getSearchListPublic(listId);
+    }
+    
     return list;
   }
 
@@ -93,6 +98,11 @@ export class SearchListsService {
     // If none found or not authenticated, check for demo list companies
     if (companies.length === 0) {
       companies = await storage.listCompaniesBySearchList(listId, 1); // Check demo user (ID 1)
+    }
+    
+    // If still none found, try public access (any user's companies for SEO)
+    if (companies.length === 0) {
+      companies = await storage.listCompaniesBySearchListPublic(listId);
     }
     
     return companies;

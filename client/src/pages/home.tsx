@@ -1191,49 +1191,30 @@ export default function Home({ isNewSearch = false }: HomeProps) {
       hasHydratedFromRouteRef.current = true;
       console.log('Loading search from URL (one-time):', { listId, slug: searchRouteParams.slug });
       
-      // Fetch the search list by listId and load it
+      // Fetch the search list directly by listId (public access with masked emails)
       const loadSearchByListId = async () => {
         try {
-          const lists = await queryClient.fetchQuery({
-            queryKey: ["/api/lists"]
-          }) as SearchList[];
+          const list = await queryClient.fetchQuery({
+            queryKey: ["/api/lists", listId]
+          }) as SearchList;
           
-          const list = lists.find(l => l.listId === listId);
           if (list) {
             handleLoadSavedSearch(list);
           } else {
             console.warn('Search not found for listId:', listId);
-            if (!auth.user) {
-              toast({
-                title: "Login to view this search",
-                description: "This search may belong to your account. Please log in to view it.",
-                variant: "default"
-              });
-            } else {
-              toast({
-                title: "Search not found",
-                description: "The search you're looking for could not be found.",
-                variant: "destructive"
-              });
-            }
-          }
-        } catch (error: any) {
-          console.error('Failed to load search by listId:', error);
-          const errorMessage = error?.message || '';
-          
-          if (errorMessage.startsWith('401') || errorMessage.startsWith('403')) {
             toast({
-              title: "Login required",
-              description: "Please log in to view this search.",
-              variant: "default"
-            });
-          } else {
-            toast({
-              title: "Loading error",
-              description: "Unable to load search. Please try again.",
+              title: "Search not found",
+              description: "The search you're looking for could not be found.",
               variant: "destructive"
             });
           }
+        } catch (error: any) {
+          console.error('Failed to load search by listId:', error);
+          toast({
+            title: "Search not found",
+            description: "The search you're looking for could not be found.",
+            variant: "destructive"
+          });
         }
       };
       

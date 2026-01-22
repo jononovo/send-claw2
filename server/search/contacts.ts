@@ -58,6 +58,11 @@ export function registerContactRoutes(app: Express, requireAuth: any) {
       if (!contact) {
         contact = await storage.getContact(parseInt(req.params.id), 1); // Demo user ID
       }
+      
+      // If still not found, try public access (any user's contact for SEO)
+      if (!contact) {
+        contact = await storage.getContactPublic(parseInt(req.params.id));
+      }
 
       console.log('GET /api/contacts/:id - Retrieved contact:', {
         requested: req.params.id,
