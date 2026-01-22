@@ -242,6 +242,9 @@ export const companies = pgTable("companies", {
   city: text("city"),
   state: text("state"),
   country: text("country"),
+  superSearchNote: text("super_search_note"),
+  superSearchResearch: text("super_search_research"),
+  superSearchMeta: jsonb("super_search_meta").$type<Record<string, any>>(),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow()
 }, (table) => [
   index('idx_companies_user_id').on(table.userId),
@@ -291,7 +294,11 @@ export const contacts = pgTable("contacts", {
   // Apollo mobile phone webhook fields
   apolloPersonId: text("apollo_person_id"), // Apollo's person ID for webhook correlation
   mobilePhoneStatus: text("mobile_phone_status"), // 'pending' | 'found' | 'not_found' | null
-  mobilePhoneRequestedAt: timestamp("mobile_phone_requested_at", { withTimezone: true })
+  mobilePhoneRequestedAt: timestamp("mobile_phone_requested_at", { withTimezone: true }),
+  // Super Search fields
+  superSearchNote: text("super_search_note"),
+  superSearchResearch: text("super_search_research"),
+  superSearchMeta: jsonb("super_search_meta").$type<Record<string, any>>()
 }, (table) => [
   index('idx_contacts_company_id').on(table.companyId),
   index('idx_contacts_user_id').on(table.userId),
@@ -430,7 +437,10 @@ const companySchema = z.object({
   snapshot: z.record(z.unknown()).nullable(),
   city: z.string().nullable().optional(),
   state: z.string().nullable().optional(),
-  country: z.string().nullable().optional()
+  country: z.string().nullable().optional(),
+  superSearchNote: z.string().nullable().optional(),
+  superSearchResearch: z.string().nullable().optional(),
+  superSearchMeta: z.record(z.unknown()).nullable().optional()
 });
 
 const contactSchema = z.object({
@@ -458,7 +468,11 @@ const contactSchema = z.object({
   // Apollo mobile phone webhook fields
   apolloPersonId: z.string().nullable().optional(),
   mobilePhoneStatus: z.enum(['pending', 'found', 'not_found']).nullable().optional(),
-  mobilePhoneRequestedAt: z.date().nullable().optional()
+  mobilePhoneRequestedAt: z.date().nullable().optional(),
+  // Super Search fields
+  superSearchNote: z.string().nullable().optional(),
+  superSearchResearch: z.string().nullable().optional(),
+  superSearchMeta: z.record(z.unknown()).nullable().optional()
 });
 
 /* INACTIVE FEATURE SCHEMA - CONTACT FEEDBACK

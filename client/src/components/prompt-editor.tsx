@@ -7,6 +7,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Search, HelpCircle, Crown, Building, Users, Target, Settings, Square } from "lucide-react";
+import { useSuperSearch, SuperSearchResults } from "@/features/super-search";
 
 
 import { useConfetti } from "@/hooks/use-confetti";
@@ -142,6 +143,10 @@ export default function PromptEditor({
   // Individual search modal state
   const [isIndividualSearchModalOpen, setIsIndividualSearchModalOpen] = useState(false);
   const [isIndividualSearching, setIsIndividualSearching] = useState(false);
+  
+  // Super Search state
+  const superSearch = useSuperSearch();
+  const [isSuperSearchActive, setIsSuperSearchActive] = useState(false);
 
   // Handle search type change - intercept individual_search to show modal
   const handleSearchTypeChange = (type: SearchType) => {
@@ -1153,11 +1158,16 @@ export default function PromptEditor({
     logConversionEvent('search_performed').catch(() => {});
     
     console.log("Analyzing search query...");
-    console.log(`Preparing to search for ${searchType === 'companies' ? 'companies only' : searchType === 'contacts' ? 'companies and contacts' : searchType === 'individual_search' ? 'specific individual' : 'companies, contacts, and emails'}...`);
+    console.log(`Preparing to search for ${searchType === 'companies' ? 'companies only' : searchType === 'contacts' ? 'companies and contacts' : searchType === 'individual_search' ? 'specific individual' : searchType === 'super_search' ? 'AI-powered super search' : 'companies, contacts, and emails'}...`);
     onAnalyze();
     
     // Choose search strategy based on selected search type
-    if (searchType === 'companies') {
+    if (searchType === 'super_search') {
+      // Super Search - uses SSE streaming with Perplexity AI
+      setIsSuperSearchActive(true);
+      superSearch.startSearch(value);
+      return; // Super search handles its own flow
+    } else if (searchType === 'companies') {
       // Companies-only search - use quick search without contact enrichment
       quickSearchMutation.mutate(value);
     } else {
@@ -1464,6 +1474,27 @@ export default function PromptEditor({
         {/* Progress Bar is now rendered in Home.tsx via onProgressUpdate callback */}
 
       </div>
+
+      {/* Super Search Results */}
+      {isSuperSearchActive && (
+        <div className="mt-6">
+          <SuperSearchResults state={superSearch} />
+          {superSearch.status === 'complete' && (
+            <div className="mt-4 flex justify-end">
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setIsSuperSearchActive(false);
+                  superSearch.reset();
+                  onComplete();
+                }}
+              >
+                Close Results
+              </Button>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Individual Search Modal */}
       <IndividualSearchModal
