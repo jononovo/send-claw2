@@ -7,6 +7,7 @@ import { ClickToCopyText } from "@/components/ui/click-to-copy-text";
 import { MessageSquare, Star, ThumbsDown, Linkedin, Phone, Loader2 } from "lucide-react";
 import { ContactActionColumn } from "@/components/contact-action-column";
 import { ComprehensiveSearchButton } from "@/components/comprehensive-email-search";
+import { BlurredEmailTeaser } from "@/components/blurred-email-teaser";
 import { cn } from "@/lib/utils";
 import type { Contact } from "@shared/schema";
 import { ContactWithCompanyInfo } from "@/lib/results-analysis/prospect-filtering";
@@ -23,6 +24,7 @@ export interface ContactRowProps {
   showFeedback?: boolean;
   isHighlighted?: boolean;
   hasEmail?: boolean;
+  isAuthenticated?: boolean;
   handleContactView?: (contact: { id: number; slug?: string | null; name: string }) => void;
   handleComprehensiveEmailSearch?: (contactId: number) => void;
   handleFindMobilePhone?: (contactId: number) => void;
@@ -42,6 +44,7 @@ export function ContactRow({
   showCompanyName = false,
   showFeedback = false,
   isHighlighted = false,
+  isAuthenticated = true,
   handleContactView,
   handleComprehensiveEmailSearch,
   handleFindMobilePhone,
@@ -112,6 +115,8 @@ export function ContactRow({
                     </a>
                   )}
                 </>
+              ) : !isAuthenticated ? (
+                <BlurredEmailTeaser />
               ) : (
                 handleComprehensiveEmailSearch && (
                   <ComprehensiveSearchButton
