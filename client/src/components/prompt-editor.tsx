@@ -7,7 +7,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Search, HelpCircle, Crown, Building, Users, Target, Settings, Square } from "lucide-react";
-import { useSuperSearch, SuperSearchResults } from "@/features/super-search";
+import type { SuperSearchState } from "@/features/super-search";
 
 
 import { useConfetti } from "@/hooks/use-confetti";
@@ -36,6 +36,12 @@ interface CachedSearchResult {
   createdAt: Date;
 }
 
+interface SuperSearchControls {
+  startSearch: (query: string, listId?: number) => void;
+  reset: () => void;
+  status: SuperSearchState['status'];
+}
+
 interface PromptEditorProps {
   onAnalyze: () => void;
   onComplete: () => void;
@@ -55,6 +61,8 @@ interface PromptEditorProps {
   onOpenSearchDrawer?: () => void; // Callback to open the search management drawer
   onProgressUpdate?: (progress: SearchProgressState) => void; // Callback to report progress changes to parent
   onCacheHit?: (cachedResult: CachedSearchResult) => void; // Callback when a cached search is found
+  superSearch?: SuperSearchControls; // Super Search controls from parent
+  onSuperSearchActive?: (active: boolean) => void; // Callback when super search becomes active
 }
 
 export default function PromptEditor({ 
@@ -75,7 +83,9 @@ export default function PromptEditor({
   onSearchMetricsUpdate,
   onOpenSearchDrawer,
   onProgressUpdate,
-  onCacheHit
+  onCacheHit,
+  superSearch,
+  onSuperSearchActive
 }: PromptEditorProps) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -144,9 +154,8 @@ export default function PromptEditor({
   const [isIndividualSearchModalOpen, setIsIndividualSearchModalOpen] = useState(false);
   const [isIndividualSearching, setIsIndividualSearching] = useState(false);
   
-  // Super Search state
-  const superSearch = useSuperSearch();
-  const [isSuperSearchActive, setIsSuperSearchActive] = useState(false);
+  // Super Search active state (controlled via props)
+  const isSuperSearchActive = superSearch?.status === 'streaming' || superSearch?.status === 'connecting' || superSearch?.status === 'complete';
 
   // Handle search type change - intercept individual_search to show modal
   const handleSearchTypeChange = (type: SearchType) => {
@@ -1164,8 +1173,10 @@ export default function PromptEditor({
     // Choose search strategy based on selected search type
     if (searchType === 'super_search') {
       // Super Search - uses SSE streaming with Perplexity AI
-      setIsSuperSearchActive(true);
-      superSearch.startSearch(value);
+      if (superSearch && onSuperSearchActive) {
+        onSuperSearchActive(true);
+        superSearch.startSearch(value);
+      }
       return; // Super search handles its own flow
     } else if (searchType === 'companies') {
       // Companies-only search - use quick search without contact enrichment
@@ -1475,26 +1486,6 @@ export default function PromptEditor({
 
       </div>
 
-      {/* Super Search Results */}
-      {isSuperSearchActive && (
-        <div className="mt-6">
-          <SuperSearchResults state={superSearch} />
-          {superSearch.status === 'complete' && (
-            <div className="mt-4 flex justify-end">
-              <Button
-                variant="outline"
-                onClick={() => {
-                  setIsSuperSearchActive(false);
-                  superSearch.reset();
-                  onComplete();
-                }}
-              >
-                Close Results
-              </Button>
-            </div>
-          )}
-        </div>
-      )}
 
       {/* Individual Search Modal */}
       <IndividualSearchModal
