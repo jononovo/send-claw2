@@ -1881,39 +1881,6 @@ export default function Home({ isNewSearch = false }: HomeProps) {
             </div>
           </div>
 
-          {/* Super Search Results - Rendered outside PromptEditor for proper display */}
-          {isSuperSearchActive && (
-            <Card className="w-full rounded-none md:rounded-lg border-0 bg-background mt-4">
-              <CardContent className="p-4 md:p-6">
-                <Suspense fallback={<TableSkeleton />}>
-                  <SuperSearchResults 
-                    state={superSearch} 
-                    query={currentQuery || undefined}
-                    alreadySaved={superSearchAlreadySaved}
-                    onSaved={(listId) => {
-                      console.log(`Super Search saved with list ID: ${listId}`);
-                      setSuperSearchAlreadySaved(true);
-                    }}
-                  />
-                </Suspense>
-                {superSearch.status === 'complete' && (
-                  <div className="mt-4 flex justify-end">
-                    <Button
-                      variant="outline"
-                      onClick={() => {
-                        setIsSuperSearchActive(false);
-                        superSearch.reset();
-                        setIsAnalyzing(false);
-                      }}
-                    >
-                      Close Results
-                    </Button>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          )}
-
           {/* Companies Analysis Section - Moved to top */}
           {currentResults && currentResults.length > 0 ? (
             <Card className={`w-full rounded-none md:rounded-lg border-0 transition-all duration-300 bg-background ${emailDrawer.isOpen ? 'shadow-none' : ''}`} data-testid="search-results-card">
@@ -1990,6 +1957,41 @@ export default function Home({ isNewSearch = false }: HomeProps) {
           </div>
 
         </div>
+
+        {/* Super Search Results - Wider container for table display */}
+        {isSuperSearchActive && (
+          <div className="container mx-auto py-4 px-0 md:px-6 max-w-7xl">
+            <Card className="w-full rounded-none md:rounded-lg border-0 bg-background">
+              <CardContent className="p-4 md:p-6">
+                <Suspense fallback={<TableSkeleton />}>
+                  <SuperSearchResults 
+                    state={superSearch} 
+                    query={currentQuery || undefined}
+                    alreadySaved={superSearchAlreadySaved}
+                    onSaved={(listId) => {
+                      console.log(`Super Search saved with list ID: ${listId}`);
+                      setSuperSearchAlreadySaved(true);
+                    }}
+                  />
+                </Suspense>
+                {superSearch.status === 'complete' && (
+                  <div className="mt-4 flex justify-end">
+                    <Button
+                      variant="outline"
+                      onClick={() => {
+                        setIsSuperSearchActive(false);
+                        superSearch.reset();
+                        setIsAnalyzing(false);
+                      }}
+                    >
+                      Close Results
+                    </Button>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+        )}
       </div>
       
       {/* Email Drawer - Lazy loaded, only renders when open */}
