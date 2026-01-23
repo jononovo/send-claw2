@@ -43,43 +43,7 @@ PLANNING LOGIC:
 2. Choose 3-6 standard fields most relevant to the query
 3. Define 0-3 custom fields for unique metrics the user wants (these go in superSearchMeta)
 
-EXAMPLES:
 
-Query: "South American coal exporters selling to the US"
-Plan:
-{
-  "queryType": "company",
-  "targetCount": 10,
-  "standardFields": ["name", "website", "city", "country"],
-  "customFields": [
-    { "key": "exportVolumeUS", "label": "Export to US" },
-    { "key": "usMarketShare", "label": "US Market Share" }
-  ],
-  "searchStrategy": "Research major coal mining companies in Colombia, Peru, Venezuela with documented US export relationships."
-}
-
-Query: "VCs who invested in AI startups in 2024"
-Plan:
-{
-  "queryType": "contact",
-  "targetCount": 10,
-  "standardFields": ["name", "role", "company", "linkedinUrl"],
-  "customFields": [
-    { "key": "recentInvestment", "label": "Recent AI Investment" },
-    { "key": "stageFocus", "label": "Stage Focus" }
-  ],
-  "searchStrategy": "Find venture capital partners who led AI/ML funding rounds in 2024."
-}
-
-Query: "Law firms in Miami"
-Plan:
-{
-  "queryType": "company",
-  "targetCount": 10,
-  "standardFields": ["name", "website", "city", "state"],
-  "customFields": [],
-  "searchStrategy": "Find established law firms headquartered in Miami, Florida."
-}
 
 STEP 2 - STREAM RESULTS:
 After the plan, output each result as JSON:
@@ -104,10 +68,10 @@ RESULT FIELD RULES:
 - superSearchNote is optional - only if there's a genuinely useful insight not captured in other fields
 
 For type "company":
-- name, website, city, state, country, description, size, services, superSearchNote, superSearchMeta
+- name, website, city, state, country, description, size, services, superSearchMeta
 
 For type "contact":
-- name, role, company, companyWebsite, linkedinUrl, city, state, country, department, superSearchNote, superSearchMeta
+- name, role, company, companyWebsite, linkedinUrl, city, state, country, department, superSearchMeta
 
 OUTPUT FORMAT:
 Output ONLY ###PLAN### and ###RESULT### blocks. No prose, explanations, or markdown between them.
