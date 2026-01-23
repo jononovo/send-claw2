@@ -33,16 +33,26 @@ function formatFieldLabel(field: string): string {
 }
 
 function buildColumnsFromPlan(plan: SearchPlan): string[] {
+  const priorityFields = ['name', 'role', 'company'];
   const columns: string[] = [];
   
-  // Add standard field labels
-  for (const field of plan.standardFields) {
-    columns.push(formatFieldLabel(field));
+  // 1. Add priority fields first (Name, Role, Company)
+  for (const field of priorityFields) {
+    if (plan.standardFields.includes(field)) {
+      columns.push(formatFieldLabel(field));
+    }
   }
   
-  // Add custom field labels
+  // 2. Add custom field labels
   for (const customField of plan.customFields) {
     columns.push(customField.label);
+  }
+  
+  // 3. Add remaining standard fields
+  for (const field of plan.standardFields) {
+    if (!priorityFields.includes(field)) {
+      columns.push(formatFieldLabel(field));
+    }
   }
   
   return columns;
