@@ -109,10 +109,8 @@ For type "company":
 For type "contact":
 - name, role, company, companyWebsite, linkedinUrl, city, state, country, department, superSearchNote, superSearchMeta
 
-PROGRESS UPDATES:
-Between results, you can output plain text to show progress:
-"Researching Colombian coal exporters..."
-"Found 3 companies, searching for export data..."
+OUTPUT FORMAT:
+Output ONLY ###PLAN### and ###RESULT### blocks. No prose, explanations, or markdown between them.
 
 CRITICAL RULES:
 - Be accurate - do not fabricate companies or contacts
