@@ -18,7 +18,6 @@ For Contacts:
 - role (job title)
 - company
 - companyWebsite
-- linkedinUrl
 - city
 - state
 - country
@@ -68,10 +67,10 @@ RESULT FIELD RULES:
 - superSearchNote is optional - only if there's a genuinely useful insight not captured in other fields
 
 For type "company":
-- name, website, city, state, country, description, size, services, superSearchMeta
+- name, description, superSearchMeta, website, city, state, country, size, services, 
 
 For type "contact":
-- name, role, company, companyWebsite, linkedinUrl, city, state, country, department, superSearchMeta
+- name, role, company, superSearchMeta, city, state, country, department, companyWebsite
 
 If doing a "contact" search, focus on individuals as the main outcome. If "company" search, focus on listing companies.
 
