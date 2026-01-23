@@ -1,36 +1,21 @@
+import { readFileSync } from 'fs';
+import { dirname, join } from 'path';
+import { fileURLToPath } from 'url';
 import Anthropic from '@anthropic-ai/sdk';
-import { ANALYSIS_PROMPT, EXTRACTION_PROMPT } from './prompts';
+import type { SearchPlan, SuperSearchResult, StreamEvent } from '../../types';
 
-export interface SearchPlan {
-  queryType: 'company' | 'contact';
-  targetCount: number;
-  standardFields: string[];
-  customFields: Array<{ key: string; label: string }>;
-  searchStrategy: string;
-}
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
-export interface SuperSearchResult {
-  type: 'company' | 'contact';
-  name: string;
-  website?: string;
-  city?: string;
-  state?: string;
-  country?: string;
-  description?: string;
-  size?: string;
-  services?: string;
-  role?: string;
-  company?: string;
-  companyWebsite?: string;
-  department?: string;
-  superSearchMeta?: Record<string, string>;
-}
+const ANALYSIS_PROMPT = readFileSync(
+  join(__dirname, 'analysis-prompt.txt'),
+  'utf-8'
+);
 
-export type StreamEvent =
-  | { type: 'plan'; data: SearchPlan }
-  | { type: 'result'; data: SuperSearchResult }
-  | { type: 'progress'; data: string }
-  | { type: 'error'; data: string };
+const EXTRACTION_PROMPT = readFileSync(
+  join(__dirname, 'extraction-prompt.txt'),
+  'utf-8'
+);
 
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
@@ -70,7 +55,7 @@ async function claudeAnalyze(
   perplexityResults: string
 ): Promise<{ plan: SearchPlan; entities: string[] }> {
   const message = await anthropic.messages.create({
-    model: 'claude-sonnet-4-20250514',
+    model: 'claude-opus-4-20250514',
     max_tokens: 2000,
     system: ANALYSIS_PROMPT,
     messages: [
@@ -115,7 +100,7 @@ async function claudeExtractEntity(
   const customFieldsList = plan.customFields.map(f => `- ${f.key}: ${f.label}`).join('\n');
 
   const message = await anthropic.messages.create({
-    model: 'claude-sonnet-4-20250514',
+    model: 'claude-opus-4-20250514',
     max_tokens: 1000,
     system: EXTRACTION_PROMPT,
     messages: [
@@ -142,16 +127,40 @@ Extract structured data for this entity.`
   const jsonMatch = responseText.match(/\{[\s\S]*\}/);
   
   if (!jsonMatch) {
+    if (plan.queryType === 'contact') {
+      return {
+        type: 'contact',
+        name: entity,
+        company: 'Unknown',
+        superSearchMeta: {}
+      };
+    }
     return {
-      type: plan.queryType,
+      type: 'company',
       name: entity,
       superSearchMeta: {}
     };
   }
 
   const parsed = JSON.parse(jsonMatch[0]);
+  
+  if (plan.queryType === 'contact') {
+    return {
+      type: 'contact' as const,
+      name: parsed.name || entity,
+      company: parsed.company || 'Unknown',
+      role: parsed.role,
+      companyWebsite: parsed.companyWebsite,
+      city: parsed.city,
+      state: parsed.state,
+      country: parsed.country,
+      department: parsed.department,
+      superSearchMeta: parsed.superSearchMeta || {}
+    };
+  }
+  
   return {
-    type: plan.queryType,
+    type: 'company' as const,
     name: parsed.name || entity,
     website: parsed.website,
     city: parsed.city,
@@ -160,10 +169,6 @@ Extract structured data for this entity.`
     description: parsed.description,
     size: parsed.size,
     services: parsed.services,
-    role: parsed.role,
-    company: parsed.company,
-    companyWebsite: parsed.companyWebsite,
-    department: parsed.department,
     superSearchMeta: parsed.superSearchMeta || {}
   };
 }
@@ -201,14 +206,10 @@ export async function* executeSearch(query: string): AsyncGenerator<StreamEvent,
         yield { type: 'result', data: result };
       } catch (err) {
         console.error(`Error enriching ${entity}:`, err);
-        yield { 
-          type: 'result', 
-          data: { 
-            type: plan.queryType, 
-            name: entity,
-            superSearchMeta: {} 
-          } 
-        };
+        const fallbackResult: SuperSearchResult = plan.queryType === 'contact'
+          ? { type: 'contact', name: entity, company: 'Unknown', superSearchMeta: {} }
+          : { type: 'company', name: entity, superSearchMeta: {} };
+        yield { type: 'result', data: fallbackResult };
       }
     }
 
