@@ -1176,7 +1176,7 @@ export default function PromptEditor({
       // Super Search - uses SSE streaming
       const variantId = searchType === 'super_search_fast' 
         ? 'v1_perplexity_one-shot' 
-        : 'v2_anthropic_multi-step';
+        : 'v3_anthropic_query-first';
       if (superSearch && onSuperSearchActive) {
         onSuperSearchActive(true);
         superSearch.startSearch(value, undefined, variantId);
