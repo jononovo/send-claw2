@@ -67,10 +67,10 @@ RESULT FIELD RULES:
 - Ideally, 
 
 For type "company":
-- name, description, superSearchMeta, website, city, state, country, size, services, 
+- name, description, superSearchMeta, website, size, services, city, state, country
 
 For type "contact":
-- name, role, company, superSearchMeta, city, state, country, department, companyWebsite
+- name, role, company, superSearchMeta, department, companyWebsite, city, state, country
 
 If doing a "contact" search, focus on individuals as the main outcome. Ideally, 1 or 2 contacts per company to provide breadth of coverage, unless query is for specific or limited company applicability.
 
