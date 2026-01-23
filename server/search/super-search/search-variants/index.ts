@@ -1,11 +1,5 @@
-import type { StreamEvent } from '../types';
-
-export interface SearchVariant {
-  id: string;
-  name: string;
-  description: string;
-  executeSearch: (query: string) => AsyncGenerator<StreamEvent, void, unknown>;
-}
+import type { SearchVariant } from './types';
+export type { SearchVariant } from './types';
 
 import { variant as v1PerplexityOneShot } from './v1_perplexity_one-shot';
 

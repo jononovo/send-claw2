@@ -1,4 +1,4 @@
-import type { SearchVariant } from '../index';
+import type { SearchVariant } from '../types';
 import { executeSearch } from './stream';
 
 export const variant: SearchVariant = {

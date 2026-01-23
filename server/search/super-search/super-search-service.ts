@@ -1,12 +1,13 @@
 import { storage } from '../../storage';
 import { CreditService } from '../../features/billing/credits/service';
-import { streamSuperSearch } from './perplexity-stream';
+import { getVariant, getDefaultVariant } from './search-variants';
 import type { SearchPlan, SuperSearchResult, CompanyResult, ContactResult, StreamEvent } from './types';
 
 export interface SuperSearchContext {
   userId: number;
   listId?: number;
   query: string;
+  variantId?: string;
 }
 
 export interface SavedResults {
@@ -26,9 +27,18 @@ export class SuperSearchService {
   }
 
   static async* executeSearch(context: SuperSearchContext): AsyncGenerator<StreamEvent, void, unknown> {
-    const { userId, listId, query } = context;
+    const { userId, listId, query, variantId } = context;
 
-    console.log(`[SuperSearchService] Starting search for user ${userId}: "${query}"`);
+    const variant = variantId ? getVariant(variantId) : getDefaultVariant();
+    if (!variant) {
+      yield {
+        type: 'error',
+        data: `Unknown search variant: ${variantId}`
+      };
+      return;
+    }
+
+    console.log(`[SuperSearchService] Starting search for user ${userId} with variant "${variant.id}": "${query}"`);
 
     const creditCheck = await this.checkCredits(userId);
     if (!creditCheck.hasCredits) {
@@ -43,7 +53,7 @@ export class SuperSearchService {
     let plan: SearchPlan | null = null;
 
     try {
-      for await (const event of streamSuperSearch(query)) {
+      for await (const event of variant.executeSearch(query)) {
         if (event.type === 'plan') {
           plan = event.data;
         }
