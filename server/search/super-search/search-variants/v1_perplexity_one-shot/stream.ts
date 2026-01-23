@@ -1,5 +1,15 @@
+import { readFileSync } from 'fs';
+import { dirname, join } from 'path';
+import { fileURLToPath } from 'url';
 import type { SearchPlan, SuperSearchResult, StreamEvent } from '../../types';
-import { SYSTEM_PROMPT } from './system-prompt';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+const SYSTEM_PROMPT = readFileSync(
+  join(__dirname, 'prompt.txt'),
+  'utf-8'
+);
 
 interface PerplexityStreamChunk {
   choices: Array<{
