@@ -2,6 +2,7 @@ import { Express, Request, Response } from 'express';
 import { SuperSearchService } from './super-search-service';
 import { getUserId } from '../../utils/auth';
 import { storage } from '../../storage';
+import { listVariants, defaultVariantId } from './search-variants';
 import type { SuperSearchRequest, SearchPlan, SuperSearchResult } from './types';
 
 interface SaveSuperSearchRequest {
@@ -11,16 +12,29 @@ interface SaveSuperSearchRequest {
 }
 
 export function registerSuperSearchRoutes(app: Express, requireAuth: any) {
+  app.get('/api/super-search/variants', requireAuth, async (_req: Request, res: Response) => {
+    try {
+      const variants = listVariants();
+      res.json({
+        variants,
+        defaultVariantId
+      });
+    } catch (error) {
+      console.error('[SuperSearch] Error listing variants:', error);
+      res.status(500).json({ error: 'Failed to list variants' });
+    }
+  });
+
   app.post('/api/super-search/stream', requireAuth, async (req: Request, res: Response) => {
     const userId = getUserId(req);
-    const { query, listId }: SuperSearchRequest = req.body;
+    const { query, listId, variantId }: SuperSearchRequest & { variantId?: string } = req.body;
 
     if (!query || typeof query !== 'string' || query.trim().length === 0) {
       res.status(400).json({ error: 'Query is required' });
       return;
     }
 
-    console.log(`[SuperSearch] SSE request from user ${userId}: "${query}"`);
+    console.log(`[SuperSearch] SSE request from user ${userId}: "${query}" (variant: ${variantId || 'default'})`);
 
     res.setHeader('Content-Type', 'text/event-stream');
     res.setHeader('Cache-Control', 'no-cache');
@@ -38,7 +52,8 @@ export function registerSuperSearchRoutes(app: Express, requireAuth: any) {
       const searchGenerator = SuperSearchService.executeSearch({
         userId,
         listId,
-        query: query.trim()
+        query: query.trim(),
+        variantId
       });
 
       for await (const event of searchGenerator) {

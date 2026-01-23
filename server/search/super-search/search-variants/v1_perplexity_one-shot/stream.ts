@@ -1,5 +1,15 @@
-import type { SearchPlan, SuperSearchResult, StreamEvent } from './types';
-import { SUPER_SEARCH_SYSTEM_PROMPT } from './system-prompt';
+import { readFileSync } from 'fs';
+import { dirname, join } from 'path';
+import { fileURLToPath } from 'url';
+import type { SearchPlan, SuperSearchResult, StreamEvent } from '../../types';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+const SYSTEM_PROMPT = readFileSync(
+  join(__dirname, 'prompt.txt'),
+  'utf-8'
+);
 
 interface PerplexityStreamChunk {
   choices: Array<{
@@ -19,7 +29,6 @@ function createParseState(): ParseState {
 }
 
 function normalizePlan(rawPlan: any): SearchPlan {
-  // Ensure standardFields and customFields exist with sensible defaults
   const plan: SearchPlan = {
     queryType: rawPlan.queryType || 'company',
     targetCount: rawPlan.targetCount || 10,
@@ -28,7 +37,6 @@ function normalizePlan(rawPlan: any): SearchPlan {
     searchStrategy: rawPlan.searchStrategy || '',
   };
 
-  // Provide defaults if AI didn't specify standardFields
   if (plan.standardFields.length === 0) {
     if (plan.queryType === 'company') {
       plan.standardFields = ['name', 'website', 'city', 'country'];
@@ -37,7 +45,6 @@ function normalizePlan(rawPlan: any): SearchPlan {
     }
   }
 
-  // Ensure 'name' is always first
   if (!plan.standardFields.includes('name')) {
     plan.standardFields.unshift('name');
   }
@@ -49,7 +56,6 @@ function parseStreamContent(state: ParseState, content: string, planEmitted: boo
   state.content += content;
   const events: StreamEvent[] = [];
 
-  // Try to extract plan
   if (!planEmitted) {
     const planMatch = state.content.match(/###PLAN###\s*([\s\S]*?)\s*###END_PLAN###/);
     if (planMatch) {
@@ -58,33 +64,31 @@ function parseStreamContent(state: ParseState, content: string, planEmitted: boo
         const plan = normalizePlan(rawPlan);
         events.push({ type: 'plan', data: plan });
         state.content = state.content.replace(planMatch[0], '');
-        console.log('[SuperSearch] Parsed plan:', plan);
+        console.log('[v1_perplexity_one-shot] Parsed plan:', plan);
       } catch (e) {
-        console.error('[SuperSearch] Failed to parse plan:', e);
+        console.error('[v1_perplexity_one-shot] Failed to parse plan:', e);
       }
     }
   }
 
-  // Extract results
   const resultPattern = /###RESULT###\s*([\s\S]*?)\s*###END_RESULT###/g;
   let match;
   while ((match = resultPattern.exec(state.content)) !== null) {
     try {
       const result = JSON.parse(match[1]) as SuperSearchResult;
       events.push({ type: 'result', data: result });
-      console.log('[SuperSearch] Parsed result:', result.name);
+      console.log('[v1_perplexity_one-shot] Parsed result:', result.name);
     } catch (e) {
-      console.error('[SuperSearch] Failed to parse result:', e);
+      console.error('[v1_perplexity_one-shot] Failed to parse result:', e);
     }
   }
   state.content = state.content.replace(resultPattern, '');
 
-  // Extract progress text (lines that aren't markers or JSON)
   const cleanContent = state.content
     .replace(/###PLAN###[\s\S]*?###END_PLAN###/g, '')
     .replace(/###RESULT###[\s\S]*?###END_RESULT###/g, '')
-    .replace(/###PLAN###[\s\S]*/g, '') // Incomplete plan
-    .replace(/###RESULT###[\s\S]*/g, '') // Incomplete result
+    .replace(/###PLAN###[\s\S]*/g, '')
+    .replace(/###RESULT###[\s\S]*/g, '')
     .trim();
 
   if (cleanContent && cleanContent.length > 10 && !cleanContent.startsWith('{')) {
@@ -100,7 +104,7 @@ function parseStreamContent(state: ParseState, content: string, planEmitted: boo
   return events;
 }
 
-export async function* streamSuperSearch(
+export async function* executeSearch(
   query: string
 ): AsyncGenerator<StreamEvent, void, unknown> {
   const apiKey = process.env.PERPLEXITY_API_KEY;
@@ -109,7 +113,7 @@ export async function* streamSuperSearch(
     return;
   }
 
-  console.log('[SuperSearch] Starting streaming search for:', query);
+  console.log('[v1_perplexity_one-shot] Starting search for:', query);
   
   const parseState = createParseState();
 
@@ -123,7 +127,7 @@ export async function* streamSuperSearch(
       body: JSON.stringify({
         model: 'sonar',
         messages: [
-          { role: 'system', content: SUPER_SEARCH_SYSTEM_PROMPT },
+          { role: 'system', content: SYSTEM_PROMPT },
           { role: 'user', content: query }
         ],
         temperature: 0.1,
@@ -134,7 +138,7 @@ export async function* streamSuperSearch(
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('[SuperSearch] API error:', response.status, errorText);
+      console.error('[v1_perplexity_one-shot] API error:', response.status, errorText);
       yield { type: 'error', data: `API error: ${response.status}` };
       return;
     }
@@ -149,7 +153,7 @@ export async function* streamSuperSearch(
     let buffer = '';
     let planEmitted = false;
     let resultCount = 0;
-    let fullContent = ''; // DEBUG: Collect all content for logging
+    let fullContent = '';
 
     while (true) {
       const { done, value } = await reader.read();
@@ -170,7 +174,7 @@ export async function* streamSuperSearch(
           const content = chunk.choices[0]?.delta?.content;
           if (!content) continue;
 
-          fullContent += content; // DEBUG: Accumulate content
+          fullContent += content;
 
           const events = parseStreamContent(parseState, content, planEmitted);
           for (const event of events) {
@@ -188,7 +192,6 @@ export async function* streamSuperSearch(
       }
     }
 
-    // Process any remaining buffer
     if (buffer.trim()) {
       const events = parseStreamContent(parseState, buffer, planEmitted);
       for (const event of events) {
@@ -197,15 +200,14 @@ export async function* streamSuperSearch(
       }
     }
 
-    // DEBUG: Log the full raw response from Perplexity
-    console.log(`[SuperSearch] Stream complete, ${resultCount} results`);
-    console.log(`[SuperSearch] Full Perplexity response (first 2000 chars):\n${fullContent.substring(0, 2000)}`);
+    console.log(`[v1_perplexity_one-shot] Stream complete, ${resultCount} results`);
+    console.log(`[v1_perplexity_one-shot] Full response (first 2000 chars):\n${fullContent.substring(0, 2000)}`);
     if (fullContent.length > 2000) {
-      console.log(`[SuperSearch] ... (truncated, total length: ${fullContent.length} chars)`);
+      console.log(`[v1_perplexity_one-shot] ... (truncated, total length: ${fullContent.length} chars)`);
     }
 
   } catch (error) {
-    console.error('[SuperSearch] Stream error:', error);
+    console.error('[v1_perplexity_one-shot] Stream error:', error);
     yield { type: 'error', data: error instanceof Error ? error.message : 'Stream failed' };
   }
 }
