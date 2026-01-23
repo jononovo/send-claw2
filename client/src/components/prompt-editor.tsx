@@ -37,7 +37,7 @@ interface CachedSearchResult {
 }
 
 interface SuperSearchControls {
-  startSearch: (query: string, listId?: number) => void;
+  startSearch: (query: string, listId?: number, variantId?: string) => void;
   reset: () => void;
   status: SuperSearchState['status'];
 }
@@ -1167,15 +1167,19 @@ export default function PromptEditor({
     logConversionEvent('search_performed').catch(() => {});
     
     console.log("Analyzing search query...");
-    console.log(`Preparing to search for ${searchType === 'companies' ? 'companies only' : searchType === 'contacts' ? 'companies and contacts' : searchType === 'individual_search' ? 'specific individual' : searchType === 'super_search' ? 'AI-powered super search' : 'companies, contacts, and emails'}...`);
+    const isSuperSearch = searchType === 'super_search_fast' || searchType === 'super_search_deep';
+    console.log(`Preparing to search for ${searchType === 'companies' ? 'companies only' : searchType === 'contacts' ? 'companies and contacts' : searchType === 'individual_search' ? 'specific individual' : isSuperSearch ? 'AI-powered super search' : 'companies, contacts, and emails'}...`);
     onAnalyze();
     
     // Choose search strategy based on selected search type
-    if (searchType === 'super_search') {
-      // Super Search - uses SSE streaming with Perplexity AI
+    if (isSuperSearch) {
+      // Super Search - uses SSE streaming
+      const variantId = searchType === 'super_search_fast' 
+        ? 'v1_perplexity_one-shot' 
+        : 'v2_anthropic_multi-step';
       if (superSearch && onSuperSearchActive) {
         onSuperSearchActive(true);
-        superSearch.startSearch(value);
+        superSearch.startSearch(value, undefined, variantId);
       }
       return; // Super search handles its own flow
     } else if (searchType === 'companies') {
