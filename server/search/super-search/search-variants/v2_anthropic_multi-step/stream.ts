@@ -100,7 +100,7 @@ async function claudeExtractEntity(
   const customFieldsList = plan.customFields.map(f => `- ${f.key}: ${f.label}`).join('\n');
 
   const message = await anthropic.messages.create({
-    model: 'claude-opus-4-20250514',
+    model: 'claude-sonnet-4-20250514',
     max_tokens: 1000,
     system: EXTRACTION_PROMPT,
     messages: [
@@ -131,7 +131,7 @@ Extract structured data for this entity.`
       return {
         type: 'contact',
         name: entity,
-        company: 'Unknown',
+        company: '',
         superSearchMeta: {}
       };
     }
@@ -148,7 +148,7 @@ Extract structured data for this entity.`
     return {
       type: 'contact' as const,
       name: parsed.name || entity,
-      company: parsed.company || 'Unknown',
+      company: parsed.company || '',
       role: parsed.role,
       companyWebsite: parsed.companyWebsite,
       city: parsed.city,
@@ -207,7 +207,7 @@ export async function* executeSearch(query: string): AsyncGenerator<StreamEvent,
       } catch (err) {
         console.error(`Error enriching ${entity}:`, err);
         const fallbackResult: SuperSearchResult = plan.queryType === 'contact'
-          ? { type: 'contact', name: entity, company: 'Unknown', superSearchMeta: {} }
+          ? { type: 'contact', name: entity, company: '', superSearchMeta: {} }
           : { type: 'company', name: entity, superSearchMeta: {} };
         yield { type: 'result', data: fallbackResult };
       }

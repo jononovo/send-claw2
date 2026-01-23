@@ -22,7 +22,7 @@ export function useSuperSearch() {
     setState(initialState);
   }, []);
 
-  const startSearch = useCallback(async (query: string, listId?: number) => {
+  const startSearch = useCallback(async (query: string, listId?: number, variantId?: string) => {
     reset();
     
     setState(prev => ({ ...prev, status: 'connecting' }));
@@ -35,7 +35,7 @@ export function useSuperSearch() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ query, listId }),
+        body: JSON.stringify({ query, listId, variantId }),
         signal: abortControllerRef.current.signal,
       });
 
