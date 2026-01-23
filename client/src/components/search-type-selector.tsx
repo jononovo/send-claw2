@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Building2, Users, Mail, ChevronDown, UserSearch } from "lucide-react";
+import { Building2, Users, Mail, ChevronDown, UserSearch, Sparkles } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -7,7 +7,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 
-export type SearchType = "companies" | "contacts" | "emails" | "individual_search";
+export type SearchType = "companies" | "contacts" | "emails" | "individual_search" | "super_search";
 
 export interface SearchTypeConfig {
   type: SearchType;
@@ -58,6 +58,13 @@ const searchTypeConfigs: SearchTypeConfig[] = [
     icons: [<UserSearch key="individual-search" className="h-3 w-3 md:h-[14px] md:w-[14px] lg:h-[18px] lg:w-[18px]" />],
     estimatedTime: "18 seconds",
     creditCost: 100
+  },
+  {
+    type: "super_search",
+    label: "Super Search",
+    icons: [<Sparkles key="super-search" className="h-3 w-3 md:h-[14px] md:w-[14px] lg:h-[18px] lg:w-[18px]" />],
+    estimatedTime: "30 seconds",
+    creditCost: 250
   }
 ];
 

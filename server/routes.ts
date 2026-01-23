@@ -61,7 +61,7 @@ import { attributionRoutes } from "./features/attribution";
 import { registerPricingPromoRoutes } from "./features/pricing-promos";
 import { handleApolloPhoneWebhook } from "./webhooks/apollo-phone-webhook";
 import { findMobilePhone } from "./features/search-phone/routes";
-
+import { registerSuperSearchRoutes } from "./search/super-search";
 
 // Import centralized auth utilities
 import { getUserId, requireAuth } from "./utils/auth";
@@ -107,6 +107,9 @@ export function registerRoutes(app: Express) {
   
   // Register search job routes for persistent search execution
   registerSearchJobRoutes(app);
+  
+  // Register Super Search routes (SSE streaming)
+  registerSuperSearchRoutes(app, requireAuth);
   
   // Start the background job processor with error handling
   try {

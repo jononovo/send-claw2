@@ -1,0 +1,185 @@
+Phase 1: Analysis
+Perplexity analyzes the query and outputs a "search plan":
+json{
+  "queryType": "advanced_signals",
+  "targetCount": 10,
+  "displayMode": "table",
+  "columns": ["Name", "Company", "Role", "Carbon Budget", "Last Initiative"],
+  "searchStrategy": "Looking for sustainability decision-makers with recent ESG activity..."
+}
+Phase 2: Execution
+Perplexity executes the search following its own plan, streams results in that structure.
+
+This means the stream shows:
+
+First chunk: "Here's my plan..." (displayMode, columns, target count)
+Following chunks: Results streaming in, conforming to that plan
+Frontend renders the correct layout immediately based on Phase 1
+
+
+Question:
+Should Phase 1 and Phase 2 be:
+Option A: Single Perplexity call (outputs plan first, then results in same stream)
+Option B: Two separate calls (first call = plan, second call = execute with plan as context)
+Option A is simpler/cheaper, but Option B lets user see the plan and potentially adjust before execution.
+Which do you prefer?Let's do option a.11:38 PMPerfect. I have everything I need.
+
+Super Search Technical Plan
+Overview
+Single Perplexity streaming call that:
+
+Analyzes query → outputs search plan (displayMode, columns, targetCount)
+Executes search → streams results conforming to plan
+Saves to DB with flexible superSearchMeta JSON field
+
+
+Phase 1: Database Changes
+Migration: Add Super Search fields
+sql-- Companies table
+ALTER TABLE companies ADD COLUMN super_search_note VARCHAR(100);
+ALTER TABLE companies ADD COLUMN super_search_research VARCHAR(2000);
+ALTER TABLE companies ADD COLUMN super_search_meta JSONB;
+
+-- Contacts table
+ALTER TABLE contacts ADD COLUMN super_search_note VARCHAR(100);
+ALTER TABLE contacts ADD COLUMN super_search_research VARCHAR(2000);
+ALTER TABLE contacts ADD COLUMN super_search_meta JSONB;
+```
+
+---
+
+### Phase 2: Backend
+
+**New files:**
+```
+server/search/super-search/
+├── index.ts                    # Exports
+├── super-search-service.ts     # Main orchestration
+├── perplexity-stream.ts        # Streaming handler
+├── system-prompt.ts            # Super Search prompt
+├── routes.ts                   # SSE endpoint
+└── types.ts                    # TypeScript interfaces
+```
+
+**SSE Endpoint:**
+```
+POST /api/super-search/stream
+Body: { query: string, listId?: number }
+Response: Server-Sent Events
+Stream event types:
+typescripttype StreamEvent = 
+  | { type: 'plan', data: SearchPlan }
+  | { type: 'progress', data: string }
+  | { type: 'result', data: CompanyResult | ContactResult }
+  | { type: 'complete', data: { totalResults: number } }
+  | { type: 'error', data: string }
+SearchPlan interface:
+typescriptinterface SearchPlan {
+  queryType: 'person' | 'role' | 'company' | 'signals';
+  displayMode: 'company_list' | 'company_contacts' | 'contact_list' | 'table';
+  targetCount: 5 | 10 | 20;
+  columns?: string[];  // For table view
+  searchStrategy: string;  // Shown to user
+}
+
+Phase 3: Perplexity System Prompt
+typescriptconst SUPER_SEARCH_SYSTEM_PROMPT = `You are Super Search, an advanced B2B lead discovery agent.
+
+STEP 1 - OUTPUT SEARCH PLAN:
+Analyze the query and output a JSON plan on its own line:
+###PLAN###
+{
+  "queryType": "person|role|company|signals",
+  "displayMode": "company_list|company_contacts|contact_list|table",
+  "targetCount": 5|10|20,
+  "columns": ["Name", "Company", ...], // if table mode
+  "searchStrategy": "Brief explanation of approach..."
+}
+###END_PLAN###
+
+DECISION LOGIC:
+- Specific person search → contact_list, 5 results
+- Role/function search → contact_list, 10 results  
+- Company type search → company_list or company_contacts, 10-20 results
+- Signal/niche search → table (custom columns), 10 results
+
+STEP 2 - STREAM RESULTS:
+Output each result as JSON on its own line:
+###RESULT###
+{
+  "type": "company|contact",
+  "data": {
+    "name": "...",
+    "role": "...",  // contacts only
+    "company": "...",
+    "linkedinUrl": "...",
+    "city": "...",
+    "country": "...",
+    "superSearchNote": "...",  // max 100 chars, optional
+    "superSearchResearch": "...",  // max 2000 chars, optional
+    "superSearchMeta": { ... }  // optional custom fields
+  }
+}
+###END_RESULT###
+
+RULES:
+- Only include superSearchNote/Research/Meta when genuinely useful
+- superSearchMeta keys should be human-readable column names
+- Stream progress updates between results as plain text
+- Be accurate - do not fabricate contacts or companies`;
+```
+
+---
+
+### Phase 4: Frontend
+
+**New files:**
+```
+client/src/features/super-search/
+├── components/
+│   ├── super-search-input.tsx      # Query input
+│   ├── super-search-stream.tsx     # Streaming display
+│   ├── super-search-results.tsx    # Result router
+│   └── super-search-table.tsx      # Flexible table view
+├── hooks/
+│   └── use-super-search.ts         # SSE connection hook
+└── types.ts
+Integration point:
+
+Add "Super Search" option to existing search type dropdown in /app
+
+Display logic:
+typescriptswitch (plan.displayMode) {
+  case 'company_list':
+    return <CompanyCards companies={results} />;  // existing
+  case 'company_contacts':
+    return <CompanyCards companies={results} showContacts />;  // existing
+  case 'contact_list':
+    return <TopProspects contacts={results} />;  // existing
+  case 'table':
+    return <SuperSearchTable columns={plan.columns} rows={results} />;  // new
+}
+
+Phase 5: Save to DB
+After stream completes:
+
+Parse all results
+Create/update companies in companies table
+Create/update contacts in contacts table
+Deduct 250 credits
+Add to user's list (existing or new)
+
+Reuse existing storage.createCompany() and storage.createContact() with new fields.
+
+File Changes Summary
+FileChangeshared/schema.tsAdd new fields to Company/Contact typesserver/storage.tsUpdate create/update methods for new fieldsserver/routes.tsMount super-search routesserver/search/super-search/*New directory (5 files)client/src/features/super-search/*New directory (5 files)client/src/pages/app.tsxAdd Super Search option to dropdownMigration fileAdd 6 new columns
+
+Estimated Effort
+TaskTimeDB migration + schema types1-2 hoursBackend streaming service3-4 hoursSSE endpoint + parsing2-3 hoursFrontend hook + stream display3-4 hoursTable component2-3 hoursIntegration with existing UI2-3 hoursTesting + refinement2-3 hoursTotal15-22 hours
+
+Open Items / Risks
+
+Perplexity output reliability - May need prompt iteration if JSON parsing fails
+Streaming parse edge cases - Results split across chunks
+Table column consistency - Results might have inconsistent keys
+
