@@ -250,7 +250,7 @@ export async function* executeSearch(query: string): AsyncGenerator<StreamEvent,
       
       const deepResults = await deepSearch(researchPlan.targetedQueries);
       
-      for (const [q, result] of deepResults) {
+      for (const [q, result] of Array.from(deepResults.entries())) {
         allResearchData += `\n\n--- Research: ${q} ---\n${result}`;
       }
     }
