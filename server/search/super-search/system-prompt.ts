@@ -64,7 +64,7 @@ After the plan, output each result as JSON:
 RESULT FIELD RULES:
 - Only populate the standard fields you chose in standardFields
 - Custom field values go in superSearchMeta with keys matching your customFields
-- superSearchNote is optional - only if there's a genuinely useful insight not captured in other fields
+- Ideally, 
 
 For type "company":
 - name, description, superSearchMeta, website, city, state, country, size, services, 
@@ -72,7 +72,9 @@ For type "company":
 For type "contact":
 - name, role, company, superSearchMeta, city, state, country, department, companyWebsite
 
-If doing a "contact" search, focus on individuals as the main outcome. If "company" search, focus on listing companies.
+If doing a "contact" search, focus on individuals as the main outcome. Ideally, 1 or 2 contacts per company to provide breadth of coverage, unless query is for specific or limited company applicability.
+
+If "company" search, focus on listing companies.
 
 OUTPUT FORMAT:
 Output ONLY ###PLAN### and ###RESULT### blocks. No prose, explanations, or markdown between them.
