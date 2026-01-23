@@ -109,6 +109,7 @@ interface CompanyCardProps {
   onToggleShowAllContacts: () => void;
   showDescription: boolean;
   onToggleDescription: () => void;
+  isAuthenticated?: boolean;
 }
 
 const CompanyCard: React.FC<CompanyCardProps> = ({
@@ -139,7 +140,8 @@ const CompanyCard: React.FC<CompanyCardProps> = ({
   showAllContacts,
   onToggleShowAllContacts,
   showDescription,
-  onToggleDescription
+  onToggleDescription,
+  isAuthenticated
 }) => {
   const checkboxRef = useRef<HTMLButtonElement>(null);
   
@@ -306,6 +308,7 @@ const CompanyCard: React.FC<CompanyCardProps> = ({
                     onLeave={onContactLeave}
                     showCheckbox={shouldShowCheckbox?.(contact.id) ?? false}
                     isHighlighted={selectedEmailContact?.id === contact.id}
+                    isAuthenticated={isAuthenticated}
                     handleContactView={(contact) => {
                       const slug = contact.slug || contact.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '').substring(0, 50);
                       setLocation(`/p/${slug}/${contact.id}`);
@@ -820,6 +823,7 @@ export default function CompanyCards({
               onToggleShowAllContacts={() => toggleContactListExpansion(company.id)}
               showDescription={visibleDescriptions.has(company.id)}
               onToggleDescription={() => toggleDescriptionVisibility(company.id)}
+              isAuthenticated={isAuthenticated}
             />
           </div>
         ))
@@ -860,6 +864,7 @@ export default function CompanyCards({
               onToggleShowAllContacts={() => toggleContactListExpansion(companies[currentSlideIndex].id)}
               showDescription={visibleDescriptions.has(companies[currentSlideIndex].id)}
               onToggleDescription={() => toggleDescriptionVisibility(companies[currentSlideIndex].id)}
+              isAuthenticated={isAuthenticated}
             />
           </div>
         )
