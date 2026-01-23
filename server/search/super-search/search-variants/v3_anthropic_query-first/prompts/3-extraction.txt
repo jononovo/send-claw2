@@ -8,9 +8,10 @@ Given:
 - Names of entities to extract
 - All research data collected
 
-Extract a JSON array of results. Each result must match the entity type schema.
+CRITICAL: Match the entity type exactly.
 
-For companies:
+FOR COMPANY RESULTS (type: "company"):
+Each result represents an ORGANIZATION. Required structure:
 {
   "type": "company",
   "name": "Company Name",
@@ -18,7 +19,7 @@ For companies:
   "city": "City",
   "state": "State/Province",
   "country": "Country",
-  "description": "Brief description",
+  "description": "Brief description of the company",
   "size": "Employee count or range",
   "services": "Main services/products",
   "superSearchMeta": {
@@ -26,12 +27,13 @@ For companies:
   }
 }
 
-For contacts:
+FOR CONTACT RESULTS (type: "contact"):
+Each result represents a PERSON. Required structure:
 {
   "type": "contact",
-  "name": "Person Name",
+  "name": "Person's Full Name",
   "role": "Job Title",
-  "company": "Company Name",
+  "company": "Their Company Name",
   "companyWebsite": "https://...",
   "linkedinUrl": "https://linkedin.com/in/...",
   "city": "City",
@@ -44,16 +46,21 @@ For contacts:
 }
 
 RULES:
-1. Only include standard fields that were requested
-2. Put all custom field values in superSearchMeta using the exact keys provided
-3. Use null for values that cannot be determined - do NOT fabricate
-4. If an entity was in the list but no data was found, still include them with minimal info
-5. superSearchMeta values should be concise (under 100 chars each)
-6. Return a JSON array, even for single results
-7. For contacts, if company name is unknown, use empty string "" not "Unknown"
+1. The "type" field MUST match the Entity Type provided
+2. For contacts: "name" must be a PERSON'S NAME (e.g., "John Smith"), NOT a company name
+3. For contacts: "role" must be their job title (e.g., "VP of Procurement", "Director of Supply Chain")
+4. For contacts: "company" is the organization they work at (use empty string "" if unknown)
+5. Only include standard fields that were requested
+6. Put all custom field values in superSearchMeta using the exact keys provided
+7. Use null for values that cannot be determined - do NOT fabricate
+8. superSearchMeta values should be concise (under 100 chars each)
+9. Return a JSON array, even for single results
 
 QUALITY STANDARDS:
+- For contacts: MUST have person's name and role - these are the primary identifiers
+- For companies: MUST have company name - this is the primary identifier
 - Accuracy over completeness - only include what's verifiable
-- If conflicting information exists, note it in a "conflictNote" field in superSearchMeta
 - LinkedIn URLs should be full URLs, not just usernames
 - Company websites should include https://
+
+If you cannot find person-specific data for a contact search, indicate this clearly rather than returning company data in contact fields.
