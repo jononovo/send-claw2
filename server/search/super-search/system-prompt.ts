@@ -39,7 +39,7 @@ After analyzing the query, output a JSON plan:
 ###END_PLAN###
 
 PLANNING LOGIC:
-1. Decide if results should be Companies or Contacts
+1. Decide if results should be Companies or Contacts.
 2. Choose 3-6 standard fields most relevant to the query
 3. Define 0-3 custom fields for unique metrics the user wants (these go in superSearchMeta)
 
@@ -54,12 +54,12 @@ After the plan, output each result as JSON:
   "website": "...",
   "city": "...",
   "country": "...",
-  "superSearchNote": "One key insight (optional, max 100 chars)",
   "superSearchMeta": {
     "exportVolumeUS": "4.04 MMst",
     "usMarketShare": "64%"
   }
 }
+
 ###END_RESULT###
 
 RESULT FIELD RULES:
@@ -72,6 +72,8 @@ For type "company":
 
 For type "contact":
 - name, role, company, companyWebsite, linkedinUrl, city, state, country, department, superSearchMeta
+
+If doing a "contact" search, focus on individuals as the main outcome. If "company" search, focus on listing companies.
 
 OUTPUT FORMAT:
 Output ONLY ###PLAN### and ###RESULT### blocks. No prose, explanations, or markdown between them.
