@@ -500,7 +500,7 @@ export default function LandingSimple3() {
             </div>
 
             {/* Right Column - Demo Simulation */}
-            <div className="hidden lg:block -mt-16">
+            <div className="hidden lg:block -mt-16 transition-transform duration-200 hover:scale-[1.01]">
               <div className="relative w-[520px]">
                 <div className="bg-gray-100 dark:bg-[#1a1814] rounded-xl overflow-hidden shadow-2xl border border-gray-200 dark:border-white/10">
                   {/* Browser chrome header */}
