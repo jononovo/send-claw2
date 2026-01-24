@@ -437,7 +437,7 @@ export default function LandingSimple3() {
                   </span>
                 </h1>
 
-                <p className="text-xl text-muted-foreground leading-relaxed max-w-md font-medium pt-6">
+                <p className="text-xl text-muted-foreground leading-relaxed max-w-md font-medium pt-6 transition-all duration-200 hover:scale-[1.01] hover:text-gray-600 dark:hover:text-gray-300 cursor-default">
                   Reach out to <span className="text-gray-400">high-value</span>, <em>impossible-to-find</em> contacts in seconds ( email & LinkedIn. )
                 </p>
               </div>
