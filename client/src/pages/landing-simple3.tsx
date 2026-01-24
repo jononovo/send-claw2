@@ -438,7 +438,7 @@ export default function LandingSimple3() {
                 </h1>
 
                 <p className="text-xl text-muted-foreground leading-relaxed max-w-md font-medium pt-8">
-                  Find, email and or LinkedIn high-value, impossible to find contacts in seconds.
+                  Talk to ( email & LinkedIn ) high-value, impossible-to-find contacts in seconds.
                 </p>
               </div>
 
