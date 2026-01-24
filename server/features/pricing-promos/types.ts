@@ -78,14 +78,14 @@ export const DEFAULT_PLANS: PlanConfig[] = [
   {
     id: 'the-flock',
     name: 'The Flock',
-    credits: 15000,
+    credits: 25000,
     bonus: 0,
     price: 585,
     description: 'For teams and businesses',
     features: [
       'Everything in Mama Duck',
       '10 team seats',
-      '15,000 credits/month',
+      '25,000 credits/month',
       'Team collaboration',
       'Dedicated support',
     ],
