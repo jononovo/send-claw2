@@ -432,12 +432,12 @@ export default function LandingSimple3() {
                 
                 <h1 className="text-6xl lg:text-8xl font-bold leading-[0.9] tracking-normal text-gray-800 dark:text-gray-200 font-serif">
                   <span className="block mb-2">Deal-flow</span>
-                  <span className="block text-transparent bg-clip-text bg-gradient-to-r from-yellow-500 to-yellow-600 dark:from-yellow-400 dark:to-yellow-100 drop-shadow-[0_0_30px_rgba(250,204,21,0.3)]">
+                  <span className="block pb-2 text-transparent bg-clip-text bg-gradient-to-r from-yellow-500 to-yellow-600 dark:from-yellow-400 dark:to-yellow-100 drop-shadow-[0_0_30px_rgba(250,204,21,0.3)]">
                     on Auto-pilot.
                   </span>
                 </h1>
 
-                <p className="text-xl text-muted-foreground leading-relaxed max-w-md font-medium pt-8">
+                <p className="text-xl text-muted-foreground leading-relaxed max-w-md font-medium pt-6">
                   Reach out to <span className="text-gray-400">high-value</span>, <em>impossible-to-find</em> contacts in seconds ( email & LinkedIn. )
                 </p>
               </div>
