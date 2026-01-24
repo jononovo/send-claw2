@@ -1167,7 +1167,7 @@ export default function PromptEditor({
     logConversionEvent('search_performed').catch(() => {});
     
     console.log("Analyzing search query...");
-    const isSuperSearch = searchType === 'super_search_fast' || searchType === 'super_search_deep';
+    const isSuperSearch = searchType === 'super_search_fast' || searchType === 'super_search_deep' || searchType === 'super_search_query_first';
     console.log(`Preparing to search for ${searchType === 'companies' ? 'companies only' : searchType === 'contacts' ? 'companies and contacts' : searchType === 'individual_search' ? 'specific individual' : isSuperSearch ? 'AI-powered super search' : 'companies, contacts, and emails'}...`);
     onAnalyze();
     
@@ -1176,7 +1176,9 @@ export default function PromptEditor({
       // Super Search - uses SSE streaming
       const variantId = searchType === 'super_search_fast' 
         ? 'v1_perplexity_one-shot' 
-        : 'v2_anthropic_multi-step';
+        : searchType === 'super_search_deep'
+        ? 'v2_anthropic_multi-step'
+        : 'v3_anthropic_query-first';
       if (superSearch && onSuperSearchActive) {
         onSuperSearchActive(true);
         superSearch.startSearch(value, undefined, variantId);

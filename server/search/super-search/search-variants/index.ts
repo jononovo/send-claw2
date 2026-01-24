@@ -3,10 +3,12 @@ export type { SearchVariant } from './types';
 
 import { variant as v1PerplexityOneShot } from './v1_perplexity_one-shot';
 import { variant as v2AnthropicMultiStep } from './v2_anthropic_multi-step';
+import { variant as v3AnthropicQueryFirst } from './v3_anthropic_query-first';
 
 export const variants: Record<string, SearchVariant> = {
   'v1_perplexity_one-shot': v1PerplexityOneShot,
   'v2_anthropic_multi-step': v2AnthropicMultiStep,
+  'v3_anthropic_query-first': v3AnthropicQueryFirst,
 };
 
 export const defaultVariantId = 'v1_perplexity_one-shot';
