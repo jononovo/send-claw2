@@ -41,13 +41,13 @@ export const DEFAULT_PLANS: PlanConfig[] = [
   {
     id: 'ugly-duckling',
     name: 'The Ugly Duckling',
-    credits: 5000,
+    credits: 6000,
     bonus: 3000,
     price: 82,
     description: 'For serious prospectors',
     features: [
       'Everything in Free',
-      '5,000 credits/month',
+      '6,000 credits/month',
       '+3,000 bonus credits',
       'Priority email search',
       'Saved search lists',
@@ -59,13 +59,13 @@ export const DEFAULT_PLANS: PlanConfig[] = [
   {
     id: 'duckin-awesome',
     name: 'Mama Duck',
-    credits: 10000,
+    credits: 12000,
     bonus: 10000,
     price: 174,
     description: 'For power users',
     features: [
       'Everything in Ugly Duckling',
-      '10,000 credits/month',
+      '12,000 credits/month',
       '+10,000 bonus credits',
       'Advanced analytics',
       'Priority support',
@@ -78,14 +78,14 @@ export const DEFAULT_PLANS: PlanConfig[] = [
   {
     id: 'the-flock',
     name: 'The Flock',
-    credits: 50000,
+    credits: 65000,
     bonus: 0,
     price: 585,
     description: 'For teams and businesses',
     features: [
       'Everything in Mama Duck',
       '10 team seats',
-      '50,000 credits/month',
+      '65,000 credits/month',
       'Team collaboration',
       'Dedicated support',
     ],
