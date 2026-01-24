@@ -427,7 +427,7 @@ export default function LandingSimple3() {
             <div className="flex flex-col gap-8 max-w-xl">
               <div className="space-y-4 pt-12 lg:pt-24">
                 <span className="block text-sm lg:text-base text-gray-500 dark:text-gray-400 font-medium tracking-widest uppercase mb-2 pl-1 font-mono opacity-80">
-                  AI-Enabled
+                  AI-Powered
                 </span>
                 
                 <h1 className="text-6xl lg:text-8xl font-bold leading-[0.9] tracking-normal text-gray-800 dark:text-gray-200 font-serif">
