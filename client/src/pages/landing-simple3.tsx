@@ -430,7 +430,7 @@ export default function LandingSimple3() {
                   AI-Enabled
                 </span>
                 
-                <h1 className="text-6xl lg:text-8xl font-bold leading-[0.9] tracking-normal text-gray-800 dark:text-gray-200 font-serif">
+                <h1 className="text-6xl lg:text-8xl font-bold leading-[0.9] tracking-normal text-gray-800 dark:text-gray-200 font-serif transition-all duration-200 hover:scale-[1.01] hover:text-gray-900 dark:hover:text-white cursor-default">
                   <span className="block mb-2">Deal-flow</span>
                   <span className="block pb-2 text-transparent bg-clip-text bg-gradient-to-r from-yellow-500 to-yellow-600 dark:from-yellow-400 dark:to-yellow-100 drop-shadow-[0_0_30px_rgba(250,204,21,0.3)]">
                     on Auto-pilot.
