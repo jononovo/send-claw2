@@ -438,7 +438,7 @@ export default function LandingSimple3() {
                 </h1>
 
                 <p className="text-xl text-muted-foreground leading-relaxed max-w-md font-medium pt-8">
-                  Reach out to <strong>high-value</strong>, <em>impossible-to-find</em> contacts in seconds ( email & LinkedIn. )
+                  Reach out to <span className="text-gray-400">high-value</span>, <em>impossible-to-find</em> contacts in seconds ( email & LinkedIn. )
                 </p>
               </div>
 
