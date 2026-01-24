@@ -521,7 +521,7 @@ export default function LandingSimple3() {
                   </div>
                   
                   <DemoSimulationPlayer 
-                    simulation="grittyPixels"
+                    simulation="search-composer-demo-v3-fast"
                     className="!rounded-none !shadow-none"
                   />
                 </div>
