@@ -1,0 +1,185 @@
+I have another question about some issues and you may have to check the code in the repo that's attached to this project.
+
+But in Google search console I'm getting this error about some pages:
+
+Page indexing
+
+Duplicate without user-selected canonical
+
+Last update: 1/19/26
+
+info
+Duplicate without user-selected canonical
+These pages aren't indexed or served on Google
+First detected: 1/17/26
+Done fixing?
+
+Affected pages
+58
+
+10/25/25
+11/5/25
+11/16/25
+11/27/25
+12/8/25
+12/19/25
+12/30/25
+1/10/26
+
+60
+40
+20
+0
+
+Examples
+
+
+URL
+Last crawled
+https://5ducks.ai/company/godaddy/4326
+
+
+
+Jan 20, 2026
+https://5ducks.ai/p/mark-a-larsen-larsen-managing-member/36229
+
+
+
+Jan 20, 2026
+https://5ducks.ai/company/arnold-wadsworth-coggins/4305
+
+
+
+Jan 20, 2026
+https://5ducks.ai/p/nikki-mitchell/30020
+
+
+
+Jan 20, 2026
+https://5ducks.ai/p/steve-walsh/24330
+
+
+
+Jan 20, 2026
+https://5ducks.ai/p/eliyahu-efrat/27517
+
+
+
+Jan 20, 2026
+https://5ducks.ai/company/u-s-small-business-administration/4329
+
+
+
+Jan 20, 2026
+https://5ducks.ai/company/freddie-mac/4340
+
+
+
+Jan 19, 2026
+https://5ducks.ai/company/redzone-software/4343
+
+
+
+Jan 19, 2026
+https://5ducks.ai/company/fremont-group/4342
+
+
+
+Jan 19, 2026
+
+Show less
+10:59 PM
+
+1 step
+
+Searched project for “canonical meta tag head SEO”
+7 results
+
+
+
+
+
+
+
+
+
+
+Pinpointed canonical URL generation flaw affecting search indexing.
+
+
+
+Let me check how the company and person pages specifically handle their canonical URLs:
+
+
+2 steps
+
+Searched project for “person profile page contact details SEOHead canonical”
+5 results
+
+
+
+
+
+
+
+
+
+
+Diagnosed canonical URL generation issues across client-side rendered pages.
+
+c
+o
+m
+p
+a
+n
+y
+S
+l
+u
+g
+/
+c
+o
+n
+t
+a
+c
+t
+S
+l
+u
+g
+/
+
+
+
+
+Found the Problem
+Looking at your code, I can see the issue. Your company and contact pages do set canonical URLs, but there are two problems:
+
+Problem 1: Client-Side Rendering
+Your canonical tags are set via React Helmet after the page hydrates on the client. Google's crawler may not wait for JavaScript to fully execute, so it might see the page without a canonical tag.
+
+tsx
+// This runs client-side, after data loads
+const canonicalUrl = `https://5ducks.ai/company/${companySlug}/${company.id}`;
+Problem 2: Dynamic Slug Generation
+Your slugs are generated on-the-fly from the company/contact name:
+
+tsx
+const companySlug = company.slug || company.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')...
+If company.slug is empty and different people link to the same company with slightly different URL formats, Google sees multiple URLs with identical content but no explicit canonical preference.
+
+The Fix
+You need server-side canonical tags. Here are your options:
+
+Option A: Pre-render meta tags on the server (Best)
+Add a server route that returns the HTML with canonical tags already in place before React loads. This requires SSR or a prerender service.
+
+Option B: Store slugs in the database (Easier)
+Make sure every company and contact has a consistent slug stored in the database, not generated on the fly. Then the canonical URL is always predictable.
+
+Option C: Quick fix — add canonical in your HTML template
+For pages like /company/* and /p/*, you could add a server middleware that injects the canonical tag based on the URL pattern before serving the React app.
+
