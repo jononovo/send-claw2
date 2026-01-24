@@ -448,16 +448,16 @@ export default function LandingSimple3() {
                   className="group relative h-16 overflow-hidden bg-gradient-to-r from-gray-100 via-gray-200 to-gray-100 dark:from-[#0A0A10] dark:via-[#1a1a1f] dark:to-[#0f0f14] text-gray-500 dark:text-gray-400 hover:text-black font-bold text-xl rounded-xl transition-colors duration-500 ease-in-out !cursor-pointer border border-gray-300 dark:border-white/10"
                 >
                   <span 
-                    className="absolute inset-0 opacity-0 rounded-xl cursor-pointer group-hover:animate-[shimmer-fade_3s_ease-in-out_forwards,shimmer_15s_ease-in-out_infinite]"
+                    className="absolute inset-0 opacity-0 rounded-xl cursor-pointer group-hover:animate-[shimmer-fade_0.6s_ease-in-out_forwards,shimmer_15s_ease-in-out_infinite]"
                     style={{ 
                       backgroundImage: 'linear-gradient(90deg, #eab308 0%, #facc15 25%, #fef08a 50%, #facc15 75%, #eab308 100%)',
                       backgroundSize: '200% 100%'
                     }}
                   />
                   <span className="relative z-10 flex items-center">
-                    <span className="group-hover:animate-[text-swap-out_3s_ease-in-out_forwards]">See the Magic in 30 secs</span>
-                    <span className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:animate-[text-swap-in_3s_ease-in-out_forwards] text-white">You've Got This! <ArrowRight style={{ width: '24px', height: '24px', marginLeft: '8px' }} /></span>
-                    <ArrowRight className="ml-2 group-hover:animate-[arrow-fade-out_3s_ease-in-out_forwards]" style={{ width: '24px', height: '24px' }} />
+                    <span className="group-hover:animate-[text-swap-out_0.6s_ease-in-out_forwards]">See the Magic in 30 secs</span>
+                    <span className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:animate-[text-swap-in_0.6s_ease-in-out_forwards] text-white">You've Got This! <ArrowRight style={{ width: '24px', height: '24px', marginLeft: '8px' }} /></span>
+                    <ArrowRight className="ml-2 group-hover:animate-[arrow-fade-out_0.6s_ease-in-out_forwards]" style={{ width: '24px', height: '24px' }} />
                   </span>
                 </Button>
                 <div className="group flex flex-wrap justify-center gap-4 text-gray-500 text-sm px-4 py-2 rounded-lg hover:text-gray-900 dark:hover:text-white hover:scale-105 transition-all duration-200">
