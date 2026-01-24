@@ -117,7 +117,7 @@ async function getCanonicalUrl(url: string): Promise<string | null> {
  */
 function injectCanonical(html: string, canonicalUrl: string): string {
   const canonicalTag = `<link rel="canonical" href="${canonicalUrl}" />`;
-
+  
   // Replace existing canonical if present, otherwise insert before </head>
   if (html.includes('rel="canonical"')) {
     return html.replace(/<link[^>]*rel="canonical"[^>]*>/i, canonicalTag);
@@ -147,7 +147,7 @@ export async function setupVite(app: Express, server: Server) {
   });
 
   app.use(vite.middlewares);
-
+  
   app.use("*", async (req, res, next) => {
     const url = req.originalUrl;
 
@@ -160,7 +160,7 @@ export async function setupVite(app: Express, server: Server) {
         `src="/src/main.tsx"`,
         `src="/src/main.tsx?v=${nanoid()}"`
       );
-
+      
       let page = await vite.transformIndexHtml(url, template);
 
       // Inject canonical tag for SEO pages

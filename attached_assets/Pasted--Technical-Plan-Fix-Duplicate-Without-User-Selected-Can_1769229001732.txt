@@ -1,0 +1,173 @@
+# Technical Plan: Fix "Duplicate Without User-Selected Canonical" Issues
+
+## Problem Summary
+
+Google Search Console reports 58 pages with "Duplicate without user-selected canonical" errors. This affects `/company/:slug/:id` and `/p/:slug/:id` (contact) pages.
+
+**Root cause:** Canonical tags are set client-side via React Helmet. Googlebot may not wait for JavaScript execution, so it sees pages without canonical tags and picks its own canonical arbitrarily.
+
+---
+
+## Solution Overview
+
+1. **One-time database migration** — Populate missing `slug` fields for existing companies/contacts
+2. **Express middleware** — Inject `<link rel="canonical">` server-side before HTML is sent to browser
+3. **In-memory caching** — Avoid DB queries on every request
+
+**Estimated time:** 1-2 hours  
+**Server load impact:** Negligible (one indexed DB query per cache miss, 1-hour TTL)
+
+---
+
+## Step 1: Run Existing Migration Script
+
+A migration script already exists at `scripts/generate-slugs.ts`. This is a **one-time operation** — new records already get slugs automatically via `storage.ts`.
+
+**Command:**
+```bash
+npx tsx scripts/generate-slugs.ts
+```
+
+**What it does:**
+- Queries all companies where `slug IS NULL`
+- Generates slug from name using `generateCompanySlug()`
+- Updates each record
+- Repeats for contacts using `generateContactSlug()`
+
+**Time:** ~2 minutes depending on record count
+
+---
+
+## Step 2: Create Canonical Injection Middleware
+
+**New file:** `server/middleware/canonical-injection.ts`
+
+**Responsibilities:**
+1. Intercept requests matching `/company/:slug/:id` or `/p/:slug/:id`
+2. Extract the ID from the URL
+3. Look up the slug (check cache first, then DB)
+4. Store canonical URL in `res.locals.canonicalUrl`
+5. Provide a transform function to inject the tag into HTML
+
+**Cache strategy:**
+- Simple `Map<string, { slug, expires }>` 
+- 1-hour TTL
+- Cache key format: `company:123` or `contact:456`
+
+**Key functions to export:**
+- `canonicalInjectionMiddleware(req, res, next)` — async middleware that pre-fetches slug
+- `transformHtmlWithCanonical(html, res)` — injects `<link rel="canonical">` before `</head>`
+- `clearCanonicalCache()` — utility to clear cache if needed
+
+---
+
+## Step 3: Modify server/vite.ts
+
+**Changes needed in two places:**
+
+### 3a. In `setupVite()` (development mode)
+
+```typescript
+// Add import at top
+import { 
+  canonicalInjectionMiddleware, 
+  transformHtmlWithCanonical 
+} from "./middleware/canonical-injection";
+
+// Inside setupVite(), after app.use(vite.middlewares):
+app.use(canonicalInjectionMiddleware);
+
+// Inside the catch-all handler, after vite.transformIndexHtml():
+page = transformHtmlWithCanonical(page, res);
+```
+
+### 3b. In `serveStatic()` (production mode)
+
+```typescript
+// Before the catch-all app.use("*", ...):
+app.use(canonicalInjectionMiddleware);
+
+// Inside the catch-all, read HTML then transform:
+let html = await fs.promises.readFile(path.resolve(distPath, "index.html"), 'utf-8');
+html = transformHtmlWithCanonical(html, res);
+res.status(200).set({ "Content-Type": "text/html" }).end(html);
+```
+
+---
+
+## How It Works (Request Flow)
+
+```
+1. GET /company/godaddy/4326
+         ↓
+2. canonicalInjectionMiddleware runs
+   - Parses URL → { type: 'company', id: 4326 }
+   - Checks cache for 'company:4326'
+   - Cache miss → SELECT slug FROM companies WHERE id = 4326
+   - Stores in cache with 1hr TTL
+   - Sets res.locals.canonicalUrl = 'https://5ducks.ai/company/godaddy/4326'
+         ↓
+3. Vite/static handler reads index.html
+         ↓
+4. transformHtmlWithCanonical() runs
+   - Reads res.locals.canonicalUrl
+   - Injects <link rel="canonical" href="..."> before </head>
+         ↓
+5. Browser/Googlebot receives HTML with canonical tag already present
+```
+
+---
+
+## Verification Steps
+
+After deploying:
+
+1. **Manual check:** `curl -s https://5ducks.ai/company/godaddy/4326 | grep canonical`
+   - Should show: `<link rel="canonical" href="https://5ducks.ai/company/godaddy/4326" />`
+
+2. **Search Console:**
+   - Go to URL Inspection
+   - Enter one of the affected URLs
+   - Click "Test Live URL"
+   - View rendered HTML — canonical tag should be visible
+   - Request re-indexing
+
+3. **Monitor:** Check Search Console in 1-2 weeks — "Duplicate without user-selected canonical" count should decrease
+
+---
+
+## Files Changed
+
+| File | Change Type |
+|------|-------------|
+| `server/middleware/canonical-injection.ts` | New file |
+| `server/vite.ts` | Modified (add import + 4 lines) |
+
+---
+
+## FAQ
+
+**Q: Do we need to run the migration script regularly?**  
+A: No. It's one-time only. New records get slugs automatically in `storage.ts` via `createCompany()` and `createContact()`.
+
+**Q: What about server load?**  
+A: Minimal. The cache means 99% of requests don't hit the DB. Even cache misses are just one small indexed query.
+
+**Q: Why not full SSR?**  
+A: Overkill for this problem. SSR would require significant architectural changes. The middleware approach solves the SEO issue with ~50 lines of code.
+
+**Q: What if the slug in the URL doesn't match the DB?**  
+A: Doesn't matter. The ID is the source of truth. The middleware looks up the correct slug by ID and injects that as the canonical, regardless of what slug is in the URL.
+
+---
+
+## Summary
+
+| Task | Time | Impact |
+|------|------|--------|
+| Run migration script | 2 min | Fixes existing null slugs |
+| Create middleware file | 15 min | Enables server-side canonical injection |
+| Modify vite.ts | 10 min | Wires up the middleware |
+| Verify & request re-indexing | 10 min | Tells Google to re-crawl |
+
+**Total: ~45 minutes of work**

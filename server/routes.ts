@@ -62,6 +62,7 @@ import { registerPricingPromoRoutes } from "./features/pricing-promos";
 import { handleApolloPhoneWebhook } from "./webhooks/apollo-phone-webhook";
 import { findMobilePhone } from "./features/search-phone/routes";
 import { registerSuperSearchRoutes } from "./search/super-search";
+import { registerSeoPageRoutes } from "./features/seo-pages/routes";
 
 // Import centralized auth utilities
 import { getUserId, requireAuth } from "./utils/auth";
@@ -232,6 +233,9 @@ export function registerRoutes(app: Express) {
   
   // Register modular sitemap routes
   registerSitemapRoutes(app);
+  
+  // Register SEO page routes (injects canonical tags for company/contact/search pages)
+  registerSeoPageRoutes(app);
   
   // Register guidance engine routes
   registerGuidanceRoutes(app);
