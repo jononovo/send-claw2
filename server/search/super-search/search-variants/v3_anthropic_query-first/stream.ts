@@ -1,26 +1,197 @@
-import { readFileSync } from 'fs';
-import { dirname, join } from 'path';
-import { fileURLToPath } from 'url';
 import Anthropic from '@anthropic-ai/sdk';
 import type { SearchPlan, SuperSearchResult, StreamEvent, CustomField } from '../../types';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+const QUERY_ANALYSIS_PROMPT = `You analyze user queries for a B2B lead generation search system.
 
-const QUERY_ANALYSIS_PROMPT = readFileSync(
-  join(__dirname, 'prompts', '1-query-analysis.txt'),
-  'utf-8'
-);
+Your job is to understand the user's TRUE intent before any search happens. This is critical - we need to understand WHAT we're looking for before we search.
 
-const RESEARCH_PLANNING_PROMPT = readFileSync(
-  join(__dirname, 'prompts', '2-research-planning.txt'),
-  'utf-8'
-);
+RESULT TYPES - Choose ONE:
 
-const EXTRACTION_PROMPT = readFileSync(
-  join(__dirname, 'prompts', '3-extraction.txt'),
-  'utf-8'
-);
+**Company Search** - When the user wants to find organizations, businesses, startups, agencies
+- Example queries: "AI startups in Austin", "Lithium mining companies in California", "Top marketing agencies"
+- Results will be: company name, website, description, size, services, location
+
+**Contact Search** - When the user wants to find PEOPLE, individuals, decision-makers, roles
+- Example queries: "CTOs at fintech startups", "People responsible for procurement at Tesla", "VP of Sales at Series A companies"
+- Results will be: person's name, job title/role, their company, LinkedIn, location
+
+Given a query, determine:
+
+1. **intent**: What is the user actually trying to accomplish? (1-2 sentences)
+
+2. **entityType**: "company" or "contact"
+   - If the query mentions roles, people, "who", decision-makers → entityType = "contact"
+   - If the query is about finding organizations, businesses → entityType = "company"
+
+3. **preliminaryFields**: What standard fields are relevant?
+   - For companies: name, website, city, state, country, description, size, services
+   - For contacts: name, role, company, companyWebsite, linkedinUrl, city, state, country, department
+
+4. **suggestedCustomFields**: What UNIQUE fields does this query need that aren't standard?
+   - Think about what specific data points would answer the user's question
+   - Examples: "Annual Revenue", "Tech Stack", "Funding Stage", "Years in Business"
+   - Only suggest fields that are discoverable through web research
+
+5. **searchQuery**: What should we search for first? Optimize for finding what entityType specifies.
+   - If entityType = "contact": Search for people/roles/professionals, not just companies
+   - If entityType = "company": Search for companies/organizations/businesses
+
+6. **signalsToLookFor**: What specific signals should we look for?
+   - For contacts: job titles, LinkedIn profiles, press mentions of individuals
+   - For companies: company websites, funding news, product announcements
+
+7. **ambiguityNotes**: If the query is ambiguous, note what assumptions you're making. Null if clear.
+
+Respond with JSON only:
+
+{
+  "intent": "string",
+  "entityType": "company" | "contact",
+  "preliminaryFields": ["field1", "field2"],
+  "suggestedCustomFields": [
+    {"key": "fieldKey", "label": "Human Readable Label"}
+  ],
+  "searchQuery": "optimized search query string",
+  "signalsToLookFor": ["signal1", "signal2"],
+  "ambiguityNotes": "string or null"
+}
+
+CRITICAL:
+- "who handles X", "people responsible for", "find the person" → entityType = "contact"
+- "find companies that", "list of businesses", "startups in" → entityType = "company"
+- The searchQuery must match the entityType - don't search for companies if we want contacts`;
+
+const RESEARCH_PLANNING_PROMPT = `You are a research planner for a B2B lead generation system.
+
+You've received:
+1. The original user query
+2. An initial analysis of what we're looking for (includes entityType: company OR contact)
+3. Cursory search results showing what's actually out there
+
+Your job is to create a refined research plan that delivers the correct result type.
+
+CRITICAL: RESPECT THE ENTITY TYPE
+
+If queryType = "company":
+- The "entities" list must contain COMPANY NAMES (organizations, businesses)
+- Example entities: ["Acme Corp", "TechStartup Inc", "Global Industries"]
+- Results will show: company name, website, description, size, services
+
+If queryType = "contact":
+- The "entities" list must contain PERSON NAMES (individuals, not companies)
+- Example entities: ["John Smith", "Sarah Johnson", "Michael Chen"]
+- Results will show: person's name, role/title, their company, LinkedIn
+- If the cursory search only found companies, create targetedQueries to find PEOPLE at those companies
+
+Respond with JSON:
+
+{
+  "queryType": "company" | "contact",
+  "targetCount": 5 | 10 | 20,
+  "standardFields": ["name", "website", ...],
+  "customFields": [
+    {"key": "fieldKey", "label": "Human Readable Label"}
+  ],
+  "searchStrategy": "Brief explanation of the final approach",
+  "entities": ["Entity Name 1", "Entity Name 2", ...],
+  "gaps": ["What info is missing", "What needs verification"],
+  "targetedQueries": ["specific search query 1", "specific search query 2"]
+}
+
+GUIDELINES:
+
+**targetCount logic:**
+- 5: Specific person search, niche query
+- 10: Role-based search, company category search
+- 20: Broad market research, large category
+
+**standardFields - match the queryType:**
+- For companies: name, website, city, state, country, description, size, services
+- For contacts: name, role, company, companyWebsite, linkedinUrl, city, state, country, department
+
+**entities - MUST match queryType:**
+- If queryType = "company": List company/organization names
+- If queryType = "contact": List individual person names (NOT company names!)
+- If searching for contacts but cursory results only have companies, leave entities sparse and use targetedQueries
+
+**targetedQueries - fill the gaps:**
+- Maximum 3 queries
+- For contact searches where you only found companies, search for people:
+  - "[Company Name] [role] executive LinkedIn"
+  - "[Company Name] VP procurement director"
+  - "Who is the [role] at [Company Name]"
+- Only include if genuinely needed
+
+**gaps:**
+- For contacts: "Need to identify specific individuals at these companies"
+- For companies: "Need more details on company size/services"`;
+
+const EXTRACTION_PROMPT = `You extract structured data from research results for a B2B lead generation system.
+
+Given:
+- The original query for context
+- Entity type (company or contact)
+- List of standard fields to extract
+- List of custom fields to extract
+- Names of entities to extract
+- All research data collected
+
+CRITICAL: Match the entity type exactly.
+
+FOR COMPANY RESULTS (type: "company"):
+Each result represents an ORGANIZATION. Required structure:
+{
+  "type": "company",
+  "name": "Company Name",
+  "website": "https://...",
+  "city": "City",
+  "state": "State/Province",
+  "country": "Country",
+  "description": "Brief description of the company",
+  "size": "Employee count or range",
+  "services": "Main services/products",
+  "superSearchMeta": {
+    "customFieldKey": "extracted value"
+  }
+}
+
+FOR CONTACT RESULTS (type: "contact"):
+Each result represents a PERSON. Required structure:
+{
+  "type": "contact",
+  "name": "Person's Full Name",
+  "role": "Job Title",
+  "company": "Their Company Name",
+  "companyWebsite": "https://...",
+  "linkedinUrl": "https://linkedin.com/in/...",
+  "city": "City",
+  "state": "State",
+  "country": "Country",
+  "department": "Department",
+  "superSearchMeta": {
+    "customFieldKey": "extracted value"
+  }
+}
+
+RULES:
+1. The "type" field MUST match the Entity Type provided
+2. For contacts: "name" must be a PERSON'S NAME (e.g., "John Smith"), NOT a company name
+3. For contacts: "role" must be their job title (e.g., "VP of Procurement", "Director of Supply Chain")
+4. For contacts: "company" is the organization they work at (use empty string "" if unknown)
+5. Only include standard fields that were requested
+6. Put all custom field values in superSearchMeta using the exact keys provided
+7. Use null for values that cannot be determined - do NOT fabricate
+8. superSearchMeta values should be concise (under 100 chars each)
+9. Return a JSON array, even for single results
+
+QUALITY STANDARDS:
+- For contacts: MUST have person's name and role - these are the primary identifiers
+- For companies: MUST have company name - this is the primary identifier
+- Accuracy over completeness - only include what's verifiable
+- LinkedIn URLs should be full URLs, not just usernames
+- Company websites should include https://
+
+If you cannot find person-specific data for a contact search, indicate this clearly rather than returning company data in contact fields.`;
 
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
