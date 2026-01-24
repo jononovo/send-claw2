@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useMemo } from "react";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Check, Zap, Crown, Moon, Sun, Sparkles, Loader2 } from "lucide-react";
+import { ArrowRight, Check, Moon, Sun, Loader2 } from "lucide-react";
 import { useRegistrationModal } from "@/hooks/use-registration-modal";
 import { useAuth } from "@/hooks/use-auth";
 import { useToast } from "@/hooks/use-toast";
@@ -215,16 +215,6 @@ export default function PricingPage() {
                     )}
 
                     <div className="mb-6">
-                      <div className={`w-14 h-14 rounded-xl flex items-center justify-center mb-4 ${
-                        plan.highlight 
-                          ? 'bg-yellow-100 dark:bg-yellow-500/20' 
-                          : 'bg-gray-100 dark:bg-white/10'
-                      }`}>
-                        {plan.id === 'free' && <Sparkles className={`w-7 h-7 ${plan.highlight ? 'text-yellow-600 dark:text-yellow-400' : 'text-gray-500 dark:text-gray-400'}`} />}
-                        {plan.id === 'ugly-duckling' && <Zap className="w-7 h-7 text-yellow-600 dark:text-yellow-400" />}
-                        {plan.id === 'duckin-awesome' && <Crown className="w-7 h-7 text-gray-500 dark:text-gray-400" />}
-                      </div>
-                      
                       <h3 className="text-2xl font-bold text-gray-800 dark:text-white mb-2">{plan.name}</h3>
                       <p className="text-gray-500 text-sm">{plan.description}</p>
                     </div>

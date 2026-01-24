@@ -29,6 +29,7 @@ const Landing = lazy(() => import("@/pages/landing"));
 const Landing2 = lazy(() => import("@/pages/landing2"));
 const LandingSimple = lazy(() => import("@/pages/landing-simple"));
 const LandingSimple2 = lazy(() => import("@/pages/landing-simple2"));
+const LandingSimple3 = lazy(() => import("@/pages/landing-simple3"));
 const LandingStealth = lazy(() => import("@/features/landing-stealth"));
 const Planning = lazy(() => import("@/pages/planning"));
 
@@ -113,7 +114,7 @@ function DeferredGuidance() {
 }
 
 // Preload Home page when on landing pages (runs after page load, during idle time)
-const LANDING_ROUTES = ["/", "/landing-stealth", "/stealth", "/s", "/react-landing", "/landing2", "/landing-simple", "/simple", "/landing-simple2", "/simple2"];
+const LANDING_ROUTES = ["/", "/landing-stealth", "/stealth", "/s", "/react-landing", "/landing2", "/landing-simple", "/simple", "/landing-simple2", "/simple2", "/landing-simple3", "/simple3"];
 
 function useHomePreload() {
   const [location] = useLocation();
@@ -156,10 +157,10 @@ function Router() {
   return (
     <>
       <Switch>
-        {/* Default landing page - Simple Landing */}
+        {/* Default landing page - Simple Landing 3 */}
         <Route path="/" component={() => 
           <Suspense fallback={null}>
-            <LandingSimple />
+            <LandingSimple3 />
           </Suspense>
         } />
         
@@ -215,6 +216,18 @@ function Router() {
         <Route path="/simple2" component={() => 
           <Suspense fallback={null}>
             <LandingSimple2 />
+          </Suspense>
+        } />
+        
+        {/* Simple Landing Page Variant 3 (A/B testing) */}
+        <Route path="/landing-simple3" component={() => 
+          <Suspense fallback={null}>
+            <LandingSimple3 />
+          </Suspense>
+        } />
+        <Route path="/simple3" component={() => 
+          <Suspense fallback={null}>
+            <LandingSimple3 />
           </Suspense>
         } />
         
