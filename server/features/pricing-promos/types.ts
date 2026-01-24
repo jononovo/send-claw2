@@ -40,10 +40,10 @@ export const DEFAULT_PLANS: PlanConfig[] = [
   },
   {
     id: 'ugly-duckling',
-    name: 'The Duckling',
+    name: 'The Ugly Duckling',
     credits: 2000,
     bonus: 3000,
-    price: 36.95,
+    price: 73.90,
     description: 'For serious prospectors',
     features: [
       'Everything in Free',
@@ -61,10 +61,10 @@ export const DEFAULT_PLANS: PlanConfig[] = [
     name: 'Mama Duck',
     credits: 5000,
     bonus: 10000,
-    price: 88.95,
+    price: 177.90,
     description: 'For power users',
     features: [
-      'Everything in Duckling',
+      'Everything in Ugly Duckling',
       '5,000 credits/month',
       '+10,000 bonus credits',
       'Advanced analytics',
@@ -74,6 +74,25 @@ export const DEFAULT_PLANS: PlanConfig[] = [
     cta: 'Join Waitlist',
     comingSoon: true,
     stripePriceId: process.env.STRIPE_MAMA_DUCK_PRICE_ID,
+  },
+  {
+    id: 'the-flock',
+    name: 'The Flock',
+    credits: 15000,
+    bonus: 0,
+    price: 585,
+    description: 'For teams and businesses',
+    features: [
+      'Everything in Mama Duck',
+      '10 team seats',
+      '15,000 credits/month',
+      'Team collaboration',
+      'Dedicated support',
+    ],
+    highlight: false,
+    cta: 'Join Waitlist',
+    comingSoon: true,
+    stripePriceId: process.env.STRIPE_FLOCK_PRICE_ID,
   },
 ];
 
