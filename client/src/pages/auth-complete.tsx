@@ -52,6 +52,9 @@ export default function AuthCompletePage() {
       // Complete the sign-in
       const result = await signInWithEmailLink(auth, email, window.location.href);
       
+      // Reload user to ensure emailVerified status is fresh
+      await result.user.reload();
+      
       // Clear localStorage
       localStorage.removeItem('emailForSignIn');
       localStorage.removeItem('nameForSignIn');
@@ -241,7 +244,7 @@ export default function AuthCompletePage() {
               
               <button 
                 onClick={handleSkipPassword}
-                className="w-full text-gray-400 hover:text-white text-sm transition-colors py-2"
+                className="w-full text-white/80 hover:text-white text-base font-medium transition-colors py-3 border border-white/20 rounded-md hover:border-white/40 hover:bg-white/5"
               >
                 Skip for now - I'll use magic links
               </button>
