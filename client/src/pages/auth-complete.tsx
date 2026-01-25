@@ -241,7 +241,7 @@ export default function AuthCompletePage() {
               
               <button 
                 onClick={handleSkipPassword}
-                className="w-full text-gray-400 hover:text-white text-sm transition-colors py-2"
+                className="w-full text-white/80 hover:text-white text-base font-medium transition-colors py-3 border border-white/20 rounded-md hover:border-white/40 hover:bg-white/5"
               >
                 Skip for now - I'll use magic links
               </button>
