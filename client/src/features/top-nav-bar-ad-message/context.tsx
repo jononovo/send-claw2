@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useCallback, useMemo, useEffect, ReactNode } from 'react';
 import { TopNavAdContextValue, Offer } from './types';
-import { createOffersRegistry, setNeedsPasswordSetup, onPasswordSetupChanged } from './registry';
+import { createOffersRegistry, setNeedsPasswordSetup } from './registry';
+import { useAuth } from '@/hooks/use-auth';
 
 const DISMISSED_OFFERS_KEY = 'dismissedOffers';
 
@@ -25,13 +26,7 @@ interface TopNavAdProviderProps {
 
 export function TopNavAdProvider({ children }: TopNavAdProviderProps) {
   const [dismissedOffers, setDismissedOffers] = useState<Set<string>>(() => getDismissedOffers());
-  const [refreshTrigger, setRefreshTrigger] = useState(0);
-
-  useEffect(() => {
-    return onPasswordSetupChanged(() => {
-      setRefreshTrigger(prev => prev + 1);
-    });
-  }, []);
+  const { user, emailVerified } = useAuth();
 
   const openPasswordSetupModal = useCallback(() => {
     window.dispatchEvent(new CustomEvent('openPasswordSetupModal'));
@@ -40,8 +35,10 @@ export function TopNavAdProvider({ children }: TopNavAdProviderProps) {
   const offers = useMemo(() => 
     createOffersRegistry({
       onPasswordSetup: openPasswordSetupModal,
+      isLoggedIn: !!user,
+      emailVerified,
     }),
-    [openPasswordSetupModal]
+    [openPasswordSetupModal, user, emailVerified]
   );
 
   const isDismissed = useCallback((offerId: string) => {
@@ -63,7 +60,7 @@ export function TopNavAdProvider({ children }: TopNavAdProviderProps) {
       .sort((a, b) => b.priority - a.priority);
     
     return eligible[0] || null;
-  }, [offers, isDismissed, refreshTrigger]);
+  }, [offers, isDismissed]);
 
   const value: TopNavAdContextValue = useMemo(() => ({
     activeOffer,

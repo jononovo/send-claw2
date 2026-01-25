@@ -1,7 +1,6 @@
 import { Offer } from './types';
 
 const NEEDS_PASSWORD_SETUP_KEY = 'needsPasswordSetup';
-const PASSWORD_SETUP_CHANGED_EVENT = 'passwordSetupChanged';
 
 export function setNeedsPasswordSetup(value: boolean): void {
   if (value) {
@@ -9,23 +8,13 @@ export function setNeedsPasswordSetup(value: boolean): void {
   } else {
     localStorage.removeItem(NEEDS_PASSWORD_SETUP_KEY);
   }
-  window.dispatchEvent(new CustomEvent(PASSWORD_SETUP_CHANGED_EVENT, { detail: { needsSetup: value } }));
 }
 
-export function onPasswordSetupChanged(callback: (needsSetup: boolean) => void): () => void {
-  const handler = (event: Event) => {
-    const customEvent = event as CustomEvent<{ needsSetup: boolean }>;
-    callback(customEvent.detail.needsSetup);
-  };
-  window.addEventListener(PASSWORD_SETUP_CHANGED_EVENT, handler);
-  return () => window.removeEventListener(PASSWORD_SETUP_CHANGED_EVENT, handler);
-}
-
-export function getNeedsPasswordSetup(): boolean {
-  return localStorage.getItem(NEEDS_PASSWORD_SETUP_KEY) === 'true';
-}
-
-export function createEmailVerificationOffer(onAction: () => void): Offer {
+export function createEmailVerificationOffer(
+  onAction: () => void,
+  isLoggedIn: boolean,
+  emailVerified: boolean
+): Offer {
   return {
     id: 'email-verification-password-setup',
     source: 'registration',
@@ -33,15 +22,17 @@ export function createEmailVerificationOffer(onAction: () => void): Offer {
     message: 'Verify your email to UNLOCK 200 Super Search Credits',
     ctaLabel: 'Complete Setup',
     onAction,
-    isEligible: () => getNeedsPasswordSetup(),
+    isEligible: () => isLoggedIn && !emailVerified,
     dismissible: true,
   };
 }
 
 export function createOffersRegistry(handlers: {
   onPasswordSetup: () => void;
+  isLoggedIn: boolean;
+  emailVerified: boolean;
 }): Offer[] {
   return [
-    createEmailVerificationOffer(handlers.onPasswordSetup),
+    createEmailVerificationOffer(handlers.onPasswordSetup, handlers.isLoggedIn, handlers.emailVerified),
   ];
 }

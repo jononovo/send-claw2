@@ -15,6 +15,7 @@ type AuthContextType = {
   isLoading: boolean;
   authReady: boolean;
   error: Error | null;
+  emailVerified: boolean;
   logoutMutation: UseMutationResult<void, Error, void>;
   signInWithGoogle: () => Promise<{ isNewUser: boolean }>;
   signInWithEmail: (email: string, password: string) => Promise<void>;
@@ -29,6 +30,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const syncPromiseRef = useRef<Promise<void> | null>(null);
   
   const [authReady, setAuthReady] = useState(false);
+  const [emailVerified, setEmailVerified] = useState(false);
   const [firebase, setFirebase] = useState<FirebaseInstances | null>(null);
   
   // Optimization: Skip unnecessary API calls for unauthenticated visitors
@@ -219,6 +221,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         
         unsubscribe = onAuthStateChanged(fb.auth, async (firebaseUser) => {
           console.log('Firebase auth state changed:', firebaseUser?.email);
+          
+          setEmailVerified(firebaseUser?.emailVerified ?? false);
 
           if (firebaseUser?.email) {
             try {
@@ -478,6 +482,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         isLoading: isLoading && !isAITestMode,
         authReady: isAITestMode ? true : authReady,
         error: isAITestMode ? null : error,
+        emailVerified: isAITestMode ? true : emailVerified,
         logoutMutation,
         signInWithGoogle,
         signInWithEmail,

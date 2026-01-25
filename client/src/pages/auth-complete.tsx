@@ -52,6 +52,9 @@ export default function AuthCompletePage() {
       // Complete the sign-in
       const result = await signInWithEmailLink(auth, email, window.location.href);
       
+      // Reload user to ensure emailVerified status is fresh
+      await result.user.reload();
+      
       // Clear localStorage
       localStorage.removeItem('emailForSignIn');
       localStorage.removeItem('nameForSignIn');
