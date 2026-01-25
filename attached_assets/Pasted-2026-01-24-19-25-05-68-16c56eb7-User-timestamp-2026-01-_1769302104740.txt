@@ -1,0 +1,124 @@
+2026-01-24 19:25:05.68
+16c56eb7
+User
+timestamp: '2026-01-25T00:25:05.681Z'
+2026-01-24 19:25:05.68
+16c56eb7
+User
+}
+2026-01-24 19:25:05.68
+16c56eb7
+User
+Firebase Admin initialized successfully
+2026-01-24 19:25:05.68
+16c56eb7
+User
+Initializing Persistent Daily Outreach Scheduler...
+2026-01-24 19:25:05.68
+16c56eb7
+User
+Authentication configured
+2026-01-24 19:25:06.06
+16c56eb7
+User
+Persistent scheduler initialized for 4 users
+2026-01-24 19:25:06.07
+16c56eb7
+User
+Daily outreach scheduler initialized
+2026-01-24 19:25:06.07
+16c56eb7
+User
+[CampaignScheduler] Polling every 60 seconds
+2026-01-24 19:25:06.07
+16c56eb7
+User
+[CampaignScheduler] Starting campaign scheduler...
+2026-01-24 19:25:06.07
+16c56eb7
+User
+[CampaignScheduler] Checking for scheduled campaigns at 2026-01-25T00:25:06.068Z
+2026-01-24 19:25:06.32
+16c56eb7
+User
+[CampaignScheduler] No campaigns ready to activate
+2026-01-24 19:25:06.32
+16c56eb7
+User
+[EmailQueueProcessor] Starting email queue processor
+2026-01-24 19:25:06.32
+16c56eb7
+User
+Campaign scheduler initialized
+2026-01-24 19:25:06.33
+16c56eb7
+User
+Email queue processor initialized
+2026-01-24 19:25:06.33
+16c56eb7
+User
+[DripEngine] Initializing drip email engine...
+2026-01-24 19:25:06.33
+16c56eb7
+User
+[EmailQueueProcessor] PROCESS-START: 1769300706331-whebbjemb at 2026-01-25T00:25:06.331Z
+2026-01-24 19:25:06.39
+16c56eb7
+User
+[EmailQueueProcessor] No queued recipients found
+2026-01-24 19:25:06.59
+16c56eb7
+User
+[DripEngine] Drip engine initialized and polling started
+2026-01-24 19:25:06.59
+16c56eb7
+User
+[DripEngine] Starting polling every 300s
+2026-01-24 19:25:06.59
+16c56eb7
+User
+[DripEngine] Access Application Sequence already exists
+2026-01-24 19:25:06.59
+16c56eb7
+User
+Drip email engine initialized
+2026-01-24 19:25:06.59
+16c56eb7
+User
+[SearchJobRoutes] Search job routes registered
+2026-01-24 19:25:06.59
+16c56eb7
+User
+[JobProcessor] Starting job processor with interval: 30000
+2026-01-24 19:25:06.59
+16c56eb7
+User
+[Server] Background job processor started successfully
+2026-01-24 19:25:06.60
+16c56eb7
+User
+Routes registered
+2026-01-24 19:25:06.60
+16c56eb7
+User
+Static file serving configured
+2026-01-24 19:47:49.44
+69c92fb7
+System
+starting up user application
+2026-01-24 19:47:49.44
+69c92fb7
+System
+metasidecar: loaded enterprise status from environment is_enterprise=false
+2026-01-24 19:47:49.45
+69c92fb7
+System
+forwarding local port 5000 to external port 80 (mapped as 1104)
+2026-01-24 19:47:56.42
+69c92fb7
+User
+> NODE_ENV=production node dist/index.js
+2026-01-24 19:47:56.42
+69c92fb7
+User
+> rest-express@1.0.0 start
