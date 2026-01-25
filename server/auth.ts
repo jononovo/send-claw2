@@ -120,8 +120,9 @@ async function verifyFirebaseToken(req: Request): Promise<SelectUser | null> {
       storage.getOrCreatePipeline(user.id)
         .catch(err => console.error(`[Auth] Failed to create Pipeline for user:`, err));
       
-      // Send welcome email to new user (non-blocking)
-      sendWelcomeEmail(decodedToken.email, decodedToken.name);
+      // NOTE: Do NOT send welcome email here - this is a fallback path
+      // Welcome emails should only be sent from explicit registration endpoints
+      // (/api/register, /api/google-auth) to avoid duplicates
     }
 
     return user;
