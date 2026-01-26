@@ -66,6 +66,20 @@ export function FormShell<T extends Record<string, string>>({
     }
   }, [currentStep, currentSlide]);
 
+  useEffect(() => {
+    if (currentSlide?.slideType === "section-complete") {
+      const timer = setTimeout(() => {
+        handleNext();
+      }, 3000);
+      return () => clearTimeout(timer);
+    } else if (currentSlide?.slideType === "final-complete") {
+      const timer = setTimeout(() => {
+        onComplete();
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [currentStep, currentSlide, handleNext, onComplete]);
+
   const handleSelect = (slideId: string, optionId: string) => {
     setData(slideId as keyof T, optionId);
   };
