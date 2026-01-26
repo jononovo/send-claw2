@@ -365,7 +365,20 @@ export default function LandingSimple3() {
 
   const handleOnboardingComplete = () => {
     setIsOnboardingOpen(false);
-    window.location.href = "/app";
+    
+    // If user is already logged in, just redirect
+    if (user) {
+      window.location.href = "/app";
+      return;
+    }
+    
+    // Set callback to redirect after successful registration
+    setRegistrationSuccessCallback(() => {
+      window.location.href = "/app";
+    });
+    
+    // Open registration modal
+    openModal();
   };
 
   const handleLogin = () => {
