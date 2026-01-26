@@ -13,7 +13,9 @@ import { CreditRewardService } from "./features/billing/rewards/service";
 import connectPgSimple from "connect-pg-simple";
 import { pool } from "./db";
 import { dripEmailEngine } from "./email/drip-engine";
-import { welcomeRegistrationTemplate } from "./email/templates/index";
+import { welcomeRegistrationTemplate, magicLinkSignInTemplate } from "./email/templates/index";
+import { sendEmail } from "./email/send";
+import { z } from "zod";
 
 // Extend the session type to include gmailToken
 declare module 'express-session' {
@@ -685,6 +687,83 @@ export function setupAuth(app: Express) {
       res.status(500).json({ 
         error: "Authentication failed",
         details: err instanceof Error ? err.message : "Unexpected error during authentication"
+      });
+    }
+  });
+
+  // Magic link sign-in endpoint using Firebase Admin SDK + SendGrid
+  const sendMagicLinkSchema = z.object({
+    email: z.string().email("Invalid email address"),
+    name: z.string().min(1, "Name is required")
+  });
+
+  app.post("/api/auth/send-magic-link", async (req, res) => {
+    try {
+      const parseResult = sendMagicLinkSchema.safeParse(req.body);
+      
+      if (!parseResult.success) {
+        console.warn("[MagicLink] Invalid request:", parseResult.error.errors);
+        return res.status(400).json({ 
+          error: "Invalid request", 
+          details: parseResult.error.errors.map(e => e.message).join(", ")
+        });
+      }
+
+      const { email, name } = parseResult.data;
+      
+      console.log(`[MagicLink] Generating sign-in link for: ${email.split('@')[0]}@...`);
+
+      // Check if Firebase Admin is initialized
+      if (!admin.apps.length) {
+        console.error("[MagicLink] Firebase Admin SDK not initialized");
+        return res.status(500).json({ error: "Authentication service unavailable" });
+      }
+
+      // Configure action code settings
+      const APP_URL = process.env.APP_URL || 'https://5ducks.ai';
+      const actionCodeSettings = {
+        url: `${APP_URL}/auth/complete`,
+        handleCodeInApp: true,
+      };
+
+      // Generate the magic link using Firebase Admin SDK
+      const magicLink = await admin.auth().generateSignInWithEmailLink(
+        email,
+        actionCodeSettings
+      );
+
+      console.log(`[MagicLink] Link generated successfully for: ${email.split('@')[0]}@...`);
+
+      // Build the email content using the template
+      const emailContent = magicLinkSignInTemplate({ 
+        name, 
+        magicLink,
+        appUrl: APP_URL 
+      });
+
+      // Send the email via SendGrid
+      await sendEmail({
+        to: email,
+        content: emailContent,
+        fromName: 'Jon @ 5Ducks'
+      });
+
+      console.log(`[MagicLink] Email sent successfully to: ${email.split('@')[0]}@...`);
+
+      // Always return success to prevent email enumeration
+      res.json({ success: true, message: "Magic link sent" });
+
+    } catch (error: any) {
+      console.error("[MagicLink] Error:", {
+        code: error.code,
+        message: error.message,
+        email: req.body.email?.split('@')[0] + '@...'
+      });
+
+      // Return generic error to prevent information leakage
+      res.status(500).json({ 
+        error: "Failed to send magic link",
+        message: "Please try again or contact support"
       });
     }
   });
