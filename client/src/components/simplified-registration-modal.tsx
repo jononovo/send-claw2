@@ -107,42 +107,37 @@ export function SimplifiedRegistrationModal() {
     setIsSending(true);
     
     try {
-      const { auth } = await loadFirebase();
-      const { sendSignInLinkToEmail } = await import("firebase/auth");
-      
       // Store email and name in localStorage as fallback for same-device sign-in
       // (Primary method uses checkActionCode to extract email from the magic link)
       localStorage.setItem('emailForSignIn', email);
       localStorage.setItem('nameForSignIn', name);
       
-      // Configure the action code settings
-      const actionCodeSettings = {
-        url: `${window.location.origin}/auth/complete`,
-        handleCodeInApp: true,
-      };
-      
-      await sendSignInLinkToEmail(auth, email, actionCodeSettings);
+      // Call backend API to generate magic link and send branded email via SendGrid
+      const response = await fetch('/api/auth/send-magic-link', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, name }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || errorData.error || 'Failed to send magic link');
+      }
       
       // Track the registration attempt
       window.dataLayer?.push({ event: 'registration_email_sent' });
       
       setCurrentPage("checkEmail");
     } catch (error: any) {
-      console.error("Email link error:", error);
+      console.error("Magic link error:", error);
       
-      if (error.code === 'auth/invalid-email') {
-        toast({
-          title: "Invalid Email",
-          description: "Please enter a valid email address",
-          variant: "destructive",
-        });
-      } else {
-        toast({
-          title: "Failed to Send Email",
-          description: error.message || "Please try again.",
-          variant: "destructive",
-        });
-      }
+      toast({
+        title: "Failed to Send Email",
+        description: error.message || "Please try again.",
+        variant: "destructive",
+      });
     } finally {
       setIsSending(false);
     }
