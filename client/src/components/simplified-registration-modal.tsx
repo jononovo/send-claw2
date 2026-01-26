@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
 import { useAuth } from "@/hooks/use-auth";
 import { useRegistrationModal } from "@/hooks/use-registration-modal";
 import { ArrowLeft, X, CheckCircle } from "lucide-react";
@@ -340,12 +341,10 @@ export function SimplifiedRegistrationModal() {
                     <p className="text-center text-gray-400 text-sm">
                       Closing in {countdown}...
                     </p>
-                    <div className="w-full bg-white/10 rounded-full h-1.5 overflow-hidden">
-                      <div 
-                        className="h-full bg-green-400 transition-all duration-1000 ease-linear"
-                        style={{ width: `${((countdown || 0) / 5) * 100}%` }}
-                      />
-                    </div>
+                    <Progress 
+                      value={((countdown || 0) / 5) * 100} 
+                      className="h-1.5 bg-white/10 [&>div]:bg-green-400"
+                    />
                   </div>
                 )}
               </div>
