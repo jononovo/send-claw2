@@ -4,14 +4,14 @@
  * Protects public SEO pages from scraping abuse.
  * Applied to /api/companies/:id and /api/contacts/:id endpoints.
  * 
- * Rate limit: 30 requests per minute per IP
+ * Rate limit: 200 requests per minute per IP
  */
 
 import rateLimit from "express-rate-limit";
 
 export const seoRateLimiter = rateLimit({
   windowMs: 60 * 1000,
-  max: 30,
+  max: 200,
   standardHeaders: true,
   legacyHeaders: false,
   handler: (req, res) => {
