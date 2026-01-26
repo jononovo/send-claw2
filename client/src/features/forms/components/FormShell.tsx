@@ -226,7 +226,7 @@ export function FormShell<T extends Record<string, string>>({
             {currentSlide?.skipLink && onSkip && (
               <button
                 onClick={onSkip}
-                className="w-full mt-4 text-base text-gray-600 hover:text-white transition-colors"
+                className="w-full mt-4 text-lg text-gray-400 hover:text-white transition-colors"
                 data-testid="button-form-skip"
               >
                 {currentSlide.skipLink.text}
