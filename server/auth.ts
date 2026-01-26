@@ -79,11 +79,9 @@ async function verifyFirebaseToken(req: Request): Promise<SelectUser | null> {
   }
 
   if (!token || !admin.apps.length) {
-    // Don't log for missing credentials - expected for public routes
-    // Only log if Firebase Admin is not initialized (actual error condition)
-    if (admin.apps.length === 0 && token) {
-      console.warn('Auth verification failed: firebase admin not initialized');
-    }
+    console.warn('Auth verification failed:', {
+      reason: !token ? 'missing credentials' : 'firebase admin not initialized',
+    });
     return null;
   }
 
