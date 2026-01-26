@@ -145,5 +145,63 @@ export const quest1: Quest = {
       steps: [],
       completionMessage: "Congratulations! You've mastered the complete search workflow! 🎉",
     },
+    {
+      "id": "search-emails-with-filters",
+      "name": "Search Emails with Filters",
+      "description": "Learn how to search for specific email contacts and apply department filters",
+      "emoji": "📧",
+      "steps": [
+        {
+          "id": "click-search-input",
+          "selector": "[data-testid=\"search-input\"]",
+          "action": "click",
+          "instruction": "Click on the search input field to start your search",
+          "tooltipPosition": "bottom",
+          "route": "/app"
+        },
+        {
+          "id": "type-search-query",
+          "selector": "[data-testid=\"search-input\"]",
+          "action": "type",
+          "instruction": "Type your search query to find specific contacts",
+          "tooltipPosition": "bottom",
+          "route": "/app",
+          "value": "happy family guest houses"
+        },
+        {
+          "id": "open-search-options",
+          "selector": "[data-testid=\"search-options-button\"]",
+          "action": "click",
+          "instruction": "Click the search options button to access more search settings",
+          "tooltipPosition": "left",
+          "route": "/app"
+        },
+        {
+          "id": "select-emails-type",
+          "selector": "#radix-:re: [data-testid=\"search-type-option-emails\"]",
+          "action": "click",
+          "instruction": "Select 'Emails' to search specifically for email contacts",
+          "tooltipPosition": "right",
+          "route": "/app"
+        },
+        {
+          "id": "filter-by-marketing",
+          "selector": "button.flex.items-center.gap-1",
+          "action": "click",
+          "instruction": "Click the Marketing filter to narrow down your search to marketing contacts",
+          "tooltipPosition": "top",
+          "route": "/app"
+        },
+        {
+          "id": "filter-by-leadership",
+          "selector": "button.\n.flex.items-center",
+          "action": "click",
+          "instruction": "Click the Leadership filter to also include leadership contacts in your search",
+          "tooltipPosition": "top",
+          "route": "/app"
+        }
+      ],
+      "completionMessage": "Great job! You've learned how to search for emails and apply department filters to find exactly the contacts you need."
+    }
   ],
 };

@@ -1,7 +1,6 @@
 import { storage } from '../../storage';
 import { queryPerplexity } from '../../search/perplexity/perplexity-client';
 import { discoverCompanies } from '../../search/perplexity/company-search';
-import { getEmailProvider } from '../../gmail-api-service';
 
 export interface TestResult {
   status: 'passed' | 'failed' | 'warning';
@@ -142,20 +141,15 @@ export class HealthChecks {
       message: hunterKey ? 'Hunter API key configured' : 'Hunter API key missing'
     };
 
-    // Test Gmail API
-    try {
-      const emailProvider = getEmailProvider();
-      tests.gmail = {
-        status: emailProvider ? 'passed' : 'warning',
-        message: emailProvider ? 'Gmail service available' : 'Gmail service in test mode'
-      };
-    } catch (error) {
-      tests.gmail = {
-        status: 'warning',
-        message: 'Gmail API in verification process',
-        error: error instanceof Error ? error.message : String(error)
-      };
-    }
+    // Test Gmail API configuration (check env vars, not user-specific tokens)
+    const gmailClientId = process.env.GMAIL_CLIENT_ID;
+    const gmailClientSecret = process.env.GMAIL_CLIENT_SECRET;
+    tests.gmail = {
+      status: gmailClientId && gmailClientSecret ? 'passed' : 'warning',
+      message: gmailClientId && gmailClientSecret 
+        ? 'Gmail API credentials configured' 
+        : 'Gmail API credentials not configured (user tokens checked at runtime)'
+    };
 
     return tests;
   }
