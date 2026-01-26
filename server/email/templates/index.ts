@@ -6,6 +6,7 @@ export interface TemplateVariables {
   email?: string;
   secretCode?: string;
   appUrl?: string;
+  magicLink?: string;
   [key: string]: string | undefined;
 }
 
@@ -313,11 +314,97 @@ P.S. Questions? Just reply to this email — I read every one!`;
   };
 };
 
+export const magicLinkSignInTemplate: TemplateBuilder = (vars) => {
+  const firstName = vars.name?.split(' ')[0] || 'there';
+  const magicLink = vars.magicLink || '#';
+  const appUrl = vars.appUrl || APP_URL;
+  
+  const html = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; margin: 0; padding: 0; background-color: #f9fafb; }
+        .container { max-width: 600px; margin: 0 auto; padding: 40px 20px; }
+        .card { background: white; border-radius: 12px; padding: 40px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .logo { text-align: center; margin-bottom: 30px; }
+        .logo-text { font-size: 32px; font-weight: bold; color: #1f2937; }
+        .header { color: #1f2937; margin-bottom: 16px; font-size: 24px; }
+        .text { color: #4b5563; font-size: 16px; line-height: 1.6; margin-bottom: 16px; }
+        .cta-container { text-align: center; margin: 32px 0; }
+        .cta-button { display: inline-block; background: #FCD34D; color: #1F2937; padding: 16px 32px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 16px; }
+        .cta-button:hover { background: #FBBF24; }
+        .divider { border-top: 1px solid #e5e7eb; margin: 24px 0; }
+        .link-text { color: #6b7280; font-size: 14px; word-break: break-all; }
+        .footer { color: #9ca3af; font-size: 14px; margin-top: 32px; text-align: center; }
+        .security-note { background: #fef3c7; padding: 16px; border-radius: 8px; margin-top: 24px; }
+        .security-note p { margin: 0; color: #92400e; font-size: 14px; }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <div class="card">
+          <div class="logo">
+            <span class="logo-text">5Ducks</span>
+          </div>
+          
+          <h2 class="header">Sign in to 5Ducks</h2>
+          
+          <p class="text">Hi ${firstName},</p>
+          
+          <p class="text">Click the button below to sign in to your 5Ducks account. This link will expire in 1 hour.</p>
+          
+          <div class="cta-container">
+            <a href="${magicLink}" class="cta-button">Sign In to 5Ducks</a>
+          </div>
+          
+          <div class="divider"></div>
+          
+          <p class="link-text">Or copy and paste this link into your browser:<br>${magicLink}</p>
+          
+          <div class="security-note">
+            <p>If you didn't request this sign-in link, you can safely ignore this email. Someone may have typed your email address by mistake.</p>
+          </div>
+        </div>
+        
+        <p class="footer">
+          &copy; 5Ducks &bull; AI-Powered B2B Prospecting<br>
+          <a href="${appUrl}" style="color: #6b7280;">5ducks.ai</a>
+        </p>
+      </div>
+    </body>
+    </html>
+  `;
+  
+  const text = `Sign in to 5Ducks
+
+Hi ${firstName},
+
+Click the link below to sign in to your 5Ducks account. This link will expire in 1 hour.
+
+${magicLink}
+
+If you didn't request this sign-in link, you can safely ignore this email. Someone may have typed your email address by mistake.
+
+---
+5Ducks - AI-Powered B2B Prospecting
+${appUrl}`;
+  
+  return {
+    subject: "Sign in to 5Ducks",
+    html,
+    text
+  };
+};
+
 export const templateRegistry: Record<string, TemplateBuilder> = {
   'access_confirmation': accessConfirmationTemplate,
   'fast_track': fastTrackTemplate,
   'welcome_code': welcomeCodeTemplate,
-  'welcome_registration': welcomeRegistrationTemplate
+  'welcome_registration': welcomeRegistrationTemplate,
+  'magic_link_signin': magicLinkSignInTemplate
 };
 
 export function getTemplate(key: string): TemplateBuilder | undefined {
