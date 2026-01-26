@@ -238,6 +238,33 @@ export function SimplifiedRegistrationModal() {
     }
   };
 
+  const handleForgotPassword = async () => {
+    if (!validateEmail(email)) {
+      toast({
+        title: "Enter Your Email",
+        description: "Please enter your email address first",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      const { auth } = await loadFirebase();
+      const { sendPasswordResetEmail } = await import("firebase/auth");
+      await sendPasswordResetEmail(auth, email);
+      
+      toast({
+        title: "Reset Email Sent",
+        description: "Check your inbox for password reset instructions",
+      });
+    } catch (error: any) {
+      toast({
+        title: "Reset Email Sent",
+        description: "If an account exists, you'll receive reset instructions",
+      });
+    }
+  };
+
   const handleReturnToEmail = () => {
     setCurrentPage("email");
     setPassword("");
@@ -425,6 +452,16 @@ export function SimplifiedRegistrationModal() {
                       }
                     }}
                   />
+                  
+                  <div className="text-right">
+                    <button 
+                      type="button"
+                      onClick={handleForgotPassword}
+                      className="text-sm text-blue-300 hover:text-blue-200 transition-colors"
+                    >
+                      Forgot password?
+                    </button>
+                  </div>
                   
                   <Button 
                     variant="outline" 
