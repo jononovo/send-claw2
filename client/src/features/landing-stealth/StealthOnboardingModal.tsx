@@ -18,7 +18,7 @@ const componentRegistry: Record<string, React.ComponentType<SlideComponentProps<
 };
 
 export function StealthOnboardingModal({ isOpen, onClose, onComplete }: StealthOnboardingModalProps) {
-  const flow = useFormFlow<OnboardingQuestionnaireData>(onboardingQuestionnaire);
+  const flow = useFormFlow<OnboardingQuestionnaireData>(onboardingQuestionnaire, { persistToStorage: true });
 
   const handleSkip = () => {
     window.location.href = "/app";

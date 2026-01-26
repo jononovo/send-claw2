@@ -366,19 +366,96 @@ export default function LandingSimple3() {
   const handleOnboardingComplete = () => {
     setIsOnboardingOpen(false);
     
-    // If user is already logged in, just redirect
+    // If user is already logged in, save profiles and redirect
     if (user) {
-      window.location.href = "/app";
+      saveOnboardingProfiles().then(() => {
+        window.location.href = "/app";
+      });
       return;
     }
     
-    // Set callback to redirect after successful registration
-    setRegistrationSuccessCallback(() => {
+    // Set callback to save profiles after successful registration, then redirect
+    setRegistrationSuccessCallback(async () => {
+      await saveOnboardingProfiles();
       window.location.href = "/app";
     });
     
     // Open registration modal
     openModal();
+  };
+
+  const saveOnboardingProfiles = async () => {
+    const STORAGE_KEY = 'form-data-onboarding-questionnaire';
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (!stored) return;
+      
+      const data = JSON.parse(stored);
+      
+      // Fetch current user info from the session
+      let currentUser: { username?: string; email?: string } | null = null;
+      try {
+        const userResponse = await fetch('/api/user', { credentials: 'include' });
+        if (userResponse.ok) {
+          currentUser = await userResponse.json();
+        }
+      } catch (e) {
+        console.warn('Could not fetch user info:', e);
+      }
+      
+      // Fall back to auth context user if API call failed
+      if (!currentUser && user) {
+        currentUser = { username: user.username, email: user.email };
+      }
+      
+      // Create strategic profile (product/service info)
+      if (data.productDescription || data.offeringType) {
+        await fetch('/api/products', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({
+            businessType: data.offeringType || 'product',
+            productService: data.productDescription || '',
+            customerFeedback: data.customerLove || '',
+            website: data.website || '',
+            targetCustomers: '',
+            isDefault: true
+          })
+        });
+      }
+      
+      // Create sender profile (company/user identity) - only if we have valid user info
+      const username = currentUser?.username || '';
+      const email = currentUser?.email || '';
+      
+      if (!email) {
+        console.warn('Skipping sender profile creation: no email available');
+      } else if (email && (data.companyName || username)) {
+        const displayName = username || email.split('@')[0];
+        await fetch('/api/sender-profiles', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({
+            displayName,
+            email,
+            companyName: data.companyName || null,
+            companyPosition: data.companyRole && data.companyRole !== 'individual' ? data.companyRole : null,
+            companyWebsite: data.website || null,
+            isDefault: true,
+            source: 'registered'
+          })
+        });
+      }
+      
+      // Clear localStorage after successful save
+      localStorage.removeItem(STORAGE_KEY);
+    } catch (error) {
+      console.error('Failed to save onboarding profiles:', error);
+      // Still clear localStorage to avoid stale data
+      localStorage.removeItem('form-data-onboarding-questionnaire');
+    }
   };
 
   const handleLogin = () => {
