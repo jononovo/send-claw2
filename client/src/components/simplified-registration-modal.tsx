@@ -148,29 +148,61 @@ export function SimplifiedRegistrationModal() {
     
     try {
       const { auth } = await loadFirebase();
-      const { sendSignInLinkToEmail } = await import("firebase/auth");
+      const { 
+        createUserWithEmailAndPassword, 
+        updateProfile, 
+        sendPasswordResetEmail 
+      } = await import("firebase/auth");
       
-      // Store email and name in localStorage as fallback for same-device sign-in
-      // (Primary method uses checkActionCode to extract email from the magic link)
-      localStorage.setItem('emailForSignIn', email);
-      localStorage.setItem('nameForSignIn', name);
+      // 1. Generate temporary password
+      const tempPassword = crypto.randomUUID().replace(/-/g, '').slice(0, 16);
       
-      // Configure the action code settings
-      const actionCodeSettings = {
-        url: `${window.location.origin}/auth/complete`,
-        handleCodeInApp: true,
-      };
+      // 2. Create user in Firebase with temp password
+      const result = await createUserWithEmailAndPassword(auth, email, tempPassword);
       
-      await sendSignInLinkToEmail(auth, email, actionCodeSettings);
+      // 3. Set display name
+      if (result.user) {
+        await updateProfile(result.user, { displayName: name });
+      }
       
-      // Track the registration attempt
-      window.dataLayer?.push({ event: 'registration_email_sent' });
+      // 4. Sync with backend (creates user in PostgreSQL)
+      const token = await result.user.getIdToken(true);
+      await fetch('/api/google-auth', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          email: result.user.email,
+          username: name,
+          firebaseUid: result.user.uid
+        })
+      });
+      
+      // 5. Send password reset email so user can set their real password
+      await sendPasswordResetEmail(auth, email);
+      
+      // Track registration complete
+      window.dataLayer?.push({ event: 'registration_complete' });
+      sendAttributionToServer().catch(() => {});
+      logConversionEvent('registration_complete').catch(() => {});
       
       setCurrentPage("checkEmail");
-    } catch (error: any) {
-      console.error("Email link error:", error);
       
-      if (error.code === 'auth/invalid-email') {
+    } catch (error: any) {
+      console.error("Registration error:", error);
+      
+      if (error.code === 'auth/email-already-in-use') {
+        // User already exists - prompt to login instead
+        toast({
+          title: "Account Already Exists",
+          description: "This email is already registered. Please use the login option.",
+          variant: "destructive",
+        });
+        setCurrentPage("login");
+      } else if (error.code === 'auth/invalid-email') {
         toast({
           title: "Invalid Email",
           description: "Please enter a valid email address",
@@ -178,7 +210,7 @@ export function SimplifiedRegistrationModal() {
         });
       } else {
         toast({
-          title: "Failed to Send Email",
+          title: "Registration Failed",
           description: error.message || "Please try again.",
           variant: "destructive",
         });
