@@ -422,9 +422,9 @@ export default function LandingSimple3() {
             <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background" />
           </div>
 
-          <div className="container mx-auto px-6 relative z-10 grid lg:grid-cols-2 gap-12 items-center py-20">
+          <div className="container mx-auto px-4 relative z-10 grid lg:grid-cols-2 gap-12 items-center py-20">
             {/* Left Column - Text & CTA */}
-            <div className="flex flex-col gap-8 max-w-xl">
+            <div className="flex flex-col gap-8 max-w-2xl">
               <div className="space-y-4 pt-12 lg:pt-24">
                 <span className="block text-sm lg:text-base text-gray-500 dark:text-gray-400 font-medium tracking-widest uppercase mb-2 pl-1 font-mono opacity-80">
                   AI-Enabled
