@@ -32,14 +32,6 @@ export function WelcomeScreen({ title, subtitle, emoji = "🐥" }: ScreenCompone
         </motion.p>
       </div>
 
-      <motion.p
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.6 }}
-        className="text-sm text-gray-500"
-      >
-        Just a few quick questions to get you started
-      </motion.p>
     </div>
   );
 }

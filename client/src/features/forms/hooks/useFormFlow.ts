@@ -1,8 +1,9 @@
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useEffect } from "react";
 import type { Form, FormSlide, FormSection, FormFlowReturn } from "../types";
 
 export function useFormFlow<T extends Record<string, string>>(
-  form: Form<T>
+  form: Form<T>,
+  options?: { persistToStorage?: boolean }
 ): FormFlowReturn<T> {
   const allSlides = useMemo(() => {
     return form.sections.flatMap((section) => 
@@ -12,6 +13,17 @@ export function useFormFlow<T extends Record<string, string>>(
 
   const [currentStep, setCurrentStep] = useState(0);
   const [data, setDataState] = useState<T>(form.initialData);
+
+  // Persist data to localStorage whenever it changes (only if enabled)
+  useEffect(() => {
+    if (!options?.persistToStorage) return;
+    try {
+      const storageKey = `form-data-${form.id}`;
+      localStorage.setItem(storageKey, JSON.stringify(data));
+    } catch (e) {
+      console.warn('Failed to persist form data:', e);
+    }
+  }, [data, form.id, options?.persistToStorage]);
 
   const visibleSlides = useMemo(() => {
     return allSlides.filter(({ slide }) => {

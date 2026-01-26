@@ -51,6 +51,7 @@ const sectionA: FormSection<OnboardingQuestionnaireData> = {
       title: "Welcome aboard!",
       subtitle: "Let's personalize your experience",
       emoji: "🐥",
+      skipLink: { text: "Skip", action: "skip" },
     },
     {
       id: "purpose",
