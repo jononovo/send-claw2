@@ -1,0 +1,144 @@
+2026-01-25 19:00:34.56
+15a34fd1
+User
+environment: 'production',
+2026-01-25 19:00:34.56
+15a34fd1
+User
+cookieSecure: true,
+2026-01-25 19:00:34.56
+15a34fd1
+User
+Setting up PostgreSQL session store: {
+2026-01-25 19:00:34.56
+15a34fd1
+User
+tableName: 'user_sessions',
+2026-01-25 19:00:34.56
+15a34fd1
+User
+storeType: 'PostgreSQL',
+2026-01-25 19:00:34.56
+15a34fd1
+User
+timestamp: '2026-01-26T00:00:34.562Z'
+2026-01-25 19:00:34.56
+15a34fd1
+User
+}
+2026-01-25 19:00:34.56
+15a34fd1
+User
+timestamp: '2026-01-26T00:00:34.567Z'
+2026-01-25 19:00:34.56
+15a34fd1
+User
+}
+2026-01-25 19:00:34.56
+15a34fd1
+User
+Initializing Firebase Admin with config: {
+2026-01-25 19:00:34.56
+15a34fd1
+User
+projectId: 'fire-5-ducks',
+2026-01-25 19:00:34.56
+15a34fd1
+User
+environment: 'production',
+2026-01-25 19:00:34.56
+15a34fd1
+User
+Firebase Admin initialized successfully
+2026-01-25 19:00:34.56
+15a34fd1
+User
+Authentication configured
+2026-01-25 19:00:34.57
+15a34fd1
+User
+Initializing Persistent Daily Outreach Scheduler...
+2026-01-25 19:00:35.07
+15a34fd1
+User
+Persistent scheduler initialized for 4 users
+2026-01-25 19:00:35.08
+15a34fd1
+User
+[CampaignScheduler] Checking for scheduled campaigns at 2026-01-26T00:00:35.080Z
+2026-01-25 19:00:35.08
+15a34fd1
+User
+Daily outreach scheduler initialized
+2026-01-25 19:00:35.08
+15a34fd1
+User
+[CampaignScheduler] Starting campaign scheduler...
+2026-01-25 19:00:35.08
+15a34fd1
+User
+[CampaignScheduler] Polling every 60 seconds
+2026-01-25 19:00:35.43
+15a34fd1
+User
+Campaign scheduler initialized
+2026-01-25 19:00:35.43
+15a34fd1
+User
+[EmailQueueProcessor] Starting email queue processor
+2026-01-25 19:00:35.43
+15a34fd1
+User
+[CampaignScheduler] No campaigns ready to activate
+2026-01-25 19:00:35.44
+15a34fd1
+User
+[EmailQueueProcessor] PROCESS-START: 1769385635440-4vwln8gbx at 2026-01-26T00:00:35.440Z
+2026-01-25 19:00:35.44
+15a34fd1
+User
+[DripEngine] Initializing drip email engine...
+2026-01-25 19:00:35.44
+15a34fd1
+User
+Email queue processor initialized
+2026-01-25 19:00:35.53
+15a34fd1
+User
+[EmailQueueProcessor] No queued recipients found
+2026-01-25 19:00:35.72
+15a34fd1
+User
+[DripEngine] Starting polling every 300s
+2026-01-25 19:00:35.72
+15a34fd1
+User
+[DripEngine] Access Application Sequence already exists
+2026-01-25 19:00:35.72
+15a34fd1
+User
+[DripEngine] Drip engine initialized and polling started
+2026-01-25 19:00:35.72
+15a34fd1
+User
+Drip email engine initialized
+2026-01-25 19:00:35.73
+15a34fd1
+User
+[SearchJobRoutes] Search job routes registered
+2026-01-25 19:00:35.73
+15a34fd1
+User
+[JobProcessor] Starting job processor with interval: 30000
+2026-01-25 19:00:35.73
+15a34fd1
+User
+[Server] Background job processor started successfully
+2026-01-25 19:00:35.74
+15a34fd1
+User
+Routes registered
+2026-01-25 19:00:35.74
+15a34fd1
+User
+Static file serving configured
