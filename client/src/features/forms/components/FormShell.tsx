@@ -20,6 +20,7 @@ export function FormShell<T extends Record<string, string>>({
   onComplete,
   flow,
   componentRegistry = {},
+  onSkip,
 }: FormShellProps<T>) {
   const confettiFiredRef = useRef<number | null>(null);
   const creditClaimedRef = useRef<Set<string>>(new Set());
@@ -221,6 +222,16 @@ export function FormShell<T extends Record<string, string>>({
               {getButtonText()}
               <ChevronRight className="w-5 h-5 ml-2" />
             </Button>
+            
+            {currentSlide?.skipLink && onSkip && (
+              <button
+                onClick={onSkip}
+                className="w-full mt-4 text-sm text-gray-500 hover:text-white transition-colors"
+                data-testid="button-form-skip"
+              >
+                {currentSlide.skipLink.text}
+              </button>
+            )}
           </div>
         </div>
       )}

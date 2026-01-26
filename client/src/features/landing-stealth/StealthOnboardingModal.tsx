@@ -20,6 +20,10 @@ const componentRegistry: Record<string, React.ComponentType<SlideComponentProps<
 export function StealthOnboardingModal({ isOpen, onClose, onComplete }: StealthOnboardingModalProps) {
   const flow = useFormFlow<OnboardingQuestionnaireData>(onboardingQuestionnaire);
 
+  const handleSkip = () => {
+    window.location.href = "/app";
+  };
+
   return (
     <FormShell
       isOpen={isOpen}
@@ -27,6 +31,7 @@ export function StealthOnboardingModal({ isOpen, onClose, onComplete }: StealthO
       onComplete={onComplete}
       flow={flow}
       componentRegistry={componentRegistry}
+      onSkip={handleSkip}
     />
   );
 }

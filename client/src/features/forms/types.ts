@@ -17,6 +17,11 @@ export interface SlideOption {
   description?: string;
 }
 
+export interface SkipLink {
+  text: string;
+  action: "skip";
+}
+
 export interface FormSlide<T extends Record<string, string> = Record<string, string>> {
   id: string;
   slideType: SlideType;
@@ -31,6 +36,7 @@ export interface FormSlide<T extends Record<string, string> = Record<string, str
   component?: string;
   validate?: (data: T) => boolean;
   optional?: boolean;
+  skipLink?: SkipLink;
 }
 
 export interface FormSectionTrigger {
@@ -92,6 +98,7 @@ export interface FormShellProps<T extends Record<string, string>> {
   onComplete: () => void;
   flow: FormFlowReturn<T>;
   componentRegistry?: Record<string, React.ComponentType<SlideComponentProps<T>>>;
+  onSkip?: () => void;
 }
 
 export interface SlideComponentProps<T extends Record<string, string>> {
