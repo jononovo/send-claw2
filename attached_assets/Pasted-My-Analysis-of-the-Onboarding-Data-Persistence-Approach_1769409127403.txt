@@ -1,0 +1,42 @@
+My Analysis of the Onboarding Data Persistence Approach
+The AI agent's analysis is spot on. This is a critical gap that needs to be addressed. Here's my assessment:
+The Problem (Correctly Identified)
+Looking at the code, the useFormFlow hook in /client/src/features/forms/hooks/useFormFlow.ts stores data purely in React state:
+typescriptconst [data, setDataState] = useState<T>(form.initialData);
+When the questionnaire completes and calls onComplete, the data is:
+
+Still in memory but not passed anywhere
+Not persisted to localStorage/sessionStorage
+Lost after redirect to /app
+
+This means all that valuable onboarding data (company website, role, product description, pricing model, etc.) is being thrown away.
+The Solution Approach (Well Thought Out)
+The agent's proposed solution is solid:
+
+During questionnaire → Save to localStorage as user progresses
+On completion → Data should be available for the next step
+After registration → POST to backend to save to user's strategy profile
+
+My Recommendations
+Agree with the approach, with some refinements:
+
+Use a specific localStorage key like 'onboarding-questionnaire-data' to avoid conflicts
+Map questionnaire fields to strategic profile fields - Looking at the OnboardingQuestionnaireData type and the existing /api/strategic-profiles/save-from-chat endpoint, the mapping would be:
+
+website → website
+companyName → could be part of title
+productDescription → productService
+customerLove → customerFeedback
+offeringType → businessType (product/service)
+packageName/packageCost/packageIncludes or serviceDescription/serviceCost → could feed into uniqueAttributes
+
+
+Leverage the existing /api/strategic-profiles/save-from-chat endpoint - This already exists and handles creating strategic profiles. The questionnaire data just needs to be formatted correctly.
+Consider debounced saving - Rather than saving on every keystroke, debounce the localStorage save to be efficient
+Clear localStorage after successful backend save - To avoid stale data on future sessions
+
+One Consideration
+The current flow has the questionnaire appearing before or during registration (when user is a guest). So the localStorage persistence is essential for bridging the guest → authenticated user transition.
+The agent should ensure the data is read from localStorage after the registration callback fires, then POST it to the backend with the now-authenticated session.
+
+Bottom line: The AI agent has correctly identified a significant gap and proposed a sensible solution. The implementation approach of persisting to localStorage during questionnaire → reading after auth → POSTing to backend is the right pattern for this use case.
