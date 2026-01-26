@@ -29,6 +29,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   
   const syncPromiseRef = useRef<Promise<void> | null>(null);
   
+  // Track which emails have been synced to prevent duplicate user creation
+  const syncedEmailsRef = useRef<Set<string>>(new Set());
+  
   const [authReady, setAuthReady] = useState(false);
   const [emailVerified, setEmailVerified] = useState(false);
   const [firebase, setFirebase] = useState<FirebaseInstances | null>(null);
@@ -99,9 +102,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const syncWithBackend = async (firebaseUser: FirebaseUser, credential?: AuthCredential | null, explicitUsername?: string) => {
+    const email = firebaseUser.email;
+    const uid = firebaseUser.uid;
+    
+    // Use email or uid as lock key (prevents duplicate user creation)
+    const lockKey = email || uid;
+    
+    // Skip if this user is already synced or being synced
+    // This check happens SYNCHRONOUSLY before any async work
+    if (lockKey && syncedEmailsRef.current.has(lockKey)) {
+      console.log('User already synced or in-flight, skipping:', email?.split('@')[0] + '@...');
+      return syncPromiseRef.current || undefined;
+    }
+    
+    // If sync already in progress, wait for it
     if (syncPromiseRef.current) {
       console.log('Sync already in progress, waiting for it to complete');
       return syncPromiseRef.current;
+    }
+    
+    // Mark user as in-flight IMMEDIATELY (synchronous, before any await)
+    // This prevents race condition where two calls start simultaneously
+    if (lockKey) {
+      syncedEmailsRef.current.add(lockKey);
     }
     
     syncPromiseRef.current = (async () => {
@@ -164,6 +187,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
 
         console.log('Successfully synced with backend');
+        // Email was already marked as synced before async work started
         
         try {
           const user = await safeJsonParse(createRes);
@@ -185,6 +209,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
 
       } catch (error) {
+        // Remove lockKey from synced set on failure so retry is possible
+        if (lockKey) {
+          syncedEmailsRef.current.delete(lockKey);
+        }
         console.error("Error syncing with backend:", {
           error,
           domain: window.location.hostname,
@@ -233,6 +261,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
               axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
               
               // Only sync if user is not already in cache or is a different user
+              // Note: syncWithBackend has email-based dedup to prevent duplicate user creation
               const existingUser = queryClient.getQueryData<SelectUser>(["/api/user"]);
               if (!existingUser || existingUser.email !== firebaseUser.email) {
                 await syncWithBackend(firebaseUser);

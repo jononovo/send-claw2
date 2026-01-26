@@ -15,6 +15,10 @@ import { pool } from "./db";
 import { dripEmailEngine } from "./email/drip-engine";
 import { welcomeRegistrationTemplate } from "./email/templates/index";
 
+// In-memory lock to prevent duplicate user creation from concurrent requests
+// Maps email -> Promise that resolves when user creation/lookup completes
+const userCreationLocks = new Map<string, Promise<User | null>>();
+
 // Extend the session type to include gmailToken
 declare module 'express-session' {
   interface SessionData {
@@ -95,39 +99,68 @@ async function verifyFirebaseToken(req: Request): Promise<SelectUser | null> {
       return null;
     }
 
-    // Get or create user in our database
-    let user = await storage.getUserByEmail(decodedToken.email);
+    const email = decodedToken.email;
 
-    if (!user) {
-      console.log('Creating new user in backend:', {
-        email: decodedToken.email?.split('@')[0] + '@...',
-        timestamp: new Date().toISOString()
-      });
-
-      user = await storage.createUser({
-        email: decodedToken.email,
-        username: decodedToken.name || decodedToken.email.split('@')[0],
-        password: '',  // Not used for Firebase auth
-      });
-      
-      // Award registration credits using unified system (non-blocking)
-      CreditRewardService.awardOneTimeCredits(
-        user.id, 
-        250, 
-        "registration:welcome-bonus", 
-        "Welcome bonus - 250 free credits"
-      ).catch(err => console.error(`[Auth] Failed to award registration credits:`, err));
-      
-      // Create default Pipeline contact list for new user (non-blocking)
-      storage.getOrCreatePipeline(user.id)
-        .catch(err => console.error(`[Auth] Failed to create Pipeline for user:`, err));
-      
-      // NOTE: Do NOT send welcome email here - this is a fallback path
-      // Welcome emails should only be sent from explicit registration endpoints
-      // (/api/register, /api/google-auth) to avoid duplicates
+    // Check if there's already a user creation in progress for this email
+    const existingLock = userCreationLocks.get(email);
+    if (existingLock) {
+      console.log(`[verifyFirebaseToken] User creation already in progress for: ${email.split('@')[0]}@..., waiting...`);
+      const existingUser = await existingLock;
+      if (existingUser) {
+        return existingUser;
+      }
+      // If lock resolved to null, fall through to try our own lookup
     }
 
-    return user;
+    // Create a lock for this email BEFORE any lookup to prevent race condition
+    let lockResolve: (user: User | null) => void;
+    const lockPromise = new Promise<User | null>((resolve) => {
+      lockResolve = resolve;
+    });
+    userCreationLocks.set(email, lockPromise);
+
+    try {
+      // Get or create user in our database
+      let user = await storage.getUserByEmail(email);
+
+      if (!user) {
+        console.log('Creating new user in backend:', {
+          email: email.split('@')[0] + '@...',
+          timestamp: new Date().toISOString()
+        });
+
+        user = await storage.createUser({
+          email: email,
+          username: decodedToken.name || email.split('@')[0],
+          password: '',  // Not used for Firebase auth
+        });
+        
+        // Award registration credits using unified system (non-blocking)
+        CreditRewardService.awardOneTimeCredits(
+          user.id, 
+          250, 
+          "registration:welcome-bonus", 
+          "Welcome bonus - 250 free credits"
+        ).catch(err => console.error(`[Auth] Failed to award registration credits:`, err));
+        
+        // Create default Pipeline contact list for new user (non-blocking)
+        storage.getOrCreatePipeline(user.id)
+          .catch(err => console.error(`[Auth] Failed to create Pipeline for user:`, err));
+        
+        // NOTE: Do NOT send welcome email here - this is a fallback path
+        // Welcome emails should only be sent from explicit registration endpoints
+        // (/api/register, /api/google-auth) to avoid duplicates
+      }
+
+      // Resolve lock with the user (existing or newly created)
+      lockResolve!(user);
+      userCreationLocks.delete(email);
+      return user;
+    } catch (createError) {
+      userCreationLocks.delete(email);
+      lockResolve!(null);
+      throw createError;
+    }
   } catch (error) {
     console.error('Firebase token verification error:', {
       error,
@@ -315,21 +348,44 @@ export function setupAuth(app: Express) {
         return res.status(400).json({ error: "Email and password are required" });
       }
 
-      // Check for existing email
-      const existingEmail = await storage.getUserByEmail(email);
-      if (existingEmail) {
-        return res.status(400).json({ error: "Email already exists" });
+      // Check if there's already a user creation in progress for this email
+      const existingLock = userCreationLocks.get(email);
+      if (existingLock) {
+        console.log(`[/api/register] User creation already in progress for: ${email.split('@')[0]}@..., waiting...`);
+        const existingUser = await existingLock;
+        if (existingUser) {
+          return res.status(400).json({ error: "Email already exists" });
+        }
       }
 
-      // Hash password
-      const hashedPassword = await hashPassword(password);
+      // Create a lock for this email BEFORE any lookup
+      let lockResolve: (user: User | null) => void;
+      const lockPromise = new Promise<User | null>((resolve) => {
+        lockResolve = resolve;
+      });
+      userCreationLocks.set(email, lockPromise);
 
-      // Create user
       try {
+        // Check for existing email
+        const existingEmail = await storage.getUserByEmail(email);
+        if (existingEmail) {
+          userCreationLocks.delete(email);
+          lockResolve!(existingEmail);
+          return res.status(400).json({ error: "Email already exists" });
+        }
+
+        // Hash password
+        const hashedPassword = await hashPassword(password);
+
+        // Create user
         const user = await storage.createUser({
           email,
           password: hashedPassword,
         });
+
+        // Resolve lock with the created user
+        lockResolve!(user);
+        userCreationLocks.delete(email);
 
         console.log('User created successfully:', {
           id: user.id,
@@ -360,10 +416,18 @@ export function setupAuth(app: Express) {
           return res.status(201).json(user);
         });
       } catch (createError) {
+        // Clean up lock on error
+        userCreationLocks.delete(email);
+        lockResolve!(null);
         console.error('User creation error:', createError);
         return res.status(500).json({ error: "Failed to create user account" });
       }
     } catch (err) {
+      // Clean up lock on outer error
+      const email = req.body.email;
+      if (email && userCreationLocks.has(email)) {
+        userCreationLocks.delete(email);
+      }
       console.error('Registration error:', err);
       // Send proper JSON response instead of passing to generic error handler
       return res.status(500).json({ error: "Registration failed", details: err instanceof Error ? err.message : "Unknown error" });
@@ -542,6 +606,37 @@ export function setupAuth(app: Express) {
         return res.status(400).json({ error: "Email is required" });
       }
 
+      // Check if there's already a user creation in progress for this email
+      const existingLock = userCreationLocks.get(email);
+      if (existingLock) {
+        console.log(`[/api/google-auth] User creation already in progress for: ${email.split('@')[0]}@..., waiting...`);
+        try {
+          const existingUser = await existingLock;
+          if (existingUser) {
+            console.log(`[/api/google-auth] Returning user from concurrent request: id=${existingUser.id}`);
+            // Skip to returning user (login flow)
+            req.login(existingUser, (loginErr) => {
+              if (loginErr) {
+                console.error('[/api/google-auth] Login error:', loginErr);
+                return res.status(500).json({ error: "Failed to log in" });
+              }
+              return res.json(existingUser);
+            });
+            return;
+          }
+        } catch (lockError) {
+          console.error('[/api/google-auth] Concurrent request failed:', lockError);
+          // Fall through to try our own lookup
+        }
+      }
+
+      // Create a lock for this email to prevent concurrent user creation
+      let lockResolve: (user: User | null) => void;
+      const lockPromise = new Promise<User | null>((resolve) => {
+        lockResolve = resolve;
+      });
+      userCreationLocks.set(email, lockPromise);
+
       // Try to find user by email
       console.log(`[/api/google-auth] Looking up user by email: ${email.split('@')[0]}@...`);
       let user = null;
@@ -554,6 +649,8 @@ export function setupAuth(app: Express) {
           console.log(`[/api/google-auth] No existing user found for email`);
         }
       } catch (lookupError) {
+        userCreationLocks.delete(email);
+        lockResolve!(null);
         console.error('[/api/google-auth] Error looking up user by email:', {
           error: lookupError instanceof Error ? lookupError.message : lookupError,
           stack: lookupError instanceof Error ? lookupError.stack : undefined
@@ -586,6 +683,8 @@ export function setupAuth(app: Express) {
           // Send welcome email to new user (non-blocking)
           sendWelcomeEmail(email, username);
         } catch (createError) {
+          userCreationLocks.delete(email);
+          lockResolve!(null);
           console.error('[/api/google-auth] Failed to create user:', {
             error: createError instanceof Error ? createError.message : createError,
             stack: createError instanceof Error ? createError.stack : undefined,
@@ -597,6 +696,9 @@ export function setupAuth(app: Express) {
           });
         }
       }
+      
+      // Resolve lock with the user (for other concurrent requests waiting)
+      lockResolve!(user);
 
       // Optional: Store Firebase UID mapping for fast lookup
       if (firebaseUid) {
@@ -660,6 +762,10 @@ export function setupAuth(app: Express) {
       // Create session for the user
       console.log(`[/api/google-auth] Creating session for user ${user.id}`);
       req.login(user, (err) => {
+        // Clean up lock after login attempt (success or failure)
+        if (email) {
+          userCreationLocks.delete(email);
+        }
         if (err) {
           console.error('[/api/google-auth] Failed to create session:', {
             error: err instanceof Error ? err.message : err,
@@ -675,6 +781,11 @@ export function setupAuth(app: Express) {
         res.json(user);
       });
     } catch (err) {
+      // Clean up lock on unexpected error
+      const email = req.body.email;
+      if (email && userCreationLocks.has(email)) {
+        userCreationLocks.delete(email);
+      }
       console.error('[/api/google-auth] Unexpected error in authentication flow:', {
         error: err instanceof Error ? err.message : err,
         stack: err instanceof Error ? err.stack : undefined,
