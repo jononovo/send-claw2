@@ -110,7 +110,8 @@ export function SimplifiedRegistrationModal() {
       const { auth } = await loadFirebase();
       const { sendSignInLinkToEmail } = await import("firebase/auth");
       
-      // Store email and name in localStorage for when they click the link
+      // Store email and name in localStorage as fallback for same-device sign-in
+      // (Primary method uses checkActionCode to extract email from the magic link)
       localStorage.setItem('emailForSignIn', email);
       localStorage.setItem('nameForSignIn', name);
       

@@ -26,7 +26,7 @@ export default function AuthCompletePage() {
   const handleEmailLinkSignIn = async () => {
     try {
       const { auth } = await loadFirebase();
-      const { isSignInWithEmailLink, signInWithEmailLink } = await import("firebase/auth");
+      const { isSignInWithEmailLink, signInWithEmailLink, checkActionCode } = await import("firebase/auth");
 
       // Check if the URL is a sign-in with email link
       if (!isSignInWithEmailLink(auth, window.location.href)) {
@@ -35,19 +35,39 @@ export default function AuthCompletePage() {
         return;
       }
 
-      // Get the email and name from localStorage
-      let email = localStorage.getItem('emailForSignIn');
-      const name = localStorage.getItem('nameForSignIn');
-
-      if (!email) {
-        // If email is not in localStorage, prompt for it
-        email = window.prompt('Please provide your email for confirmation');
-        if (!email) {
-          setStatus("error");
-          setErrorMessage("Email is required to complete sign-in.");
-          return;
+      // Extract oobCode from URL to get email directly from Firebase
+      const url = new URL(window.location.href);
+      const oobCode = url.searchParams.get('oobCode');
+      
+      let email: string | null = null;
+      
+      // Primary method: Extract email from the action code (works cross-device)
+      if (oobCode) {
+        try {
+          const actionInfo = await checkActionCode(auth, oobCode);
+          // Verify this is an email sign-in action
+          if (actionInfo.operation === 'EMAIL_SIGNIN' && actionInfo.data.email) {
+            email = actionInfo.data.email;
+          }
+        } catch (checkError) {
+          console.warn("checkActionCode failed, will try fallback:", checkError);
         }
       }
+      
+      // Fallback: Check localStorage (same-device scenario)
+      if (!email) {
+        email = localStorage.getItem('emailForSignIn');
+      }
+      
+      // If we still don't have an email, we can't proceed
+      if (!email) {
+        setStatus("error");
+        setErrorMessage("Could not verify your email. Please request a new magic link.");
+        return;
+      }
+
+      // Get name from localStorage if available (for profile setup)
+      const name = localStorage.getItem('nameForSignIn');
 
       // Complete the sign-in
       const result = await signInWithEmailLink(auth, email, window.location.href);
