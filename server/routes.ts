@@ -102,8 +102,14 @@ function calculateImprovement(results: any[]): string | null {
 
 
 export function registerRoutes(app: Express) {
-  // Redirect /app with trailing non-breaking space (newsletter typo)
-  app.get('/app\u00A0', (req, res) => res.redirect(301, '/app'));
+  // Redirect /app with typos (e.g., /appz, /app., /app%C2%A0) but not valid subpaths like /app/new-search
+  app.use((req, res, next) => {
+    const path = req.path;
+    if (path.startsWith('/app') && path !== '/app' && !path.startsWith('/app/')) {
+      return res.redirect(301, '/app');
+    }
+    next();
+  });
   
   // Register modular search routes (sessions and companies)
   registerSearchRoutes(app, requireAuth);
