@@ -40,6 +40,7 @@ export default function AuthCompletePage() {
       const oobCode = url.searchParams.get('oobCode');
       
       let email: string | null = null;
+      let usedFallback = false;
       
       // Primary method: Extract email from the action code (works cross-device)
       if (oobCode) {
@@ -48,21 +49,26 @@ export default function AuthCompletePage() {
           // Verify this is an email sign-in action
           if (actionInfo.operation === 'EMAIL_SIGNIN' && actionInfo.data.email) {
             email = actionInfo.data.email;
+            console.log("Email extracted from magic link via checkActionCode");
           }
-        } catch (checkError) {
-          console.warn("checkActionCode failed, will try fallback:", checkError);
+        } catch (checkError: any) {
+          console.warn("checkActionCode failed, will try localStorage fallback:", checkError?.code || checkError);
         }
       }
       
       // Fallback: Check localStorage (same-device scenario)
       if (!email) {
         email = localStorage.getItem('emailForSignIn');
+        if (email) {
+          console.log("Using localStorage fallback for email retrieval");
+          usedFallback = true;
+        }
       }
       
       // If we still don't have an email, we can't proceed
       if (!email) {
         setStatus("error");
-        setErrorMessage("Could not verify your email. Please request a new magic link.");
+        setErrorMessage("We couldn't verify your email. If you opened this link on a different device, please try again from the original device or request a new link.");
         return;
       }
 
