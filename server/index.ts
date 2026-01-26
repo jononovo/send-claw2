@@ -14,6 +14,17 @@ import dotenv from "dotenv";
 // Load environment variables from .env file
 dotenv.config();
 
+// Global error handlers to prevent silent crashes
+process.on('uncaughtException', (error) => {
+  console.error('UNCAUGHT EXCEPTION - Process will continue:', error);
+  console.error('Stack trace:', error.stack);
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('UNHANDLED REJECTION at:', promise);
+  console.error('Reason:', reason);
+});
+
 const app = express();
 
 // Trust proxy for correct IP detection behind Replit's proxy
@@ -103,13 +114,20 @@ app.use((req, res, next) => {
   next();
 });
 
-// Capture the domain from incoming requests for webhook callbacks
+// Capture the domain from incoming requests for webhook callbacks (only log once)
+let domainCaptured = false;
 app.use((req, res, next) => {
   const protocol = req.secure || req.get('x-forwarded-proto') === 'https' ? 'https' : 'http';
   const host = req.get('host');
   if (host) {
-    process.env.CURRENT_DOMAIN = `${protocol}://${host}`;
-    console.log(`Current domain captured: ${process.env.CURRENT_DOMAIN}`);
+    const newDomain = `${protocol}://${host}`;
+    if (process.env.CURRENT_DOMAIN !== newDomain) {
+      process.env.CURRENT_DOMAIN = newDomain;
+      if (!domainCaptured) {
+        console.log(`Domain captured: ${process.env.CURRENT_DOMAIN}`);
+        domainCaptured = true;
+      }
+    }
   }
   next();
 });
