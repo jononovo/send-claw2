@@ -102,6 +102,9 @@ function calculateImprovement(results: any[]): string | null {
 
 
 export function registerRoutes(app: Express) {
+  // Redirect /app with trailing non-breaking space (newsletter typo)
+  app.get('/app\u00A0', (req, res) => res.redirect(301, '/app'));
+  
   // Register modular search routes (sessions and companies)
   registerSearchRoutes(app, requireAuth);
   
