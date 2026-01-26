@@ -100,31 +100,32 @@ export const userAttribution = pgTable("user_attribution", {
 // User Onboarding Snapshot - IMMUTABLE record of exact user words at registration
 // This table is APPEND-ONLY - records should NEVER be edited after creation
 export interface OnboardingCompanyData {
-  name?: string;
-  website?: string;
-  hasWebsite?: boolean;
-  city?: string;
-  state?: string;
-  userRole?: string;  // 'owner', 'executive', 'manager', 'individual'
+  name?: string | null;
+  website?: string | null;
+  hasWebsite?: string | null;  // 'yes' or 'no' from questionnaire
+  city?: string | null;
+  state?: string | null;
+  role?: string | null;  // 'owner', 'executive', 'manager', 'individual'
 }
 
 export interface OnboardingUserGoals {
-  primaryGoals?: string[];  // ['grow_sales', 'automate_outreach', 'find_leads', 'exploring']
+  primaryGoals?: string[];  // ['sales', 'outreach', 'leads', 'curious'] from multi-select
+  goal?: string | null;  // Additional goal context
   priorityRanking?: string[];  // Future: ranked priorities
   challenges?: string[];  // Future: pain points they mention
 }
 
 export interface OnboardingProductData {
-  offeringType?: 'product' | 'service' | 'both';
-  description?: string;
-  customerLove?: string;
-  pricingModel?: 'fixed' | 'variable' | 'not_set';
-  packageName?: string;
-  packageCost?: string;
-  packageIncludes?: string;
-  serviceDescription?: string;
-  serviceCost?: string;
-  serviceNotes?: string;
+  offeringType?: string | null;  // 'product', 'service', 'both'
+  description?: string | null;
+  customerLove?: string | null;
+  hasFixedPricing?: string | null;  // 'yes', 'no', 'skip' from questionnaire
+  packageName?: string | null;
+  packageCost?: string | null;
+  packageIncludes?: string | null;
+  serviceDescription?: string | null;
+  serviceCost?: string | null;
+  serviceOther?: string | null;
 }
 
 export const userOnboardingSnapshot = pgTable("user_onboarding_snapshot", {
