@@ -147,37 +147,74 @@ export function SimplifiedRegistrationModal() {
     setIsSending(true);
     
     try {
-      // Store email and name in localStorage as fallback for same-device sign-in
-      // (Primary method uses checkActionCode to extract email from the magic link)
-      localStorage.setItem('emailForSignIn', email);
-      localStorage.setItem('nameForSignIn', name);
+      const { auth } = await loadFirebase();
+      const { 
+        createUserWithEmailAndPassword, 
+        updateProfile, 
+        sendPasswordResetEmail 
+      } = await import("firebase/auth");
       
-      // Call backend API to generate magic link and send branded email via SendGrid
-      const response = await fetch('/api/auth/send-magic-link', {
+      // 1. Generate temporary password
+      const tempPassword = crypto.randomUUID().replace(/-/g, '').slice(0, 16);
+      
+      // 2. Create user in Firebase with temp password
+      const result = await createUserWithEmailAndPassword(auth, email, tempPassword);
+      
+      // 3. Set display name
+      if (result.user) {
+        await updateProfile(result.user, { displayName: name });
+      }
+      
+      // 4. Sync with backend (creates user in PostgreSQL)
+      const token = await result.user.getIdToken(true);
+      await fetch('/api/google-auth', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify({ email, name }),
+        credentials: 'include',
+        body: JSON.stringify({
+          email: result.user.email,
+          username: name,
+          firebaseUid: result.user.uid
+        })
       });
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.message || errorData.error || 'Failed to send magic link');
-      }
       
-      // Track the registration attempt
-      window.dataLayer?.push({ event: 'registration_email_sent' });
+      // 5. Send password reset email so user can set their real password
+      await sendPasswordResetEmail(auth, email);
+      
+      // Track registration complete
+      window.dataLayer?.push({ event: 'registration_complete' });
+      sendAttributionToServer().catch(() => {});
+      logConversionEvent('registration_complete').catch(() => {});
       
       setCurrentPage("checkEmail");
-    } catch (error: any) {
-      console.error("Magic link error:", error);
       
-      toast({
-        title: "Failed to Send Email",
-        description: error.message || "Please try again.",
-        variant: "destructive",
-      });
+    } catch (error: any) {
+      console.error("Registration error:", error);
+      
+      if (error.code === 'auth/email-already-in-use') {
+        // User already exists - prompt to login instead
+        toast({
+          title: "Account Already Exists",
+          description: "This email is already registered. Please use the login option.",
+          variant: "destructive",
+        });
+        setCurrentPage("login");
+      } else if (error.code === 'auth/invalid-email') {
+        toast({
+          title: "Invalid Email",
+          description: "Please enter a valid email address",
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Registration Failed",
+          description: error.message || "Please try again.",
+          variant: "destructive",
+        });
+      }
     } finally {
       setIsSending(false);
     }
