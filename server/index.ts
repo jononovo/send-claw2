@@ -14,6 +14,43 @@ import dotenv from "dotenv";
 // Load environment variables from .env file
 dotenv.config();
 
+// =============================================================================
+// GLOBAL ERROR HANDLERS - Safety net for unhandled errors
+// These MUST exit the process - continuing after unhandled errors is dangerous
+// The process manager (Replit/PM2/systemd) will restart the server automatically
+// =============================================================================
+
+process.on('uncaughtException', (error: Error) => {
+  console.error('=== UNCAUGHT EXCEPTION ===');
+  console.error('Timestamp:', new Date().toISOString());
+  console.error('Error:', error.message);
+  console.error('Stack:', error.stack);
+  console.error('==========================');
+  
+  // Give logs time to flush, then exit
+  // Exit code 1 signals abnormal termination to process manager
+  setTimeout(() => {
+    process.exit(1);
+  }, 1000);
+});
+
+process.on('unhandledRejection', (reason: unknown, promise: Promise<unknown>) => {
+  console.error('=== UNHANDLED PROMISE REJECTION ===');
+  console.error('Timestamp:', new Date().toISOString());
+  console.error('Promise:', promise);
+  console.error('Reason:', reason);
+  if (reason instanceof Error) {
+    console.error('Stack:', reason.stack);
+  }
+  console.error('===================================');
+  
+  // Give logs time to flush, then exit
+  // Exit code 1 signals abnormal termination to process manager
+  setTimeout(() => {
+    process.exit(1);
+  }, 1000);
+});
+
 const app = express();
 
 // Trust proxy for correct IP detection behind Replit's proxy
