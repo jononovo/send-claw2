@@ -698,15 +698,15 @@ export function setupAuth(app: Express) {
   });
 
   app.post("/api/auth/send-magic-link", async (req, res) => {
+    // Always return 200 with success to prevent email enumeration
+    // Log failures server-side for debugging
     try {
       const parseResult = sendMagicLinkSchema.safeParse(req.body);
       
       if (!parseResult.success) {
-        console.warn("[MagicLink] Invalid request:", parseResult.error.errors);
-        return res.status(400).json({ 
-          error: "Invalid request", 
-          details: parseResult.error.errors.map(e => e.message).join(", ")
-        });
+        // Log validation failure but return success to prevent enumeration
+        console.warn("[MagicLink] Invalid request (returning 200):", parseResult.error.errors);
+        return res.json({ success: true, message: "If this email exists, you will receive a sign-in link" });
       }
 
       const { email, name } = parseResult.data;
@@ -715,8 +715,8 @@ export function setupAuth(app: Express) {
 
       // Check if Firebase Admin is initialized
       if (!admin.apps.length) {
-        console.error("[MagicLink] Firebase Admin SDK not initialized");
-        return res.status(500).json({ error: "Authentication service unavailable" });
+        console.error("[MagicLink] Firebase Admin SDK not initialized (returning 200)");
+        return res.json({ success: true, message: "If this email exists, you will receive a sign-in link" });
       }
 
       // Configure action code settings
@@ -742,29 +742,31 @@ export function setupAuth(app: Express) {
       });
 
       // Send the email via SendGrid
-      await sendEmail({
+      const emailSent = await sendEmail({
         to: email,
         content: emailContent,
         fromName: 'Jon @ 5Ducks'
       });
 
-      console.log(`[MagicLink] Email sent successfully to: ${email.split('@')[0]}@...`);
+      if (emailSent) {
+        console.log(`[MagicLink] Email sent successfully to: ${email.split('@')[0]}@...`);
+      } else {
+        console.warn(`[MagicLink] SendGrid not configured or email failed to send for: ${email.split('@')[0]}@...`);
+      }
 
       // Always return success to prevent email enumeration
-      res.json({ success: true, message: "Magic link sent" });
+      res.json({ success: true, message: "If this email exists, you will receive a sign-in link" });
 
     } catch (error: any) {
-      console.error("[MagicLink] Error:", {
+      // Log error but still return success to prevent information leakage
+      console.error("[MagicLink] Error (returning 200):", {
         code: error.code,
         message: error.message,
         email: req.body.email?.split('@')[0] + '@...'
       });
 
-      // Return generic error to prevent information leakage
-      res.status(500).json({ 
-        error: "Failed to send magic link",
-        message: "Please try again or contact support"
-      });
+      // Return success even on error to prevent enumeration
+      res.json({ success: true, message: "If this email exists, you will receive a sign-in link" });
     }
   });
 }
