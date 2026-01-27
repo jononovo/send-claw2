@@ -65,20 +65,6 @@ export function SimplifiedRegistrationModal() {
     }
   }, [currentPage, isOpen]);
 
-  // Auto-focus name field when it appears
-  useEffect(() => {
-    if (emailValid && currentPage === "email" && !name) {
-      setTimeout(() => nameInputRef.current?.focus(), 100);
-    }
-  }, [emailValid, currentPage, name]);
-
-  // Auto-focus password field when it appears
-  useEffect(() => {
-    if (name.length > 0 && currentPage === "email" && !password) {
-      setTimeout(() => passwordInputRef.current?.focus(), 100);
-    }
-  }, [name, currentPage, password]);
-
   const validateEmail = (email: string) => {
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const isValid = regex.test(email);
