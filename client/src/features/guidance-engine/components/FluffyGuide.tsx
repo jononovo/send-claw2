@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { createPortal } from "react-dom";
 import { useLocation } from "wouter";
-import { Trophy, Play, X, Circle, Pointer } from "lucide-react";
+import { Trophy, Play, X, Circle, Pointer, Sparkles, ChevronLeft } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { ChallengeRecorder } from "./ChallengeRecorder";
 import type { FluffyGuideProps } from "../types";
@@ -27,11 +27,13 @@ export function FluffyGuide({
   const [showMenu, setShowMenu] = useState(false);
   const [shouldWiggle, setShouldWiggle] = useState(false);
   const [showRecorder, setShowRecorder] = useState(false);
+  const [showGettingStarted, setShowGettingStarted] = useState(false);
   const [, navigate] = useLocation();
 
   useEffect(() => {
     if (starterMode) {
       setShowMenu(true);
+      setShowGettingStarted(true);
     }
   }, [starterMode]);
 
@@ -78,20 +80,32 @@ export function FluffyGuide({
       onStarterDismiss?.();
     }
     setShowMenu(false);
+    setShowGettingStarted(false);
+  };
+
+  const handleGettingStartedClick = () => {
+    setShowGettingStarted(true);
+  };
+
+  const handleBackToMenu = () => {
+    setShowGettingStarted(false);
   };
 
   const handleShowMe = () => {
     setShowMenu(false);
+    setShowGettingStarted(false);
     onShowMeMode?.();
   };
 
   const handleGuideMe = () => {
     setShowMenu(false);
+    setShowGettingStarted(false);
     onGuideMeMode?.();
   };
 
   const handleNotNow = () => {
     setShowMenu(false);
+    setShowGettingStarted(false);
     onStarterDismiss?.();
   };
 
@@ -128,10 +142,19 @@ export function FluffyGuide({
               transition={{ duration: 0.15 }}
               className="absolute bottom-full mb-3 right-0 bg-gray-900 rounded-xl shadow-2xl border border-gray-700 overflow-hidden min-w-[200px]"
             >
-              {starterMode ? (
+              {showGettingStarted ? (
                 <>
-                  <div className="px-4 py-3 border-b border-gray-700">
-                    <p className="text-white text-sm font-medium">Hey, wanna see a demo?</p>
+                  <div className="px-4 py-3 border-b border-gray-700 flex items-center gap-2">
+                    {!starterMode && (
+                      <button
+                        onClick={handleBackToMenu}
+                        className="text-gray-400 hover:text-white transition-colors"
+                        data-testid="fluffy-back-to-menu"
+                      >
+                        <ChevronLeft className="h-4 w-4" />
+                      </button>
+                    )}
+                    <p className="text-white text-sm font-medium">Choose your tour style</p>
                   </div>
                   <button
                     onClick={handleShowMe}
@@ -161,8 +184,16 @@ export function FluffyGuide({
               ) : (
                 <>
                   <button
-                    onClick={handleStartQuest}
+                    onClick={handleGettingStartedClick}
                     className="w-full flex items-center gap-3 px-4 py-3 text-left text-white hover:bg-gray-800 transition-colors"
+                    data-testid="fluffy-getting-started"
+                  >
+                    <Sparkles className="h-4 w-4 text-amber-400" />
+                    <span className="text-sm font-medium">Getting Started</span>
+                  </button>
+                  <button
+                    onClick={handleStartQuest}
+                    className="w-full flex items-center gap-3 px-4 py-3 text-left text-white hover:bg-gray-800 transition-colors border-t border-gray-700"
                     data-testid="fluffy-start-quest"
                   >
                     <Play className="h-4 w-4 text-amber-400" />
