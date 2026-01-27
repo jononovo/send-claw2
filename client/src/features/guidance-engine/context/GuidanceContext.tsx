@@ -128,7 +128,8 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
   
   // Timing constants for highlight visibility
   const TYPING_INTERVAL_MS = 200;      // Fixed 200ms per character
-  const CLICK_HIDE_DELAY_MS = 500;     // Highlight stays 500ms after click
+  const CLICK_HIDE_DELAY_MS = 500;     // Highlight stays 500ms after click (guide-me mode)
+  const LAST_STEP_BUFFER_MS = 4000;    // Extra delay before completion modal on last step
   
   // Timeline-based show mode: all events scheduled upfront
   const [highlightVisible, setHighlightVisible] = useState(false);
@@ -718,11 +719,15 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
         setVisibilityTick(t => t + 1);
       }, hideDelay);
       
-      // Schedule advancing to next step (after hide delay + any configured advanceDelay)
+      // Check if this is the last step (add extra buffer before completion modal)
+      const isLastStep = currentChallenge && state.currentStepIndex === currentChallenge.steps.length - 1;
+      const lastStepBuffer = isLastStep ? LAST_STEP_BUFFER_MS : 0;
+      
+      // Schedule advancing to next step (after hide delay + any configured advanceDelay + last step buffer)
       const delay = resolveDelay(advanceDelay, "advanceDelay");
       advanceDelayTimerRef.current = setTimeout(() => {
         advanceStepRef.current();
-      }, hideDelay + delay);
+      }, hideDelay + delay + lastStepBuffer);
     };
 
     let hasAdvancedForType = false;
@@ -819,7 +824,7 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
         advanceDelayTimerRef.current = null;
       }
     };
-  }, [isOnEnabledRoute, state.isActive, state.playbackMode, currentStep?.selector, currentStep?.action, currentStep?.advanceDelay, currentStep?.value]);
+  }, [isOnEnabledRoute, state.isActive, state.playbackMode, state.currentStepIndex, currentStep?.selector, currentStep?.action, currentStep?.advanceDelay, currentStep?.value, currentChallenge]);
 
   const prevCompletedChallengesRef = useRef<Record<string, string[]>>(
     JSON.parse(JSON.stringify(state.completedChallenges))
