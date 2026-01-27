@@ -58,7 +58,7 @@ export function fireTouchConfetti(): void {
 }
 
 export function fireShortConfetti(): void {
-  fireContinuousBurst(1000, 3, COLORS.gold, 0.7);
+  fireContinuousBurst(300, 2, COLORS.gold, 0.7);
 }
 
 export function fireFinalConfetti(): void {

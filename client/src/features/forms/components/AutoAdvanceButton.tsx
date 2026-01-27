@@ -9,6 +9,8 @@ interface AutoAdvanceButtonProps {
   className?: string;
   disabled?: boolean;
   delayMs?: number;
+  muted?: boolean;
+  shortCountdown?: boolean;
 }
 
 export function AutoAdvanceButton({
@@ -19,6 +21,8 @@ export function AutoAdvanceButton({
   className = "",
   disabled = false,
   delayMs = 0,
+  muted = false,
+  shortCountdown = false,
 }: AutoAdvanceButtonProps) {
   const [remainingTime, setRemainingTime] = useState(duration);
   const [isPaused, setIsPaused] = useState(false);
@@ -109,7 +113,11 @@ export function AutoAdvanceButton({
 
   const progressPercent = ((duration - remainingTime) / duration) * 100;
   const secondsLeft = Math.ceil(remainingTime / 1000);
-  const displayText = isDelaying || isPaused ? label : `${countdownPrefix} ${secondsLeft}...`;
+  const displayText = isDelaying || isPaused 
+    ? label 
+    : (muted || shortCountdown)
+      ? `${secondsLeft}...` 
+      : `${countdownPrefix} ${secondsLeft}...`;
 
   return (
     <button
@@ -120,7 +128,9 @@ export function AutoAdvanceButton({
       className={`relative w-full h-14 text-lg font-bold rounded-xl overflow-hidden transition-all ${
         disabled
           ? "bg-white/10 text-gray-500 cursor-not-allowed"
-          : "bg-gradient-to-r from-yellow-400 to-amber-500 text-black cursor-pointer hover:shadow-[0_0_30px_rgba(250,204,21,0.3)]"
+          : muted
+            ? "bg-zinc-700/50 text-gray-300 cursor-pointer hover:bg-zinc-600/50"
+            : "bg-gradient-to-r from-yellow-400 to-amber-500 text-black cursor-pointer hover:shadow-[0_0_30px_rgba(250,204,21,0.3)]"
       } ${className}`}
       data-testid="button-form-auto-advance"
     >
@@ -132,7 +142,7 @@ export function AutoAdvanceButton({
       )}
       <span className="relative z-10 flex items-center justify-center">
         {displayText}
-        <ChevronRight className="w-5 h-5 ml-2" />
+        {(isDelaying || isPaused) && <ChevronRight className="w-5 h-5 ml-2" />}
       </span>
     </button>
   );

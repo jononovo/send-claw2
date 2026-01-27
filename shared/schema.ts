@@ -104,7 +104,7 @@ export interface OnboardingCompanyData {
   website?: string | null;
   hasWebsite?: string | null;  // 'yes' or 'no' from questionnaire
   city?: string | null;
-  state?: string | null;
+  country?: string | null;
   role?: string | null;  // 'owner', 'executive', 'manager', 'individual'
 }
 
@@ -116,6 +116,7 @@ export interface OnboardingUserGoals {
 }
 
 export interface OnboardingProductData {
+  productUrl?: string | null;  // URL to main product/service page
   offeringType?: string | null;  // 'product', 'service', 'both'
   description?: string | null;
   customerLove?: string | null;
@@ -684,6 +685,7 @@ export const onboardingUserGoalsSchema = z.object({
 });
 
 export const onboardingProductSchema = z.object({
+  productUrl: z.string().optional(),
   offeringType: z.enum(['product', 'service', 'both']).optional(),
   description: z.string().optional(),
   customerLove: z.string().optional(),

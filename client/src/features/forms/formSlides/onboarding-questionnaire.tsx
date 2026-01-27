@@ -11,7 +11,10 @@ import {
   Star, 
   Package, 
   Headphones,
-  ChevronRight 
+  ChevronRight,
+  MoreHorizontal,
+  Briefcase,
+  UserSearch
 } from "lucide-react";
 import type { Form, FormSection, FormSlide } from "../types";
 import { FORM_DEFAULTS } from "../defaults";
@@ -24,8 +27,10 @@ export interface OnboardingQuestionnaireData {
   website: string;
   companyName: string;
   companyCity: string;
-  companyState: string;
+  companyCountry: string;
   companyRole: string;
+  companyRoleOther: string;
+  productUrl: string;
   offeringType: string;
   productDescription: string;
   customerLove: string;
@@ -49,9 +54,9 @@ const sectionA: FormSection<OnboardingQuestionnaireData> = {
       id: "welcome",
       slideType: "welcome",
       title: "Welcome aboard!",
-      subtitle: "Let's personalize your experience",
+      subtitle: "Let's find ideal customers.",
       emoji: "🐥",
-      skipLink: { text: "Skip", action: "skip" },
+      skipLink: { text: "Skip Onboarding", action: "skip" },
     },
     {
       id: "purpose",
@@ -62,6 +67,8 @@ const sectionA: FormSection<OnboardingQuestionnaireData> = {
         { id: "sales", label: "Grow my sales pipeline", icon: <TrendingUp className="w-5 h-5" /> },
         { id: "outreach", label: "Automate my outreach", icon: <Mail className="w-5 h-5" /> },
         { id: "leads", label: "Find new leads", icon: <Search className="w-5 h-5" /> },
+        { id: "employers", label: "Find employers", icon: <Briefcase className="w-5 h-5" /> },
+        { id: "candidates", label: "Find job candidates", icon: <UserSearch className="w-5 h-5" /> },
         { id: "curious", label: "Just exploring", icon: <Sparkles className="w-5 h-5" /> },
       ],
     },
@@ -86,28 +93,20 @@ const sectionB: FormSection<OnboardingQuestionnaireData> = {
       id: "section-b-intro",
       slideType: "section-intro",
       title: "Now let's learn about your company",
-      subtitle: "Just a couple quick questions",
       emoji: "🏢",
-    },
-    {
-      id: "hasWebsite",
-      slideType: "single-select",
-      title: "Does your company have a website?",
-      subtitle: "This helps Fluffy learn about your business",
-      options: [
-        { id: "yes", label: "Yes, we have a website", icon: <Globe className="w-5 h-5" /> },
-        { id: "no", label: "Not yet", icon: <Building2 className="w-5 h-5" /> },
-      ],
     },
     {
       id: "website",
       slideType: "text-input",
       title: "What's your website?",
-      subtitle: "Fluffy will learn all about your company from here",
-      placeholder: "https://yourcompany.com",
+            placeholder: "yourcompany.com",
       inputType: "url",
-      conditionalOn: "hasWebsite",
-      conditionalValue: "yes",
+      alternativeLink: {
+        text: "We don't have a website",
+        action: "goto",
+        targetSlideId: "companyDetails",
+        setData: { key: "hasWebsite", value: "no" },
+      },
     },
     {
       id: "companyDetails",
@@ -120,7 +119,7 @@ const sectionB: FormSection<OnboardingQuestionnaireData> = {
       validate: (data) => 
         data.companyName.trim() !== "" &&
         data.companyCity.trim() !== "" &&
-        data.companyState.trim() !== "",
+        data.companyCountry.trim() !== "",
     },
     {
       id: "companyRole",
@@ -131,14 +130,22 @@ const sectionB: FormSection<OnboardingQuestionnaireData> = {
         { id: "owner", label: "Owner / Founder", icon: <Zap className="w-5 h-5" /> },
         { id: "executive", label: "Executive / C-Suite", icon: <Star className="w-5 h-5" /> },
         { id: "manager", label: "Manager / Team Lead", icon: <Users className="w-5 h-5" /> },
-        { id: "individual", label: "Individual Contributor", icon: <Target className="w-5 h-5" /> },
+        { id: "other", label: "Other", icon: <MoreHorizontal className="w-5 h-5" />, branchSlideId: "companyRoleOther" },
       ],
+    },
+    {
+      id: "companyRoleOther",
+      slideType: "text-input",
+      title: "What's your role?",
+      placeholder: "e.g. Sales Representative, Consultant...",
+      inputType: "text",
+      conditionalOn: "companyRole",
+      conditionalValue: "other",
     },
     {
       id: "section-b-complete",
       slideType: "section-complete",
       title: "Awesome!",
-      subtitle: "Fluffy is getting to know you better",
       emoji: "✨",
     },
   ],
@@ -155,8 +162,20 @@ const sectionC: FormSection<OnboardingQuestionnaireData> = {
       id: "section-c-intro",
       slideType: "section-intro",
       title: "Help Fluffy understand what you sell",
-      subtitle: "3 simple steps to supercharge your sales assistant",
-      emoji: "🐥",
+            emoji: "🐥",
+    },
+    {
+      id: "productUrl",
+      slideType: "text-input",
+      title: "Is there a link to the target product/service?",
+      subtitle: "A page within your website or on another platform?",
+      placeholder: "yourproduct.com/pricing",
+      inputType: "url",
+      alternativeLink: {
+        text: "No. Skip this",
+        action: "goto",
+        targetSlideId: "offeringType",
+      },
     },
     {
       id: "offeringType",
@@ -181,16 +200,14 @@ const sectionC: FormSection<OnboardingQuestionnaireData> = {
       id: "customerLove",
       slideType: "text-input",
       title: "What do customers love about it?",
-      subtitle: "This helps Fluffy craft the perfect pitch",
-      placeholder: "e.g., Easy to use, saves 10 hours per week, great support",
+            placeholder: "e.g., Easy to use, saves 10 hours per week, great support",
       inputType: "textarea",
     },
     {
       id: "section-c-complete",
       slideType: "section-complete",
       title: "You're a star!",
-      subtitle: "Fluffy knows your product now",
-      emoji: "⭐",
+            emoji: "⭐",
     },
   ],
 };
@@ -206,15 +223,13 @@ const sectionD: FormSection<OnboardingQuestionnaireData> = {
       id: "section-d-intro",
       slideType: "section-intro",
       title: "Let's talk pricing",
-      subtitle: "This helps Fluffy understand your offer",
-      emoji: "💰",
+            emoji: "💰",
     },
     {
       id: "hasFixedPricing",
       slideType: "single-select",
       title: "Do you have a fixed price or package?",
-      subtitle: "Let Fluffy know how you charge",
-      options: [
+            options: [
         { id: "yes", label: "Yes, I have set pricing", icon: <Package className="w-5 h-5" /> },
         { id: "no", label: "No, it varies by project", icon: <TrendingUp className="w-5 h-5" /> },
         { id: "skip", label: "Skip for now", icon: <ChevronRight className="w-5 h-5" /> },
@@ -281,13 +296,6 @@ const sectionD: FormSection<OnboardingQuestionnaireData> = {
       conditionalValue: "no",
       optional: true,
     },
-    {
-      id: "section-d-complete",
-      slideType: "section-complete",
-      title: "Perfect!",
-      subtitle: "Fluffy is ready to help you sell",
-      emoji: "🎯",
-    },
   ],
 };
 
@@ -300,8 +308,7 @@ const sectionFinal: FormSection<OnboardingQuestionnaireData> = {
       id: "final-complete",
       slideType: "final-complete",
       title: "You're all set!",
-      subtitle: "Fluffy is excited to help you grow your business",
-      emoji: "🚀",
+            emoji: "🚀",
     },
   ],
 };
@@ -324,8 +331,10 @@ export const onboardingQuestionnaire: Form<OnboardingQuestionnaireData> = {
     website: "",
     companyName: "",
     companyCity: "",
-    companyState: "",
+    companyCountry: "United States",
     companyRole: "",
+    companyRoleOther: "",
+    productUrl: "",
     offeringType: "",
     productDescription: "",
     customerLove: "",

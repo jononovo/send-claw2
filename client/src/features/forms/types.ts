@@ -15,11 +15,21 @@ export interface SlideOption {
   label: string;
   icon: ReactNode;
   description?: string;
+  branchSlideId?: string;
 }
 
 export interface SkipLink {
   text: string;
-  action: "skip";
+  action: "skip" | "goto";
+  targetSlideId?: string;
+  setData?: { key: string; value: string };
+}
+
+export interface AlternativeLink {
+  text: string;
+  action: "goto";
+  targetSlideId: string;
+  setData?: { key: string; value: string };
 }
 
 export interface FormSlide<T extends Record<string, string> = Record<string, string>> {
@@ -37,6 +47,7 @@ export interface FormSlide<T extends Record<string, string> = Record<string, str
   validate?: (data: T) => boolean;
   optional?: boolean;
   skipLink?: SkipLink;
+  alternativeLink?: AlternativeLink;
 }
 
 export interface FormSectionTrigger {
@@ -85,6 +96,7 @@ export interface FormActions<T extends Record<string, string>> {
   setData: (key: keyof T, value: string) => void;
   handleNext: () => void;
   handleBack: () => void;
+  goToSlide: (slideId: string, newData?: T) => void;
   canContinue: () => boolean;
   getButtonText: () => string;
 }
@@ -107,6 +119,7 @@ export interface SlideComponentProps<T extends Record<string, string>> {
   onSelect?: (slideId: string, optionId: string) => void;
   onTextInput?: (slideId: string, value: string) => void;
   onNext?: () => void;
+  goToSlide?: (slideId: string, newData?: T) => void;
 }
 
 export interface ScreenComponentProps {

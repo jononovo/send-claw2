@@ -35,10 +35,22 @@ export function FormShell<T extends Record<string, string>>({
     setData,
     handleNext,
     handleBack,
+    goToSlide,
     canContinue,
     getButtonText,
     totalSteps,
   } = flow;
+
+  useEffect(() => {
+    if (!isOpen) return;
+    
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    
+    return () => {
+      document.body.style.overflow = originalOverflow;
+    };
+  }, [isOpen]);
 
   useEffect(() => {
     if (confettiFiredRef.current === currentStep) return;
@@ -95,6 +107,7 @@ export function FormShell<T extends Record<string, string>>({
       onSelect: handleSelect,
       onTextInput: handleTextInput,
       onNext: handleNext,
+      goToSlide,
     };
 
     if (currentSlide.component && componentRegistry[currentSlide.component]) {
@@ -141,7 +154,25 @@ export function FormShell<T extends Record<string, string>>({
       case "multi-select":
         return <SlideMultiSelect {...props} />;
       case "text-input":
-        return <SlideTextInput {...props} />;
+        return (
+          <SlideTextInput
+            {...props}
+            onAlternativeClick={
+              currentSlide.alternativeLink
+                ? () => {
+                    const link = currentSlide.alternativeLink!;
+                    if (link.setData) {
+                      setData(link.setData.key as keyof T, link.setData.value);
+                      const newData = { ...data, [link.setData.key]: link.setData.value };
+                      goToSlide(link.targetSlideId, newData as T);
+                    } else {
+                      goToSlide(link.targetSlideId);
+                    }
+                  }
+                : undefined
+            }
+          />
+        );
       case "multi-field":
         if (currentSlide.component && componentRegistry[currentSlide.component]) {
           const CustomComponent = componentRegistry[currentSlide.component];
@@ -191,7 +222,7 @@ export function FormShell<T extends Record<string, string>>({
         </button>
       </div>
 
-      <div className="flex-1 flex items-center justify-center px-6 overflow-y-auto">
+      <div className="flex-1 flex items-start justify-center px-6 py-8 overflow-y-auto custom-scrollbar">
         <div className="w-full max-w-lg">
           <AnimatePresence mode="wait">
             <motion.div
@@ -218,15 +249,16 @@ export function FormShell<T extends Record<string, string>>({
                 delayMs={5000}
                 onClick={handleContinue}
                 label="Let's Go!"
-                countdownPrefix="Let's Go in"
+                shortCountdown
               />
             ) : currentSlide?.slideType === "section-complete" ? (
               <AutoAdvanceButton
                 key={`auto-advance-${currentStep}`}
                 duration={3000}
+                delayMs={300}
                 onClick={handleContinue}
                 label="Keep Going"
-                countdownPrefix="Next in"
+                shortCountdown
               />
             ) : currentSlide?.slideType === "final-complete" ? (
               <AutoAdvanceButton
@@ -240,10 +272,11 @@ export function FormShell<T extends Record<string, string>>({
               <AutoAdvanceButton
                 key={`auto-advance-${currentStep}`}
                 duration={3000}
-                delayMs={4000}
+                delayMs={500}
                 onClick={handleContinue}
                 label="Let's Do It!"
                 countdownPrefix="Let's Do It in"
+                muted
               />
             ) : (
               <Button
@@ -261,9 +294,22 @@ export function FormShell<T extends Record<string, string>>({
               </Button>
             )}
             
-            {currentSlide?.skipLink && onSkip && (
+            {currentSlide?.skipLink && (
               <button
-                onClick={onSkip}
+                onClick={() => {
+                  const skipLink = currentSlide.skipLink!;
+                  if (skipLink.action === "goto" && skipLink.targetSlideId) {
+                    if (skipLink.setData) {
+                      setData(skipLink.setData.key as keyof T, skipLink.setData.value);
+                      const newData = { ...data, [skipLink.setData.key]: skipLink.setData.value };
+                      goToSlide(skipLink.targetSlideId, newData as T);
+                    } else {
+                      goToSlide(skipLink.targetSlideId);
+                    }
+                  } else if (skipLink.action === "skip" && onSkip) {
+                    onSkip();
+                  }
+                }}
                 className="w-full mt-4 text-lg text-gray-400 hover:text-white transition-colors"
                 data-testid="button-form-skip"
               >

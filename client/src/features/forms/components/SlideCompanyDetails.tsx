@@ -6,7 +6,7 @@ import type { SlideComponentProps } from "../types";
 interface CompanyDetailsData {
   companyName: string;
   companyCity: string;
-  companyState: string;
+  companyCountry: string;
 }
 
 export function SlideCompanyDetails<T extends Record<string, string> & CompanyDetailsData>({
@@ -16,7 +16,7 @@ export function SlideCompanyDetails<T extends Record<string, string> & CompanyDe
   onNext,
 }: SlideComponentProps<T>) {
   const cityRef = useRef<HTMLInputElement>(null);
-  const stateRef = useRef<HTMLInputElement>(null);
+  const countryRef = useRef<HTMLInputElement>(null);
 
   return (
     <div className="space-y-8">
@@ -67,7 +67,7 @@ export function SlideCompanyDetails<T extends Record<string, string> & CompanyDe
             onKeyDown={(e) => {
               if (e.key === "Enter") {
                 e.preventDefault();
-                stateRef.current?.focus();
+                countryRef.current?.focus();
               }
             }}
             placeholder="San Francisco"
@@ -81,20 +81,20 @@ export function SlideCompanyDetails<T extends Record<string, string> & CompanyDe
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
         >
-          <label className="block text-sm font-medium text-gray-400 mb-2">State</label>
+          <label className="block text-sm font-medium text-gray-400 mb-2">Country</label>
           <Input
-            ref={stateRef}
-            value={data.companyState || ""}
-            onChange={(e) => onTextInput?.("companyState", e.target.value)}
+            ref={countryRef}
+            value={data.companyCountry || ""}
+            onChange={(e) => onTextInput?.("companyCountry", e.target.value)}
             onKeyDown={(e) => {
               if (e.key === "Enter") {
                 e.preventDefault();
                 onNext?.();
               }
             }}
-            placeholder="California"
+            placeholder="United States"
             className="h-14 bg-white/5 border-white/10 text-white placeholder:text-gray-500 focus:border-yellow-500/50 focus:ring-yellow-500/20 rounded-xl text-lg"
-            data-testid="input-companyState"
+            data-testid="input-companyCountry"
           />
         </motion.div>
       </div>
