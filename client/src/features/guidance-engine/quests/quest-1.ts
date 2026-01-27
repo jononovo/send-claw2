@@ -145,5 +145,71 @@ export const quest1: Quest = {
       steps: [],
       completionMessage: "Congratulations! You've mastered the complete search workflow! 🎉",
     },
+    {
+      "id": "search-emails-with-filters",
+      "name": "Search for Emails with Filters",
+      "description": "Learn how to use search options, apply filters, and perform targeted email searches",
+      "emoji": "📧",
+      "steps": [
+        {
+          "id": "open-search-options",
+          "selector": "[data-testid=\"search-options-button\"]",
+          "action": "click",
+          "instruction": "Click the search options button to access advanced search features",
+          "tooltipPosition": "bottom",
+          "route": "/app"
+        },
+        {
+          "id": "select-emails-option",
+          "selector": "#radix-:r65: [data-testid=\"search-type-option-emails\"]",
+          "action": "click",
+          "instruction": "Select the 'Emails' option to search specifically for email contacts",
+          "tooltipPosition": "right",
+          "route": "/app"
+        },
+        {
+          "id": "add-leadership-filter",
+          "selector": "button.flex.items-center.gap-1",
+          "action": "click",
+          "instruction": "Click on 'Leadership' to add it as a filter for your search",
+          "tooltipPosition": "bottom",
+          "route": "/app"
+        },
+        {
+          "id": "add-marketing-filter",
+          "selector": "button.\n.flex.items-center",
+          "action": "click",
+          "instruction": "Click on 'Marketing' to add another filter to narrow your search",
+          "tooltipPosition": "bottom",
+          "route": "/app"
+        },
+        {
+          "id": "click-search-input",
+          "selector": "[data-testid=\"search-input\"]",
+          "action": "click",
+          "instruction": "Click on the search input field to start entering your search query",
+          "tooltipPosition": "bottom",
+          "route": "/app"
+        },
+        {
+          "id": "enter-search-query",
+          "selector": "[data-testid=\"search-input\"]",
+          "action": "type",
+          "instruction": "Type your search query to find specific contacts",
+          "tooltipPosition": "bottom",
+          "route": "/app",
+          "value": "plumbers in brooklyn"
+        },
+        {
+          "id": "finalize-search",
+          "selector": "body.react-loaded",
+          "action": "click",
+          "instruction": "Click outside the search area to execute your filtered search",
+          "tooltipPosition": "auto",
+          "route": "/app"
+        }
+      ],
+      "completionMessage": "Great job! You've learned how to use search options, apply multiple filters, and perform targeted email searches to find exactly the contacts you need."
+    }
   ],
 };
