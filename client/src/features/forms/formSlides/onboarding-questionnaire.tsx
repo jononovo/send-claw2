@@ -223,8 +223,7 @@ const sectionD: FormSection<OnboardingQuestionnaireData> = {
       id: "section-d-intro",
       slideType: "section-intro",
       title: "Let's talk pricing",
-      subtitle: "This helps Fluffy understand your offer",
-      emoji: "💰",
+            emoji: "💰",
     },
     {
       id: "hasFixedPricing",
