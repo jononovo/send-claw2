@@ -10,6 +10,7 @@ interface AutoAdvanceButtonProps {
   disabled?: boolean;
   delayMs?: number;
   muted?: boolean;
+  shortCountdown?: boolean;
 }
 
 export function AutoAdvanceButton({
@@ -21,6 +22,7 @@ export function AutoAdvanceButton({
   disabled = false,
   delayMs = 0,
   muted = false,
+  shortCountdown = false,
 }: AutoAdvanceButtonProps) {
   const [remainingTime, setRemainingTime] = useState(duration);
   const [isPaused, setIsPaused] = useState(false);
@@ -113,7 +115,7 @@ export function AutoAdvanceButton({
   const secondsLeft = Math.ceil(remainingTime / 1000);
   const displayText = isDelaying || isPaused 
     ? label 
-    : muted 
+    : (muted || shortCountdown)
       ? `${secondsLeft}...` 
       : `${countdownPrefix} ${secondsLeft}...`;
 

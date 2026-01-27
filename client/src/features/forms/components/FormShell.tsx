@@ -218,8 +218,7 @@ export function FormShell<T extends Record<string, string>>({
                 delayMs={500}
                 onClick={handleContinue}
                 label="Let's Go!"
-                countdownPrefix="Let's Go in"
-                muted
+                shortCountdown
               />
             ) : currentSlide?.slideType === "section-complete" ? (
               <AutoAdvanceButton
