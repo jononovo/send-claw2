@@ -142,7 +142,7 @@ export function AutoAdvanceButton({
       )}
       <span className="relative z-10 flex items-center justify-center">
         {displayText}
-        <ChevronRight className="w-5 h-5 ml-2" />
+        {(isDelaying || isPaused) && <ChevronRight className="w-5 h-5 ml-2" />}
       </span>
     </button>
   );
