@@ -156,28 +156,40 @@ export function FluffyGuide({
                     )}
                     <p className="text-white text-sm font-medium">Choose your tour style</p>
                   </div>
-                  <button
-                    onClick={handleShowMe}
-                    className="w-full flex items-center gap-3 px-4 py-3 text-left text-white hover:bg-gray-800 transition-colors"
-                    data-testid="fluffy-show-me"
-                  >
-                    <Play className="h-4 w-4 text-amber-400 flex-shrink-0" />
-                    <div className="flex flex-col">
-                      <span className="text-sm font-medium">Show-me Mode</span>
-                      <span className="text-xs text-gray-400">Watch how it works</span>
-                    </div>
-                  </button>
-                  <button
-                    onClick={handleGuideMe}
-                    className="w-full flex items-center gap-3 px-4 py-3 text-left text-white hover:bg-gray-800 transition-colors border-t border-gray-700"
-                    data-testid="fluffy-guide-me"
-                  >
-                    <Pointer className="h-4 w-4 text-amber-400 flex-shrink-0" />
-                    <div className="flex flex-col">
-                      <span className="text-sm font-medium">Guide-me Mode</span>
-                      <span className="text-xs text-gray-400">Try it yourself</span>
-                    </div>
-                  </button>
+                  <TooltipProvider delayDuration={500}>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <button
+                          onClick={handleShowMe}
+                          className="w-full flex items-center gap-3 px-4 py-3 text-left text-white hover:bg-gray-800 transition-colors"
+                          data-testid="fluffy-show-me"
+                        >
+                          <Play className="h-4 w-4 text-amber-400" />
+                          <span className="text-sm font-medium">Show-me Mode</span>
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent side="left" className="bg-gray-900 text-white border-gray-700">
+                        <p className="text-xs">Watch how it works</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                  <TooltipProvider delayDuration={500}>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <button
+                          onClick={handleGuideMe}
+                          className="w-full flex items-center gap-3 px-4 py-3 text-left text-white hover:bg-gray-800 transition-colors border-t border-gray-700"
+                          data-testid="fluffy-guide-me"
+                        >
+                          <Pointer className="h-4 w-4 text-amber-400" />
+                          <span className="text-sm font-medium">Guide-me Mode</span>
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent side="left" className="bg-gray-900 text-white border-gray-700">
+                        <p className="text-xs">Try it yourself</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
                   <button
                     onClick={handleNotNow}
                     className="w-full flex items-center gap-3 px-4 py-3 text-left text-gray-400 hover:bg-gray-800 hover:text-white transition-colors border-t border-gray-700"
