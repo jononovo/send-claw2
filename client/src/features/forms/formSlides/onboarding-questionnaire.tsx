@@ -296,12 +296,6 @@ const sectionD: FormSection<OnboardingQuestionnaireData> = {
       conditionalValue: "no",
       optional: true,
     },
-    {
-      id: "section-d-complete",
-      slideType: "section-complete",
-      title: "Perfect!",
-            emoji: "🎯",
-    },
   ],
 };
 
