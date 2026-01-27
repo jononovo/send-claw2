@@ -126,7 +126,7 @@ export function AutoAdvanceButton({
     >
       {!disabled && !isDelaying && (
         <div
-          className="absolute bottom-0 left-0 h-1.5 bg-amber-700/60 rounded-b-xl transition-none"
+          className="absolute bottom-0 left-0 h-1.5 bg-amber-900/70 rounded-b-xl transition-none"
           style={{ width: `${progressPercent}%` }}
         />
       )}
