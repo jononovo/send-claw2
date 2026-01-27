@@ -235,6 +235,14 @@ export function FormShell<T extends Record<string, string>>({
                 label="Let's find prospects"
                 countdownPrefix="Finishing in"
               />
+            ) : currentSlide?.slideType === "section-intro" ? (
+              <AutoAdvanceButton
+                key={`auto-advance-${currentStep}`}
+                duration={4000}
+                onClick={handleContinue}
+                label="Let's Do It!"
+                countdownPrefix="Let's Do It in"
+              />
             ) : (
               <Button
                 onClick={handleContinue}
