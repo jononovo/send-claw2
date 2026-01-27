@@ -119,7 +119,7 @@ export interface SlideComponentProps<T extends Record<string, string>> {
   onSelect?: (slideId: string, optionId: string) => void;
   onTextInput?: (slideId: string, value: string) => void;
   onNext?: () => void;
-  goToSlide?: (slideId: string) => void;
+  goToSlide?: (slideId: string, newData?: T) => void;
 }
 
 export interface ScreenComponentProps {

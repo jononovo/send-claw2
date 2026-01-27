@@ -29,7 +29,9 @@ export function SlideSingleSelect<T extends Record<string, string>>({
     
     autoAdvanceRef.current = setTimeout(() => {
       if (selectedOption?.branchSlideId && goToSlide) {
-        goToSlide(selectedOption.branchSlideId);
+        // Pass updated data so goToSlide can find the conditional branch slide
+        const updatedData = { ...data, [slide.id]: optionId } as T;
+        goToSlide(selectedOption.branchSlideId, updatedData);
       } else {
         onNext?.();
       }
