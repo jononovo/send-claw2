@@ -14,6 +14,12 @@ interface SubscriptionStatus {
   currentPlan: string | null;
 }
 
+// ========================================
+// TEMPORARY PROMO - Remove when promo ends
+// Set PROMO_ENABLED to false to disable promotional pricing display
+// ========================================
+const PROMO_ENABLED = true;
+
 const WAITLIST_STORAGE_KEY = '5ducks_waitlist_plans';
 
 function getStoredWaitlistPlans(): string[] {
@@ -46,12 +52,15 @@ export function PlanCards({ onClose }: PlanCardsProps) {
   const { toast } = useToast();
   const [waitlistPlans, setWaitlistPlans] = useState<string[]>(() => getStoredWaitlistPlans());
 
+  // TEMPORARY PROMO: regularPrice is the "full" price shown with strikethrough
+  // price is the discounted price users actually pay
   const plans = [
     {
       id: 'ugly-duckling',
       name: 'The Duckling',
       credits: 5000,
       bonus: 3000,
+      regularPrice: 82,
       price: 18.95,
       icon: Zap,
       color: 'from-blue-500 to-purple-600'
@@ -61,11 +70,16 @@ export function PlanCards({ onClose }: PlanCardsProps) {
       name: "Mama Duck",
       credits: 10000,
       bonus: 12000,
+      regularPrice: 174,
       price: 44.95,
       icon: Crown,
       color: 'from-purple-600 to-pink-600'
     }
   ];
+
+  const getDiscountPercent = (regular: number, discounted: number) => {
+    return Math.round(((regular - discounted) / regular) * 100);
+  };
 
   const handlePlanSelect = async (planId: string) => {
     console.log(`Selected plan: ${planId}`);
@@ -152,7 +166,18 @@ export function PlanCards({ onClose }: PlanCardsProps) {
                     <span className="text-green-600 dark:text-green-400 font-medium"> + {plan.bonus.toLocaleString()} Bonus</span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-lg font-bold text-foreground">${plan.price}</span>
+                    <div className="flex items-center gap-2">
+                      {/* TEMPORARY PROMO: Strikethrough price + discount badge */}
+                      {PROMO_ENABLED && (
+                        <span className="text-sm text-muted-foreground line-through">${plan.regularPrice}</span>
+                      )}
+                      <span className="text-lg font-bold text-foreground">${plan.price}</span>
+                      {PROMO_ENABLED && (
+                        <span className="text-xs font-semibold text-green-600 dark:text-green-400 bg-green-100 dark:bg-green-900/30 px-1.5 py-0.5 rounded">
+                          {getDiscountPercent(plan.regularPrice, plan.price)}% off
+                        </span>
+                      )}
+                    </div>
                     <span className="text-sm text-muted-foreground">Monthly</span>
                   </div>
                 </div>
