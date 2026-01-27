@@ -715,6 +715,56 @@ export const quest1: Quest = {
         }
       ],
       "completionMessage": "Great job! You've learned how to customize search options and perform a search. Now you can use different search modes to find exactly what you're looking for!"
+    },
+    {
+      "id": "search-emails-with-suggestions",
+      "name": "Search for Emails with Suggestions",
+      "description": "Learn how to configure search options for emails and use search suggestions",
+      "emoji": "📧",
+      "steps": [
+        {
+          "id": "open-search-options",
+          "selector": "[data-testid=\"search-options-button\"]",
+          "action": "click",
+          "instruction": "Click the search options button to configure your search settings",
+          "tooltipPosition": "bottom",
+          "route": "/app"
+        },
+        {
+          "id": "select-email-search",
+          "selector": "[role=\"dialog\"] [data-testid=\"search-type-option-emails\"]",
+          "action": "click",
+          "instruction": "Select 'Emails' to search specifically for email content",
+          "tooltipPosition": "right",
+          "route": "/app"
+        },
+        {
+          "id": "click-search-input",
+          "selector": "[data-testid=\"search-input\"]",
+          "action": "click",
+          "instruction": "Click on the search input field to start typing your query",
+          "tooltipPosition": "top",
+          "route": "/app"
+        },
+        {
+          "id": "type-search-query",
+          "selector": "[data-testid=\"search-input\"]",
+          "action": "type",
+          "instruction": "Type your search query in the input field",
+          "tooltipPosition": "top",
+          "route": "/app",
+          "value": "happy people 22222222"
+        },
+        {
+          "id": "select-suggestion",
+          "selector": "[data-testid=\"button-suggestion-recently-exited-startups-in-mi\"]",
+          "action": "click",
+          "instruction": "Click on the suggested search term 'Recently exited startups in Miami' to use it as your query",
+          "tooltipPosition": "top",
+          "route": "/app"
+        }
+      ],
+      "completionMessage": "Great job! You've learned how to configure search options for emails and use search suggestions to find relevant content more efficiently."
     }
   ],
 };
