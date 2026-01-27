@@ -167,7 +167,7 @@ const sectionC: FormSection<OnboardingQuestionnaireData> = {
     {
       id: "productUrl",
       slideType: "text-input",
-      title: "Is there a link/URL to the main product/service you are selling?",
+      title: "Is there a link to the target product/service?",
       subtitle: "A page within your website or on another platform?",
       placeholder: "yourproduct.com/pricing",
       inputType: "url",
