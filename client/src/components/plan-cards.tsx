@@ -169,11 +169,11 @@ export function PlanCards({ onClose }: PlanCardsProps) {
                     <div className="flex items-center gap-2">
                       {/* TEMPORARY PROMO: Strikethrough price + discount badge */}
                       {PROMO_ENABLED && (
-                        <span className="text-sm text-muted-foreground line-through">${plan.regularPrice}</span>
+                        <span className="text-sm text-foreground line-through">${plan.regularPrice}</span>
                       )}
                       <span className="text-lg font-bold text-foreground">${plan.price}</span>
                       {PROMO_ENABLED && (
-                        <span className="text-xs font-semibold text-green-600 dark:text-green-400 bg-green-100 dark:bg-green-900/30 px-1.5 py-0.5 rounded">
+                        <span className="text-xs font-semibold text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-900/30 px-1.5 py-0.5 rounded">
                           {getDiscountPercent(plan.regularPrice, plan.price)}% off
                         </span>
                       )}
