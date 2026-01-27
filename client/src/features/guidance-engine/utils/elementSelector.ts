@@ -38,8 +38,8 @@ function escapeCSSClass(className: string): string {
 }
 
 function isDynamicId(id: string): boolean {
-  if (/^radix-:r\d+:/.test(id)) return true;
-  if (/^:r\d+:/.test(id)) return true;
+  if (/^radix-:r[a-z0-9]+:/i.test(id)) return true;
+  if (/^:r[a-z0-9]+:/i.test(id)) return true;
   if (/^headlessui-\w+-\d+$/.test(id)) return true;
   return false;
 }

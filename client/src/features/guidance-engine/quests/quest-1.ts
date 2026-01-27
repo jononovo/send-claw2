@@ -517,6 +517,162 @@ export const quest1: Quest = {
         }
       ],
       "completionMessage": "Great job! You've learned how to access search history, perform searches, and apply multiple filters to get the most relevant results."
+    },
+    {
+      "id": "advanced-search-with-super-search",
+      "name": "Advanced Search Tutorial",
+      "description": "Learn how to use different search types and perform advanced queries",
+      "emoji": "🔍",
+      "steps": [
+        {
+          "id": "click-search-input",
+          "selector": "[data-testid=\"search-input\"]",
+          "action": "click",
+          "instruction": "Click on the search input field to get started",
+          "tooltipPosition": "bottom",
+          "route": "/app"
+        },
+        {
+          "id": "open-search-options",
+          "selector": "[data-testid=\"search-options-button\"]",
+          "action": "click",
+          "instruction": "Click the search options button to see different search types",
+          "tooltipPosition": "bottom",
+          "route": "/app"
+        },
+        {
+          "id": "explore-individual-search",
+          "selector": "[role=\"dialog\"] [data-testid=\"search-type-option-individual_search\"]",
+          "action": "click",
+          "instruction": "Try selecting 'Find Individual' to see what this search type offers",
+          "tooltipPosition": "left",
+          "route": "/app"
+        },
+        {
+          "id": "cancel-individual-search",
+          "selector": "form [data-testid=\"button-cancel\"]",
+          "action": "click",
+          "instruction": "Cancel this option to explore other search types",
+          "tooltipPosition": "top",
+          "route": "/app"
+        },
+        {
+          "id": "reopen-search-options",
+          "selector": "[data-testid=\"search-options-button\"]",
+          "action": "click",
+          "instruction": "Open the search options again to choose a different search type",
+          "tooltipPosition": "bottom",
+          "route": "/app"
+        },
+        {
+          "id": "select-super-search",
+          "selector": "[role=\"dialog\"] [data-testid=\"search-type-option-super_search_fast\"]",
+          "action": "click",
+          "instruction": "Select 'Super Search (Fast)' for more powerful search capabilities",
+          "tooltipPosition": "left",
+          "route": "/app"
+        },
+        {
+          "id": "focus-search-input",
+          "selector": "[data-testid=\"search-input\"]",
+          "action": "click",
+          "instruction": "Click in the search field to prepare for your query",
+          "tooltipPosition": "bottom",
+          "route": "/app"
+        },
+        {
+          "id": "type-advanced-query",
+          "selector": "[data-testid=\"search-input\"]",
+          "action": "type",
+          "instruction": "Type your detailed search query about AI engineers at Tesla",
+          "tooltipPosition": "bottom",
+          "route": "/app",
+          "value": "find engineers that focus on ai vision at tesla in germany"
+        },
+        {
+          "id": "execute-search",
+          "selector": "[data-testid=\"search-button\"]",
+          "action": "click",
+          "instruction": "Click the search button to run your advanced query",
+          "tooltipPosition": "left",
+          "route": "/app"
+        }
+      ],
+      "completionMessage": "Great job! You've learned how to explore different search types and perform advanced queries using Super Search. You can now craft detailed searches to find exactly what you're looking for!"
+    },
+    {
+      "id": "search-contacts-with-filters",
+      "name": "Search Contacts with Filters",
+      "description": "Learn how to search for specific contacts using search filters and options",
+      "emoji": "🔍",
+      "steps": [
+        {
+          "id": "click-search-input-1",
+          "selector": "[data-testid=\"search-input\"]",
+          "action": "click",
+          "instruction": "Click on the search input field to start your search",
+          "tooltipPosition": "bottom",
+          "route": "/app"
+        },
+        {
+          "id": "click-search-input-2",
+          "selector": "[data-testid=\"search-input\"]",
+          "action": "click",
+          "instruction": "Click on the search input again to ensure it's focused",
+          "tooltipPosition": "bottom",
+          "route": "/app"
+        },
+        {
+          "id": "click-search-input-3",
+          "selector": "[data-testid=\"search-input\"]",
+          "action": "click",
+          "instruction": "Click on the search input once more to prepare for typing",
+          "tooltipPosition": "bottom",
+          "route": "/app"
+        },
+        {
+          "id": "type-search-query",
+          "selector": "[data-testid=\"search-input\"]",
+          "action": "type",
+          "instruction": "Type your search query in the input field",
+          "tooltipPosition": "bottom",
+          "route": "/app",
+          "value": "happy"
+        },
+        {
+          "id": "open-search-options",
+          "selector": "[data-testid=\"search-options-button\"]",
+          "action": "click",
+          "instruction": "Click the search options button to access additional filters",
+          "tooltipPosition": "left",
+          "route": "/app"
+        },
+        {
+          "id": "select-contacts-filter",
+          "selector": "[role=\"dialog\"] [data-testid=\"search-type-option-contacts\"]",
+          "action": "click",
+          "instruction": "Select 'Contacts' to filter your search results to contacts only",
+          "tooltipPosition": "right",
+          "route": "/app"
+        },
+        {
+          "id": "select-leadership-filter-1",
+          "selector": "button.flex.items-center.gap-1",
+          "action": "click",
+          "instruction": "Click on the 'Leadership' filter to narrow your search to leadership contacts",
+          "tooltipPosition": "top",
+          "route": "/app"
+        },
+        {
+          "id": "select-leadership-filter-2",
+          "selector": "button.\n.flex.items-center",
+          "action": "click",
+          "instruction": "Confirm your leadership filter selection",
+          "tooltipPosition": "top",
+          "route": "/app"
+        }
+      ],
+      "completionMessage": "Great job! You've learned how to use search filters to find specific contacts. You can now search effectively using keywords and apply filters like contact type and leadership roles to get more targeted results."
     }
   ],
 };
