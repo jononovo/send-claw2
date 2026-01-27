@@ -448,8 +448,8 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
           // For typing, hide when typing completes (no buffer)
           hideTime = actionTime + getTypingDuration(steps[i]);
         } else {
-          // For click/hover/view, hide 500ms after action
-          hideTime = actionTime + CLICK_HIDE_DELAY_MS;
+          // For click/hover/view, hide immediately after action
+          hideTime = actionTime;
         }
         
         timeline.push({ stepIndex: i, showTime, actionTime, hideTime });
@@ -467,7 +467,7 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
           hideTime = actionTime + typingDuration;
           currentTime = hideTime + 500; // Next step starts after typing completes + buffer
         } else {
-          hideTime = actionTime + CLICK_HIDE_DELAY_MS;
+          hideTime = actionTime;
           currentTime = actionTime + FALLBACK_STEP_DURATION - HIGHLIGHT_LEAD_TIME;
         }
         
