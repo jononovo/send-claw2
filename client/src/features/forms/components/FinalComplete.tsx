@@ -31,16 +31,6 @@ export function FinalComplete({ title, subtitle, emoji = "🚀" }: ScreenCompone
           {subtitle}
         </motion.p>
       </div>
-
-      <motion.p
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.6 }}
-        className="text-gray-500 flex items-center justify-center gap-2"
-      >
-        <span className="text-xl">🐥</span>
-        Fluffy can't wait to help you close more deals!
-      </motion.p>
     </div>
   );
 }
