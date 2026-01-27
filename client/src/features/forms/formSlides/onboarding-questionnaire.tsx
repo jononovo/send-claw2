@@ -138,7 +138,6 @@ const sectionB: FormSection<OnboardingQuestionnaireData> = {
       id: "section-b-complete",
       slideType: "section-complete",
       title: "Awesome!",
-      subtitle: "Fluffy is getting to know you better",
       emoji: "✨",
     },
   ],
