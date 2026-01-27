@@ -25,3 +25,5 @@ export {
   animateCreditSparkles,
   useSparkleTrail,
 } from "./sparkleTrail";
+
+export { AutoDismissBar } from "./AutoDismissBar";
