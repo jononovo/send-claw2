@@ -126,6 +126,11 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
   const completionScheduledRef = useRef<boolean>(false);
   const completionTimerRef = useRef<NodeJS.Timeout | null>(null);
   
+  // Timing constants for highlight visibility
+  const TYPING_INTERVAL_MS = 200;      // Fixed 200ms per character
+  const CLICK_HIDE_DELAY_MS = 500;     // Highlight stays 500ms after click (guide-me mode)
+  const LAST_STEP_BUFFER_MS = 4000;    // Extra delay before completion modal on last step
+  
   // Timeline-based show mode: all events scheduled upfront
   const [highlightVisible, setHighlightVisible] = useState(false);
   const [visibleStepIndex, setVisibleStepIndex] = useState<number>(-1);
@@ -326,16 +331,8 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
             
             const valueToType = step.value || '';
             
-            // Calculate typing speed based on time until next step
-            const currentTs = timestamps.find(t => t.stepIndex === stepIndex);
-            const nextTs = timestamps.find(t => t.stepIndex === stepIndex + 1);
-            
-            let typingIntervalMs = 100;
-            if (currentTs && nextTs && valueToType.length > 0) {
-              const availableTimeMs = nextTs.timestamp - currentTs.timestamp;
-              const calculatedInterval = Math.floor((availableTimeMs - 500) / valueToType.length);
-              typingIntervalMs = Math.max(50, Math.min(150, calculatedInterval));
-            }
+            // Fixed typing speed: 200ms per character
+            const typingIntervalMs = TYPING_INTERVAL_MS;
             
             const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
               element instanceof HTMLTextAreaElement 
@@ -430,7 +427,12 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
     const timeline: TimelineEntry[] = [];
     const HIGHLIGHT_LEAD_TIME = 1200; // Show highlight 1.2s before action
     const FALLBACK_STEP_DURATION = 3000; // 3s per step when no timestamps
-    const TYPING_EXTRA_VISIBLE_TIME = 2000; // Keep highlight visible 2s after typing starts
+    
+    // Calculate typing duration based on value length
+    const getTypingDuration = (step: { value?: string }) => {
+      const valueLength = (step.value || '').length;
+      return valueLength * TYPING_INTERVAL_MS;
+    };
     
     if (hasTimestamps) {
       // Use recorded timestamps
@@ -444,8 +446,8 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
         // Hide time depends on action type
         let hideTime: number;
         if (steps[i].action === "type") {
-          // For typing, hide 2s after action starts (typing animation takes time)
-          hideTime = actionTime + TYPING_EXTRA_VISIBLE_TIME;
+          // For typing, hide when typing completes (no buffer)
+          hideTime = actionTime + getTypingDuration(steps[i]);
         } else {
           // For click/hover/view, hide immediately after action
           hideTime = actionTime;
@@ -462,8 +464,9 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
         
         let hideTime: number;
         if (steps[i].action === "type") {
-          hideTime = actionTime + TYPING_EXTRA_VISIBLE_TIME;
-          currentTime = hideTime + 500; // Next step starts after typing hide + buffer
+          const typingDuration = getTypingDuration(steps[i]);
+          hideTime = actionTime + typingDuration;
+          currentTime = hideTime + 500; // Next step starts after typing completes + buffer
         } else {
           hideTime = actionTime;
           currentTime = actionTime + FALLBACK_STEP_DURATION - HIGHLIGHT_LEAD_TIME;
@@ -692,15 +695,39 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
       advanceDelayTimerRef.current = null;
     }
 
-    // Hide tooltip immediately, then advance after delay
-    const hideAndAdvance = () => {
+    // Ref to track hide timer for cleanup
+    let hideTimerRef: NodeJS.Timeout | null = null;
+    
+    // Hide tooltip after delay based on action type, then advance
+    const hideAndAdvance = (actionType: string) => {
       if (advanceDelayTimerRef.current) return; // Prevent double-clicks
-      tooltipHiddenRef.current = true;
-      setVisibilityTick(t => t + 1);
+      
+      // Calculate hide delay based on action type
+      let hideDelay: number;
+      if (actionType === "type") {
+        // For typing: hide when typing completes (chars × 200ms)
+        const valueLength = (currentStep?.value || '').length;
+        hideDelay = valueLength * TYPING_INTERVAL_MS;
+      } else {
+        // For click/hover/view: hide immediately
+        hideDelay = 0;
+      }
+      
+      // Schedule hiding the tooltip after the delay
+      hideTimerRef = setTimeout(() => {
+        tooltipHiddenRef.current = true;
+        setVisibilityTick(t => t + 1);
+      }, hideDelay);
+      
+      // Check if this is the last step (add extra buffer before completion modal)
+      const isLastStep = currentChallenge && state.currentStepIndex === currentChallenge.steps.length - 1;
+      const lastStepBuffer = isLastStep ? LAST_STEP_BUFFER_MS : 0;
+      
+      // Schedule advancing to next step (after hide delay + any configured advanceDelay + last step buffer)
       const delay = resolveDelay(advanceDelay, "advanceDelay");
       advanceDelayTimerRef.current = setTimeout(() => {
         advanceStepRef.current();
-      }, delay);
+      }, hideDelay + delay + lastStepBuffer);
     };
 
     let hasAdvancedForType = false;
@@ -726,6 +753,8 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
     };
 
     const handleElementClick = (e: MouseEvent) => {
+      if (state.playbackMode === "show") return;
+      
       const target = e.target as HTMLElement;
       let stepElement: Element | null = null;
       try {
@@ -737,7 +766,7 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
       // Check if click is on the target element - advance step
       if (stepElement && (stepElement === target || stepElement.contains(target))) {
         if (action === "click") {
-          hideAndAdvance();
+          hideAndAdvance("click");
         }
         return;
       }
@@ -768,7 +797,7 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
       
       if (stepElement && (stepElement === target || stepElement.contains(target))) {
         hasAdvancedForType = true;
-        hideAndAdvance();
+        hideAndAdvance("type");
       }
     };
 
@@ -786,12 +815,16 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
       document.removeEventListener("click", handleElementClick, true);
       document.removeEventListener("keydown", handleKeyPress);
       document.removeEventListener("input", handleInput, true);
+      if (hideTimerRef) {
+        clearTimeout(hideTimerRef);
+        hideTimerRef = null;
+      }
       if (advanceDelayTimerRef.current) {
         clearTimeout(advanceDelayTimerRef.current);
         advanceDelayTimerRef.current = null;
       }
     };
-  }, [isOnEnabledRoute, state.isActive, state.playbackMode, currentStep?.selector, currentStep?.action, currentStep?.advanceDelay]);
+  }, [isOnEnabledRoute, state.isActive, state.playbackMode, state.currentStepIndex, currentStep?.selector, currentStep?.action, currentStep?.advanceDelay, currentStep?.value, currentChallenge]);
 
   const prevCompletedChallengesRef = useRef<Record<string, string[]>>(
     JSON.parse(JSON.stringify(state.completedChallenges))
