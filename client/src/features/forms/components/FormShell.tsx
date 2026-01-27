@@ -13,6 +13,7 @@ import { WelcomeScreen } from "./WelcomeScreen";
 import { SectionIntro } from "./SectionIntro";
 import { SectionComplete } from "./SectionComplete";
 import { FinalComplete } from "./FinalComplete";
+import { AutoAdvanceButton } from "./AutoAdvanceButton";
 
 export function FormShell<T extends Record<string, string>>({
   isOpen,
@@ -66,19 +67,6 @@ export function FormShell<T extends Record<string, string>>({
     }
   }, [currentStep, currentSlide]);
 
-  useEffect(() => {
-    if (currentSlide?.slideType === "section-complete") {
-      const timer = setTimeout(() => {
-        handleNext();
-      }, 3000);
-      return () => clearTimeout(timer);
-    } else if (currentSlide?.slideType === "final-complete") {
-      const timer = setTimeout(() => {
-        onComplete();
-      }, 5000);
-      return () => clearTimeout(timer);
-    }
-  }, [currentStep, currentSlide, handleNext, onComplete]);
 
   const handleSelect = (slideId: string, optionId: string) => {
     setData(slideId as keyof T, optionId);
@@ -223,19 +211,45 @@ export function FormShell<T extends Record<string, string>>({
       {currentSlide?.slideType !== "single-select" && (
         <div className="px-6 py-6">
           <div className="max-w-lg mx-auto">
-            <Button
-              onClick={handleContinue}
-              disabled={!canContinue()}
-              className={`w-full h-14 text-lg font-bold rounded-xl transition-all ${
-                canContinue()
-                  ? "bg-gradient-to-r from-yellow-400 to-amber-500 hover:from-yellow-500 hover:to-amber-600 text-black shadow-[0_0_30px_rgba(250,204,21,0.3)]"
-                  : "bg-white/10 text-gray-500 cursor-not-allowed"
-              }`}
-              data-testid="button-form-continue"
-            >
-              {getButtonText()}
-              <ChevronRight className="w-5 h-5 ml-2" />
-            </Button>
+            {currentSlide?.slideType === "welcome" ? (
+              <AutoAdvanceButton
+                key={`auto-advance-${currentStep}`}
+                duration={5000}
+                onClick={handleContinue}
+                label="Let's Go!"
+                countdownPrefix="Let's Go in"
+              />
+            ) : currentSlide?.slideType === "section-complete" ? (
+              <AutoAdvanceButton
+                key={`auto-advance-${currentStep}`}
+                duration={3000}
+                onClick={handleContinue}
+                label="Keep Going"
+                countdownPrefix="Next in"
+              />
+            ) : currentSlide?.slideType === "final-complete" ? (
+              <AutoAdvanceButton
+                key={`auto-advance-${currentStep}`}
+                duration={5000}
+                onClick={handleContinue}
+                label="Let's find prospects"
+                countdownPrefix="Finishing in"
+              />
+            ) : (
+              <Button
+                onClick={handleContinue}
+                disabled={!canContinue()}
+                className={`w-full h-14 text-lg font-bold rounded-xl transition-all ${
+                  canContinue()
+                    ? "bg-gradient-to-r from-yellow-400 to-amber-500 hover:from-yellow-500 hover:to-amber-600 text-black shadow-[0_0_30px_rgba(250,204,21,0.3)]"
+                    : "bg-white/10 text-gray-500 cursor-not-allowed"
+                }`}
+                data-testid="button-form-continue"
+              >
+                {getButtonText()}
+                <ChevronRight className="w-5 h-5 ml-2" />
+              </Button>
+            )}
             
             {currentSlide?.skipLink && onSkip && (
               <button
