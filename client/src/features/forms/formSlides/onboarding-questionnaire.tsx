@@ -92,7 +92,6 @@ const sectionB: FormSection<OnboardingQuestionnaireData> = {
       id: "hasWebsite",
       slideType: "single-select",
       title: "Does your company have a website?",
-      subtitle: "This helps Fluffy learn about your business",
       options: [
         { id: "yes", label: "Yes, we have a website", icon: <Globe className="w-5 h-5" /> },
         { id: "no", label: "Not yet", icon: <Building2 className="w-5 h-5" /> },
