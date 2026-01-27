@@ -9,6 +9,7 @@ interface AutoAdvanceButtonProps {
   className?: string;
   disabled?: boolean;
   delayMs?: number;
+  muted?: boolean;
 }
 
 export function AutoAdvanceButton({
@@ -19,6 +20,7 @@ export function AutoAdvanceButton({
   className = "",
   disabled = false,
   delayMs = 0,
+  muted = false,
 }: AutoAdvanceButtonProps) {
   const [remainingTime, setRemainingTime] = useState(duration);
   const [isPaused, setIsPaused] = useState(false);
@@ -120,7 +122,9 @@ export function AutoAdvanceButton({
       className={`relative w-full h-14 text-lg font-bold rounded-xl overflow-hidden transition-all ${
         disabled
           ? "bg-white/10 text-gray-500 cursor-not-allowed"
-          : "bg-gradient-to-r from-yellow-400 to-amber-500 text-black cursor-pointer hover:shadow-[0_0_30px_rgba(250,204,21,0.3)]"
+          : muted
+            ? "bg-zinc-700 text-gray-300 cursor-pointer hover:bg-zinc-600"
+            : "bg-gradient-to-r from-yellow-400 to-amber-500 text-black cursor-pointer hover:shadow-[0_0_30px_rgba(250,204,21,0.3)]"
       } ${className}`}
       data-testid="button-form-auto-advance"
     >

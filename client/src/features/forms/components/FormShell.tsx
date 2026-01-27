@@ -240,10 +240,11 @@ export function FormShell<T extends Record<string, string>>({
               <AutoAdvanceButton
                 key={`auto-advance-${currentStep}`}
                 duration={3000}
-                delayMs={4000}
+                delayMs={500}
                 onClick={handleContinue}
                 label="Let's Do It!"
                 countdownPrefix="Let's Do It in"
+                muted
               />
             ) : (
               <Button
