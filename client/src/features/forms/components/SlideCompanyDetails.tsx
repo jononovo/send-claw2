@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import { motion } from "framer-motion";
 import { Input } from "@/components/ui/input";
 import type { SlideComponentProps } from "../types";
@@ -12,7 +13,11 @@ export function SlideCompanyDetails<T extends Record<string, string> & CompanyDe
   slide,
   data,
   onTextInput,
+  onNext,
 }: SlideComponentProps<T>) {
+  const cityRef = useRef<HTMLInputElement>(null);
+  const stateRef = useRef<HTMLInputElement>(null);
+
   return (
     <div className="space-y-8">
       <div className="text-center">
@@ -37,6 +42,12 @@ export function SlideCompanyDetails<T extends Record<string, string> & CompanyDe
           <Input
             value={data.companyName || ""}
             onChange={(e) => onTextInput?.("companyName", e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                cityRef.current?.focus();
+              }
+            }}
             placeholder="Acme Inc."
             className="h-14 bg-white/5 border-white/10 text-white placeholder:text-gray-500 focus:border-yellow-500/50 focus:ring-yellow-500/20 rounded-xl text-lg"
             data-testid="input-companyName"
@@ -50,8 +61,15 @@ export function SlideCompanyDetails<T extends Record<string, string> & CompanyDe
         >
           <label className="block text-sm font-medium text-gray-400 mb-2">City</label>
           <Input
+            ref={cityRef}
             value={data.companyCity || ""}
             onChange={(e) => onTextInput?.("companyCity", e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                stateRef.current?.focus();
+              }
+            }}
             placeholder="San Francisco"
             className="h-14 bg-white/5 border-white/10 text-white placeholder:text-gray-500 focus:border-yellow-500/50 focus:ring-yellow-500/20 rounded-xl text-lg"
             data-testid="input-companyCity"
@@ -65,8 +83,15 @@ export function SlideCompanyDetails<T extends Record<string, string> & CompanyDe
         >
           <label className="block text-sm font-medium text-gray-400 mb-2">State</label>
           <Input
+            ref={stateRef}
             value={data.companyState || ""}
             onChange={(e) => onTextInput?.("companyState", e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                onNext?.();
+              }
+            }}
             placeholder="California"
             className="h-14 bg-white/5 border-white/10 text-white placeholder:text-gray-500 focus:border-yellow-500/50 focus:ring-yellow-500/20 rounded-xl text-lg"
             data-testid="input-companyState"
