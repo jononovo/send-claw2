@@ -1,27 +1,30 @@
 import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
 import { useAuth } from "@/hooks/use-auth";
 import { useRegistrationModal } from "@/hooks/use-registration-modal";
-import { ArrowLeft, X } from "lucide-react";
+import { ArrowLeft, X, CheckCircle } from "lucide-react";
 import { loadFirebase } from "@/lib/firebase";
 import { useToast } from "@/hooks/use-toast";
 import { sendAttributionToServer, logConversionEvent } from "@/features/attribution";
 
-type SimplifiedRegistrationPage = "email" | "login";
+type MagicLinkRegistrationPage = "email" | "checkEmail" | "login";
 
-export function SimplifiedRegistrationModal() {
+export function MagicLinkRegistrationModal() {
   const { isOpen, closeModal: onClose, initialPage } = useRegistrationModal();
-  const [currentPage, setCurrentPage] = useState<SimplifiedRegistrationPage>("email");
+  const [currentPage, setCurrentPage] = useState<MagicLinkRegistrationPage>("email");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [emailValid, setEmailValid] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSending, setIsSending] = useState(false);
+  const [countdown, setCountdown] = useState<number | null>(null);
+  const [showProgress, setShowProgress] = useState(false);
 
   const emailInputRef = useRef<HTMLInputElement>(null);
   const nameInputRef = useRef<HTMLInputElement>(null);
-  const passwordInputRef = useRef<HTMLInputElement>(null);
   const loginEmailRef = useRef<HTMLInputElement>(null);
+  const onCloseRef = useRef(onClose);
   
   const { user, signInWithGoogle, signInWithEmail } = useAuth();
   const { toast } = useToast();
@@ -65,19 +68,42 @@ export function SimplifiedRegistrationModal() {
     }
   }, [currentPage, isOpen]);
 
-  // Auto-focus name field when it appears
+  // Keep onCloseRef updated
   useEffect(() => {
-    if (emailValid && currentPage === "email" && !name) {
-      setTimeout(() => nameInputRef.current?.focus(), 100);
-    }
-  }, [emailValid, currentPage, name]);
+    onCloseRef.current = onClose;
+  }, [onClose]);
 
-  // Auto-focus password field when it appears
+  // Timer logic for checkEmail page - 2s delay then 5s countdown
   useEffect(() => {
-    if (name.length > 0 && currentPage === "email" && !password) {
-      setTimeout(() => passwordInputRef.current?.focus(), 100);
+    if (currentPage !== "checkEmail") {
+      setShowProgress(false);
+      setCountdown(null);
+      return;
     }
-  }, [name, currentPage, password]);
+
+    const delayTimer = setTimeout(() => {
+      setShowProgress(true);
+      setCountdown(5);
+    }, 2000);
+
+    return () => clearTimeout(delayTimer);
+  }, [currentPage]);
+
+  // Countdown decrement
+  useEffect(() => {
+    if (countdown === null) return;
+
+    if (countdown <= 0) {
+      onCloseRef.current();
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      setCountdown(prev => (prev !== null ? prev - 1 : null));
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, [countdown]);
 
   const validateEmail = (email: string) => {
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -108,43 +134,38 @@ export function SimplifiedRegistrationModal() {
     }
   };
 
-  const handleRegister = async () => {
-    if (!validateEmail(email) || !name.trim() || !password) {
+  const handleSendEmailLink = async () => {
+    if (!validateEmail(email) || !name.trim()) {
       toast({
         title: "Missing Information",
-        description: "Please fill in all fields",
+        description: "Please enter your email and name",
         variant: "destructive",
       });
       return;
     }
 
-    if (password.length < 8) {
-      toast({
-        title: "Password Too Short",
-        description: "Password must be at least 8 characters",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    setIsSubmitting(true);
+    setIsSending(true);
     
     try {
       const { auth } = await loadFirebase();
       const { 
         createUserWithEmailAndPassword, 
-        updateProfile 
+        updateProfile, 
+        sendPasswordResetEmail 
       } = await import("firebase/auth");
       
-      // 1. Create user in Firebase with user's chosen password
-      const result = await createUserWithEmailAndPassword(auth, email, password);
+      // 1. Generate temporary password
+      const tempPassword = crypto.randomUUID().replace(/-/g, '').slice(0, 16);
       
-      // 2. Set display name
+      // 2. Create user in Firebase with temp password
+      const result = await createUserWithEmailAndPassword(auth, email, tempPassword);
+      
+      // 3. Set display name
       if (result.user) {
         await updateProfile(result.user, { displayName: name });
       }
       
-      // 3. Sync with backend (creates user in PostgreSQL)
+      // 4. Sync with backend (creates user in PostgreSQL)
       const token = await result.user.getIdToken(true);
       await fetch('/api/google-auth', {
         method: 'POST',
@@ -160,22 +181,21 @@ export function SimplifiedRegistrationModal() {
         })
       });
       
+      // 5. Send password reset email so user can set their real password
+      await sendPasswordResetEmail(auth, email);
+      
       // Track registration complete
       window.dataLayer?.push({ event: 'registration_complete' });
       sendAttributionToServer().catch(() => {});
       logConversionEvent('registration_complete').catch(() => {});
       
-      toast({
-        title: "Account Created!",
-        description: "Welcome aboard!",
-      });
-      
-      onClose();
+      setCurrentPage("checkEmail");
       
     } catch (error: any) {
       console.error("Registration error:", error);
       
       if (error.code === 'auth/email-already-in-use') {
+        // User already exists - prompt to login instead
         toast({
           title: "Account Already Exists",
           description: "This email is already registered. Please use the login option.",
@@ -188,12 +208,6 @@ export function SimplifiedRegistrationModal() {
           description: "Please enter a valid email address",
           variant: "destructive",
         });
-      } else if (error.code === 'auth/weak-password') {
-        toast({
-          title: "Weak Password",
-          description: "Please choose a stronger password",
-          variant: "destructive",
-        });
       } else {
         toast({
           title: "Registration Failed",
@@ -202,7 +216,7 @@ export function SimplifiedRegistrationModal() {
         });
       }
     } finally {
-      setIsSubmitting(false);
+      setIsSending(false);
     }
   };
 
@@ -256,8 +270,6 @@ export function SimplifiedRegistrationModal() {
     setPassword("");
   };
 
-  const isFormComplete = emailValid && name.trim().length > 0 && password.length >= 8;
-
   if (!isOpen) return null;
 
   return (
@@ -302,22 +314,10 @@ export function SimplifiedRegistrationModal() {
                       className="w-full p-4 bg-white/15 border border-white/20 rounded-md text-white placeholder-gray-500 focus:outline-none focus:bg-white/25 focus:border-white/50 transition-colors"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
-                    />
-                  )}
-                  
-                  {/* Password field appears after name has content */}
-                  {name.length > 0 && (
-                    <input
-                      ref={passwordInputRef}
-                      type="password"
-                      placeholder="Password (min 8 characters)"
-                      className="w-full p-4 bg-white/15 border border-white/20 rounded-md text-white placeholder-gray-500 focus:outline-none focus:bg-white/25 focus:border-white/50 transition-colors"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
                       onKeyDown={(e) => {
-                        if (e.key === "Enter" && isFormComplete) {
+                        if (e.key === "Enter") {
                           e.preventDefault();
-                          handleRegister();
+                          handleSendEmailLink();
                         }
                       }}
                     />
@@ -327,15 +327,15 @@ export function SimplifiedRegistrationModal() {
                     <Button 
                       variant="outline" 
                       className={`w-full justify-center transition-all duration-300 ${
-                        isFormComplete
+                        emailValid && name.trim()
                           ? 'bg-gradient-to-r from-blue-800 via-indigo-800 to-purple-800 hover:from-blue-700 hover:via-indigo-700 hover:to-purple-700 text-white hover:text-white border-0 shadow-lg'
                           : 'bg-transparent hover:bg-white/10 text-white border border-white/30 hover:border-white/50'
                       }`}
-                      onClick={handleRegister}
-                      disabled={!isFormComplete || isSubmitting}
+                      onClick={handleSendEmailLink}
+                      disabled={!emailValid || !name.trim() || isSending}
                     >
-                      {isSubmitting ? (
-                        <span>Creating Account...</span>
+                      {isSending ? (
+                        <span>Sending...</span>
                       ) : (
                         <span className="font-semibold">GO →</span>
                       )}
@@ -370,6 +370,43 @@ export function SimplifiedRegistrationModal() {
                     </button>
                   </p>
                 </div>
+              </div>
+            </div>
+          )}
+
+          {currentPage === "checkEmail" && (
+            <div className="w-full max-w-md mx-auto">
+              <div className="text-center text-white mb-8">
+                <div className="flex justify-center mb-4">
+                  <div className="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center">
+                    <CheckCircle className="h-8 w-8 text-green-400" />
+                  </div>
+                </div>
+                <h2 className="text-3xl font-bold mb-3">Check Your Email</h2>
+                <p className="text-gray-200 text-lg">
+                  We sent a magic link to<br />
+                  <span className="text-white font-medium">{email}</span>
+                </p>
+              </div>
+
+              <div className="space-y-4 max-w-sm mx-auto px-2 sm:px-4">
+                <div className="bg-white/5 border border-white/10 rounded-lg p-4 text-center">
+                  <p className="text-gray-300 text-sm">
+                    Click the link in your email to sign in instantly. No password required!
+                  </p>
+                </div>
+
+                {showProgress && (
+                  <div className="pt-6 space-y-2">
+                    <p className="text-center text-gray-400 text-sm">
+                      Closing in {countdown}...
+                    </p>
+                    <Progress 
+                      value={((countdown || 0) / 5) * 100} 
+                      className="h-1.5 bg-white/10 [&>div]:bg-green-400"
+                    />
+                  </div>
+                )}
               </div>
             </div>
           )}
