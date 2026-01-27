@@ -222,7 +222,7 @@ export function FormShell<T extends Record<string, string>>({
         </button>
       </div>
 
-      <div className="flex-1 flex items-start justify-center px-6 py-8 overflow-y-auto">
+      <div className="flex-1 flex items-start justify-center px-6 py-8 overflow-y-auto custom-scrollbar">
         <div className="w-full max-w-lg">
           <AnimatePresence mode="wait">
             <motion.div
