@@ -342,7 +342,7 @@ function QuestCard({
 export function QuestsPage() {
   const [, navigate] = useLocation();
   const guidance = useGuidance();
-  const { state, startQuest, resumeGuidance, restartChallenge, setPlaybackMode } = guidance;
+  const { state } = guidance;
   const [restartConfirm, setRestartConfirm] = useState<{questId: string; challengeIndex: number; challengeName: string;} | null>(null);
 
   const handleRestartRequest = (questId: string, challengeIndex: number, challengeName: string) => {
@@ -351,7 +351,9 @@ export function QuestsPage() {
 
   const handleConfirmRestart = () => {
     if (restartConfirm) {
-      restartChallenge(restartConfirm.questId, restartConfirm.challengeIndex);
+      window.dispatchEvent(new CustomEvent('guidance:restart-challenge', { 
+        detail: { questId: restartConfirm.questId, challengeIndex: restartConfirm.challengeIndex, mode: 'guide' } 
+      }));
       setRestartConfirm(null);
       navigate("/app");
     }
@@ -370,28 +372,36 @@ export function QuestsPage() {
   }, []);
 
   const handleStartQuest = (questId: string) => {
-    startQuest(questId);
+    window.dispatchEvent(new CustomEvent('guidance:start-quest', { 
+      detail: { questId, mode: 'guide' } 
+    }));
     navigate("/app");
   };
 
   const handleContinueChallenge = (questId: string, challengeIndex: number) => {
     if (state.currentQuestId === questId) {
-      resumeGuidance();
+      window.dispatchEvent(new CustomEvent('guidance:resume-guidance'));
       navigate("/app");
     } else {
-      startQuest(questId);
+      window.dispatchEvent(new CustomEvent('guidance:start-quest', { 
+        detail: { questId, mode: 'guide' } 
+      }));
       navigate("/app");
     }
   };
 
   const handleStartLockedChallenge = (questId: string, challengeIndex: number) => {
-    restartChallenge(questId, challengeIndex);
+    window.dispatchEvent(new CustomEvent('guidance:restart-challenge', { 
+      detail: { questId, challengeIndex, mode: 'guide' } 
+    }));
     navigate("/app");
   };
 
   const handleShowDemo = (questId: string, challengeIndex: number) => {
     // Start the challenge in show mode (pass "show" as the mode parameter)
-    restartChallenge(questId, challengeIndex, "show");
+    window.dispatchEvent(new CustomEvent('guidance:restart-challenge', { 
+      detail: { questId, challengeIndex, mode: 'show' } 
+    }));
     navigate("/app");
   };
 
