@@ -171,7 +171,10 @@ export function PlanCards({ onClose }: PlanCardsProps) {
                       {PROMO_ENABLED && (
                         <span className="text-sm text-foreground line-through">${plan.regularPrice}</span>
                       )}
-                      <span className="text-lg font-bold text-foreground">${plan.price}</span>
+                      <span className={cn(
+                        "text-lg font-bold",
+                        PROMO_ENABLED ? "text-red-700 dark:text-red-500" : "text-foreground"
+                      )}>${plan.price}</span>
                       {PROMO_ENABLED && (
                         <span className="text-xs font-semibold text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-900/30 px-1.5 py-0.5 rounded">
                           {getDiscountPercent(plan.regularPrice, plan.price)}% off
@@ -190,7 +193,7 @@ export function PlanCards({ onClose }: PlanCardsProps) {
                     "w-full mt-3 text-base group relative transition-all duration-300 transform hover:scale-102 hover:shadow-lg",
                     isUpgrade 
                       ? 'bg-gray-100 hover:bg-black hover:text-white text-black border-0' 
-                      : 'bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white border-0 shadow-lg'
+                      : 'bg-gradient-to-r from-accent-light to-accent hover:from-accent hover:to-accent-dark text-white border-0 shadow-md hover:shadow-lg'
                   )}
                   onClick={(e) => {
                     e.stopPropagation();
