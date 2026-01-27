@@ -10,7 +10,6 @@ import {
   FluffyGuide,
   QuestProgressHeader,
   ChallengeComplete,
-  QuestStarterPopover,
 } from "../components";
 import { GuidanceVideoPlayer, getChallengeVideo } from "../video";
 import { findElement } from "../utils/elementSelector";
@@ -947,13 +946,15 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
       {/* Other guidance UI elements render after children (overlays) */}
       {isOnEnabledRoute && (
         <>
-          {!showQuestStarterPopover && (
-            <FluffyGuide
-              onClick={handleFluffyClick}
-              isActive={state.isActive}
-              onCloseGuide={engine.pauseGuidance}
-            />
-          )}
+          <FluffyGuide
+            onClick={handleFluffyClick}
+            isActive={state.isActive}
+            onCloseGuide={engine.pauseGuidance}
+            starterMode={showQuestStarterPopover}
+            onShowMeMode={handleQuestStarterShowMe}
+            onGuideMeMode={handleQuestStarterGuideMe}
+            onStarterDismiss={handleQuestStarterDismiss}
+          />
 
           <GuidanceVideoPlayer
             videoUrl={videoUrl}
@@ -1003,12 +1004,6 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
             onDismiss={handleChallengeCompleteClose}
           />
 
-          <QuestStarterPopover
-            isVisible={showQuestStarterPopover}
-            onShowMeMode={handleQuestStarterShowMe}
-            onGuideMeMode={handleQuestStarterGuideMe}
-            onDismiss={handleQuestStarterDismiss}
-          />
         </>
       )}
     </GuidanceContext.Provider>
