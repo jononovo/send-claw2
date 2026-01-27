@@ -53,7 +53,7 @@ const sectionA: FormSection<OnboardingQuestionnaireData> = {
       id: "welcome",
       slideType: "welcome",
       title: "Welcome aboard!",
-      subtitle: "Let's find your \"IDEAL\" customers.",
+      subtitle: "Let's find ideal customers.",
       emoji: "🐥",
       skipLink: { text: "Skip Onboarding", action: "skip" },
     },
