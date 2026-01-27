@@ -62,7 +62,7 @@ export function SlideTextInput<T extends Record<string, string>>({
         {slide.alternativeLink && onAlternativeClick && (
           <button
             onClick={onAlternativeClick}
-            className="w-full mt-3 text-sm text-gray-400 hover:text-white transition-colors"
+            className="w-full mt-4 text-lg text-gray-400 hover:text-white transition-colors"
           >
             {slide.alternativeLink.text}
           </button>
