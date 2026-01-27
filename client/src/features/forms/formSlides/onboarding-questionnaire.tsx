@@ -30,6 +30,7 @@ export interface OnboardingQuestionnaireData {
   companyCountry: string;
   companyRole: string;
   companyRoleOther: string;
+  productUrl: string;
   offeringType: string;
   productDescription: string;
   customerLove: string;
@@ -162,6 +163,19 @@ const sectionC: FormSection<OnboardingQuestionnaireData> = {
       slideType: "section-intro",
       title: "Help Fluffy understand what you sell",
             emoji: "🐥",
+    },
+    {
+      id: "productUrl",
+      slideType: "text-input",
+      title: "Is there a link/URL to the main product/service you are selling?",
+      subtitle: "A page within your website or on another platform?",
+      placeholder: "yourproduct.com/pricing",
+      inputType: "url",
+      alternativeLink: {
+        text: "No. Skip this",
+        action: "goto",
+        targetSlideId: "offeringType",
+      },
     },
     {
       id: "offeringType",
@@ -327,6 +341,7 @@ export const onboardingQuestionnaire: Form<OnboardingQuestionnaireData> = {
     companyCountry: "United States",
     companyRole: "",
     companyRoleOther: "",
+    productUrl: "",
     offeringType: "",
     productDescription: "",
     customerLove: "",

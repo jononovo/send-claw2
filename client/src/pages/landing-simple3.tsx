@@ -429,6 +429,7 @@ export default function LandingSimple3() {
               goal: data.goal || null,
             },
             product: {
+              productUrl: data.productUrl || null,
               offeringType: data.offeringType || null,
               description: data.productDescription || null,
               customerLove: data.customerLove || null,
