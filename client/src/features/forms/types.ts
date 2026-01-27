@@ -15,6 +15,7 @@ export interface SlideOption {
   label: string;
   icon: ReactNode;
   description?: string;
+  branchSlideId?: string;
 }
 
 export interface SkipLink {
@@ -118,6 +119,7 @@ export interface SlideComponentProps<T extends Record<string, string>> {
   onSelect?: (slideId: string, optionId: string) => void;
   onTextInput?: (slideId: string, value: string) => void;
   onNext?: () => void;
+  goToSlide?: (slideId: string) => void;
 }
 
 export interface ScreenComponentProps {

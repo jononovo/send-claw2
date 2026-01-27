@@ -11,7 +11,8 @@ import {
   Star, 
   Package, 
   Headphones,
-  ChevronRight 
+  ChevronRight,
+  MoreHorizontal 
 } from "lucide-react";
 import type { Form, FormSection, FormSlide } from "../types";
 import { FORM_DEFAULTS } from "../defaults";
@@ -26,6 +27,7 @@ export interface OnboardingQuestionnaireData {
   companyCity: string;
   companyState: string;
   companyRole: string;
+  companyRoleOther: string;
   offeringType: string;
   productDescription: string;
   customerLove: string;
@@ -124,8 +126,18 @@ const sectionB: FormSection<OnboardingQuestionnaireData> = {
         { id: "owner", label: "Owner / Founder", icon: <Zap className="w-5 h-5" /> },
         { id: "executive", label: "Executive / C-Suite", icon: <Star className="w-5 h-5" /> },
         { id: "manager", label: "Manager / Team Lead", icon: <Users className="w-5 h-5" /> },
-        { id: "individual", label: "Individual Contributor", icon: <Target className="w-5 h-5" /> },
+        { id: "other", label: "Other", icon: <MoreHorizontal className="w-5 h-5" />, branchSlideId: "companyRoleOther" },
       ],
+    },
+    {
+      id: "companyRoleOther",
+      slideType: "text-input",
+      title: "What's your role?",
+      subtitle: "Tell us a bit more about what you do",
+      placeholder: "e.g. Sales Representative, Consultant...",
+      inputType: "text",
+      conditionalOn: "companyRole",
+      conditionalValue: "other",
     },
     {
       id: "section-b-complete",
@@ -318,6 +330,7 @@ export const onboardingQuestionnaire: Form<OnboardingQuestionnaireData> = {
     companyCity: "",
     companyState: "",
     companyRole: "",
+    companyRoleOther: "",
     offeringType: "",
     productDescription: "",
     customerLove: "",

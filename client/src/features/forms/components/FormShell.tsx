@@ -96,6 +96,7 @@ export function FormShell<T extends Record<string, string>>({
       onSelect: handleSelect,
       onTextInput: handleTextInput,
       onNext: handleNext,
+      goToSlide,
     };
 
     if (currentSlide.component && componentRegistry[currentSlide.component]) {

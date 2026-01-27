@@ -7,6 +7,7 @@ export function SlideSingleSelect<T extends Record<string, string>>({
   data,
   onSelect,
   onNext,
+  goToSlide,
 }: SlideComponentProps<T>) {
   const autoAdvanceRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -23,8 +24,15 @@ export function SlideSingleSelect<T extends Record<string, string>>({
       clearTimeout(autoAdvanceRef.current);
     }
     onSelect?.(slide.id, optionId);
+    
+    const selectedOption = slide.options?.find(opt => opt.id === optionId);
+    
     autoAdvanceRef.current = setTimeout(() => {
-      onNext?.();
+      if (selectedOption?.branchSlideId && goToSlide) {
+        goToSlide(selectedOption.branchSlideId);
+      } else {
+        onNext?.();
+      }
     }, 400);
   };
 
