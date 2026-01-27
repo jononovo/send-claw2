@@ -7,6 +7,7 @@ export function SlideTextInput<T extends Record<string, string>>({
   slide,
   data,
   onTextInput,
+  onNext,
 }: SlideComponentProps<T>) {
   const value = (data[slide.id as keyof T] as string) || "";
 
@@ -42,6 +43,12 @@ export function SlideTextInput<T extends Record<string, string>>({
             type={slide.inputType === "url" ? "url" : "text"}
             value={value}
             onChange={(e) => onTextInput?.(slide.id, e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                onNext?.();
+              }
+            }}
             placeholder={slide.placeholder}
             className="h-14 bg-white/5 border-white/10 text-white placeholder:text-gray-500 focus:border-yellow-500/50 focus:ring-yellow-500/20 rounded-xl text-lg"
             data-testid={`input-${slide.id}`}
