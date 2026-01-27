@@ -8,6 +8,7 @@ interface AutoAdvanceButtonProps {
   countdownPrefix?: string;
   className?: string;
   disabled?: boolean;
+  delayMs?: number;
 }
 
 export function AutoAdvanceButton({
@@ -17,9 +18,11 @@ export function AutoAdvanceButton({
   countdownPrefix = "Next in",
   className = "",
   disabled = false,
+  delayMs = 0,
 }: AutoAdvanceButtonProps) {
   const [remainingTime, setRemainingTime] = useState(duration);
   const [isPaused, setIsPaused] = useState(false);
+  const [isDelaying, setIsDelaying] = useState(delayMs > 0);
   const baseRemainingRef = useRef(duration);
   const timerStartRef = useRef<number>(0);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -44,10 +47,18 @@ export function AutoAdvanceButton({
     setRemainingTime(duration);
     baseRemainingRef.current = duration;
     hasCompletedRef.current = false;
-  }, [duration]);
+    setIsDelaying(delayMs > 0);
+  }, [duration, delayMs]);
 
   useEffect(() => {
-    if (disabled) {
+    if (delayMs > 0 && isDelaying) {
+      const delayTimeout = setTimeout(() => setIsDelaying(false), delayMs);
+      return () => clearTimeout(delayTimeout);
+    }
+  }, [delayMs, isDelaying]);
+
+  useEffect(() => {
+    if (disabled || isDelaying) {
       clearTimers();
       return;
     }
@@ -98,7 +109,7 @@ export function AutoAdvanceButton({
 
   const progressPercent = ((duration - remainingTime) / duration) * 100;
   const secondsLeft = Math.ceil(remainingTime / 1000);
-  const displayText = isPaused ? label : `${countdownPrefix} ${secondsLeft}...`;
+  const displayText = isDelaying || isPaused ? label : `${countdownPrefix} ${secondsLeft}...`;
 
   return (
     <button
@@ -109,17 +120,17 @@ export function AutoAdvanceButton({
       className={`relative w-full h-14 text-lg font-bold rounded-xl overflow-hidden transition-all ${
         disabled
           ? "bg-white/10 text-gray-500 cursor-not-allowed"
-          : "bg-gray-800 text-white cursor-pointer hover:shadow-[0_0_30px_rgba(250,204,21,0.3)]"
+          : "bg-gradient-to-r from-yellow-400 to-amber-500 text-black cursor-pointer hover:shadow-[0_0_30px_rgba(250,204,21,0.3)]"
       } ${className}`}
       data-testid="button-form-auto-advance"
     >
-      {!disabled && (
+      {!disabled && !isDelaying && (
         <div
-          className="absolute inset-0 bg-gradient-to-r from-yellow-400 to-amber-500 transition-none"
+          className="absolute bottom-0 left-0 h-1.5 bg-amber-700/60 rounded-b-xl transition-none"
           style={{ width: `${progressPercent}%` }}
         />
       )}
-      <span className="relative z-10 flex items-center justify-center text-black">
+      <span className="relative z-10 flex items-center justify-center">
         {displayText}
         <ChevronRight className="w-5 h-5 ml-2" />
       </span>
