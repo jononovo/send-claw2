@@ -304,8 +304,7 @@ const sectionFinal: FormSection<OnboardingQuestionnaireData> = {
       id: "final-complete",
       slideType: "final-complete",
       title: "You're all set!",
-      subtitle: "🐥 Fluffy can't wait to help you close more deals!",
-      emoji: "🚀",
+            emoji: "🚀",
     },
   ],
 };
