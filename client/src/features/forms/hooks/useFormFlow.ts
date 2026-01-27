@@ -100,6 +100,20 @@ export function useFormFlow<T extends Record<string, string>>(
     }
   }, [currentStep]);
 
+  const goToSlide = useCallback((slideId: string, newData?: T) => {
+    const dataToUse = newData || data;
+    const updatedVisibleSlides = allSlides.filter(({ slide }) => {
+      if (slide.conditionalOn) {
+        return dataToUse[slide.conditionalOn as keyof T] === slide.conditionalValue;
+      }
+      return true;
+    });
+    const targetIndex = updatedVisibleSlides.findIndex(({ slide }) => slide.id === slideId);
+    if (targetIndex >= 0) {
+      setCurrentStep(targetIndex);
+    }
+  }, [data, allSlides]);
+
   const getButtonText = useCallback((): string => {
     if (!currentSlide) return "Continue";
 
@@ -133,6 +147,7 @@ export function useFormFlow<T extends Record<string, string>>(
     setData,
     handleNext,
     handleBack,
+    goToSlide,
     canContinue,
     getButtonText,
   };

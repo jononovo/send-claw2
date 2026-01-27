@@ -35,6 +35,7 @@ export function FormShell<T extends Record<string, string>>({
     setData,
     handleNext,
     handleBack,
+    goToSlide,
     canContinue,
     getButtonText,
     totalSteps,
@@ -262,9 +263,22 @@ export function FormShell<T extends Record<string, string>>({
               </Button>
             )}
             
-            {currentSlide?.skipLink && onSkip && (
+            {currentSlide?.skipLink && (
               <button
-                onClick={onSkip}
+                onClick={() => {
+                  const skipLink = currentSlide.skipLink!;
+                  if (skipLink.action === "goto" && skipLink.targetSlideId) {
+                    if (skipLink.setData) {
+                      setData(skipLink.setData.key as keyof T, skipLink.setData.value);
+                      const newData = { ...data, [skipLink.setData.key]: skipLink.setData.value };
+                      goToSlide(skipLink.targetSlideId, newData as T);
+                    } else {
+                      goToSlide(skipLink.targetSlideId);
+                    }
+                  } else if (skipLink.action === "skip" && onSkip) {
+                    onSkip();
+                  }
+                }}
                 className="w-full mt-4 text-lg text-gray-400 hover:text-white transition-colors"
                 data-testid="button-form-skip"
               >

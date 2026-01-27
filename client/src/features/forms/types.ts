@@ -19,7 +19,9 @@ export interface SlideOption {
 
 export interface SkipLink {
   text: string;
-  action: "skip";
+  action: "skip" | "goto";
+  targetSlideId?: string;
+  setData?: { key: string; value: string };
 }
 
 export interface FormSlide<T extends Record<string, string> = Record<string, string>> {
@@ -85,6 +87,7 @@ export interface FormActions<T extends Record<string, string>> {
   setData: (key: keyof T, value: string) => void;
   handleNext: () => void;
   handleBack: () => void;
+  goToSlide: (slideId: string, newData?: T) => void;
   canContinue: () => boolean;
   getButtonText: () => string;
 }
