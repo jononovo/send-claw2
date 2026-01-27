@@ -25,7 +25,7 @@ export interface OnboardingQuestionnaireData {
   website: string;
   companyName: string;
   companyCity: string;
-  companyState: string;
+  companyCountry: string;
   companyRole: string;
   companyRoleOther: string;
   offeringType: string;
@@ -115,7 +115,7 @@ const sectionB: FormSection<OnboardingQuestionnaireData> = {
       validate: (data) => 
         data.companyName.trim() !== "" &&
         data.companyCity.trim() !== "" &&
-        data.companyState.trim() !== "",
+        data.companyCountry.trim() !== "",
     },
     {
       id: "companyRole",
@@ -328,7 +328,7 @@ export const onboardingQuestionnaire: Form<OnboardingQuestionnaireData> = {
     website: "",
     companyName: "",
     companyCity: "",
-    companyState: "",
+    companyCountry: "United States",
     companyRole: "",
     companyRoleOther: "",
     offeringType: "",

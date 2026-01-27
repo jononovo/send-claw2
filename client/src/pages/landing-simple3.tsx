@@ -421,7 +421,7 @@ export default function LandingSimple3() {
               website: data.website || null,
               hasWebsite: data.hasWebsite || null,
               city: data.companyCity || null,
-              state: data.companyState || null,
+              country: data.companyCountry || null,
               role: data.companyRole || null,
             },
             userGoals: {

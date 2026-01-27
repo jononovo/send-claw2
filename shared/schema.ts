@@ -104,7 +104,7 @@ export interface OnboardingCompanyData {
   website?: string | null;
   hasWebsite?: string | null;  // 'yes' or 'no' from questionnaire
   city?: string | null;
-  state?: string | null;
+  country?: string | null;
   role?: string | null;  // 'owner', 'executive', 'manager', 'individual'
 }
 
