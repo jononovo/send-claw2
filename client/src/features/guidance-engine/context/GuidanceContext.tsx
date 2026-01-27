@@ -619,6 +619,37 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
     };
   }, [autoStartForNewUsers, authLoading, user, state.isActive, state.currentQuestId, state.completedQuests]);
 
+  // Listen for guidance events from QuestsPage (which is outside the provider context)
+  useEffect(() => {
+    const handleStartQuest = (e: Event) => {
+      const { questId, mode } = (e as CustomEvent).detail;
+      if (questId) {
+        startQuestRef.current(questId, mode || 'guide');
+      }
+    };
+
+    const handleRestartChallenge = (e: Event) => {
+      const { questId, challengeIndex, mode } = (e as CustomEvent).detail;
+      if (questId !== undefined && challengeIndex !== undefined) {
+        engine.restartChallenge(questId, challengeIndex, mode || 'guide');
+      }
+    };
+
+    const handleResumeGuidance = () => {
+      engine.resumeGuidance();
+    };
+
+    window.addEventListener('guidance:start-quest', handleStartQuest);
+    window.addEventListener('guidance:restart-challenge', handleRestartChallenge);
+    window.addEventListener('guidance:resume-guidance', handleResumeGuidance);
+
+    return () => {
+      window.removeEventListener('guidance:start-quest', handleStartQuest);
+      window.removeEventListener('guidance:restart-challenge', handleRestartChallenge);
+      window.removeEventListener('guidance:resume-guidance', handleResumeGuidance);
+    };
+  }, [engine]);
+
   // Dispatch setupEvent when starting a challenge that requires it
   useEffect(() => {
     if (
