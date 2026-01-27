@@ -244,9 +244,10 @@ export function FormShell<T extends Record<string, string>>({
               <AutoAdvanceButton
                 key={`auto-advance-${currentStep}`}
                 duration={3000}
+                delayMs={300}
                 onClick={handleContinue}
                 label="Keep Going"
-                countdownPrefix="Next in"
+                shortCountdown
               />
             ) : currentSlide?.slideType === "final-complete" ? (
               <AutoAdvanceButton
