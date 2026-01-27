@@ -90,7 +90,7 @@ export function AutoAdvanceButton({
     }, 50);
 
     return clearTimers;
-  }, [isPaused, disabled, clearTimers]);
+  }, [isPaused, disabled, isDelaying, clearTimers]);
 
   const handleClick = () => {
     if (hasCompletedRef.current || disabled) return;
