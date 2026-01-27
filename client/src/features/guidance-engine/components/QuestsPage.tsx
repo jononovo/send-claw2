@@ -312,20 +312,22 @@ function QuestCard({
                       </Button>
                     )}
 
-                    {(challengeStatus === "in-progress" || challengeStatus === "available") && (
+                    {(challengeStatus === "in-progress" || challengeStatus === "available" || (isHovered && hasSteps && challengeStatus === "locked")) && (
                       <Button
                         size="sm"
                         onClick={(e) => {
                           e.stopPropagation();
                           if (challengeStatus === "available") {
                             onStartQuest(quest.id);
+                          } else if (challengeStatus === "locked") {
+                            onStartLockedChallenge(quest.id, challengeIndex);
                           } else {
                             onContinueChallenge(quest.id, challengeIndex);
                           }
                         }}
                         className="bg-amber-500 hover:bg-amber-600 text-white text-xs px-3"
                       >
-                        {challengeStatus === "available" ? "Start" : "Continue"}
+                        {challengeStatus === "in-progress" ? "Continue" : "Start Guide"}
                       </Button>
                     )}
                   </motion.div>
