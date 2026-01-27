@@ -12,7 +12,9 @@ import {
   Package, 
   Headphones,
   ChevronRight,
-  MoreHorizontal 
+  MoreHorizontal,
+  Briefcase,
+  UserSearch
 } from "lucide-react";
 import type { Form, FormSection, FormSlide } from "../types";
 import { FORM_DEFAULTS } from "../defaults";
@@ -64,6 +66,8 @@ const sectionA: FormSection<OnboardingQuestionnaireData> = {
         { id: "sales", label: "Grow my sales pipeline", icon: <TrendingUp className="w-5 h-5" /> },
         { id: "outreach", label: "Automate my outreach", icon: <Mail className="w-5 h-5" /> },
         { id: "leads", label: "Find new leads", icon: <Search className="w-5 h-5" /> },
+        { id: "employers", label: "Find employers", icon: <Briefcase className="w-5 h-5" /> },
+        { id: "candidates", label: "Find job candidates", icon: <UserSearch className="w-5 h-5" /> },
         { id: "curious", label: "Just exploring", icon: <Sparkles className="w-5 h-5" /> },
       ],
     },
