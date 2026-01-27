@@ -86,7 +86,6 @@ const sectionB: FormSection<OnboardingQuestionnaireData> = {
       id: "section-b-intro",
       slideType: "section-intro",
       title: "Now let's learn about your company",
-      subtitle: "Just a couple quick questions",
       emoji: "🏢",
     },
     {
