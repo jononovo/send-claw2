@@ -89,23 +89,12 @@ const sectionB: FormSection<OnboardingQuestionnaireData> = {
       emoji: "🏢",
     },
     {
-      id: "hasWebsite",
-      slideType: "single-select",
-      title: "Does your company have a website?",
-      options: [
-        { id: "yes", label: "Yes, we have a website", icon: <Globe className="w-5 h-5" /> },
-        { id: "no", label: "Not yet", icon: <Building2 className="w-5 h-5" /> },
-      ],
-    },
-    {
       id: "website",
       slideType: "text-input",
       title: "What's your website?",
       subtitle: "Fluffy will learn all about your company from here",
       placeholder: "https://yourcompany.com",
       inputType: "url",
-      conditionalOn: "hasWebsite",
-      conditionalValue: "yes",
       alternativeLink: {
         text: "We don't have a website",
         action: "goto",
