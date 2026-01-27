@@ -1,9 +1,9 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { createPortal } from "react-dom";
 import { Trophy, ChevronRight, Coins } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { fireTouchConfetti, animateCreditSparkles } from "@/features/animations";
+import { fireTouchConfetti, animateCreditSparkles, AutoDismissBar } from "@/features/animations";
 
 interface ChallengeCompleteProps {
   isVisible: boolean;
@@ -23,6 +23,7 @@ export function ChallengeComplete({
   onDismiss,
 }: ChallengeCompleteProps) {
   const creditsBadgeRef = useRef<HTMLDivElement>(null);
+  const [isHovered, setIsHovered] = useState(false);
 
   useEffect(() => {
     if (isVisible) {
@@ -56,6 +57,8 @@ export function ChallengeComplete({
             transition={{ type: "spring", stiffness: 300, damping: 25 }}
             className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl p-8 max-w-md mx-4 text-center border border-yellow-500/30 shadow-2xl"
             onClick={(e) => e.stopPropagation()}
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
           >
             <motion.div
               initial={{ scale: 0 }}
@@ -128,6 +131,22 @@ export function ChallengeComplete({
               >
                 Next Challenge <ChevronRight className="h-4 w-4 ml-1" />
               </Button>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.7 }}
+              className="mt-6"
+            >
+              <AutoDismissBar
+                duration={5000}
+                onComplete={onDismiss}
+                isPaused={isHovered}
+                isVisible={isVisible}
+                showCountdown={true}
+                countdownLabel="Closing in"
+              />
             </motion.div>
           </motion.div>
         </motion.div>
