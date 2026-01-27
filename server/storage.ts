@@ -6,6 +6,7 @@ import {
   userCredits, creditTransactions, subscriptions, userNotifications,
   campaignRecipients, userGuidanceProgress, userProgress, accessApplications,
   emailSequences, emailSequenceEvents, emailSends, guidanceVideos,
+  userOnboardingSnapshot,
   type UserPreferences, type InsertUserPreferences,
   type UserEmailPreferences, type InsertUserEmailPreferences,
   type SearchList, type InsertSearchList,
@@ -27,7 +28,8 @@ import {
   type EmailSequence, type InsertEmailSequence,
   type EmailSequenceEvent, type InsertEmailSequenceEvent,
   type EmailSend, type InsertEmailSend,
-  type GuidanceVideo, type InsertGuidanceVideo
+  type GuidanceVideo, type InsertGuidanceVideo,
+  type UserOnboardingSnapshot, type InsertUserOnboardingSnapshot
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, and, or, sql, desc, lt, inArray, isNull, ne } from "drizzle-orm";
@@ -212,6 +214,10 @@ export interface IStorage {
   getGuidanceVideo(id: number): Promise<GuidanceVideo | undefined>;
   getGuidanceVideoByChallenge(challengeId: string): Promise<GuidanceVideo | undefined>;
   updateGuidanceVideo(id: number, data: Partial<GuidanceVideo>): Promise<void>;
+
+  // User Onboarding Snapshot (immutable source of truth)
+  createUserOnboardingSnapshot(data: InsertUserOnboardingSnapshot): Promise<UserOnboardingSnapshot>;
+  getUserOnboardingSnapshot(userId: number): Promise<UserOnboardingSnapshot | undefined>;
 }
 
 class DatabaseStorage implements IStorage {
@@ -1943,6 +1949,29 @@ class DatabaseStorage implements IStorage {
     await db.update(guidanceVideos)
       .set({ ...data, updatedAt: new Date() })
       .where(eq(guidanceVideos.id, id));
+  }
+
+  // User Onboarding Snapshot Implementation (immutable - append only)
+  async createUserOnboardingSnapshot(data: InsertUserOnboardingSnapshot): Promise<UserOnboardingSnapshot> {
+    const [snapshot] = await db.insert(userOnboardingSnapshot)
+      .values({
+        userId: data.userId,
+        company: data.company || {},
+        userGoals: data.userGoals || {},
+        product: data.product || {},
+        source: data.source || 'onboarding'
+      })
+      .returning();
+    return snapshot;
+  }
+
+  async getUserOnboardingSnapshot(userId: number): Promise<UserOnboardingSnapshot | undefined> {
+    const [snapshot] = await db.select()
+      .from(userOnboardingSnapshot)
+      .where(eq(userOnboardingSnapshot.userId, userId))
+      .orderBy(desc(userOnboardingSnapshot.capturedAt))
+      .limit(1);
+    return snapshot;
   }
 }
 

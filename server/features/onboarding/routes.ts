@@ -1,9 +1,10 @@
 import { Router, Request, Response, Application } from 'express';
 import { getUserId } from '../../utils/auth';
 import { db } from '../../db';
-import { strategicProfiles, targetCustomerProfiles } from '../../../shared/schema';
+import { strategicProfiles, targetCustomerProfiles, insertUserOnboardingSnapshotSchema } from '../../../shared/schema';
 import { eq } from 'drizzle-orm';
 import { queryOpenAI } from '../../ai-services';
+import { storage } from '../../storage';
 
 interface GenerateICPRequest {
   searchQuery: string;
@@ -236,6 +237,77 @@ Return ONLY a JSON object with this structure:
       console.error('Error generating improved prompts:', error);
       res.status(500).json({ 
         error: 'Failed to generate improved search suggestions',
+        message: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  });
+
+  // Save user onboarding snapshot (immutable source of truth for user's original words)
+  router.post('/snapshot', requireAuth, async (req: Request, res: Response) => {
+    try {
+      const userId = getUserId(req);
+      
+      // Parse and validate the request body
+      const parseResult = insertUserOnboardingSnapshotSchema.safeParse({
+        ...req.body,
+        userId
+      });
+      
+      if (!parseResult.success) {
+        return res.status(400).json({ 
+          error: 'Invalid onboarding data',
+          details: parseResult.error.issues 
+        });
+      }
+      
+      // Check if user already has a snapshot (immutable - one per user)
+      const existingSnapshot = await storage.getUserOnboardingSnapshot(userId);
+      if (existingSnapshot) {
+        return res.status(409).json({ 
+          error: 'Onboarding snapshot already exists',
+          message: 'User onboarding data is immutable and cannot be overwritten',
+          existingSnapshot
+        });
+      }
+      
+      // Create the immutable snapshot
+      const snapshot = await storage.createUserOnboardingSnapshot(parseResult.data);
+      
+      console.log(`[Onboarding] Created snapshot for user ${userId}:`, {
+        hasCompany: !!parseResult.data.company,
+        hasGoals: !!parseResult.data.userGoals,
+        hasProduct: !!parseResult.data.product
+      });
+      
+      res.status(201).json({ 
+        success: true,
+        snapshot 
+      });
+      
+    } catch (error) {
+      console.error('Error creating onboarding snapshot:', error);
+      res.status(500).json({ 
+        error: 'Failed to save onboarding data',
+        message: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  });
+
+  // Get user's onboarding snapshot
+  router.get('/snapshot', requireAuth, async (req: Request, res: Response) => {
+    try {
+      const userId = getUserId(req);
+      const snapshot = await storage.getUserOnboardingSnapshot(userId);
+      
+      if (!snapshot) {
+        return res.status(404).json({ error: 'No onboarding snapshot found' });
+      }
+      
+      res.json({ snapshot });
+    } catch (error) {
+      console.error('Error fetching onboarding snapshot:', error);
+      res.status(500).json({ 
+        error: 'Failed to fetch onboarding data',
         message: error instanceof Error ? error.message : 'Unknown error'
       });
     }

@@ -97,6 +97,59 @@ export const userAttribution = pgTable("user_attribution", {
   index('idx_user_attribution_source').on(table.source)
 ]);
 
+// User Onboarding Snapshot - IMMUTABLE record of exact user words at registration
+// This table is APPEND-ONLY - records should NEVER be edited after creation
+export interface OnboardingCompanyData {
+  name?: string | null;
+  website?: string | null;
+  hasWebsite?: string | null;  // 'yes' or 'no' from questionnaire
+  city?: string | null;
+  state?: string | null;
+  role?: string | null;  // 'owner', 'executive', 'manager', 'individual'
+}
+
+export interface OnboardingUserGoals {
+  primaryGoals?: string[];  // ['sales', 'outreach', 'leads', 'curious'] from multi-select
+  goal?: string | null;  // Additional goal context
+  priorityRanking?: string[];  // Future: ranked priorities
+  challenges?: string[];  // Future: pain points they mention
+}
+
+export interface OnboardingProductData {
+  offeringType?: string | null;  // 'product', 'service', 'both'
+  description?: string | null;
+  customerLove?: string | null;
+  hasFixedPricing?: string | null;  // 'yes', 'no', 'skip' from questionnaire
+  packageName?: string | null;
+  packageCost?: string | null;
+  packageIncludes?: string | null;
+  serviceDescription?: string | null;
+  serviceCost?: string | null;
+  serviceOther?: string | null;
+}
+
+export const userOnboardingSnapshot = pgTable("user_onboarding_snapshot", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull().references(() => users.id, { onDelete: 'cascade' }),
+  
+  // COMPANY - Business context (exact user words)
+  company: jsonb("company").$type<OnboardingCompanyData>().default({}),
+  
+  // USER GOALS - "What brings you here?" selections
+  userGoals: jsonb("user_goals").$type<OnboardingUserGoals>().default({}),
+  
+  // PRODUCT - What they sell and how they price it (exact user words)
+  product: jsonb("product").$type<OnboardingProductData>().default({}),
+  
+  // Metadata
+  source: text("source").default('onboarding'), // 'onboarding', 'profile-update', etc.
+  capturedAt: timestamp("captured_at", { withTimezone: true }).defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow() // Same as capturedAt (immutable record)
+}, (table) => [
+  index('idx_user_onboarding_snapshot_user_id').on(table.userId),
+  index('idx_user_onboarding_snapshot_captured_at').on(table.capturedAt)
+]);
+
 // User notifications (migrated from KV)  
 export const userNotifications = pgTable("user_notifications", {
   id: serial("id").primaryKey(),
@@ -613,6 +666,46 @@ export type InsertUserAttribution = {
   attributionData?: AttributionData;
   conversionEvents?: ConversionEvent[];
 };
+
+// User Onboarding Snapshot schema and types
+export const onboardingCompanySchema = z.object({
+  name: z.string().optional(),
+  website: z.string().optional(),
+  hasWebsite: z.boolean().optional(),
+  city: z.string().optional(),
+  state: z.string().optional(),
+  userRole: z.string().optional()
+});
+
+export const onboardingUserGoalsSchema = z.object({
+  primaryGoals: z.array(z.string()).optional(),
+  priorityRanking: z.array(z.string()).optional(),
+  challenges: z.array(z.string()).optional()
+});
+
+export const onboardingProductSchema = z.object({
+  offeringType: z.enum(['product', 'service', 'both']).optional(),
+  description: z.string().optional(),
+  customerLove: z.string().optional(),
+  pricingModel: z.enum(['fixed', 'variable', 'not_set']).optional(),
+  packageName: z.string().optional(),
+  packageCost: z.string().optional(),
+  packageIncludes: z.string().optional(),
+  serviceDescription: z.string().optional(),
+  serviceCost: z.string().optional(),
+  serviceNotes: z.string().optional()
+});
+
+export const insertUserOnboardingSnapshotSchema = z.object({
+  userId: z.number(),
+  company: onboardingCompanySchema.optional(),
+  userGoals: onboardingUserGoalsSchema.optional(),
+  product: onboardingProductSchema.optional(),
+  source: z.string().default('onboarding')
+});
+
+export type UserOnboardingSnapshot = typeof userOnboardingSnapshot.$inferSelect;
+export type InsertUserOnboardingSnapshot = z.infer<typeof insertUserOnboardingSnapshotSchema>;
 
 // Legacy type stubs for components that still import them
 export type SearchSection = { id: string; title: string; content: string };

@@ -408,7 +408,47 @@ export default function LandingSimple3() {
         currentUser = { username: user.username, email: user.email };
       }
       
-      // Create strategic profile (product/service info)
+      // FIRST: Save immutable onboarding snapshot with ALL user's original words
+      // This captures ALL 18 onboarding questionnaire fields for ISP generation and AI advisory
+      try {
+        await fetch('/api/onboarding/snapshot', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({
+            company: {
+              name: data.companyName || null,
+              website: data.website || null,
+              hasWebsite: data.hasWebsite || null,
+              city: data.companyCity || null,
+              state: data.companyState || null,
+              role: data.companyRole || null,
+            },
+            userGoals: {
+              primaryGoals: data.purpose ? data.purpose.split(',').filter(Boolean) : [],
+              goal: data.goal || null,
+            },
+            product: {
+              offeringType: data.offeringType || null,
+              description: data.productDescription || null,
+              customerLove: data.customerLove || null,
+              hasFixedPricing: data.hasFixedPricing || null,
+              packageName: data.packageName || null,
+              packageCost: data.packageCost || null,
+              packageIncludes: data.packageIncludes || null,
+              serviceDescription: data.serviceDescription || null,
+              serviceCost: data.serviceCost || null,
+              serviceOther: data.serviceOther || null,
+            },
+            source: 'landing-simple3'
+          })
+        });
+      } catch (snapshotError) {
+        // Log but don't block - snapshot is immutable, may already exist
+        console.warn('Could not save onboarding snapshot:', snapshotError);
+      }
+      
+      // Create strategic profile (product/service info) - derived data, can be edited
       if (data.productDescription || data.offeringType) {
         await fetch('/api/products', {
           method: 'POST',
