@@ -895,22 +895,20 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
   // Quest starter popover handlers
   const handleQuestStarterShowMe = useCallback(() => {
     setShowQuestStarterPopover(false);
-    if (pendingQuestStart) {
-      markQuestAsTriggered(pendingQuestStart.questId);
-      engine.setPlaybackMode("show");
-      startQuestRef.current(pendingQuestStart.questId);
-      setPendingQuestStart(null);
-    }
+    const questId = pendingQuestStart?.questId ?? QUESTS[0].id;
+    markQuestAsTriggered(questId);
+    engine.setPlaybackMode("show");
+    startQuestRef.current(questId);
+    setPendingQuestStart(null);
   }, [pendingQuestStart, engine]);
 
   const handleQuestStarterGuideMe = useCallback(() => {
     setShowQuestStarterPopover(false);
-    if (pendingQuestStart) {
-      markQuestAsTriggered(pendingQuestStart.questId);
-      engine.setPlaybackMode("guide");
-      startQuestRef.current(pendingQuestStart.questId);
-      setPendingQuestStart(null);
-    }
+    const questId = pendingQuestStart?.questId ?? QUESTS[0].id;
+    markQuestAsTriggered(questId);
+    engine.setPlaybackMode("guide");
+    startQuestRef.current(questId);
+    setPendingQuestStart(null);
   }, [pendingQuestStart, engine]);
 
   const handleQuestStarterDismiss = useCallback(() => {
