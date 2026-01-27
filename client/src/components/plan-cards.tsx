@@ -176,7 +176,7 @@ export function PlanCards({ onClose }: PlanCardsProps) {
                         PROMO_ENABLED ? "text-red-700 dark:text-red-500" : "text-foreground"
                       )}>${plan.price}</span>
                       {PROMO_ENABLED && (
-                        <span className="text-xs font-semibold text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-900/30 px-1.5 py-0.5 rounded">
+                        <span className="text-xs font-semibold text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-gray-800/50 px-1.5 py-0.5 rounded">
                           {getDiscountPercent(plan.regularPrice, plan.price)}% off
                         </span>
                       )}
