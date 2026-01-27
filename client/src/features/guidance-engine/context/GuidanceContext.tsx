@@ -109,6 +109,11 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
   const [completedChallengeName, setCompletedChallengeName] = useState("");
   const [completedChallengeMessage, setCompletedChallengeMessage] = useState("");
   const [completedChallengeCredits, setCompletedChallengeCredits] = useState<number>(0);
+  
+  // Quest starter popover state (for new users)
+  const [showQuestStarterPopover, setShowQuestStarterPopover] = useState(false);
+  const [pendingQuestStart, setPendingQuestStart] = useState<{ questId: string; challengeId: string } | null>(null);
+  const questStarterDismissedRef = useRef(false); // Track if dismissed this session
   const previousStepKey = useRef<string | null>(null);
   const shownChallengeCompletionRef = useRef<string | null>(null);
   const advanceDelayTimerRef = useRef<NodeJS.Timeout | null>(null);
@@ -536,6 +541,8 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
     if (authLoading) return;
     if (state.isActive) return;
     if (state.currentQuestId) return;
+    if (showQuestStarterPopover) return; // Already showing popover
+    if (questStarterDismissedRef.current) return; // Dismissed this session
 
     const evaluateTrigger = (questId: string, trigger: QuestTrigger): boolean => {
       const requiresAuth = trigger.requiresAuth !== false;
@@ -571,14 +578,21 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
         if (shouldTrigger) {
           const delay = resolveDelay(challenge.startDelay, "startDelay");
           const timer = setTimeout(() => {
-            startQuestRef.current(quest.id);
-            markQuestAsTriggered(quest.id);
+            // For newUser triggers, show the quest starter popover instead of auto-starting
+            if (challenge.trigger?.type === "newUser") {
+              setPendingQuestStart({ questId: quest.id, challengeId: challenge.id });
+              setShowQuestStarterPopover(true);
+              // Don't mark as triggered here - wait until user makes a choice
+            } else {
+              startQuestRef.current(quest.id);
+              markQuestAsTriggered(quest.id);
+            }
           }, delay);
           return () => clearTimeout(timer);
         }
       }
     }
-  }, [autoStartForNewUsers, authLoading, user, location, state.isActive, state.currentQuestId, state.completedQuests]);
+  }, [autoStartForNewUsers, authLoading, user, location, state.isActive, state.currentQuestId, state.completedQuests, showQuestStarterPopover]);
 
   useEffect(() => {
     if (!autoStartForNewUsers) return;
@@ -878,6 +892,30 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
     engine.toggleHeader();
   }, [engine]);
 
+  // Quest starter popover handlers
+  const handleQuestStarterShowMe = useCallback(() => {
+    setShowQuestStarterPopover(false);
+    const questId = pendingQuestStart?.questId ?? QUESTS[0].id;
+    markQuestAsTriggered(questId);
+    startQuestRef.current(questId, "show");
+    setPendingQuestStart(null);
+  }, [pendingQuestStart]);
+
+  const handleQuestStarterGuideMe = useCallback(() => {
+    setShowQuestStarterPopover(false);
+    const questId = pendingQuestStart?.questId ?? QUESTS[0].id;
+    markQuestAsTriggered(questId);
+    startQuestRef.current(questId, "guide");
+    setPendingQuestStart(null);
+  }, [pendingQuestStart]);
+
+  const handleQuestStarterDismiss = useCallback(() => {
+    setShowQuestStarterPopover(false);
+    setPendingQuestStart(null);
+    questStarterDismissedRef.current = true; // Prevent re-showing in this session
+    // Don't mark as triggered - allow popover to appear again on next visit
+  }, []);
+
   const challengeProgress = getChallengeProgress();
   
   const contextValue = {
@@ -908,6 +946,10 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
             onClick={handleFluffyClick}
             isActive={state.isActive}
             onCloseGuide={engine.pauseGuidance}
+            starterMode={showQuestStarterPopover}
+            onShowMeMode={handleQuestStarterShowMe}
+            onGuideMeMode={handleQuestStarterGuideMe}
+            onStarterDismiss={handleQuestStarterDismiss}
           />
 
           <GuidanceVideoPlayer
@@ -957,6 +999,7 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
             onContinue={handleNextChallenge}
             onDismiss={handleChallengeCompleteClose}
           />
+
         </>
       )}
     </GuidanceContext.Provider>
