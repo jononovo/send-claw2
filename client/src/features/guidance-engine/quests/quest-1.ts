@@ -48,6 +48,7 @@ export const quest1: Quest = {
           id: "type-query",
           selector: '[data-testid="search-input"]',
           action: "type",
+          value: "marketing agencies in Austin",
           advanceDelay: 3000,
           instruction: "Type a search query like 'marketing agencies in Austin'.",
           tooltipPosition: "bottom",

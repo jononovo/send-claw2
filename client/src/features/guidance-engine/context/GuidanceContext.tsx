@@ -726,6 +726,8 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
     };
 
     const handleElementClick = (e: MouseEvent) => {
+      if (state.playbackMode === "show") return;
+      
       const target = e.target as HTMLElement;
       let stepElement: Element | null = null;
       try {
