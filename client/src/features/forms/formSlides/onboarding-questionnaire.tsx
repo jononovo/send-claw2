@@ -216,8 +216,7 @@ const sectionD: FormSection<OnboardingQuestionnaireData> = {
       id: "hasFixedPricing",
       slideType: "single-select",
       title: "Do you have a fixed price or package?",
-      subtitle: "Let Fluffy know how you charge",
-      options: [
+            options: [
         { id: "yes", label: "Yes, I have set pricing", icon: <Package className="w-5 h-5" /> },
         { id: "no", label: "No, it varies by project", icon: <TrendingUp className="w-5 h-5" /> },
         { id: "skip", label: "Skip for now", icon: <ChevronRight className="w-5 h-5" /> },
