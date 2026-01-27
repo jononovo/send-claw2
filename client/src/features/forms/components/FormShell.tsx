@@ -42,6 +42,17 @@ export function FormShell<T extends Record<string, string>>({
   } = flow;
 
   useEffect(() => {
+    if (!isOpen) return;
+    
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    
+    return () => {
+      document.body.style.overflow = originalOverflow;
+    };
+  }, [isOpen]);
+
+  useEffect(() => {
     if (confettiFiredRef.current === currentStep) return;
 
     if (currentSlide?.slideType === "section-complete") {
@@ -211,7 +222,7 @@ export function FormShell<T extends Record<string, string>>({
         </button>
       </div>
 
-      <div className="flex-1 flex items-center justify-center px-6 overflow-y-auto">
+      <div className="flex-1 flex items-start justify-center px-6 py-8 overflow-y-auto">
         <div className="w-full max-w-lg">
           <AnimatePresence mode="wait">
             <motion.div
