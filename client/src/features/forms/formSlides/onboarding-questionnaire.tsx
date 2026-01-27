@@ -133,7 +133,6 @@ const sectionB: FormSection<OnboardingQuestionnaireData> = {
       id: "companyRoleOther",
       slideType: "text-input",
       title: "What's your role?",
-      subtitle: "Tell us a bit more about what you do",
       placeholder: "e.g. Sales Representative, Consultant...",
       inputType: "text",
       conditionalOn: "companyRole",
