@@ -708,8 +708,8 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
         const valueLength = (currentStep?.value || '').length;
         hideDelay = valueLength * TYPING_INTERVAL_MS;
       } else {
-        // For click/hover/view: hide after 500ms
-        hideDelay = CLICK_HIDE_DELAY_MS;
+        // For click/hover/view: hide immediately
+        hideDelay = 0;
       }
       
       // Schedule hiding the tooltip after the delay
