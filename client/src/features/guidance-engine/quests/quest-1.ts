@@ -162,7 +162,7 @@ export const quest1: Quest = {
         },
         {
           "id": "select-emails-option",
-          "selector": "#radix-:r65: [data-testid=\"search-type-option-emails\"]",
+          "selector": "[role=\"dialog\"] [data-testid=\"search-type-option-emails\"]",
           "action": "click",
           "instruction": "Select the 'Emails' option to search specifically for email contacts",
           "tooltipPosition": "right",
@@ -228,7 +228,7 @@ export const quest1: Quest = {
         },
         {
           "id": "select-super-search",
-          "selector": "#radix-:rh7: [data-testid=\"search-type-option-super_search_fast\"]",
+          "selector": "[role=\"dialog\"] [data-testid=\"search-type-option-super_search_fast\"]",
           "action": "click",
           "instruction": "Select 'Super Search (Fast)' to use the most powerful search algorithm",
           "tooltipPosition": "right",
@@ -286,7 +286,7 @@ export const quest1: Quest = {
         },
         {
           "id": "select-super-search",
-          "selector": "#radix-:r1i: [data-testid=\"search-type-option-super_search_fast\"]",
+          "selector": "[role=\"dialog\"] [data-testid=\"search-type-option-super_search_fast\"]",
           "action": "click",
           "instruction": "Select 'Super Search (Fast)' for enhanced search capabilities",
           "tooltipPosition": "right",
@@ -352,7 +352,7 @@ export const quest1: Quest = {
         },
         {
           "id": "select-email-option",
-          "selector": "#radix-:r96: [data-testid=\"search-type-option-emails\"]",
+          "selector": "[role=\"dialog\"] [data-testid=\"search-type-option-emails\"]",
           "action": "click",
           "instruction": "Select the 'Emails' option to include email data in your search results",
           "tooltipPosition": "right",
@@ -401,6 +401,122 @@ export const quest1: Quest = {
         }
       ],
       "completionMessage": "Great job! You've learned how to perform advanced searches with email options and job level filters. This will help you find more targeted and relevant professional contacts!"
+    },
+    {
+      "id": "configure-email-search-criteria",
+      "name": "Configure Email Search Criteria",
+      "description": "Learn how to set up email search options and customize search criteria for targeted results",
+      "emoji": "📧",
+      "steps": [
+        {
+          "id": "step-1",
+          "selector": "#root",
+          "action": "click",
+          "instruction": "Click on the main area to start configuring your search",
+          "tooltipPosition": "bottom",
+          "route": "/app/new-search"
+        },
+        {
+          "id": "step-2",
+          "selector": "[data-testid=\"search-options-button\"]",
+          "action": "click",
+          "instruction": "Click the search options button to open advanced search settings",
+          "tooltipPosition": "bottom",
+          "route": "/app/new-search"
+        },
+        {
+          "id": "step-3",
+          "selector": "[role=\"dialog\"] [data-testid=\"search-type-option-emails\"]",
+          "action": "click",
+          "instruction": "Select the 'Emails' option to include email results in your search",
+          "tooltipPosition": "left",
+          "route": "/app/new-search"
+        },
+        {
+          "id": "step-4",
+          "selector": "[data-testid=\"search-input\"]",
+          "action": "click",
+          "instruction": "Click in the search input field to enter your search terms",
+          "tooltipPosition": "bottom",
+          "route": "/app/new-search"
+        },
+        {
+          "id": "step-5",
+          "selector": "[data-testid=\"search-input\"]",
+          "action": "type",
+          "instruction": "Type your search query to find what you're looking for",
+          "tooltipPosition": "bottom",
+          "route": "/app/new-search",
+          "value": "happy people"
+        },
+        {
+          "id": "step-6",
+          "selector": "button.flex.items-center.gap-1",
+          "action": "click",
+          "instruction": "Click the Leadership filter to refine your search criteria",
+          "tooltipPosition": "top",
+          "route": "/app/new-search"
+        },
+        {
+          "id": "step-7",
+          "selector": "button.\n.flex.items-center",
+          "action": "click",
+          "instruction": "Click the Marketing filter to add another search criteria",
+          "tooltipPosition": "top",
+          "route": "/app/new-search"
+        }
+      ],
+      "completionMessage": "Great job! You've learned how to configure email search options, enter search terms, and apply multiple filters to get targeted results."
+    },
+    {
+      "id": "search-and-filter-exploration",
+      "name": "Search and Filter Tutorial",
+      "description": "Learn how to access search history, perform searches, and apply filters",
+      "emoji": "🔍",
+      "steps": [
+        {
+          "id": "open-drawer",
+          "selector": "nav [data-testid=\"button-open-drawer\"]",
+          "action": "click",
+          "instruction": "Click the drawer button to open your search history",
+          "tooltipPosition": "bottom",
+          "route": "/app"
+        },
+        {
+          "id": "click-search-input",
+          "selector": "[data-testid=\"search-input\"]",
+          "action": "click",
+          "instruction": "Click on the search input field to start entering your search",
+          "tooltipPosition": "bottom",
+          "route": "/app"
+        },
+        {
+          "id": "enter-search-term",
+          "selector": "[data-testid=\"search-input\"]",
+          "action": "type",
+          "instruction": "Type your search term in the input field",
+          "tooltipPosition": "bottom",
+          "route": "/app",
+          "value": "happy"
+        },
+        {
+          "id": "apply-first-filter",
+          "selector": "button.flex.items-center.gap-1",
+          "action": "click",
+          "instruction": "Click this filter button to refine your search results",
+          "tooltipPosition": "top",
+          "route": "/app"
+        },
+        {
+          "id": "apply-second-filter",
+          "selector": "button.\n.flex.items-center",
+          "action": "click",
+          "instruction": "Apply another filter to further narrow down your results",
+          "tooltipPosition": "top",
+          "route": "/app"
+        }
+      ],
+      "completionMessage": "Great job! You've learned how to access search history, perform searches, and apply multiple filters to get the most relevant results."
     }
   ],
 };

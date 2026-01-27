@@ -37,12 +37,19 @@ function escapeCSSClass(className: string): string {
     .replace(/\//g, '\\/');
 }
 
+function isDynamicId(id: string): boolean {
+  if (/^radix-:r\d+:/.test(id)) return true;
+  if (/^:r\d+:/.test(id)) return true;
+  if (/^headlessui-\w+-\d+$/.test(id)) return true;
+  return false;
+}
+
 function buildElementSelector(element: HTMLElement): string {
   if (element.dataset.testid) {
     return `[data-testid="${escapeSelector(element.dataset.testid)}"]`;
   }
   
-  if (element.id) {
+  if (element.id && !isDynamicId(element.id)) {
     return `#${element.id}`;
   }
   
@@ -91,7 +98,7 @@ function findDistinguishingAncestor(element: HTMLElement, maxDepth: number = 4):
   let depth = 0;
   
   while (current && depth < maxDepth) {
-    if (current.id) return current;
+    if (current.id && !isDynamicId(current.id)) return current;
     if (current.dataset.testid) return current;
     
     const ariaLabel = current.getAttribute('aria-label');
@@ -114,7 +121,7 @@ function findDistinguishingAncestor(element: HTMLElement, maxDepth: number = 4):
 }
 
 function buildAncestorSelector(ancestor: HTMLElement): string {
-  if (ancestor.id) {
+  if (ancestor.id && !isDynamicId(ancestor.id)) {
     return `#${ancestor.id}`;
   }
   if (ancestor.dataset.testid) {
