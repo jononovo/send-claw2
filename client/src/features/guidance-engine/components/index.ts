@@ -9,3 +9,4 @@ export { CertificateShowcase } from "./CertificateShowcase";
 export { CertificateModal } from "./CertificateModal";
 export { CertificatePreview, CertificateFull } from "./CertificatePreview";
 export { ChallengeRecorder } from "./ChallengeRecorder";
+export { QuestStarterPopover } from "./QuestStarterPopover";
