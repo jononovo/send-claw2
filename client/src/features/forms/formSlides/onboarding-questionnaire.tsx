@@ -186,8 +186,7 @@ const sectionC: FormSection<OnboardingQuestionnaireData> = {
       id: "customerLove",
       slideType: "text-input",
       title: "What do customers love about it?",
-      subtitle: "This helps Fluffy craft the perfect pitch",
-      placeholder: "e.g., Easy to use, saves 10 hours per week, great support",
+            placeholder: "e.g., Easy to use, saves 10 hours per week, great support",
       inputType: "textarea",
     },
     {
