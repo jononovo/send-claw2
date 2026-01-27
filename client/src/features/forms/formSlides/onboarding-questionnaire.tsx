@@ -161,8 +161,7 @@ const sectionC: FormSection<OnboardingQuestionnaireData> = {
       id: "section-c-intro",
       slideType: "section-intro",
       title: "Help Fluffy understand what you sell",
-      subtitle: "3 simple steps to supercharge your sales assistant",
-      emoji: "🐥",
+            emoji: "🐥",
     },
     {
       id: "offeringType",
