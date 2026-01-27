@@ -111,7 +111,11 @@ export function AutoAdvanceButton({
 
   const progressPercent = ((duration - remainingTime) / duration) * 100;
   const secondsLeft = Math.ceil(remainingTime / 1000);
-  const displayText = isDelaying || isPaused ? label : `${countdownPrefix} ${secondsLeft}...`;
+  const displayText = isDelaying || isPaused 
+    ? label 
+    : muted 
+      ? `${secondsLeft}...` 
+      : `${countdownPrefix} ${secondsLeft}...`;
 
   return (
     <button
