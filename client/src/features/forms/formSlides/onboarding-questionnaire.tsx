@@ -93,7 +93,7 @@ const sectionB: FormSection<OnboardingQuestionnaireData> = {
       slideType: "text-input",
       title: "What's your website?",
       subtitle: "Fluffy will learn all about your company from here",
-      placeholder: "https://yourcompany.com",
+      placeholder: "yourcompany.com",
       inputType: "url",
       alternativeLink: {
         text: "We don't have a website",
