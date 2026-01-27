@@ -142,7 +142,25 @@ export function FormShell<T extends Record<string, string>>({
       case "multi-select":
         return <SlideMultiSelect {...props} />;
       case "text-input":
-        return <SlideTextInput {...props} />;
+        return (
+          <SlideTextInput
+            {...props}
+            onAlternativeClick={
+              currentSlide.alternativeLink
+                ? () => {
+                    const link = currentSlide.alternativeLink!;
+                    if (link.setData) {
+                      setData(link.setData.key as keyof T, link.setData.value);
+                      const newData = { ...data, [link.setData.key]: link.setData.value };
+                      goToSlide(link.targetSlideId, newData as T);
+                    } else {
+                      goToSlide(link.targetSlideId);
+                    }
+                  }
+                : undefined
+            }
+          />
+        );
       case "multi-field":
         if (currentSlide.component && componentRegistry[currentSlide.component]) {
           const CustomComponent = componentRegistry[currentSlide.component];

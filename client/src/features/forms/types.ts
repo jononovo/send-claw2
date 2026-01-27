@@ -24,6 +24,13 @@ export interface SkipLink {
   setData?: { key: string; value: string };
 }
 
+export interface AlternativeLink {
+  text: string;
+  action: "goto";
+  targetSlideId: string;
+  setData?: { key: string; value: string };
+}
+
 export interface FormSlide<T extends Record<string, string> = Record<string, string>> {
   id: string;
   slideType: SlideType;
@@ -39,6 +46,7 @@ export interface FormSlide<T extends Record<string, string> = Record<string, str
   validate?: (data: T) => boolean;
   optional?: boolean;
   skipLink?: SkipLink;
+  alternativeLink?: AlternativeLink;
 }
 
 export interface FormSectionTrigger {

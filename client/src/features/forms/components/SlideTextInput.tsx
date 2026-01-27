@@ -3,12 +3,17 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import type { SlideComponentProps } from "../types";
 
+interface SlideTextInputProps<T extends Record<string, string>> extends SlideComponentProps<T> {
+  onAlternativeClick?: () => void;
+}
+
 export function SlideTextInput<T extends Record<string, string>>({
   slide,
   data,
   onTextInput,
   onNext,
-}: SlideComponentProps<T>) {
+  onAlternativeClick,
+}: SlideTextInputProps<T>) {
   const value = (data[slide.id as keyof T] as string) || "";
 
   return (
@@ -53,6 +58,14 @@ export function SlideTextInput<T extends Record<string, string>>({
             className="h-14 bg-white/5 border-white/10 text-white placeholder:text-gray-500 focus:border-yellow-500/50 focus:ring-yellow-500/20 rounded-xl text-lg"
             data-testid={`input-${slide.id}`}
           />
+        )}
+        {slide.alternativeLink && onAlternativeClick && (
+          <button
+            onClick={onAlternativeClick}
+            className="w-full mt-3 text-sm text-gray-400 hover:text-white transition-colors"
+          >
+            {slide.alternativeLink.text}
+          </button>
         )}
       </motion.div>
     </div>

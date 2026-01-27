@@ -106,7 +106,7 @@ const sectionB: FormSection<OnboardingQuestionnaireData> = {
       inputType: "url",
       conditionalOn: "hasWebsite",
       conditionalValue: "yes",
-      skipLink: {
+      alternativeLink: {
         text: "We don't have a website",
         action: "goto",
         targetSlideId: "companyDetails",
