@@ -673,6 +673,48 @@ export const quest1: Quest = {
         }
       ],
       "completionMessage": "Great job! You've learned how to use search filters to find specific contacts. You can now search effectively using keywords and apply filters like contact type and leadership roles to get more targeted results."
+    },
+    {
+      "id": "search-with-custom-options",
+      "name": "Search with Custom Options",
+      "description": "Learn how to configure search settings and perform a search with specific parameters",
+      "emoji": "🔍",
+      "steps": [
+        {
+          "id": "open-search-options",
+          "selector": "[data-testid=\"search-options-button\"]",
+          "action": "click",
+          "instruction": "Click the search options button to configure your search settings",
+          "tooltipPosition": "bottom",
+          "route": "/app"
+        },
+        {
+          "id": "select-search-type",
+          "selector": "[role=\"dialog\"] [data-testid=\"search-type-option-super_search_fast\"]",
+          "action": "click",
+          "instruction": "Select 'Super Search (Fast)' to use the optimized search mode",
+          "tooltipPosition": "right",
+          "route": "/app"
+        },
+        {
+          "id": "focus-search-input",
+          "selector": "[data-testid=\"search-input\"]",
+          "action": "click",
+          "instruction": "Click on the search input field to start entering your search query",
+          "tooltipPosition": "top",
+          "route": "/app"
+        },
+        {
+          "id": "enter-search-query",
+          "selector": "[data-testid=\"search-input\"]",
+          "action": "type",
+          "instruction": "Type your search query in the input field",
+          "tooltipPosition": "top",
+          "route": "/app",
+          "value": "happy people"
+        }
+      ],
+      "completionMessage": "Great job! You've learned how to customize search options and perform a search. Now you can use different search modes to find exactly what you're looking for!"
     }
   ],
 };
