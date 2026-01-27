@@ -20,6 +20,7 @@ export function FormShell<T extends Record<string, string>>({
   onComplete,
   flow,
   componentRegistry = {},
+  onSkip,
 }: FormShellProps<T>) {
   const confettiFiredRef = useRef<number | null>(null);
   const creditClaimedRef = useRef<Set<string>>(new Set());
@@ -64,6 +65,20 @@ export function FormShell<T extends Record<string, string>>({
       fireFinalConfetti();
     }
   }, [currentStep, currentSlide]);
+
+  useEffect(() => {
+    if (currentSlide?.slideType === "section-complete") {
+      const timer = setTimeout(() => {
+        handleNext();
+      }, 3000);
+      return () => clearTimeout(timer);
+    } else if (currentSlide?.slideType === "final-complete") {
+      const timer = setTimeout(() => {
+        onComplete();
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [currentStep, currentSlide, handleNext, onComplete]);
 
   const handleSelect = (slideId: string, optionId: string) => {
     setData(slideId as keyof T, optionId);
@@ -221,6 +236,16 @@ export function FormShell<T extends Record<string, string>>({
               {getButtonText()}
               <ChevronRight className="w-5 h-5 ml-2" />
             </Button>
+            
+            {currentSlide?.skipLink && onSkip && (
+              <button
+                onClick={onSkip}
+                className="w-full mt-4 text-lg text-gray-400 hover:text-white transition-colors"
+                data-testid="button-form-skip"
+              >
+                {currentSlide.skipLink.text}
+              </button>
+            )}
           </div>
         </div>
       )}

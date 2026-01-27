@@ -365,7 +365,97 @@ export default function LandingSimple3() {
 
   const handleOnboardingComplete = () => {
     setIsOnboardingOpen(false);
-    window.location.href = "/app";
+    
+    // If user is already logged in, save profiles and redirect
+    if (user) {
+      saveOnboardingProfiles().then(() => {
+        window.location.href = "/app";
+      });
+      return;
+    }
+    
+    // Set callback to save profiles after successful registration, then redirect
+    setRegistrationSuccessCallback(async () => {
+      await saveOnboardingProfiles();
+      window.location.href = "/app";
+    });
+    
+    // Open registration modal
+    openModal();
+  };
+
+  const saveOnboardingProfiles = async () => {
+    const STORAGE_KEY = 'form-data-onboarding-questionnaire';
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (!stored) return;
+      
+      const data = JSON.parse(stored);
+      
+      // Fetch current user info from the session
+      let currentUser: { username?: string; email?: string } | null = null;
+      try {
+        const userResponse = await fetch('/api/user', { credentials: 'include' });
+        if (userResponse.ok) {
+          currentUser = await userResponse.json();
+        }
+      } catch (e) {
+        console.warn('Could not fetch user info:', e);
+      }
+      
+      // Fall back to auth context user if API call failed
+      if (!currentUser && user) {
+        currentUser = { username: user.username, email: user.email };
+      }
+      
+      // Create strategic profile (product/service info)
+      if (data.productDescription || data.offeringType) {
+        await fetch('/api/products', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({
+            businessType: data.offeringType || 'product',
+            productService: data.productDescription || '',
+            customerFeedback: data.customerLove || '',
+            website: data.website || '',
+            targetCustomers: '',
+            isDefault: true
+          })
+        });
+      }
+      
+      // Create sender profile (company/user identity) - only if we have valid user info
+      const username = currentUser?.username || '';
+      const email = currentUser?.email || '';
+      
+      if (!email) {
+        console.warn('Skipping sender profile creation: no email available');
+      } else if (email && (data.companyName || username)) {
+        const displayName = username || email.split('@')[0];
+        await fetch('/api/sender-profiles', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({
+            displayName,
+            email,
+            companyName: data.companyName || null,
+            companyPosition: data.companyRole && data.companyRole !== 'individual' ? data.companyRole : null,
+            companyWebsite: data.website || null,
+            isDefault: true,
+            source: 'registered'
+          })
+        });
+      }
+      
+      // Clear localStorage after successful save
+      localStorage.removeItem(STORAGE_KEY);
+    } catch (error) {
+      console.error('Failed to save onboarding profiles:', error);
+      // Still clear localStorage to avoid stale data
+      localStorage.removeItem('form-data-onboarding-questionnaire');
+    }
   };
 
   const handleLogin = () => {
@@ -422,9 +512,9 @@ export default function LandingSimple3() {
             <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background" />
           </div>
 
-          <div className="container mx-auto px-6 relative z-10 grid lg:grid-cols-2 gap-12 items-center py-20">
+          <div className="container mx-auto px-4 relative z-10 grid lg:grid-cols-2 gap-12 items-center py-20">
             {/* Left Column - Text & CTA */}
-            <div className="flex flex-col gap-8 max-w-xl">
+            <div className="flex flex-col gap-8 max-w-2xl">
               <div className="space-y-4 pt-12 lg:pt-24">
                 <span className="block text-sm lg:text-base text-gray-500 dark:text-gray-400 font-medium tracking-widest uppercase mb-2 pl-1 font-mono opacity-80">
                   AI-Enabled

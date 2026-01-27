@@ -30,6 +30,9 @@ declare global {
   }
 }
 
+// In-memory lock to prevent duplicate user creation from concurrent requests
+const userCreationLocks = new Map<string, Promise<User | null>>();
+
 const scryptAsync = promisify(scrypt);
 
 async function hashPassword(password: string) {
@@ -81,9 +84,11 @@ async function verifyFirebaseToken(req: Request): Promise<SelectUser | null> {
   }
 
   if (!token || !admin.apps.length) {
-    console.warn('Auth verification failed:', {
-      reason: !token ? 'missing credentials' : 'firebase admin not initialized',
-    });
+    // Only log when Firebase is misconfigured (actual error)
+    // Don't log "missing credentials" - expected for public routes
+    if (token && !admin.apps.length) {
+      console.error('Auth verification failed: Firebase Admin not initialized but token was provided');
+    }
     return null;
   }
 
@@ -315,17 +320,37 @@ export function setupAuth(app: Express) {
         return res.status(400).json({ error: "Email and password are required" });
       }
 
-      // Check for existing email
-      const existingEmail = await storage.getUserByEmail(email);
-      if (existingEmail) {
+      const normalizedEmail = email.toLowerCase().trim();
+
+      // Check if there's an existing lock for this email
+      const existingLock = userCreationLocks.get(normalizedEmail);
+      if (existingLock) {
+        // Wait for the existing lock to resolve
+        await existingLock;
+        // After waiting, the user was created by the other request
         return res.status(400).json({ error: "Email already exists" });
       }
 
-      // Hash password
-      const hashedPassword = await hashPassword(password);
+      // Create a lock for this email before checking/creating
+      let resolveLock: (user: User | null) => void;
+      const lockPromise = new Promise<User | null>((resolve) => {
+        resolveLock = resolve;
+      });
+      userCreationLocks.set(normalizedEmail, lockPromise);
 
-      // Create user
       try {
+        // Check for existing email
+        const existingEmail = await storage.getUserByEmail(email);
+        if (existingEmail) {
+          resolveLock!(null);
+          userCreationLocks.delete(normalizedEmail);
+          return res.status(400).json({ error: "Email already exists" });
+        }
+
+        // Hash password
+        const hashedPassword = await hashPassword(password);
+
+        // Create user
         const user = await storage.createUser({
           email,
           password: hashedPassword,
@@ -336,6 +361,10 @@ export function setupAuth(app: Express) {
           email: email.split('@')[0] + '@...',
           timestamp: new Date().toISOString()
         });
+
+        // Resolve lock and clean up
+        resolveLock!(user);
+        userCreationLocks.delete(normalizedEmail);
 
         // Award registration credits using unified system (non-blocking)
         CreditRewardService.awardOneTimeCredits(
@@ -360,6 +389,9 @@ export function setupAuth(app: Express) {
           return res.status(201).json(user);
         });
       } catch (createError) {
+        // Clean up lock on error
+        resolveLock!(null);
+        userCreationLocks.delete(normalizedEmail);
         console.error('User creation error:', createError);
         return res.status(500).json({ error: "Failed to create user account" });
       }

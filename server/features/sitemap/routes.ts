@@ -38,8 +38,6 @@ Allow: /
 Allow: /pricing
 Allow: /contact
 Allow: /blog
-Allow: /login
-Allow: /signup
 Allow: /terms
 Allow: /privacy
 Allow: /company/
@@ -52,6 +50,9 @@ Disallow: /api
 Disallow: /outreach
 Disallow: /home
 Disallow: /admin
+Disallow: /login
+Disallow: /signup
+Disallow: /auth
 
 # Search engine crawlers - explicitly allowed
 User-agent: Googlebot

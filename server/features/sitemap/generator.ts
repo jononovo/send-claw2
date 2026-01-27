@@ -94,8 +94,7 @@ export function generatePagesSitemap(): string {
     { loc: `${BASE_URL}/pricing`, changefreq: 'monthly', priority: 0.9 },
     { loc: `${BASE_URL}/blog`, changefreq: 'weekly', priority: 0.8 },
     { loc: `${BASE_URL}/contact`, changefreq: 'monthly', priority: 0.7 },
-    { loc: `${BASE_URL}/login`, changefreq: 'monthly', priority: 0.6 },
-    { loc: `${BASE_URL}/signup`, changefreq: 'monthly', priority: 0.7 },
+    // /login and /signup excluded - auth pages should not be indexed
     { loc: `${BASE_URL}/terms`, changefreq: 'monthly', priority: 0.5 },
     { loc: `${BASE_URL}/privacy`, changefreq: 'monthly', priority: 0.5 },
   ];

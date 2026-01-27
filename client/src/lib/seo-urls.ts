@@ -6,8 +6,8 @@ export function getCompanyUrl(company: { id: number; slug?: string | null; name:
 }
 
 export function getContactUrl(contact: { id: number; slug?: string | null; name: string }): string {
-  // Always generate slug from name only (not stored slug which may contain company/role)
-  const slug = generateContactSlug(contact.name);
+  // Use stored slug (contains name+company+role) or generate from name as fallback
+  const slug = contact.slug || generateContactSlug(contact.name);
   return `/p/${slug}/${contact.id}`;
 }
 
