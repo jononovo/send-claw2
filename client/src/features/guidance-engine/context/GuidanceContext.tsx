@@ -897,19 +897,17 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
     setShowQuestStarterPopover(false);
     const questId = pendingQuestStart?.questId ?? QUESTS[0].id;
     markQuestAsTriggered(questId);
-    engine.setPlaybackMode("show");
-    startQuestRef.current(questId);
+    startQuestRef.current(questId, "show");
     setPendingQuestStart(null);
-  }, [pendingQuestStart, engine]);
+  }, [pendingQuestStart]);
 
   const handleQuestStarterGuideMe = useCallback(() => {
     setShowQuestStarterPopover(false);
     const questId = pendingQuestStart?.questId ?? QUESTS[0].id;
     markQuestAsTriggered(questId);
-    engine.setPlaybackMode("guide");
-    startQuestRef.current(questId);
+    startQuestRef.current(questId, "guide");
     setPendingQuestStart(null);
-  }, [pendingQuestStart, engine]);
+  }, [pendingQuestStart]);
 
   const handleQuestStarterDismiss = useCallback(() => {
     setShowQuestStarterPopover(false);
