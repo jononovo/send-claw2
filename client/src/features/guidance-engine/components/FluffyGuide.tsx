@@ -24,6 +24,8 @@ export function FluffyGuide({
   onGuideMeMode,
   onStarterDismiss,
 }: ExtendedFluffyGuideProps) {
+  console.log('[FluffyGuide] render:', { isActive, starterMode });
+  
   const [showMenu, setShowMenu] = useState(false);
   const [shouldWiggle, setShouldWiggle] = useState(false);
   const [showRecorder, setShowRecorder] = useState(false);
