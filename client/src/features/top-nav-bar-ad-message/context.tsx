@@ -2,6 +2,7 @@ import { createContext, useContext, useState, useCallback, useMemo, useEffect, R
 import { TopNavAdContextValue, Offer } from './types';
 import { createOffersRegistry, setNeedsPasswordSetup } from './registry';
 import { useAuth } from '@/hooks/use-auth';
+import { useToast } from '@/hooks/use-toast';
 
 const DISMISSED_OFFERS_KEY = 'dismissedOffers';
 
@@ -27,18 +28,40 @@ interface TopNavAdProviderProps {
 export function TopNavAdProvider({ children }: TopNavAdProviderProps) {
   const [dismissedOffers, setDismissedOffers] = useState<Set<string>>(() => getDismissedOffers());
   const { user, emailVerified } = useAuth();
+  const { toast } = useToast();
 
-  const openPasswordSetupModal = useCallback(() => {
-    window.dispatchEvent(new CustomEvent('openPasswordSetupModal'));
-  }, []);
+  const resendVerificationEmail = useCallback(async () => {
+    try {
+      const { loadFirebase } = await import('@/lib/firebase');
+      const firebase = await loadFirebase();
+      const currentUser = firebase.auth.currentUser;
+      
+      if (currentUser) {
+        const { sendEmailVerification } = await import('firebase/auth');
+        await sendEmailVerification(currentUser);
+        toast({
+          title: 'Verification Email Sent',
+          description: 'Please check your inbox and click the verification link.',
+        });
+      }
+    } catch (error: any) {
+      toast({
+        title: 'Could not send email',
+        description: error.code === 'auth/too-many-requests' 
+          ? 'Please wait a few minutes before requesting another email.'
+          : 'Please try again later.',
+        variant: 'destructive',
+      });
+    }
+  }, [toast]);
 
   const offers = useMemo(() => 
     createOffersRegistry({
-      onPasswordSetup: openPasswordSetupModal,
+      onResendVerification: resendVerificationEmail,
       isLoggedIn: !!user,
       emailVerified,
     }),
-    [openPasswordSetupModal, user, emailVerified]
+    [resendVerificationEmail, user, emailVerified]
   );
 
   const isDismissed = useCallback((offerId: string) => {
