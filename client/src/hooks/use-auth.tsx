@@ -359,7 +359,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         timestamp: new Date().toISOString()
       });
 
-      const { createUserWithEmailAndPassword, updateProfile } = await import("firebase/auth");
+      const { createUserWithEmailAndPassword, updateProfile, sendEmailVerification } = await import("firebase/auth");
       const result = await createUserWithEmailAndPassword(firebase.auth, email, password);
 
       if (!result.user?.email) {
@@ -370,6 +370,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         await updateProfile(result.user, {
           displayName: username
         });
+      }
+
+      // Send verification email
+      try {
+        await sendEmailVerification(result.user);
+        console.log('Verification email sent');
+      } catch (verifyError) {
+        console.error('Failed to send verification email:', verifyError);
       }
 
       console.log('Email registration successful, syncing with backend');
