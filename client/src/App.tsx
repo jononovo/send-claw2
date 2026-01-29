@@ -157,11 +157,16 @@ function Router() {
   return (
     <>
       <Switch>
-        {/* Default landing page - Simple Landing 3 */}
+        {/* Default landing page - Home/App page */}
         <Route path="/" component={() => 
-          <Suspense fallback={null}>
-            <LandingSimple3 />
-          </Suspense>
+          <AppLayout>
+            <MainNav />
+            <div className="flex-1">
+              <Suspense fallback={<AppSkeleton />}>
+                <Home />
+              </Suspense>
+            </div>
+          </AppLayout>
         } />
         
         {/* React version of landing page for comparison */}

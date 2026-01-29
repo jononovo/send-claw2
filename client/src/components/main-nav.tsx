@@ -111,15 +111,23 @@ export function MainNav() {
             </DropdownMenu>
           </>
         ) : (
-          openRegistrationModal && (
-            <Button 
-              variant="outline" 
-              onClick={openRegistrationModal}
-              className="h-8 px-4 text-sm text-muted-foreground hover:text-foreground"
+          <>
+            <Link 
+              href="/pricing"
+              className="text-sm text-muted-foreground hover:text-foreground font-medium"
             >
-              Login
-            </Button>
-          )
+              Pricing
+            </Link>
+            {openRegistrationModal && (
+              <Button 
+                variant="outline" 
+                onClick={openRegistrationModal}
+                className="h-8 px-4 text-sm text-muted-foreground hover:text-foreground"
+              >
+                Login
+              </Button>
+            )}
+          </>
         )}
       </div>
       
