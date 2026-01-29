@@ -129,6 +129,15 @@ export function MainNav() {
             )}
           </>
         )}
+        {/* Show Pricing link on /direct preview regardless of auth */}
+        {user && location === '/direct' && (
+          <Link 
+            href="/pricing"
+            className="text-sm text-muted-foreground hover:text-foreground font-medium"
+          >
+            Pricing
+          </Link>
+        )}
       </div>
       
       <FeedbackDialog 

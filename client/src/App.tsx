@@ -169,6 +169,18 @@ function Router() {
           </AppLayout>
         } />
         
+        {/* Direct preview of landing page (guest experience) */}
+        <Route path="/direct" component={() => 
+          <AppLayout>
+            <MainNav />
+            <div className="flex-1">
+              <Suspense fallback={<AppSkeleton />}>
+                <Home />
+              </Suspense>
+            </div>
+          </AppLayout>
+        } />
+        
         {/* React version of landing page for comparison */}
         <Route path="/react-landing" component={() => 
           <Suspense fallback={null}>
