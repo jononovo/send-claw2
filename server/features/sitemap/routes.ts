@@ -32,6 +32,11 @@ export function registerSitemapRoutes(app: Express): void {
 function handleRobotsRequest(req: Request, res: Response): void {
   const robotsTxt = `# 5Ducks Robots.txt
 
+# NOTE: The following subdomains are functional endpoints, not content pages:
+# - auth.5ducks.ai - Firebase Authentication (no indexable content)
+# - url1151.5ducks.ai - SendGrid email link tracking (no indexable content)
+# These subdomains should not be crawled or indexed.
+
 # Default rules for all bots
 User-agent: *
 Allow: /
@@ -47,7 +52,7 @@ Disallow: /app
 Disallow: /lists
 Disallow: /campaigns
 Disallow: /api
-Disallow: /outreach
+Disallow: /outreach/daily/
 Disallow: /home
 Disallow: /admin
 Disallow: /login
