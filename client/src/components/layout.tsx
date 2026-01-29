@@ -31,13 +31,11 @@ export function AppLayout({ children }: LayoutProps) {
   const { user } = useAuth();
   
   // Hide MiniFooter on these specific pages
-  const hideFooterOnPaths = ['/', '/app', '/streak', '/direct'];
+  const hideFooterOnPaths = ['/', '/app', '/streak'];
   const shouldHideFooter = hideFooterOnPaths.includes(location);
   
   // Show full footer for unauthenticated users on landing page only
-  // Also show on /direct for preview purposes (regardless of auth)
-  const isDirectPreview = location === '/direct';
-  const shouldShowFullFooter = isDirectPreview || (!user && location === '/');
+  const shouldShowFullFooter = !user && location === '/';
   
   // Listen for drawer open events
   useEffect(() => {
