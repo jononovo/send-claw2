@@ -102,7 +102,7 @@ export function Logo({
     return (
       <Link 
         href="/app/new-search" 
-        className="group hover:opacity-90 transition-opacity"
+        className="group hover:opacity-90 transition-opacity cursor-pointer"
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >

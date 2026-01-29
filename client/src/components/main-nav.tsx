@@ -114,7 +114,7 @@ export function MainNav() {
           <>
             <Link 
               href="/pricing"
-              className="text-sm text-muted-foreground hover:text-foreground font-medium"
+              className="text-sm text-muted-foreground hover:text-foreground font-medium mr-2"
             >
               Pricing
             </Link>
