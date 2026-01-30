@@ -1,0 +1,1 @@
+// This file is being removed as its functionality has been merged into egg-animation.tsx

@@ -1,0 +1,253 @@
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { ClickToCopyText } from "@/components/ui/click-to-copy-text";
+import { MessageSquare, Star, ThumbsDown, Linkedin, Phone, Loader2 } from "lucide-react";
+import { ContactActionColumn } from "@/components/contact-action-column";
+import { ComprehensiveSearchButton } from "@/components/comprehensive-email-search";
+import { BlurredEmailTeaser } from "@/components/blurred-email-teaser";
+import { cn } from "@/lib/utils";
+import type { Contact } from "@shared/schema";
+import { ContactWithCompanyInfo } from "@/lib/results-analysis/prospect-filtering";
+
+export interface ContactRowProps {
+  contact: ContactWithCompanyInfo;
+  isSelected?: boolean;
+  onToggleSelection?: (contactId: number) => void;
+  onClick?: () => void;
+  onHover?: (contactId: number) => void;
+  onLeave?: () => void;
+  showCheckbox?: boolean;
+  showCompanyName?: boolean;
+  showFeedback?: boolean;
+  isHighlighted?: boolean;
+  hasEmail?: boolean;
+  isAuthenticated?: boolean;
+  handleContactView?: (contact: { id: number; slug?: string | null; name: string }) => void;
+  handleComprehensiveEmailSearch?: (contactId: number) => void;
+  handleFindMobilePhone?: (contactId: number) => void;
+  onContactFeedback?: (contactId: number, feedbackType: "excellent" | "terrible") => void;
+  pendingComprehensiveSearchIds?: Set<number>;
+  pendingPhoneRevealIds?: Set<number>;
+}
+
+export function ContactRow({
+  contact,
+  isSelected = false,
+  onToggleSelection,
+  onClick,
+  onHover,
+  onLeave,
+  showCheckbox = true,
+  showCompanyName = false,
+  showFeedback = false,
+  isHighlighted = false,
+  isAuthenticated = true,
+  handleContactView,
+  handleComprehensiveEmailSearch,
+  handleFindMobilePhone,
+  onContactFeedback,
+  pendingComprehensiveSearchIds,
+  pendingPhoneRevealIds,
+}: ContactRowProps) {
+  return (
+    <div
+      className={cn(
+        "group flex items-center p-2 rounded-md cursor-pointer bg-card hover:bg-card-hover hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200",
+        isHighlighted
+          ? contact.email
+            ? "border-l-4 border-dashed border-yellow-400/40 border-4 border-yellow-400/20 border-dashed shadow-md"
+            : "border-l-4 border-dotted border-gray-400 border-4 border-gray-300/50 border-dotted shadow-md"
+          : "",
+        isSelected && "bg-blue-50/30 dark:bg-blue-950/10"
+      )}
+      onClick={onClick}
+      onMouseEnter={() => onHover?.(contact.id)}
+      onMouseLeave={() => onLeave?.()}
+      data-testid={`contact-row-${contact.id}`}
+    >
+      {showCheckbox && onToggleSelection && (
+        <div className="w-6 mr-1">
+          <Checkbox
+            checked={isSelected}
+            onCheckedChange={() => onToggleSelection(contact.id)}
+            onClick={(e) => e.stopPropagation()}
+            aria-label={`Select ${contact.name}`}
+            className="mt-0.5"
+          />
+        </div>
+      )}
+
+      <div className="flex-1 min-w-0">
+        <div className="flex items-start justify-between gap-2">
+          <div className="flex-1">
+            <div className="font-medium text-sm">{contact.name}</div>
+            <div className="text-xs text-muted-foreground mt-0.5">
+              {contact.role || "No role specified"}
+              {(contact.city || contact.country) && (
+                <span className="text-muted-foreground/70">
+                  {" • "}
+                  {[contact.city, contact.country].filter(Boolean).join(", ")}
+                </span>
+              )}
+            </div>
+            {showCompanyName && contact.companyName && (
+              <div className="text-xs text-muted-foreground/70 mt-0.5">
+                {contact.companyName}
+              </div>
+            )}
+            <div className="text-xs mt-1 flex items-center gap-1.5">
+              {contact.email ? (
+                <>
+                  <span className="text-muted-foreground">{contact.email}</span>
+                  {contact.linkedinUrl && (
+                    <a
+                      href={contact.linkedinUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={(e) => e.stopPropagation()}
+                      className="text-muted-foreground/60 hover:text-blue-500 transition-colors"
+                      data-testid={`linkedin-link-${contact.id}`}
+                    >
+                      <Linkedin className="h-3 w-3" />
+                    </a>
+                  )}
+                </>
+              ) : !isAuthenticated ? (
+                <BlurredEmailTeaser />
+              ) : (
+                handleComprehensiveEmailSearch && (
+                  <ComprehensiveSearchButton
+                    contact={contact}
+                    onSearch={handleComprehensiveEmailSearch}
+                    isPending={pendingComprehensiveSearchIds?.has(contact.id)}
+                    displayMode="text"
+                  />
+                )
+              )}
+              {/* Phone action - always visible */}
+              {contact.phoneNumber ? (
+                <ClickToCopyText
+                  text={contact.phoneNumber}
+                  className="text-muted-foreground text-xs"
+                  data-testid={`phone-${contact.id}`}
+                />
+              ) : (contact as any).mobilePhoneStatus === 'pending' || (pendingPhoneRevealIds?.has(contact.id) && !(contact as any).mobilePhoneStatus) ? (
+                <TooltipProvider delayDuration={300}>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <span className="text-yellow-500 flex items-center gap-0.5">
+                        <Loader2 className="h-3 w-3 animate-spin" />
+                      </span>
+                    </TooltipTrigger>
+                    <TooltipContent side="top" className="text-xs">
+                      <p>Finding phone...</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              ) : (contact as any).mobilePhoneStatus === 'not_found' ? (
+                <TooltipProvider delayDuration={300}>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <span className="text-muted-foreground/60">
+                        <Phone className="h-3 w-3" />
+                      </span>
+                    </TooltipTrigger>
+                    <TooltipContent side="top" className="text-xs">
+                      <p>No mobile found</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              ) : handleFindMobilePhone ? (
+                <button
+                  className="group/phone flex items-center text-muted-foreground/60 hover:text-green-600 transition-all duration-200 focus:outline-none focus-visible:ring-1 focus-visible:ring-green-500 rounded"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleFindMobilePhone(contact.id);
+                  }}
+                  data-testid={`find-phone-${contact.id}`}
+                >
+                  <Phone className="h-3 w-3" />
+                  <span className="max-w-0 overflow-hidden group-hover/phone:max-w-[80px] group-focus-visible/phone:max-w-[80px] transition-all duration-200 whitespace-nowrap">
+                    <span className="ml-1">Find Phone</span>
+                  </span>
+                </button>
+              ) : null}
+              {contact.alternativeEmails && contact.alternativeEmails.length > 0 && (
+                <div className="mt-0.5 space-y-0.5">
+                  {contact.alternativeEmails.map((altEmail, index) => (
+                    <div key={index} className="text-xs text-muted-foreground/70 italic">
+                      {altEmail}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2">
+            {contact.probability && (
+              <TooltipProvider delayDuration={300}>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <span>
+                      <Badge variant="secondary" className="text-xs cursor-help">
+                        {contact.probability}%
+                      </Badge>
+                    </span>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Score reflects the contact's affinity to the target role/designation searched.</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            )}
+
+            <ContactActionColumn
+              contact={contact}
+              handleContactView={handleContactView}
+              standalone={true}
+            />
+
+            {showFeedback && onContactFeedback && (
+              <TooltipProvider delayDuration={500}>
+                <Tooltip>
+                  <DropdownMenu>
+                    <TooltipTrigger asChild>
+                      <DropdownMenuTrigger asChild>
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          className="h-6 w-6 p-0 ml-1"
+                          onClick={(e) => e.stopPropagation()}
+                          data-testid={`button-feedback-${contact.id}`}
+                        >
+                          <MessageSquare className="h-4 w-4 text-muted-foreground" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                    </TooltipTrigger>
+                    <DropdownMenuContent>
+                      <DropdownMenuItem onClick={() => onContactFeedback(contact.id, "excellent")}>
+                        <Star className="h-4 w-4 mr-2 text-yellow-500" />
+                        Excellent Match
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => onContactFeedback(contact.id, "terrible")}>
+                        <ThumbsDown className="h-4 w-4 mr-2 text-red-500" />
+                        Not a Match
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                  <TooltipContent>
+                    <p>Rate this contact</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
