@@ -63,6 +63,7 @@ import { handleApolloPhoneWebhook } from "./webhooks/apollo-phone-webhook";
 import { findMobilePhone } from "./features/search-phone/routes";
 import { registerSuperSearchRoutes } from "./search/super-search";
 import { registerSmartSuggestionsRoutes } from "./features/smart-suggestions";
+import { registerAssistantChatRoutes } from "./features/assistant-chat";
 
 // Import centralized auth utilities
 import { getUserId, requireAuth } from "./utils/auth";
@@ -389,6 +390,9 @@ Respond in this exact JSON format:
   
   // Register smart suggestions routes
   registerSmartSuggestionsRoutes(app);
+  
+  // Register assistant chat routes (AI-powered chat panel)
+  registerAssistantChatRoutes(app);
 
   const httpServer = createServer(app);
   return httpServer;

@@ -1,0 +1,1 @@
+export { registerAssistantChatRoutes } from "./routes";
