@@ -51,7 +51,7 @@ import { logConversionEvent } from "@/features/attribution";
 import { useRegistrationModal } from "@/hooks/use-registration-modal";
 import { useNotifications } from "@/hooks/use-notifications";
 import { NotificationToast } from "@/components/ui/notification-toast";
-import { Search, ChevronDown, ChevronUp, RefreshCw } from "lucide-react";
+import { Search, ChevronDown, ChevronUp, RefreshCw, Sparkles } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
@@ -83,6 +83,12 @@ import { SearchSessionManager } from "@/lib/search-session-manager";
 import { useComprehensiveEmailSearch } from "@/features/search-email";
 import { useSearchState, searchSessionStorage, type SavedSearchState, type CompanyWithContacts } from "@/features/search-state";
 import { useEmailSearchOrchestration } from "@/features/email-search-orchestration";
+import { useSmartSuggestions, type Suggestion } from "@/features/smart-suggestions";
+
+// Lazy load smart suggestions panel
+const SmartSuggestionsPanel = lazy(() => 
+  import("@/features/smart-suggestions").then(m => ({ default: m.SmartSuggestionsPanel }))
+);
 
 // Define SourceBreakdown interface to match EmailSearchSummary
 interface SourceBreakdown {
@@ -139,6 +145,9 @@ export default function Home({ isNewSearch = false }: HomeProps) {
   
   // Search Management drawer
   const searchManagementDrawer = useSearchManagementDrawer();
+  
+  // Smart Suggestions panel state
+  const smartSuggestions = useSmartSuggestions();
   
   const [searchSectionCollapsed, setSearchSectionCollapsed] = useState(() => {
     // Guard for SSR/test contexts where window is undefined
@@ -269,6 +278,37 @@ export default function Home({ isNewSearch = false }: HomeProps) {
       }
     }
   }, [emailDrawer.isOpen, currentResults]);
+  
+  // Update smart suggestions when search results change
+  useEffect(() => {
+    if (currentResults && currentResults.length > 0 && currentQuery) {
+      const emailCount = currentResults.reduce((acc, company) => {
+        return acc + (company.contacts?.filter(c => c.email)?.length || 0);
+      }, 0);
+      const contactCount = currentResults.reduce((acc, company) => {
+        return acc + (company.contacts?.length || 0);
+      }, 0);
+      
+      const searchContext = {
+        query: currentQuery,
+        resultCount: contactCount,
+        emailCount,
+        companies: currentResults.map(c => ({
+          id: c.id,
+          name: c.name,
+          contactCount: c.contacts?.length || 0
+        }))
+      };
+      
+      // Try to generate AI-powered suggestions, fall back to defaults on error
+      smartSuggestions.generateSuggestions(searchContext);
+      
+      // Auto-open panel when results are available
+      if (!smartSuggestions.isOpen) {
+        smartSuggestions.openPanel();
+      }
+    }
+  }, [currentResults, currentQuery]);
   
   const { 
     handleComprehensiveEmailSearch: comprehensiveSearchHook, 
@@ -1577,6 +1617,91 @@ export default function Home({ isNewSearch = false }: HomeProps) {
       )}
       
       <div className="flex h-[calc(100vh-3.5rem)] overflow-hidden relative">
+        {/* Smart Suggestions Panel - Lazy loaded */}
+        {smartSuggestions.isOpen && (
+          <Suspense fallback={null}>
+            <SmartSuggestionsPanel
+              open={smartSuggestions.isOpen}
+              suggestions={smartSuggestions.suggestions}
+              isLoading={smartSuggestions.isLoading}
+              query={currentQuery}
+              resultCount={currentResults?.reduce((acc, c) => acc + (c.contacts?.length || 0), 0) || 0}
+              onClose={smartSuggestions.closePanel}
+              onExecuteAction={(suggestion) => {
+                console.log('Executing suggestion:', suggestion);
+                switch (suggestion.action.type) {
+                  case 'expand_results':
+                    // Modify query to expand results
+                    if (currentQuery) {
+                      const expandedQuery = currentQuery + " OR similar companies";
+                      setCurrentQuery(expandedQuery);
+                      setInputHasChanged(true);
+                      setSearchSectionCollapsed(false);
+                      toast({
+                        title: "Query expanded",
+                        description: "Click Search to find more results with broader criteria",
+                      });
+                    }
+                    break;
+                  case 'expand_location':
+                    // Add nearby regions to query
+                    if (currentQuery) {
+                      setSearchSectionCollapsed(false);
+                      toast({
+                        title: "Expand your search location",
+                        description: "Edit the search query to include nearby regions or remove location restrictions",
+                      });
+                    }
+                    break;
+                  case 'find_emails':
+                    emailOrchestration.runEmailSearch();
+                    toast({
+                      title: "Finding emails",
+                      description: "Searching for email addresses across all contacts...",
+                    });
+                    break;
+                  case 'filter_seniority':
+                    // Modify query to focus on senior roles
+                    if (currentQuery && !currentQuery.toLowerCase().includes('senior')) {
+                      const seniorQuery = "Senior " + currentQuery;
+                      setCurrentQuery(seniorQuery);
+                      setInputHasChanged(true);
+                      setSearchSectionCollapsed(false);
+                      toast({
+                        title: "Filtered by seniority",
+                        description: "Click Search to find senior-level contacts",
+                      });
+                    }
+                    break;
+                  case 'narrow_results':
+                    // Open search section to let user refine
+                    setSearchSectionCollapsed(false);
+                    toast({
+                      title: "Refine your search",
+                      description: "Add more specific criteria to narrow your results",
+                    });
+                    break;
+                  case 'related_roles':
+                    // Add related role variations
+                    if (currentQuery) {
+                      setSearchSectionCollapsed(false);
+                      toast({
+                        title: "Add related roles",
+                        description: "Try adding related job titles to find more matches",
+                      });
+                    }
+                    break;
+                  default:
+                    toast({
+                      title: "Suggestion noted",
+                      description: suggestion.description,
+                    });
+                }
+              }}
+            />
+          </Suspense>
+        )}
+        
         {/* Backdrop for mobile */}
       {emailDrawer.isOpen && (
         <div 
@@ -1587,8 +1712,20 @@ export default function Home({ isNewSearch = false }: HomeProps) {
         />
       )}
       
+      {/* Floating button to toggle suggestions panel when closed */}
+      {!smartSuggestions.isOpen && currentResults && currentResults.length > 0 && (
+        <button
+          onClick={smartSuggestions.openPanel}
+          className="fixed left-4 top-1/2 -translate-y-1/2 z-30 p-3 rounded-full bg-amber-500 hover:bg-amber-600 text-white shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105"
+          title="Show suggestions"
+          data-testid="button-open-suggestions"
+        >
+          <Sparkles className="h-5 w-5" />
+        </button>
+      )}
+      
       {/* Main Content Container - will be compressed when drawer opens on desktop */}
-      <div className={`flex-1 overflow-y-auto main-content-compressed ${emailDrawer.isOpen && currentResults && currentResults.length > 0 ? 'compressed-view' : ''}`}>
+      <div className={`flex-1 overflow-y-auto main-content-compressed ${emailDrawer.isOpen && currentResults && currentResults.length > 0 ? 'compressed-view' : ''} ${smartSuggestions.isOpen ? 'ml-80' : ''}`}>
         <div className="container mx-auto py-6 px-0 md:px-6 max-w-4xl">
           {/* Intro tour modal has been removed */}
 
