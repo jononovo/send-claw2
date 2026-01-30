@@ -1,7 +1,9 @@
 import { useState, useEffect, useRef, lazy, Suspense } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { useLocation } from "wouter";
+'use client';
+
+import { usePathname, useRouter } from "next/navigation";
 import { Circle, Square, Loader2, Check, Copy, X, ChevronDown, Upload, Play, Pencil, ArrowUp, ArrowDown, Trash2, Save, Plus, Video } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";

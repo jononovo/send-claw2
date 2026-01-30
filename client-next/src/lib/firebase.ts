@@ -15,26 +15,26 @@ export interface FirebaseInstances {
 }
 
 function validateFirebaseConfig() {
-  const apiKey = import.meta.env.VITE_FIREBASE_API_KEY;
-  const projectId = import.meta.env.VITE_FIREBASE_PROJECT_ID;
-  const appId = import.meta.env.VITE_FIREBASE_APP_ID;
+  const apiKey = process.env.NEXT_PUBLIC_FIREBASE_API_KEY;
+  const projectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID;
+  const appId = process.env.NEXT_PUBLIC_FIREBASE_APP_ID;
 
   const errors: string[] = [];
 
   if (!apiKey) {
-    errors.push('VITE_FIREBASE_API_KEY is missing');
+    errors.push('NEXT_PUBLIC_FIREBASE_API_KEY is missing');
   } else if (!apiKey.startsWith('AIza')) {
-    errors.push('VITE_FIREBASE_API_KEY appears to be malformed (should start with "AIza")');
+    errors.push('NEXT_PUBLIC_FIREBASE_API_KEY appears to be malformed (should start with "AIza")');
   }
 
   if (!projectId) {
-    errors.push('VITE_FIREBASE_PROJECT_ID is missing');
+    errors.push('NEXT_PUBLIC_FIREBASE_PROJECT_ID is missing');
   }
 
   if (!appId) {
-    errors.push('VITE_FIREBASE_APP_ID is missing');
+    errors.push('NEXT_PUBLIC_FIREBASE_APP_ID is missing');
   } else if (!appId.includes(':')) {
-    errors.push('VITE_FIREBASE_APP_ID appears to be malformed (should contain ":")');
+    errors.push('NEXT_PUBLIC_FIREBASE_APP_ID appears to be malformed (should contain ":")');
   }
 
   const config = {
@@ -72,8 +72,8 @@ export async function loadFirebase(): Promise<FirebaseInstances> {
     if (!isValid) {
       console.error('Firebase configuration validation failed:', {
         errors,
-        environment: import.meta.env.MODE,
-        domain: window.location.hostname
+        environment: process.env.NODE_ENV,
+        domain: typeof window !== 'undefined' ? window.location.hostname : 'server'
       });
       throw new Error(`Firebase configuration validation failed:\n${errors.join('\n')}`);
     }
@@ -98,9 +98,11 @@ export async function loadFirebase(): Promise<FirebaseInstances> {
 
 export function setAuthToken(token: string | null) {
   currentAuthToken = token;
-  if (token) {
-    localStorage.setItem('authToken', token);
-  } else {
-    localStorage.removeItem('authToken');
+  if (typeof window !== 'undefined') {
+    if (token) {
+      localStorage.setItem('authToken', token);
+    } else {
+      localStorage.removeItem('authToken');
+    }
   }
 }

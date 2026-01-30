@@ -1,5 +1,7 @@
 import { useEffect } from "react";
-import { useLocation } from "wouter";
+'use client';
+
+import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/use-auth";
 import { useRegistrationModal } from "@/hooks/use-registration-modal";
 

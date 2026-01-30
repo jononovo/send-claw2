@@ -1,18 +1,26 @@
+'use client';
+
 import { useEffect, useRef } from 'react';
-import { useLocation } from 'wouter';
+import { usePathname } from 'next/navigation';
+
+declare global {
+  interface Window {
+    fbq?: (...args: unknown[]) => void;
+  }
+}
 
 export const useMetaPixel = () => {
-  const [location] = useLocation();
-  const prevLocationRef = useRef<string>(location);
+  const pathname = usePathname();
+  const prevLocationRef = useRef<string>(pathname);
   
   useEffect(() => {
-    if (location !== prevLocationRef.current) {
+    if (pathname !== prevLocationRef.current) {
       if (typeof window !== 'undefined' && window.fbq) {
         window.fbq('track', 'PageView');
       }
-      prevLocationRef.current = location;
+      prevLocationRef.current = pathname;
     }
-  }, [location]);
+  }, [pathname]);
 };
 
 export const trackMetaEvent = (

@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { createPortal } from "react-dom";
-import { useLocation } from "wouter";
+'use client';
+
+import { usePathname, useRouter } from "next/navigation";
 import { Trophy, Play, X, Circle, Pointer, Sparkles, ChevronLeft } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { ChallengeRecorder } from "./ChallengeRecorder";

@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useLocation } from "wouter";
+'use client';
+
+import { usePathname, useRouter } from "next/navigation";
 import { 
   ChevronDown, 
   ChevronRight, 

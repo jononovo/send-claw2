@@ -1,5 +1,8 @@
+'use client';
+
 import { useState } from "react";
-import { Link, useLocation } from "wouter";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { LogOut, User, Menu, Target, PanelLeft, LifeBuoy } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { useRegistrationModal } from "@/hooks/use-registration-modal";
@@ -21,7 +24,7 @@ const navigation = [
 ];
 
 export function MainNav() {
-  const [location, setLocation] = useLocation();
+  const pathname = usePathname();
   const [feedbackDialogOpen, setFeedbackDialogOpen] = useState(false);
   
   // Safe auth hook usage with error handling

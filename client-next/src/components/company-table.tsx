@@ -1,8 +1,10 @@
+'use client';
+
 import React, { useState, useEffect } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import { useLocation } from "wouter";
+import { useRouter } from "next/navigation";
 import {
   Table,
   TableBody,
@@ -58,7 +60,7 @@ export default function CompanyTable({
   pendingContactIds,
   pendingComprehensiveSearchIds
 }: CompanyTableProps) {
-  const [, setLocation] = useLocation();
+  const router = useRouter();
   
   // Move console logging to useEffect to avoid React warnings about state updates during render
   useEffect(() => {
@@ -400,7 +402,7 @@ export default function CompanyTable({
                       contact={contact}
                       handleContactView={(c) => {
                         const slug = c.slug || c.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '').substring(0, 50);
-                        setLocation(`/p/${slug}/${c.id}`);
+                        router.push(`/p/${slug}/${c.id}`);
                       }}
                       className="py-1"
                     />

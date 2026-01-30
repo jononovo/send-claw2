@@ -1,6 +1,6 @@
 import { useState, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Link } from "wouter";
+import Link from "next/link";
 import { X, Trophy, Target } from "lucide-react";
 import type { QuestProgressHeaderProps } from "../types";
 

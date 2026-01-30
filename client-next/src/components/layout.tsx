@@ -1,15 +1,16 @@
+'use client';
+
 import { useState, useEffect } from "react";
+import { usePathname, useRouter } from "next/navigation";
 import { Footer } from "@/components/footer";
 import { MiniFooter } from "@/components/mini-footer";
 import { LeftMenuDrawer } from "@/components/left-menu-drawer";
-import { useLocation } from "wouter";
 import { TopNavAdMessage } from "@/features/top-nav-bar-ad-message";
 
 interface LayoutProps {
   children: React.ReactNode;
 }
 
-// Standard layout with full footer for marketing pages
 export function Layout({ children }: LayoutProps) {
   return (
     <div className="min-h-screen flex flex-col">
@@ -21,16 +22,14 @@ export function Layout({ children }: LayoutProps) {
   );
 }
 
-// App layout with mini footer for app pages (except /app, /outreach, /streak)
 export function AppLayout({ children }: LayoutProps) {
-  const [location, setLocation] = useLocation();
+  const pathname = usePathname();
+  const router = useRouter();
   const [savedSearchesDrawerOpen, setSavedSearchesDrawerOpen] = useState(false);
   
-  // Hide MiniFooter on these specific pages
   const hideFooterOnPaths = ['/app', '/streak'];
-  const shouldHideFooter = hideFooterOnPaths.includes(location);
+  const shouldHideFooter = hideFooterOnPaths.includes(pathname);
   
-  // Listen for drawer open events
   useEffect(() => {
     const handleOpenDrawer = () => {
       setSavedSearchesDrawerOpen(true);
@@ -43,34 +42,26 @@ export function AppLayout({ children }: LayoutProps) {
     };
   }, []);
   
-  // Handle load search action - navigate to /app if needed
   const handleLoadSearch = (list: any) => {
-    if (location !== '/app') {
-      // Navigate to /app first, then trigger the load
-      setLocation('/app');
-      // Dispatch event for the home page to handle
+    if (pathname !== '/app') {
+      router.push('/app');
       setTimeout(() => {
         window.dispatchEvent(new CustomEvent('loadSavedSearch', { detail: list }));
       }, 100);
     } else {
-      // Already on /app, dispatch event for home page to handle
       window.dispatchEvent(new CustomEvent('loadSavedSearch', { detail: list }));
     }
     setSavedSearchesDrawerOpen(false);
   };
   
-  // Handle new search action - navigate to /app/new-search
   const handleNewSearch = () => {
-    // Navigate to /app/new-search - the route handles the new search state
-    setLocation('/app/new-search');
+    router.push('/app/new-search');
     setSavedSearchesDrawerOpen(false);
   };
   
-  // Handle open compose action - dispatch event for the app page to open email drawer
   const handleOpenCompose = () => {
-    if (location !== '/app') {
-      // Navigate to /app first
-      setLocation('/app');
+    if (pathname !== '/app') {
+      router.push('/app');
       setTimeout(() => {
         window.dispatchEvent(new CustomEvent('openEmailCompose'));
       }, 100);
@@ -88,7 +79,6 @@ export function AppLayout({ children }: LayoutProps) {
       </div>
       {!shouldHideFooter && <MiniFooter />}
       
-      {/* Global LeftMenuDrawer - available on all app pages */}
       <LeftMenuDrawer 
         open={savedSearchesDrawerOpen}
         onOpenChange={setSavedSearchesDrawerOpen}

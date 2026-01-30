@@ -1,8 +1,10 @@
+'use client';
+
 import React, { useState, useEffect, useMemo } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import { useLocation } from "wouter";
+import { useRouter } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -101,7 +103,7 @@ interface CompanyCardProps {
   onContactHover?: (contactId: number) => void;
   onContactLeave?: () => void;
   shouldShowCheckbox?: (contactId: number) => boolean;
-  setLocation: (path: string) => void;
+  navigate: (path: string) => void;
   sortedContacts: ContactWithCompanyInfo[];
   viewMode: 'scroll' | 'slides';
   selectedEmailContact?: Contact | null;
@@ -133,7 +135,7 @@ const CompanyCard: React.FC<CompanyCardProps> = ({
   onContactHover,
   onContactLeave,
   shouldShowCheckbox,
-  setLocation,
+  navigate,
   sortedContacts,
   viewMode,
   selectedEmailContact,
@@ -311,7 +313,7 @@ const CompanyCard: React.FC<CompanyCardProps> = ({
                     isAuthenticated={isAuthenticated}
                     handleContactView={(contact) => {
                       const slug = contact.slug || contact.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '').substring(0, 50);
-                      setLocation(`/p/${slug}/${contact.id}`);
+                      navigate(`/p/${slug}/${contact.id}`);
                     }}
                     handleComprehensiveEmailSearch={handleComprehensiveEmailSearch}
                     handleFindMobilePhone={handleFindMobilePhone}
@@ -381,7 +383,7 @@ export default function CompanyCards({
   isAuthenticated,
   onLoginRequired
 }: CompanyCardsProps) {
-  const [, setLocation] = useLocation();
+  const router = useRouter();
   
   // State for view mode and current slide
   const [viewMode, setViewMode] = useState<'scroll' | 'slides'>('scroll');
@@ -815,7 +817,7 @@ export default function CompanyCards({
               onContactHover={handleContactHover}
               onContactLeave={handleContactLeave}
               shouldShowCheckbox={shouldShowCheckbox}
-              setLocation={setLocation}
+              navigate={(path: string) => router.push(path)}
               sortedContacts={sortedContactsMap.get(company.id) || []}
               viewMode={viewMode}
               selectedEmailContact={selectedEmailContact}
@@ -856,7 +858,7 @@ export default function CompanyCards({
               onContactHover={handleContactHover}
               onContactLeave={handleContactLeave}
               shouldShowCheckbox={shouldShowCheckbox}
-              setLocation={setLocation}
+              navigate={(path: string) => router.push(path)}
               sortedContacts={sortedContactsMap.get(companies[currentSlideIndex].id) || []}
               viewMode={viewMode}
               selectedEmailContact={selectedEmailContact}

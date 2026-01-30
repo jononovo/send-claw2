@@ -27,7 +27,9 @@ import {
   ChevronRight
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { useLocation } from "wouter";
+'use client';
+
+import { usePathname, useRouter } from "next/navigation";
 
 import type { StrategicProfile } from '../types';
 

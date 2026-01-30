@@ -1,4 +1,4 @@
-import { Link } from "wouter";
+import Link from "next/link";
 import { getAllBlogPosts } from "@/lib/blog-data";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";

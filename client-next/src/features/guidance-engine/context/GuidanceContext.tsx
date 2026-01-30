@@ -1,5 +1,7 @@
 import { createContext, useContext, useState, useCallback, useEffect, useRef } from "react";
-import { useLocation } from "wouter";
+'use client';
+
+import { usePathname, useRouter } from "next/navigation";
 import type { GuidanceContextValue, QuestTrigger, Challenge } from "../types";
 import { useGuidanceEngine } from "../hooks/useGuidanceEngine";
 import { QUESTS, resolveDelay } from "../quests";

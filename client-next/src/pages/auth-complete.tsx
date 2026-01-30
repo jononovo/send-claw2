@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
-import { useLocation } from "wouter";
+'use client';
+
+import { usePathname, useRouter } from "next/navigation";
 import { loadFirebase, setAuthToken } from "@/lib/firebase";
 import { useToast } from "@/hooks/use-toast";
 import { sendAttributionToServer, logConversionEvent } from "@/features/attribution";

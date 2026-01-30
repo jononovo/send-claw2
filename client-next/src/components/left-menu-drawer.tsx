@@ -1,6 +1,9 @@
+'use client';
+
 import { useState, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Link, useLocation } from "wouter";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   Sheet,
   SheetContent,
@@ -42,7 +45,7 @@ export function LeftMenuDrawer({ open, onOpenChange, onLoadSearch, onNewSearch, 
   });
   
   const [clickedId, setClickedId] = useState<number | null>(null);
-  const [, setLocation] = useLocation();
+  const router = useRouter();
 
   return (
     <SheetPrimitive.Root open={open} onOpenChange={onOpenChange}>
@@ -156,7 +159,7 @@ export function LeftMenuDrawer({ open, onOpenChange, onLoadSearch, onNewSearch, 
                     onOpenChange(false);
                     // Navigate to SEO-friendly URL (effect will skip loading since data is already loaded)
                     const searchUrl = generateSearchUrl(generateListPromptOnly(list), list.listId);
-                    setLocation(searchUrl);
+                    router.push(searchUrl);
                   }}
                 >
                   <TableCell className="text-sm font-medium text-muted-foreground py-3 pr-2">
