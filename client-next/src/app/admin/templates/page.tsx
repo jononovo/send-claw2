@@ -3,7 +3,7 @@
 import dynamic from 'next/dynamic';
 import { ProtectedPage } from "@/components/protected-page";
 
-const AdminTemplates = dynamic(() => import("@/pages/admin/Templates"), { ssr: false });
+const AdminTemplates = dynamic(() => import("@/page-components/admin/Templates"), { ssr: false });
 
 export default function AdminTemplatesPage() {
   return (

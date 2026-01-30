@@ -194,7 +194,7 @@ export function GuidanceTooltip({
           <div style={arrowStyles[coords.arrowPosition]} />
           
           <img 
-            src={ducklingMascot} 
+            src={ducklingMascot.src} 
             alt="Duckling guide" 
             className="absolute -left-12 -top-2 w-10 h-10 mascot-wiggle object-contain drop-shadow-[0_2px_4px_rgba(0,0,0,0.15)]"
           />

@@ -19,7 +19,7 @@ export function SearchQueueManager() {
 
   // Get the active queue (for now, just the first one)
   const activeQueue = searchQueues[0] || null;
-  const queueItems = activeQueue?.items || [];
+  const queueItems = (activeQueue as any)?.items || [];
   
   const runningCount = queueItems.filter((item: SearchQueueItem) => item.status === 'running').length;
   const pendingCount = queueItems.filter((item: SearchQueueItem) => item.status === 'pending').length;

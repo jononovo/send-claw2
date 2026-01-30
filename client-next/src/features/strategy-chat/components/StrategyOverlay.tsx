@@ -217,7 +217,7 @@ export function StrategyOverlay({ state, onStateChange }: StrategyOverlayProps) 
         body: JSON.stringify({
           selectedOption,
           customBoundary,
-          productContext: boundarySelectionContext.productContext
+          productContext: boundarySelectionContext?.productContext
         })
       });
 
@@ -375,7 +375,7 @@ export function StrategyOverlay({ state, onStateChange }: StrategyOverlayProps) 
           await completeStrategyWithSalesApproach({
             boundary: confirmedBoundary,
             sprintPrompt: sprintData.content,
-            dailyQueries: Array.isArray(queriesData.content) ? queriesData.content : queriesData.content.split('\n').filter(q => q.trim())
+            dailyQueries: Array.isArray(queriesData.content) ? queriesData.content : queriesData.content.split('\n').filter((q: string) => q.trim())
           }, initialTarget, refinedTarget);
         }
       }

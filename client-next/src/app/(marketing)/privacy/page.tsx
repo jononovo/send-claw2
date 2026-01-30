@@ -2,7 +2,7 @@
 
 import dynamic from 'next/dynamic';
 
-const Privacy = dynamic(() => import("@/pages/privacy"), { ssr: false });
+const Privacy = dynamic(() => import("@/page-components/privacy"), { ssr: false });
 
 export default function PrivacyPage() {
   return <Privacy />;

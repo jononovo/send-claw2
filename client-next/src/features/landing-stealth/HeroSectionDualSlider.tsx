@@ -767,16 +767,16 @@ export function HeroSectionDualSlider({
                 <div className="flex items-center gap-4 text-sm text-muted-foreground/80 p-3 rounded-2xl bg-white/5 border border-white/5 w-fit backdrop-blur-md hover:bg-white/10 transition-colors cursor-default">
                   <div className="flex -space-x-3">
                     <div className="w-8 h-8 rounded-full overflow-hidden border border-white/10 shadow-lg bg-gray-800">
-                      <img src={danThumb} alt="Player" loading="lazy" className="w-full h-full object-cover" />
+                      <img src={danThumb.src} alt="Player" loading="lazy" className="w-full h-full object-cover" />
                     </div>
                     <div className="w-8 h-8 rounded-full border border-white/10 shadow-lg bg-gradient-to-br from-zinc-500 to-zinc-600 flex items-center justify-center">
                       <span className="text-xs font-medium text-white/80">AL</span>
                     </div>
                     <div className="w-8 h-8 rounded-full overflow-hidden border border-white/10 shadow-lg bg-gray-800">
-                      <img src={sarahThumb} alt="Player" loading="lazy" className="w-full h-full object-cover" />
+                      <img src={sarahThumb.src} alt="Player" loading="lazy" className="w-full h-full object-cover" />
                     </div>
                     <div className="w-8 h-8 rounded-full overflow-hidden border border-white/10 shadow-lg bg-gray-800">
-                      <img src={mikeThumb} alt="Player" loading="lazy" className="w-full h-full object-cover" />
+                      <img src={mikeThumb.src} alt="Player" loading="lazy" className="w-full h-full object-cover" />
                     </div>
                   </div>
                   <p className="font-heading"><span className="text-white font-bold">{playerCount !== null ? playerCount.toLocaleString() : 'loading'}</span> Players Waiting</p>
@@ -885,7 +885,7 @@ export function HeroSectionDualSlider({
             />
             
             <motion.img 
-              src={duckImage}
+              src={duckImage.src}
               srcSet={`${duckImageMobile} 400w, ${duckImage} 800w`}
               sizes="(max-width: 640px) 400px, 800px"
               alt="Fluffy the Duck" 

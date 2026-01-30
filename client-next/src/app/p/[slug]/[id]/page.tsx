@@ -3,7 +3,7 @@
 import dynamic from 'next/dynamic';
 import { SemiProtectedPage } from "@/components/semi-protected-page";
 
-const ContactDetails = dynamic(() => import("@/pages/contact-details"), { ssr: false });
+const ContactDetails = dynamic(() => import("@/page-components/contact-details"), { ssr: false });
 
 export default function ContactDetailsPage() {
   return (

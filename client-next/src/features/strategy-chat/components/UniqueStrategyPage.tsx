@@ -1,3 +1,5 @@
+'use client';
+
 import { useState, useRef, useEffect, useCallback } from "react";
 import DOMPurify from "dompurify";
 import { Button } from "@/components/ui/button";
@@ -27,8 +29,6 @@ import {
   ChevronRight
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-'use client';
-
 import { usePathname, useRouter } from "next/navigation";
 
 import type { StrategicProfile } from '../types';
@@ -41,7 +41,7 @@ interface UniqueStrategyPageProps {
 export function UniqueStrategyPage({ product, onClose }: UniqueStrategyPageProps) {
   const [activeTab, setActiveTab] = useState("overview");
   const { toast } = useToast();
-  const [, navigate] = useLocation();
+  const router = useRouter();
   
   // Scroll state for tabs
   const tabsRef = useRef<HTMLDivElement>(null);
@@ -113,7 +113,7 @@ export function UniqueStrategyPage({ product, onClose }: UniqueStrategyPageProps
 
   const handleExecuteQuery = (query: string) => {
     // Navigate to search page with the query
-    navigate(`/?query=${encodeURIComponent(query)}`);
+    router.push(`/?query=${encodeURIComponent(query)}`);
   };
 
   const productSummary = parseJsonSafely(product.productAnalysisSummary);

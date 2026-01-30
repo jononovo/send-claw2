@@ -66,7 +66,7 @@ const createCampaignSchema = z.object({
 export default function CampaignsPage() {
   const { toast } = useToast();
   const { user, authReady } = useAuth();
-  const [, setLocation] = useLocation();
+  const router = useRouter();
   const [expandedCampaigns, setExpandedCampaigns] = useState<Set<number>>(new Set());
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
 
@@ -248,7 +248,7 @@ export default function CampaignsPage() {
                 data-testid={`campaign-card-${campaign.id}`}
               >
                 <div 
-                  onClick={() => setLocation(`/campaigns/${campaign.id}`)} 
+                  onClick={() => router.push(`/campaigns/${campaign.id}`)} 
                   className="p-3 cursor-pointer hover:bg-gray-50/50 dark:hover:bg-gray-800/30 rounded-t-lg transition-colors"
                 >
                   <div className="flex items-center gap-3">
@@ -361,7 +361,7 @@ export default function CampaignsPage() {
                               <DropdownMenuItem
                                 onClick={(e) => {
                                   e.stopPropagation();
-                                  setLocation(`/campaigns/${campaign.id}`);
+                                  router.push(`/campaigns/${campaign.id}`);
                                 }}
                                 data-testid={`menu-edit-${campaign.id}`}
                               >

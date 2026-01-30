@@ -167,7 +167,7 @@ const tabs: TabData[] = [
     icon: Map,
     title: "Search the Unsearchable",
     summary: "Queries nobody else can run",
-    fullDescription: "Traditional databases can only filter by industry, location, and company size. We can find \"recently-exited startups\" or \"beach-side hotels\" — context that exists nowhere else.",
+    fullDescription: "Traditional databases can only filter by industry, pathname, and company size. We can find \"recently-exited startups\" or \"beach-side hotels\" — context that exists nowhere else.",
     graphic: SearchExamples,
   },
 ];

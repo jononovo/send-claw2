@@ -1,8 +1,8 @@
+'use client';
+
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { createPortal } from "react-dom";
-'use client';
-
 import { usePathname, useRouter } from "next/navigation";
 import { Trophy, Play, X, Circle, Pointer, Sparkles, ChevronLeft } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
@@ -28,11 +28,11 @@ export function FluffyGuide({
 }: ExtendedFluffyGuideProps) {
   console.log('[FluffyGuide] render:', { isActive, starterMode });
   
+  const router = useRouter();
   const [showMenu, setShowMenu] = useState(false);
   const [shouldWiggle, setShouldWiggle] = useState(false);
   const [showRecorder, setShowRecorder] = useState(false);
   const [showGettingStarted, setShowGettingStarted] = useState(false);
-  const [, navigate] = useLocation();
 
   useEffect(() => {
     if (starterMode) {
@@ -61,7 +61,7 @@ export function FluffyGuide({
 
   const handleViewQuests = () => {
     setShowMenu(false);
-    navigate("/quests");
+    router.push("/quests");
   };
 
   const handleStartQuest = () => {

@@ -2,7 +2,7 @@
 
 import dynamic from 'next/dynamic';
 
-const Landing = dynamic(() => import("@/pages/landing"), { ssr: false });
+const Landing = dynamic(() => import("@/page-components/landing"), { ssr: false });
 
 export default function ReactLandingPage() {
   return <Landing />;

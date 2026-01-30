@@ -1,6 +1,6 @@
-import { createContext, useContext, useState, useCallback, useEffect, useRef } from "react";
 'use client';
 
+import { createContext, useContext, useState, useCallback, useEffect, useRef } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import type { GuidanceContextValue, QuestTrigger, Challenge } from "../types";
 import { useGuidanceEngine } from "../hooks/useGuidanceEngine";
@@ -80,8 +80,8 @@ interface GuidanceProviderProps {
 
 const GUIDANCE_ENABLED_ROUTES = ["/app", "/quests", "/contacts", "/campaigns", "/replies", "/account", "/strategy"];
 
-function isGuidanceEnabledRoute(location: string): boolean {
-  return GUIDANCE_ENABLED_ROUTES.some(route => location === route || location.startsWith(route + "/"));
+function isGuidanceEnabledRoute(pathname: string): boolean {
+  return GUIDANCE_ENABLED_ROUTES.some(route => pathname === route || pathname.startsWith(route + "/"));
 }
 
 function getTriggerStorageKey(questId: string): string {
@@ -101,7 +101,8 @@ function isRouteMatch(currentLocation: string, triggerRoute: string): boolean {
 }
 
 export function GuidanceProvider({ children, autoStartForNewUsers = true }: GuidanceProviderProps) {
-  const [location, navigate] = useLocation();
+  const pathname = usePathname();
+  const router = useRouter();
   const { user, isLoading: authLoading } = useAuth();
   const engine = useGuidanceEngine({ 
     authReady: !authLoading, 
@@ -170,8 +171,8 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
 
   const { state, currentQuest, currentChallenge, currentStep, getChallengeProgress, videoTimestamps } = engine;
 
-  const isOnEnabledRoute = isGuidanceEnabledRoute(location);
-  const isOnAppRoute = location === "/app" || location.startsWith("/app/");
+  const isOnEnabledRoute = isGuidanceEnabledRoute(pathname);
+  const isOnAppRoute = pathname === "/app" || pathname.startsWith("/app/");
 
   // Handle route-based navigation for steps that require a specific page
   // In show mode, use visibleStepIndex for earlier navigation (before action fires)
@@ -196,19 +197,19 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
     
     const stepKey = `${state.currentQuestId}-${state.currentChallengeIndex}-${activeStepIndex}`;
     
-    // Only auto-navigate when step changes, not on every location change
+    // Only auto-navigate when step changes, not on every pathname change
     if (previousStepKey.current !== stepKey) {
       previousStepKey.current = stepKey;
       
       const expectedRoute = activeStep.route;
-      const isOnCorrectRoute = location === expectedRoute || location.startsWith(expectedRoute + "/");
+      const isOnCorrectRoute = pathname === expectedRoute || pathname.startsWith(expectedRoute + "/");
       
       if (!isOnCorrectRoute) {
         console.log(`[ROUTE] Navigating to ${expectedRoute} for step ${activeStepIndex}`);
-        navigate(expectedRoute);
+        router.push(expectedRoute);
       }
     }
-  }, [state.isActive, state.playbackMode, currentChallenge, currentStep, state.currentQuestId, state.currentChallengeIndex, state.currentStepIndex, visibleStepIndex, location, navigate]);
+  }, [state.isActive, state.playbackMode, currentChallenge, currentStep, state.currentQuestId, state.currentChallengeIndex, state.currentStepIndex, visibleStepIndex, pathname, router]);
 
   const refreshChallengeVideo = useCallback(async (challengeId: string) => {
     try {
@@ -554,7 +555,7 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
       if (once && hasQuestBeenTriggered(questId)) return false;
       if (state.completedQuests.includes(questId)) return false;
 
-      if (trigger.route && !isRouteMatch(location, trigger.route)) return false;
+      if (trigger.route && !isRouteMatch(pathname, trigger.route)) return false;
 
       switch (trigger.type) {
         case "newUser":
@@ -594,7 +595,7 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
         }
       }
     }
-  }, [autoStartForNewUsers, authLoading, user, location, state.isActive, state.currentQuestId, state.completedQuests, showQuestStarterPopover]);
+  }, [autoStartForNewUsers, authLoading, user, pathname, state.isActive, state.currentQuestId, state.completedQuests, showQuestStarterPopover]);
 
   useEffect(() => {
     if (!autoStartForNewUsers) return;
@@ -676,7 +677,7 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
       state.currentStepIndex === 0 &&
       currentChallenge?.setupEvent &&
       currentStep?.route &&
-      location === currentStep.route
+      pathname === currentStep.route
     ) {
       // Delay to ensure target page is mounted and event listeners are attached
       const timer = setTimeout(() => {
@@ -684,7 +685,7 @@ export function GuidanceProvider({ children, autoStartForNewUsers = true }: Guid
       }, 150);
       return () => clearTimeout(timer);
     }
-  }, [state.isActive, state.currentStepIndex, currentChallenge, currentStep, location]);
+  }, [state.isActive, state.currentStepIndex, currentChallenge, currentStep, pathname]);
 
   useEffect(() => {
     if (isOnEnabledRoute && state.isActive && !state.isHeaderVisible && !engine.isTestMode) {

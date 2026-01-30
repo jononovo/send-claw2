@@ -3,7 +3,7 @@
 import dynamic from 'next/dynamic';
 import { ProtectedPage } from "@/components/protected-page";
 
-const Replies = dynamic(() => import("@/pages/replies"), { ssr: false });
+const Replies = dynamic(() => import("@/page-components/replies"), { ssr: false });
 
 export default function RepliesPage() {
   return (

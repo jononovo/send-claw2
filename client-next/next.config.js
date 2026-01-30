@@ -2,6 +2,11 @@ const path = require('path');
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  turbopack: {
+    resolveAlias: {
+      '@shared': path.resolve(__dirname, '../shared'),
+    },
+  },
   webpack: (config) => {
     config.resolve.alias['@shared'] = path.resolve(__dirname, '../shared');
     return config;

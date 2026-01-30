@@ -182,7 +182,7 @@ export default function LandingStealth() {
                         <div className="relative z-10 flex items-center gap-5 p-6 pr-10 md:-translate-y-8 shrink-0 mt-8 md:mt-0">
                           <div className="w-20 h-20 rounded-full overflow-hidden border border-white/20 shadow-lg shrink-0">
                             <img 
-                              src={testimonials[currentTestimonialIndex].image} 
+                              src={typeof testimonials[currentTestimonialIndex].image === 'string' ? testimonials[currentTestimonialIndex].image : testimonials[currentTestimonialIndex].image.src} 
                               alt={testimonials[currentTestimonialIndex].author}
                               loading="lazy"
                               className="w-full h-full object-cover"

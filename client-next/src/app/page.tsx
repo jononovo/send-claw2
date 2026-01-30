@@ -2,7 +2,7 @@
 
 import dynamic from 'next/dynamic';
 
-const LandingSimple3 = dynamic(() => import("@/pages/landing-simple3"), {
+const LandingSimple3 = dynamic(() => import("@/page-components/landing-simple3"), {
   ssr: false,
 });
 

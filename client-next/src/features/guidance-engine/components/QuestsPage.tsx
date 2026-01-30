@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 'use client';
 
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { usePathname, useRouter } from "next/navigation";
 import { 
   ChevronDown, 
@@ -344,7 +344,7 @@ function QuestCard({
 }
 
 export function QuestsPage() {
-  const [, navigate] = useLocation();
+  const router = useRouter();
   const guidance = useGuidance();
   const { state } = guidance;
   const [restartConfirm, setRestartConfirm] = useState<{questId: string; challengeIndex: number; challengeName: string;} | null>(null);
@@ -359,7 +359,7 @@ export function QuestsPage() {
         detail: { questId: restartConfirm.questId, challengeIndex: restartConfirm.challengeIndex, mode: 'guide' } 
       }));
       setRestartConfirm(null);
-      navigate("/app");
+      router.push("/app");
     }
   };
 
@@ -379,18 +379,18 @@ export function QuestsPage() {
     window.dispatchEvent(new CustomEvent('guidance:start-quest', { 
       detail: { questId, mode: 'guide' } 
     }));
-    navigate("/app");
+    router.push("/app");
   };
 
   const handleContinueChallenge = (questId: string, challengeIndex: number) => {
     if (state.currentQuestId === questId) {
       window.dispatchEvent(new CustomEvent('guidance:resume-guidance'));
-      navigate("/app");
+      router.push("/app");
     } else {
       window.dispatchEvent(new CustomEvent('guidance:start-quest', { 
         detail: { questId, mode: 'guide' } 
       }));
-      navigate("/app");
+      router.push("/app");
     }
   };
 
@@ -398,7 +398,7 @@ export function QuestsPage() {
     window.dispatchEvent(new CustomEvent('guidance:restart-challenge', { 
       detail: { questId, challengeIndex, mode: 'guide' } 
     }));
-    navigate("/app");
+    router.push("/app");
   };
 
   const handleShowDemo = (questId: string, challengeIndex: number) => {
@@ -406,7 +406,7 @@ export function QuestsPage() {
     window.dispatchEvent(new CustomEvent('guidance:restart-challenge', { 
       detail: { questId, challengeIndex, mode: 'show' } 
     }));
-    navigate("/app");
+    router.push("/app");
   };
 
   const totalQuests = QUESTS.length;
@@ -421,7 +421,7 @@ export function QuestsPage() {
     <div className="min-h-screen bg-gradient-to-b from-gray-950 via-gray-900 to-gray-950">
       <div className="max-w-3xl mx-auto px-4 py-8">
         <button
-          onClick={() => navigate("/app")}
+          onClick={() => router.push("/app")}
           className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors mb-6"
         >
           <ArrowLeft className="h-4 w-4" />

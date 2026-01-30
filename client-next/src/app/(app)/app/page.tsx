@@ -3,7 +3,7 @@
 import dynamic from 'next/dynamic';
 import { SemiProtectedPage } from "@/components/semi-protected-page";
 
-const Home = dynamic(() => import("@/pages/home"), { ssr: false });
+const Home = dynamic(() => import("@/page-components/home"), { ssr: false });
 
 export default function AppPage() {
   return (

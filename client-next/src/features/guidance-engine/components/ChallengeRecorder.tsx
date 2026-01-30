@@ -1,8 +1,8 @@
+'use client';
+
 import { useState, useEffect, useRef, lazy, Suspense } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
-'use client';
-
 import { usePathname, useRouter } from "next/navigation";
 import { Circle, Square, Loader2, Check, Copy, X, ChevronDown, Upload, Play, Pencil, ArrowUp, ArrowDown, Trash2, Save, Plus, Video } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -23,7 +23,7 @@ interface ChallengeRecorderProps {
 type RecorderUIState = "idle" | "recording" | "processing" | "complete";
 
 export function ChallengeRecorder({ isOpen, onClose }: ChallengeRecorderProps) {
-  const [location] = useLocation();
+  const pathname = usePathname();
   const [uiState, setUIState] = useState<RecorderUIState>("idle");
   const [selectedQuestId, setSelectedQuestId] = useState<string>(QUESTS[0]?.id || "");
   const [generatedChallenge, setGeneratedChallenge] = useState<GeneratedChallenge | null>(null);
@@ -84,7 +84,7 @@ export function ChallengeRecorder({ isOpen, onClose }: ChallengeRecorderProps) {
       videoRecorder.startRecording();
     }
     
-    startRecording(selectedQuestId, location, includeVideo);
+    startRecording(selectedQuestId, pathname, includeVideo);
     setUIState("recording");
   };
 
@@ -128,7 +128,7 @@ export function ChallengeRecorder({ isOpen, onClose }: ChallengeRecorderProps) {
     const hadVideo = includeVideo;
     const videoStartTime = recording.videoStartTime;
     const questId = recording.selectedQuestId || selectedQuestId;
-    const startRoute = recording.startRoute || location;
+    const startRoute = recording.startRoute || pathname;
     
     // Stop video recording FIRST (before stopRecording clears state)
     let videoBlob: Blob | null = null;
@@ -319,7 +319,7 @@ export function ChallengeRecorder({ isOpen, onClose }: ChallengeRecorderProps) {
   const startAddingStep = () => {
     setStepCountBeforeAdd(recording.steps.length);
     setIsAddingStep(true);
-    startRecording(selectedQuestId, location);
+    startRecording(selectedQuestId, pathname);
   };
 
   // Effect to capture single step when in "add step" mode

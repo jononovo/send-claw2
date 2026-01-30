@@ -1,5 +1,8 @@
+'use client';
+
 import { useState, useEffect } from 'react';
 import { useMutation } from '@tanstack/react-query';
+import { useRouter } from 'next/navigation';
 import { apiRequest, queryClient } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
 import { SearchConfirmationModal } from './SearchConfirmationModal';
@@ -8,7 +11,6 @@ import { CustomerProfileForm } from '@/components/customer-profile-form';
 import { ICPPreviewModal } from './ICPPreviewModal';
 import { SenderProfileForm } from '@/components/sender-profile-form';
 import { CompletionModal } from './CompletionModal';
-import { useLocation } from 'wouter';
 
 type OnboardingPhase = 
   | 'search_confirmation'
@@ -32,7 +34,7 @@ export function OnboardingFlowOrchestrator({
   onClose 
 }: OnboardingFlowOrchestratorProps) {
   const { toast } = useToast();
-  const [, setLocation] = useLocation();
+  const router = useRouter();
   const [currentPhase, setCurrentPhase] = useState<OnboardingPhase>('search_confirmation');
   const [productId, setProductId] = useState<number | null>(null);
   const [generatedICP, setGeneratedICP] = useState<any>(null);
@@ -168,7 +170,7 @@ export function OnboardingFlowOrchestrator({
   const handleFinalComplete = () => {
     if (onComplete) onComplete();
     // Navigate to campaign dashboard
-    setLocation('/streak');
+    router.push('/streak');
   };
 
   return (
