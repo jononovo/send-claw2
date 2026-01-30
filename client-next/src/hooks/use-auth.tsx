@@ -188,7 +188,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         console.error("Error syncing with backend:", {
           error,
           domain: window.location.hostname,
-          environment: import.meta.env.MODE
+          environment: process.env.NODE_ENV
         });
         throw error;
       } finally {
@@ -411,7 +411,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const signInWithGoogle = async (): Promise<{ isNewUser: boolean }> => {
     try {
       console.log('Starting Google sign-in process', {
-        environment: import.meta.env.MODE,
+        environment: process.env.NODE_ENV,
         domain: window.location.hostname,
         origin: window.location.origin
       });
@@ -419,8 +419,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (!firebase) {
         const configError = {
           firebase: !!firebase,
-          projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-          environment: import.meta.env.MODE,
+          projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+          environment: process.env.NODE_ENV,
           domain: window.location.hostname
         };
         console.error('Firebase not initialized:', configError);
@@ -459,7 +459,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         error: error.message,
         code: error.code,
         domain: window.location.hostname,
-        environment: import.meta.env.MODE
+        environment: process.env.NODE_ENV
       });
 
       toast({

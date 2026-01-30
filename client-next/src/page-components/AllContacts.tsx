@@ -197,7 +197,7 @@ export default function AllContacts() {
               </div>
 
               {/* Clear Filters Button */}
-              {(hasEmailFilter || selectedListId !== 'all' || pathnameFilter) && (
+              {(hasEmailFilter || selectedListId !== 'all' || locationFilter) && (
                 <Button
                   variant="ghost"
                   size="sm"

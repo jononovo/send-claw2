@@ -34,16 +34,17 @@ export function useStrategyChat() {
     onSuccess: (response: OnboardingChatResponse) => {
       // Add user message
       setMessages(prev => [...prev, {
-        sender: 'user',
+        sender: 'user' as const,
         content: response.userMessage || '',
         timestamp: new Date().toISOString()
       }]);
 
       // Add AI response
       if (response.aiResponse) {
+        const aiContent = response.aiResponse;
         setMessages(prev => [...prev, {
-          sender: 'ai',
-          content: response.aiResponse,
+          sender: 'ai' as const,
+          content: aiContent,
           timestamp: new Date().toISOString()
         }]);
       }

@@ -1,0 +1,16 @@
+{
+  "headers": {
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/(landing)/layout,_N_T_/(landing)/simple3/layout,_N_T_/(landing)/simple3/page,_N_T_/simple3"
+  },
+  "segmentPaths": [
+    "/_tree",
+    "/_full",
+    "/!KGxhbmRpbmcp/simple3/__PAGE__",
+    "/!KGxhbmRpbmcp/simple3",
+    "/!KGxhbmRpbmcp",
+    "/_index",
+    "/_head"
+  ]
+}

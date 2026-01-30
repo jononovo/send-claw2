@@ -20,52 +20,46 @@ export const emailTemplatesService = {
    * Get all email templates
    */
   async getTemplates(): Promise<EmailTemplate[]> {
-    return apiRequest("/api/email-templates");
+    const response = await apiRequest("GET", "/api/email-templates");
+    return response.json();
   },
 
   /**
    * Get a single email template by ID
    */
   async getTemplate(id: number): Promise<EmailTemplate> {
-    return apiRequest(`/api/email-templates/${id}`);
+    const response = await apiRequest("GET", `/api/email-templates/${id}`);
+    return response.json();
   },
 
   /**
    * Create a new email template
    */
   async createTemplate(data: EmailTemplate): Promise<EmailTemplate> {
-    return apiRequest("/api/email-templates", {
-      method: "POST",
-      body: JSON.stringify(data)
-    });
+    const response = await apiRequest("POST", "/api/email-templates", data);
+    return response.json();
   },
 
   /**
    * Update an existing email template
    */
   async updateTemplate(id: number, data: Partial<EmailTemplate>): Promise<EmailTemplate> {
-    return apiRequest(`/api/email-templates/${id}`, {
-      method: "PATCH",
-      body: JSON.stringify(data)
-    });
+    const response = await apiRequest("PATCH", `/api/email-templates/${id}`, data);
+    return response.json();
   },
 
   /**
    * Delete an email template
    */
   async deleteTemplate(id: number): Promise<void> {
-    return apiRequest(`/api/email-templates/${id}`, {
-      method: "DELETE"
-    });
+    await apiRequest("DELETE", `/api/email-templates/${id}`);
   },
 
   /**
    * Get generated email content with variables
    */
   async getGeneratedContent(templateId: number, variables: Record<string, any>) {
-    return apiRequest("/api/email-templates/generate", {
-      method: "POST",
-      body: JSON.stringify({ templateId, variables })
-    });
+    const response = await apiRequest("POST", "/api/email-templates/generate", { templateId, variables });
+    return response.json();
   }
 };

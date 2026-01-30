@@ -1,4 +1,10 @@
-import type { SearchSection } from "@shared/schema";
+// Local type for search section configuration (different from schema SearchSection)
+interface SearchSectionConfig {
+  id: string;
+  label: string;
+  description: string;
+  searches: Array<{ id: string; label: string; description: string; implementation?: string }>;
+}
 
 // Core search subsections
 export const SEARCH_SUBSECTIONS = {
@@ -142,7 +148,7 @@ export function getSubsectionsForSection(sectionConfig: {
 }
 
 // Get sections for a specific module type
-export function getSectionsByModuleType(moduleType: string): Record<string, SearchSection> {
+export function getSectionsByModuleType(moduleType: string): Record<string, SearchSectionConfig> {
   const validModuleTypes = [
     'company_overview',
     'decision_maker',
@@ -162,7 +168,7 @@ export function getSectionsByModuleType(moduleType: string): Record<string, Sear
     return {};
   }
 
-  const result: Record<string, SearchSection> = {};
+  const result: Record<string, SearchSectionConfig> = {};
 
   Object.entries(moduleConfig).forEach(([sectionId, sectionConfig]) => {
     const searches = getSubsectionsForSection(sectionConfig);

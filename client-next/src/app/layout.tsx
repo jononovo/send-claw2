@@ -3,6 +3,7 @@ import { Providers } from './providers';
 import './globals.css';
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://5ducks.ai'),
   title: '5Ducks - Sales Gamified | Find Prospects in 5 Minutes a Day',
   description: 'Sales Gamified. Find prospects, craft emails, and close deals in just 5 minutes a day. Delete distractions and enjoy sales simplicity with 5Ducks.',
   openGraph: {

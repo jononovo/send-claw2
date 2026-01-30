@@ -24,51 +24,44 @@ export const chatService = {
     conversationHistory: OnboardingChatMessage[],
     boundaryContext?: any
   ): Promise<OnboardingChatResponse> {
-    return apiRequest("/api/onboarding/strategy-chat", {
-      method: "POST",
-      body: JSON.stringify({
-        userMessage: message,
-        workflow,
-        conversationHistory,
-        boundaryContext
-      })
+    const response = await apiRequest("POST", "/api/onboarding/strategy-chat", {
+      userMessage: message,
+      workflow,
+      conversationHistory,
+      boundaryContext
     });
+    return response.json();
   },
 
   /**
    * Save strategic profile from chat
    */
   async saveStrategicProfile(data: SaveFromChatRequest): Promise<SaveFromChatResponse> {
-    return apiRequest("/api/strategic-profiles/save-from-chat", {
-      method: "POST",
-      body: JSON.stringify(data)
-    });
+    const response = await apiRequest("POST", "/api/strategic-profiles/save-from-chat", data);
+    return response.json();
   },
 
   /**
    * Generate email content
    */
   async generateEmailContent(data: GenerateEmailContentRequest): Promise<GenerateEmailContentResponse> {
-    return apiRequest("/api/email-generation/generate-content", {
-      method: "POST",
-      body: JSON.stringify(data)
-    });
+    const response = await apiRequest("POST", "/api/email-generation/generate-content", data);
+    return response.json();
   },
 
   /**
    * Get user chatbox state
    */
   async getChatboxState(userId: number) {
-    return apiRequest(`/api/user-chatbox/${userId}`);
+    const response = await apiRequest("GET", `/api/user-chatbox/${userId}`);
+    return response.json();
   },
 
   /**
    * Update user chatbox state
    */
   async updateChatboxState(userId: number, state: any) {
-    return apiRequest(`/api/user-chatbox/${userId}`, {
-      method: "PUT",
-      body: JSON.stringify(state)
-    });
+    const response = await apiRequest("PUT", `/api/user-chatbox/${userId}`, state);
+    return response.json();
   }
 };

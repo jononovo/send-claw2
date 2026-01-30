@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
-import { useParams, Link, useLocation } from "wouter";
+import { useParams } from "next/navigation";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
