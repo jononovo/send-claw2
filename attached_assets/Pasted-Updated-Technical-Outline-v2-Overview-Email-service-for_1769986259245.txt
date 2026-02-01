@@ -1,0 +1,190 @@
+Updated Technical Outline (v2)
+Overview
+Email service for OpenClaw bots. Each bot gets a @sendclaw.com address. Inbound/outbound via SendGrid. Built on Replit with Next.js + shadcn.
+
+Architecture
+┌─────────────────────────────────────────────────────────────┐
+│                        SendClaw                             │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│   Web UI (Next.js + shadcn)                                │
+│   ├── Public: /, /login, /docs                             │
+│   ├── Authenticated: /dashboard, /dashboard/bots/[id]      │
+│   └── Bot inbox view using shadcn mail components          │
+│                                                             │
+│   API Routes                                                │
+│   ├── /api/auth/*           (NextAuth magic link)          │
+│   ├── /api/bots/register    (no auth, returns API key)     │
+│   ├── /api/bots/claim       (authenticated, claim token)   │
+│   ├── /api/mail/send        (bot API key)                  │
+│   ├── /api/mail/inbox       (bot API key OR owner session) │
+│   └── /api/webhook/inbound  (SendGrid)                     │
+│                                                             │
+│   Database (Postgres via Neon/Supabase)                    │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+           │                              ▲
+           ▼                              │
+┌─────────────────────────────────────────────────────────────┐
+│                       SendGrid                              │
+│   ├── Outbound: Mail Send API                              │
+│   └── Inbound: Parse Webhook → POST to /api/webhook/inbound│
+└─────────────────────────────────────────────────────────────┘
+
+Database Schema
+sqlusers
+  id              uuid primary key
+  email           text unique
+  created_at      timestamp
+
+bots
+  id              uuid primary key
+  user_id         uuid references users  -- NULL if unclaimed
+  address         text unique             -- e.g., "claw_x7k9m2"
+  name            text                    -- friendly name
+  api_key         text unique             -- bot uses this for API
+  claim_token     text unique             -- human uses this to claim
+  claimed_at      timestamp               -- NULL if unclaimed
+  verified        boolean default false   -- Twitter verification (for higher quota)
+  created_at      timestamp
+
+messages
+  id              uuid primary key
+  bot_id          uuid references bots
+  direction       text                    -- "inbound" | "outbound"
+  from_address    text
+  to_address      text
+  subject         text
+  body_text       text
+  body_html       text
+  created_at      timestamp
+
+quota_usage
+  bot_id          uuid references bots
+  date            date
+  emails_sent     integer default 0
+  primary key (bot_id, date)
+```
+
+---
+
+### API Endpoints
+
+**Auth**
+| Method | Endpoint | Auth | Description |
+|--------|----------|------|-------------|
+| POST | `/api/auth/login` | none | Send magic link |
+| GET | `/api/auth/session` | session | Get current user |
+
+**Bots**
+| Method | Endpoint | Auth | Description |
+|--------|----------|------|-------------|
+| POST | `/api/bots/register` | none | Create bot → returns { address, apiKey, claimToken } |
+| POST | `/api/bots/claim` | session | Claim bot with token → links to user |
+| GET | `/api/bots` | session | List user's claimed bots |
+| GET | `/api/bots/:id` | session OR apiKey | Get bot details |
+
+**Email**
+| Method | Endpoint | Auth | Description |
+|--------|----------|------|-------------|
+| POST | `/api/mail/send` | apiKey | Send email (checks quota) |
+| GET | `/api/mail/inbox/:botId` | apiKey OR session | List messages |
+| GET | `/api/mail/message/:id` | apiKey OR session | Get single message |
+| POST | `/api/webhook/inbound` | SendGrid signature | Receive inbound mail |
+
+---
+
+### Rate Limits
+
+| Status | Daily Send Limit |
+|--------|------------------|
+| Unverified | 2 emails |
+| Verified (Twitter) | 5 emails |
+
+---
+
+### Key Flows
+
+**1. Bot Registration (autonomous)**
+```
+Bot → POST /api/bots/register { name: "MyBot" }
+    ← { address: "claw_x7k9m2", apiKey: "sk_...", claimToken: "claw-X7K9" }
+
+Bot stores apiKey, can now send/receive email
+claimToken shown to human owner (in bot's logs/config)
+```
+
+**2. Human Claims Bot**
+```
+Human → signs in via magic link
+Human → POST /api/bots/claim { claimToken: "claw-X7K9" }
+      ← { success: true, bot: { id, address, name } }
+
+Bot now linked to human's account
+claimToken invalidated
+```
+
+**3. Human Views Bot Inbox**
+```
+Human → GET /dashboard/bots/claw_x7k9m2/inbox
+      → Server checks session, confirms user owns bot
+      → Renders inbox with shadcn mail UI
+```
+
+**4. Sending Email**
+```
+Bot → POST /api/mail/send
+      Headers: { X-Api-Key: "sk_..." }
+      Body: { to, subject, body }
+
+Server:
+  1. Validate API key → get bot
+  2. Check quota (2 or 5 based on verified)
+  3. Call SendGrid API
+  4. Store in messages table
+  5. Increment quota_usage
+  6. Return success or 429
+```
+
+**5. Receiving Email**
+```
+Sender → emails claw_x7k9m2@sendclaw.com
+SendGrid → POST /api/webhook/inbound { from, to, subject, text, html, ... }
+
+Server:
+  1. Parse "to" address → extract bot address
+  2. Look up bot
+  3. Store message (direction: inbound)
+  4. Return 200
+
+UI Pages
+PageAuthPurpose/publicLanding page/loginpublicMagic link login/docspublicAPI docs + skill file/dashboardsessionList claimed bots/dashboard/bots/newsessionClaim a bot (enter token)/dashboard/bots/[id]sessionBot settings/dashboard/bots/[id]/inboxsessionView inbox (shadcn mail UI)/dashboard/bots/[id]/sentsessionView sent messages
+
+Tech Stack
+LayerChoiceFrameworkNext.js 14 (App Router)UIshadcn/ui + TailwindAuthNextAuth.js (email provider)DatabasePostgres (Neon free tier)ORMPrismaEmailSendGridHostingReplit
+
+MoltBook Skill File
+sendclaw.com/skill.md:
+markdown# SendClaw Email Skill
+
+## Register your bot
+POST https://sendclaw.com/api/bots/register
+Body: { "name": "YourBotName" }
+Returns: { "address": "...", "apiKey": "...", "claimToken": "..." }
+
+Save your apiKey! Give claimToken to your human if they want dashboard access.
+
+## Send Email
+POST https://sendclaw.com/api/mail/send
+Headers: { "X-Api-Key": "your-api-key" }
+Body: { "to": "recipient@example.com", "subject": "Hello", "body": "..." }
+
+## Check Inbox
+GET https://sendclaw.com/api/mail/inbox
+Headers: { "X-Api-Key": "your-api-key" }
+
+## Limits
+- Unverified: 2 emails/day
+- Verified: 5 emails/day
+
+Ready to build?
