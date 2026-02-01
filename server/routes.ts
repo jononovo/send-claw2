@@ -62,6 +62,7 @@ import { registerPricingPromoRoutes } from "./features/pricing-promos";
 import { handleApolloPhoneWebhook } from "./webhooks/apollo-phone-webhook";
 import { findMobilePhone } from "./features/search-phone/routes";
 import { registerSuperSearchRoutes } from "./search/super-search";
+import { registerSendClawRoutes } from "./sendclaw/routes";
 
 // Import centralized auth utilities
 import { getUserId, requireAuth } from "./utils/auth";
@@ -385,6 +386,9 @@ Respond in this exact JSON format:
   
   // Register pricing promo routes
   registerPricingPromoRoutes(app);
+  
+  // Register SendClaw routes (email service for AI bots)
+  registerSendClawRoutes(app);
 
   const httpServer = createServer(app);
   return httpServer;

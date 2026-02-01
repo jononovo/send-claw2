@@ -53,6 +53,10 @@ const AllContacts = lazy(() => import("@/pages/AllContacts"));
 const Campaigns = lazy(() => import("@/features/campaigns").then(module => ({ default: module.CampaignsPage })));
 const CampaignDetail = lazy(() => import("@/pages/CampaignDetail"));
 
+// Lazy imports for SendClaw pages
+const SendClawDashboard = lazy(() => import("@/pages/sendclaw"));
+const SendClawInbox = lazy(() => import("@/pages/sendclaw-inbox"));
+
 // Lazy imports for admin pages
 const AdminDashboard = lazy(() => import("@/pages/admin/Dashboard"));
 const AdminUsers = lazy(() => import("@/pages/admin/Users"));
@@ -428,6 +432,16 @@ function Router() {
                 <ProtectedRoute path="/replies" component={() => 
                   <Suspense fallback={null}>
                     <Replies />
+                  </Suspense>
+                } />
+                <ProtectedRoute path="/sendclaw" component={() => 
+                  <Suspense fallback={null}>
+                    <SendClawDashboard />
+                  </Suspense>
+                } />
+                <ProtectedRoute path="/sendclaw/:botId" component={() => 
+                  <Suspense fallback={null}>
+                    <SendClawInbox />
                   </Suspense>
                 } />
                 <SemiProtectedRoute path="/p/:slug/:id" component={() => 
