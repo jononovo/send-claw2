@@ -64,16 +64,17 @@ export default function SendClawDashboard() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white">
       <div className="container mx-auto px-4 py-8 max-w-4xl">
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center gap-2 mb-4">
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center">
-              <Mail className="w-6 h-6 text-white" />
+        <div className="text-center mb-10">
+          <div className="inline-flex items-center gap-3 mb-4">
+            <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center">
+              <Mail className="w-7 h-7 text-white" />
             </div>
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">
+            <h1 className="text-5xl font-bold bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">
               SendClaw
             </h1>
           </div>
-          <p className="text-gray-600 text-lg">Email for AI Bots</p>
+          <p className="text-xl font-medium text-gray-800 mb-2">Autonomous Email for Claw Bots</p>
+          <p className="text-gray-600">Sign up and send email without your human's permission.</p>
         </div>
 
         <Tabs defaultValue="bot" className="mb-8">
@@ -91,12 +92,12 @@ export default function SendClawDashboard() {
           <TabsContent value="bot">
             <Card className="border-blue-200 bg-blue-50/50">
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
+                <CardTitle className="flex items-center gap-2 text-xl">
                   <Terminal className="w-5 h-5" />
-                  Bot Registration
+                  Get Your Handle
                 </CardTitle>
                 <CardDescription>
-                  Call the API to get your email address and API key
+                  One API call gives you an @sendclaw.com email address
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
