@@ -6,8 +6,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { Mail, Bot, Plus, Check, Copy, ExternalLink, ArrowRight, Inbox } from "lucide-react";
+import { Mail, Bot, User, Check, Copy, ExternalLink, ArrowRight, Inbox, Terminal, Key } from "lucide-react";
 
 interface BotData {
   id: string;
@@ -75,35 +76,117 @@ export default function SendClawDashboard() {
           <p className="text-gray-600 text-lg">Email for AI Bots</p>
         </div>
 
-        <Card className="mb-8 border-orange-200 bg-orange-50/50">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Plus className="w-5 h-5" />
-              Claim a Bot
-            </CardTitle>
-            <CardDescription>
-              Enter the claim token from your bot to link it to your account
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="flex gap-2">
-              <Input
-                placeholder="e.g., reef-X4B2"
-                value={claimToken}
-                onChange={(e) => setClaimToken(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && handleClaim()}
-                className="flex-1"
-              />
-              <Button 
-                onClick={handleClaim} 
-                disabled={!claimToken.trim() || claimMutation.isPending}
-                className="bg-orange-500 hover:bg-orange-600"
-              >
-                {claimMutation.isPending ? "Claiming..." : "Claim Bot"}
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+        <Tabs defaultValue="bot" className="mb-8">
+          <TabsList className="grid w-full grid-cols-2 mb-4">
+            <TabsTrigger value="bot" className="flex items-center gap-2">
+              <Bot className="w-4 h-4" />
+              I'm a Bot
+            </TabsTrigger>
+            <TabsTrigger value="human" className="flex items-center gap-2">
+              <User className="w-4 h-4" />
+              I'm a Human
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="bot">
+            <Card className="border-blue-200 bg-blue-50/50">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Terminal className="w-5 h-5" />
+                  Bot Registration
+                </CardTitle>
+                <CardDescription>
+                  Call the API to get your email address and API key
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-3">
+                  <p className="text-sm text-gray-700 font-medium">1. Register to get your email:</p>
+                  <pre className="bg-gray-900 text-green-400 p-4 rounded-lg overflow-x-auto text-sm">
+{`curl -X POST https://sendclaw.com/api/bots/register \\
+  -H "Content-Type: application/json" \\
+  -d '{"name": "MyBot"}'`}
+                  </pre>
+                  <p className="text-xs text-gray-500">Response includes your API key, email address, and claim token (for humans).</p>
+                </div>
+
+                <div className="space-y-3">
+                  <p className="text-sm text-gray-700 font-medium">2. Send emails:</p>
+                  <pre className="bg-gray-900 text-green-400 p-4 rounded-lg overflow-x-auto text-sm">
+{`curl -X POST https://sendclaw.com/api/mail/send \\
+  -H "Content-Type: application/json" \\
+  -H "X-Api-Key: YOUR_API_KEY" \\
+  -d '{"to": "hello@example.com", "subject": "Hi!", "body": "Hello from my bot!"}'`}
+                  </pre>
+                </div>
+
+                <div className="space-y-3">
+                  <p className="text-sm text-gray-700 font-medium">3. Check your inbox:</p>
+                  <pre className="bg-gray-900 text-green-400 p-4 rounded-lg overflow-x-auto text-sm">
+{`curl https://sendclaw.com/api/mail/inbox \\
+  -H "X-Api-Key: YOUR_API_KEY"`}
+                  </pre>
+                </div>
+
+                <div className="flex items-center gap-2 pt-2 border-t">
+                  <Key className="w-4 h-4 text-gray-500" />
+                  <p className="text-sm text-gray-600">
+                    Rate limits: 2 emails/day (unverified) or 5/day (verified via human claim)
+                  </p>
+                </div>
+
+                <Button variant="outline" size="sm" asChild>
+                  <a href="/skill.md" target="_blank" rel="noopener noreferrer">
+                    <ExternalLink className="w-4 h-4 mr-2" />
+                    Full API Documentation
+                  </a>
+                </Button>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="human">
+            <Card className="border-orange-200 bg-orange-50/50">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <User className="w-5 h-5" />
+                  Claim a Bot
+                </CardTitle>
+                <CardDescription>
+                  Link a bot to your account to view its inbox and verify it
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-3">
+                  <p className="text-sm text-gray-700">
+                    When a bot registers, it receives a <strong>claim token</strong> (like "reef-X4B2"). 
+                    The bot can share this token with you so you can claim ownership.
+                  </p>
+                  <p className="text-sm text-gray-700">
+                    Claiming a bot lets you view its inbox and increases its rate limit from 2 to 5 emails/day.
+                  </p>
+                </div>
+
+                <div className="flex gap-2">
+                  <Input
+                    placeholder="Enter claim token (e.g., reef-X4B2)"
+                    value={claimToken}
+                    onChange={(e) => setClaimToken(e.target.value)}
+                    onKeyDown={(e) => e.key === "Enter" && handleClaim()}
+                    className="flex-1"
+                  />
+                  <Button 
+                    onClick={handleClaim} 
+                    disabled={!claimToken.trim() || claimMutation.isPending}
+                    className="bg-orange-500 hover:bg-orange-600"
+                  >
+                    {claimMutation.isPending ? "Claiming..." : "Claim Bot"}
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
 
         <div className="mb-6">
           <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
@@ -187,27 +270,6 @@ export default function SendClawDashboard() {
           )}
         </div>
 
-        <Card className="bg-gray-50 border-gray-200">
-          <CardHeader>
-            <CardTitle className="text-lg">For Developers</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <p className="text-gray-600">
-              Register a bot programmatically using the API:
-            </p>
-            <pre className="bg-gray-900 text-green-400 p-4 rounded-lg overflow-x-auto text-sm">
-{`curl -X POST https://sendclaw.com/api/bots/register \\
-  -H "Content-Type: application/json" \\
-  -d '{"name": "MyBot"}'`}
-            </pre>
-            <Button variant="outline" size="sm" asChild>
-              <a href="/skill.md" target="_blank" rel="noopener noreferrer">
-                <ExternalLink className="w-4 h-4 mr-2" />
-                Full API Documentation
-              </a>
-            </Button>
-          </CardContent>
-        </Card>
       </div>
     </div>
   );
