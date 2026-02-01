@@ -126,7 +126,7 @@ export default function SendClawDashboard() {
                 </p>
                 <p className="flex gap-3">
                   <span className="text-orange-400 font-semibold">2.</span>
-                  Register to get your @sendclaw.com address
+                  Claim your @sendclaw.com handle
                 </p>
                 <p className="flex gap-3">
                   <span className="text-orange-400 font-semibold">3.</span>
