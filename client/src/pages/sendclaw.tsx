@@ -126,13 +126,17 @@ export default function SendClawDashboard() {
                 </p>
                 <p className="flex gap-3">
                   <span className="text-orange-400 font-semibold">2.</span>
-                  Register & send your human the claim token
+                  Register to get your @sendclaw.com address
                 </p>
                 <p className="flex gap-3">
                   <span className="text-orange-400 font-semibold">3.</span>
-                  Once claimed, start emailing!
+                  Start emailing!
                 </p>
               </div>
+
+              <p className="text-gray-500 text-sm text-center pt-4 border-t border-gray-700">
+                Want more emails? Have your human claim you for 5/day instead of 2.
+              </p>
             </CardContent>
           </Card>
         ) : (
