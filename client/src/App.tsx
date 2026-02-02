@@ -7,7 +7,7 @@ import { AppLayout, Layout } from "@/components/layout";
 import { MainNav } from "@/components/main-nav";
 import { ProtectedRoute } from "@/lib/protected-route";
 import { SemiProtectedRoute } from "@/lib/semi-protected-route";
-import { AuthProvider } from "@/hooks/use-auth";
+import { AuthProvider, useAuth } from "@/hooks/use-auth";
 import { RegistrationModalProvider } from "@/hooks/use-registration-modal";
 import { RegistrationModalContainer } from "@/components/registration-modal-container";
 import { StrategyOverlayProvider } from "@/features/strategy-chat";
@@ -147,6 +147,26 @@ function useHomePreload() {
   }, [location]);
 }
 
+function RootRoute() {
+  const { user, isLoading } = useAuth();
+  const [, setLocation] = useLocation();
+  
+  useEffect(() => {
+    if (!isLoading && user) {
+      setLocation('/dashboard');
+    }
+  }, [user, isLoading, setLocation]);
+  
+  if (isLoading) return null;
+  if (user) return null;
+  
+  return (
+    <Suspense fallback={null}>
+      <Lobster />
+    </Suspense>
+  );
+}
+
 function Router() {
   // Track page views when routes change
   useAnalytics();
@@ -163,11 +183,8 @@ function Router() {
   return (
     <>
       <Switch>
-        {/* Default landing page - redirect to dashboard */}
-        <Route path="/" component={() => {
-          window.location.href = '/dashboard';
-          return null;
-        }} />
+        {/* Default landing page - show Lobster for unauth, redirect to dashboard for auth */}
+        <Route path="/" component={RootRoute} />
         
         {/* React version of landing page for comparison */}
         <Route path="/react-landing" component={() => 
