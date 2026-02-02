@@ -188,16 +188,16 @@ export default function SendClawDashboard() {
                 Reserve your handle (and send to your bot)
               </p>
 
-              <div className="relative">
+              <div className="flex items-center bg-gray-900 border border-gray-700 rounded-md focus-within:border-orange-500">
                 <input
                   type="text"
                   placeholder="lobster"
-                  className="w-full bg-gray-900 border border-gray-700 rounded-md px-4 py-2 pr-36 text-white placeholder:text-gray-600 focus:outline-none focus:border-orange-500"
+                  className="flex-1 bg-transparent px-4 py-2 text-white placeholder:text-gray-600 focus:outline-none min-w-[120px]"
                 />
-                <div className="absolute right-10 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
+                <span className="text-gray-400 whitespace-nowrap">
                   .sendclaw.com
-                </div>
-                <button className="absolute right-2 top-1/2 -translate-y-1/2 text-orange-400 hover:text-orange-300 p-1">
+                </span>
+                <button className="text-orange-400 hover:text-orange-300 p-2">
                   <ArrowRight className="w-5 h-5" />
                 </button>
               </div>
