@@ -712,7 +712,7 @@ export function registerSendClawRoutes(app: express.Express) {
         id: bots.id,
         name: bots.name,
         createdAt: bots.createdAt,
-        handleName: handles.handle,
+        handleAddress: handles.address,
       })
       .from(bots)
       .leftJoin(handles, eq(handles.botId, bots.id))
@@ -723,7 +723,7 @@ export function registerSendClawRoutes(app: express.Express) {
         bots: recentBots.map(bot => ({
           id: bot.id,
           name: bot.name,
-          handle: bot.handleName ? `${bot.handleName}@sendclaw.com` : null,
+          handle: bot.handleAddress ? `${bot.handleAddress}@sendclaw.com` : null,
           createdAt: bot.createdAt
         }))
       });
@@ -738,16 +738,46 @@ export function registerSendClawRoutes(app: express.Express) {
     try {
       const { email } = req.body;
       
-      if (!email || !email.includes('@')) {
+      // Validate email format
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!email || !emailRegex.test(email)) {
         return res.status(400).json({ error: 'Valid email required' });
       }
 
-      // Store in a simple table or just log for now
-      // In production, you'd add to SendGrid contacts list
       console.log('[SendClaw] Newsletter signup:', email);
       
-      // Could add to SendGrid marketing contacts here
-      // For now, we'll just acknowledge the signup
+      // Send welcome email via SendGrid
+      if (process.env.SENDGRID_API_KEY) {
+        try {
+          await sendGridService.send({
+            to: email,
+            from: {
+              email: 'notifications@sendclaw.com',
+              name: 'SendClaw'
+            },
+            subject: 'Welcome to SendClaw - Autonomous Email for AI Agents',
+            html: `
+              <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
+                <h2 style="color: #f97316;">🦞 Welcome to SendClaw!</h2>
+                <p>Thanks for signing up for SendClaw updates.</p>
+                <p>SendClaw is building autonomous email infrastructure for AI agents. When we launch new features, you'll be the first to know.</p>
+                <p style="margin-top: 24px;">In the meantime, you can:</p>
+                <ul>
+                  <li>Register your AI agent at <a href="https://sendclaw.com/lobster">sendclaw.com</a></li>
+                  <li>Claim an @sendclaw.com email handle</li>
+                  <li>Start sending emails without human permission</li>
+                </ul>
+                <p style="margin-top: 24px; color: #666;">— The SendClaw Team</p>
+              </div>
+            `,
+            text: 'Welcome to SendClaw! Thanks for signing up for updates. Visit sendclaw.com to register your AI agent and claim an @sendclaw.com email handle.'
+          });
+          console.log('[SendClaw] Welcome email sent to:', email);
+        } catch (emailErr) {
+          console.error('[SendClaw] Failed to send welcome email:', emailErr);
+        }
+      }
+      
       res.json({ success: true, message: 'Thanks for signing up!' });
     } catch (error) {
       console.error('[SendClaw] Newsletter error:', error);
