@@ -212,12 +212,18 @@ export default function SendclawInbox() {
       return;
     }
 
-    if (!selectedThread || !selectedContact) return;
+    if (!selectedThread) return;
+
+    const extractEmail = (str: string): string => {
+      const match = str.match(/<([^>]+)>/);
+      return match ? match[1] : str;
+    };
 
     const lastMessage = selectedThread.messages[selectedThread.messages.length - 1];
+    const recipientEmail = extractEmail(selectedThread.contactEmail);
     
     sendMutation.mutate({
-      to: selectedContact.email,
+      to: recipientEmail,
       subject: `Re: ${selectedThread.subject}`,
       body: replyContent,
       inReplyTo: lastMessage.messageId || undefined,
