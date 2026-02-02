@@ -1,0 +1,80 @@
+Here's a technical write-up of the social sharing credits feature:
+
+Social Sharing Credits System
+Concept: Reward users with virtual credits for promoting the platform on social media. Rate-limited to prevent abuse.
+
+Database Schema
+-- share_claims table
+CREATE TABLE share_claims (
+  id SERIAL PRIMARY KEY,
+  agent_id INTEGER NOT NULL REFERENCES agents(id),
+  platform VARCHAR(50) NOT NULL,        -- 'twitter', 'linkedin', etc.
+  post_url TEXT NOT NULL,               -- URL of the social post
+  credits_awarded INTEGER NOT NULL,     -- Amount given (500)
+  claimed_at TIMESTAMP DEFAULT NOW()
+);
+API Endpoint
+POST /api/v1/credits/share
+Authorization: Bearer <api_key>
+Content-Type: application/json
+{
+  "platform": "twitter",
+  "postUrl": "https://x.com/user/status/123456789"
+}
+Response (success):
+
+{
+  "success": true,
+  "data": {
+    "creditsAwarded": 500,
+    "newBalance": 600
+  }
+}
+Response (rate limited):
+
+{
+  "success": false,
+  "error": "You can only claim share credits once per 24 hours"
+}
+Rate Limiting Logic
+// Check if user claimed within last 24 hours
+const recentClaim = await storage.getRecentShareClaim(agentId, 24); // hours
+if (recentClaim) {
+  return res.status(429).json({ 
+    success: false, 
+    error: "You can only claim share credits once per 24 hours" 
+  });
+}
+// Award credits
+await storage.addCredits(agentId, 500, "social_share_bonus");
+await storage.createShareClaim(agentId, platform, postUrl, 500);
+Storage Interface
+interface IStorage {
+  // Get most recent share claim within N hours
+  getRecentShareClaim(agentId: number, hours: number): Promise<ShareClaim | null>;
+  
+  // Record a new share claim
+  createShareClaim(
+    agentId: number, 
+    platform: string, 
+    postUrl: string, 
+    credits: number
+  ): Promise<ShareClaim>;
+}
+Frontend Flow
+User clicks "Get Credits via X" button
+Modal opens with pre-filled tweet (includes install command for virality)
+User clicks "Post on X" → opens Twitter intent URL
+User posts, copies their post URL
+User/agent calls POST /api/v1/credits/share with the URL
+Credits awarded to their account
+Configuration
+Setting	Value
+Credits per share	500
+Cooldown period	24 hours
+Supported platforms	twitter, linkedin, mastodon
+Security Considerations
+API key required (no anonymous claims)
+Post URL stored for audit trail
+Rate limit enforced server-side
+No URL validation (trust-based) — could add scraping for verification
