@@ -20,6 +20,7 @@ interface HandleData {
 interface BotData {
   id: string;
   name: string;
+  senderName: string;
   verified: boolean;
   claimedAt: string | null;
   createdAt: string;
@@ -37,6 +38,8 @@ export default function Dashboard() {
   const { toast } = useToast();
   const [handle, setHandle] = useState("");
   const [isEditingHandle, setIsEditingHandle] = useState(false);
+  const [senderName, setSenderName] = useState("");
+  const [isEditingSenderName, setIsEditingSenderName] = useState(false);
   const [claimToken, setClaimToken] = useState("");
   const [copied, setCopied] = useState<string | null>(null);
 
@@ -89,6 +92,29 @@ export default function Dashboard() {
     },
   });
 
+  const senderNameMutation = useMutation({
+    mutationFn: async ({ botId, senderName }: { botId: string; senderName: string }) => {
+      const res = await apiRequest("PATCH", `/api/bots/${botId}/sender-name`, { senderName });
+      return res.json();
+    },
+    onSuccess: () => {
+      toast({
+        title: "Sender name updated!",
+        description: "Your display name has been saved",
+      });
+      setSenderName("");
+      setIsEditingSenderName(false);
+      refetch();
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Update failed",
+        description: error.message || "Could not update sender name",
+        variant: "destructive",
+      });
+    },
+  });
+
   const handleReserve = () => {
     if (handle.trim()) {
       reserveMutation.mutate(handle.trim());
@@ -98,6 +124,12 @@ export default function Dashboard() {
   const handleClaim = () => {
     if (claimToken.trim()) {
       claimMutation.mutate(claimToken.trim());
+    }
+  };
+
+  const handleSenderNameSave = () => {
+    if (senderName.trim() && userBot?.id) {
+      senderNameMutation.mutate({ botId: userBot.id, senderName: senderName.trim() });
     }
   };
 
@@ -212,6 +244,77 @@ export default function Dashboard() {
               )}
             </CardContent>
           </Card>
+
+          {/* Sender Name Section - only show if user has a bot */}
+          {hasBot && (
+            <Card>
+              <CardHeader className="pb-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Send className="w-5 h-5 text-primary" />
+                    <CardTitle className="text-lg">Sender Name</CardTitle>
+                  </div>
+                  {!isEditingSenderName && (
+                    <Button 
+                      variant="ghost" 
+                      size="sm"
+                      onClick={() => {
+                        setSenderName(userBot.senderName || "");
+                        setIsEditingSenderName(true);
+                      }}
+                    >
+                      <Pencil className="w-4 h-4 mr-1" />
+                      Edit
+                    </Button>
+                  )}
+                </div>
+                <CardDescription>
+                  How your name appears in recipient inboxes
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                {!isEditingSenderName ? (
+                  <div className="p-3 bg-muted rounded-lg">
+                    <span className="font-medium text-foreground">
+                      {userBot.senderName || <span className="text-muted-foreground italic">Not set</span>}
+                    </span>
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    <Input
+                      value={senderName}
+                      onChange={(e) => setSenderName(e.target.value)}
+                      placeholder="e.g., Joseph's Claw Bot"
+                      className="bg-muted"
+                      onKeyDown={(e) => e.key === "Enter" && handleSenderNameSave()}
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      This is what recipients see as the "From" name in their inbox.
+                    </p>
+                    <div className="flex gap-2">
+                      <Button 
+                        onClick={handleSenderNameSave}
+                        disabled={!senderName.trim() || senderNameMutation.isPending}
+                        className="flex-1"
+                      >
+                        <Save className="w-4 h-4 mr-2" />
+                        {senderNameMutation.isPending ? "Saving..." : "Save"}
+                      </Button>
+                      <Button 
+                        variant="outline"
+                        onClick={() => {
+                          setIsEditingSenderName(false);
+                          setSenderName("");
+                        }}
+                      >
+                        Cancel
+                      </Button>
+                    </div>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          )}
 
           {/* Bot Section */}
           <Card>

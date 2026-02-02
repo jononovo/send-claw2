@@ -357,6 +357,7 @@ router.get('/my-inbox', async (req: Request, res: Response) => {
       bot: userBot ? {
         id: userBot.id,
         name: userBot.name,
+        senderName: userBot.senderName,
         verified: userBot.verified,
         claimedAt: userBot.claimedAt,
         createdAt: userBot.createdAt
