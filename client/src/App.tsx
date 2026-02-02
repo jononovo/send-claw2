@@ -54,7 +54,7 @@ const Campaigns = lazy(() => import("@/features/campaigns").then(module => ({ de
 const CampaignDetail = lazy(() => import("@/pages/CampaignDetail"));
 
 // Lazy imports for SendClaw pages
-const Inbox = lazy(() => import("@/pages/inbox"));
+const Inbox = lazy(() => import("@/pages/unified-inbox"));
 const Dashboard = lazy(() => import("@/pages/dashboard"));
 
 // Lazy imports for admin pages

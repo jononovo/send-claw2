@@ -335,6 +335,119 @@ router.get('/bots', async (req: Request, res: Response) => {
   }
 });
 
+router.post('/inbox/send', async (req: Request, res: Response) => {
+  try {
+    if (!req.isAuthenticated || !req.isAuthenticated()) {
+      res.status(401).json({ error: 'Authentication required' });
+      return;
+    }
+
+    const userId = (req.user as any)?.id;
+    if (!userId) {
+      res.status(401).json({ error: 'User ID not found' });
+      return;
+    }
+
+    const userHandle = await getHandleByUserId(userId);
+    if (!userHandle) {
+      res.status(400).json({ error: 'No email handle found. Reserve a handle first.' });
+      return;
+    }
+
+    let userBot = null;
+    if (userHandle.botId) {
+      const [bot] = await db.select().from(bots).where(eq(bots.id, userHandle.botId)).limit(1);
+      userBot = bot;
+    } else {
+      const [bot] = await db.select().from(bots).where(eq(bots.userId, userId)).limit(1);
+      userBot = bot;
+    }
+
+    if (!userBot) {
+      res.status(400).json({ 
+        error: 'No bot linked to your account. Claim a bot first to send emails.',
+        hint: 'Use a claim token from your bot to link it to your account.'
+      });
+      return;
+    }
+
+    const parsed = insertMessageSchema.safeParse(req.body);
+    if (!parsed.success) {
+      res.status(400).json({ 
+        error: 'Invalid request', 
+        details: parsed.error.errors 
+      });
+      return;
+    }
+
+    const { to, subject, body, inReplyTo } = parsed.data;
+
+    const messageId = generateMessageId();
+    let threadId: string;
+    
+    if (inReplyTo) {
+      const [originalMessage] = await db.select().from(messages)
+        .where(eq(messages.messageId, inReplyTo))
+        .limit(1);
+      threadId = originalMessage?.threadId || generateThreadId();
+    } else {
+      threadId = generateThreadId();
+    }
+
+    const fromAddress = `${userHandle.address}@${SENDCLAW_DOMAIN}`;
+    const senderName = userBot.name;
+
+    if (process.env.SENDGRID_API_KEY) {
+      try {
+        await sendGridService.send({
+          to,
+          from: {
+            email: fromAddress,
+            name: senderName
+          },
+          subject: subject || '(no subject)',
+          text: body || '',
+          headers: {
+            'Message-ID': messageId,
+            ...(inReplyTo ? { 'In-Reply-To': inReplyTo, 'References': inReplyTo } : {})
+          }
+        });
+      } catch (sendError: any) {
+        if (sendError.code === 403 && sendError.response?.body?.errors?.[0]?.message?.includes('verified Sender')) {
+          console.warn('[SendClaw] Sender not verified in SendGrid - email stored but not actually sent');
+        } else {
+          throw sendError;
+        }
+      }
+    } else {
+      console.warn('[SendClaw] SENDGRID_API_KEY not configured, simulating send');
+    }
+
+    await db.insert(messages).values({
+      botId: userBot.id,
+      direction: 'outbound',
+      fromAddress,
+      toAddress: to,
+      subject: subject || null,
+      bodyText: body || null,
+      threadId,
+      messageId,
+      inReplyTo: inReplyTo || null
+    });
+
+    console.log(`[SendClaw] Web email sent: ${fromAddress} -> ${to}`);
+
+    res.json({
+      success: true,
+      messageId,
+      threadId
+    });
+  } catch (error: any) {
+    console.error('[SendClaw] Web send error:', error);
+    res.status(500).json({ error: 'Failed to send email' });
+  }
+});
+
 router.post('/mail/send', apiKeyAuth, loadBotFromApiKey, async (req: Request, res: Response) => {
   try {
     const bot = (req as any).bot;
