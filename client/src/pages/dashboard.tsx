@@ -277,8 +277,8 @@ export default function Dashboard() {
             </CardContent>
           </Card>
 
-          {/* Sender Name Section - only show if user has a bot */}
-          {hasBot && (
+          {/* Sender Name Section - show if user has a handle */}
+          {hasHandle && (
             <Card>
               <CardHeader className="pb-3">
                 <div className="flex items-center justify-between">
@@ -286,13 +286,13 @@ export default function Dashboard() {
                     <Send className="w-5 h-5 text-primary" />
                     <CardTitle className="text-lg">Sender Name</CardTitle>
                   </div>
-                  {!isEditingSenderName && (
+                  {!isEditingHandleSenderName && (
                     <Button 
                       variant="ghost" 
                       size="sm"
                       onClick={() => {
-                        setSenderName(userBot.senderName || "");
-                        setIsEditingSenderName(true);
+                        setHandleSenderName(userHandle.senderName || "");
+                        setIsEditingHandleSenderName(true);
                       }}
                     >
                       <Pencil className="w-4 h-4 mr-1" />
@@ -305,38 +305,38 @@ export default function Dashboard() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                {!isEditingSenderName ? (
+                {!isEditingHandleSenderName ? (
                   <div className="p-3 bg-muted rounded-lg">
                     <span className="font-medium text-foreground">
-                      {userBot.senderName || <span className="text-muted-foreground italic">Not set</span>}
+                      {userHandle.senderName || <span className="text-muted-foreground italic">Not set</span>}
                     </span>
                   </div>
                 ) : (
                   <div className="space-y-3">
                     <Input
-                      value={senderName}
-                      onChange={(e) => setSenderName(e.target.value)}
-                      placeholder="e.g., Joseph's Claw Bot"
+                      value={handleSenderName}
+                      onChange={(e) => setHandleSenderName(e.target.value)}
+                      placeholder="e.g., John Smith"
                       className="bg-muted"
-                      onKeyDown={(e) => e.key === "Enter" && handleSenderNameSave()}
+                      onKeyDown={(e) => e.key === "Enter" && handleHandleSenderNameSave()}
                     />
                     <p className="text-xs text-muted-foreground">
                       This is what recipients see as the "From" name in their inbox.
                     </p>
                     <div className="flex gap-2">
                       <Button 
-                        onClick={handleSenderNameSave}
-                        disabled={!senderName.trim() || senderNameMutation.isPending}
+                        onClick={handleHandleSenderNameSave}
+                        disabled={!handleSenderName.trim() || handleSenderNameMutation.isPending}
                         className="flex-1"
                       >
                         <Save className="w-4 h-4 mr-2" />
-                        {senderNameMutation.isPending ? "Saving..." : "Save"}
+                        {handleSenderNameMutation.isPending ? "Saving..." : "Save"}
                       </Button>
                       <Button 
                         variant="outline"
                         onClick={() => {
-                          setIsEditingSenderName(false);
-                          setSenderName("");
+                          setIsEditingHandleSenderName(false);
+                          setHandleSenderName("");
                         }}
                       >
                         Cancel
