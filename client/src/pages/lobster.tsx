@@ -60,7 +60,7 @@ export default function LobsterLanding() {
         {/* Logo */}
         <div className="absolute top-6 left-6 z-30">
           <a href="/" className="font-bold text-2xl text-gray-800 dark:text-white flex items-center gap-2">
-            🦞 <span className="text-orange-500">SendClaw</span>
+            🦞 <span className="text-white">Send</span><span className="text-orange-500">Claw</span>
           </a>
         </div>
 
