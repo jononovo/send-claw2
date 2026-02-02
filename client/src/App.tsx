@@ -32,6 +32,7 @@ const LandingSimple2 = lazy(() => import("@/pages/landing-simple2"));
 const LandingSimple3 = lazy(() => import("@/pages/landing-simple3"));
 const LandingStealth = lazy(() => import("@/features/landing-stealth"));
 const Planning = lazy(() => import("@/pages/planning"));
+const LobsterLanding = lazy(() => import("@/pages/lobster"));
 
 // Lazy imports for app pages that can be loaded on demand
 const Home = lazy(() => import("@/pages/home"));
@@ -233,6 +234,13 @@ function Router() {
         <Route path="/simple3" component={() => 
           <Suspense fallback={null}>
             <LandingSimple3 />
+          </Suspense>
+        } />
+        
+        {/* SendClaw / Lobster Landing Page */}
+        <Route path="/lobster" component={() => 
+          <Suspense fallback={null}>
+            <LobsterLanding />
           </Suspense>
         } />
         
