@@ -255,52 +255,6 @@ export default function UnifiedInbox() {
     );
   }
 
-  const NewEmailDialog = () => (
-    <Dialog open={newEmailOpen} onOpenChange={setNewEmailOpen}>
-      <DialogTrigger asChild>
-        <Button size="sm">
-          <Plus className="mr-2 h-4 w-4" />
-          Compose
-        </Button>
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-[500px]">
-        <DialogHeader>
-          <DialogTitle>New Email</DialogTitle>
-        </DialogHeader>
-        <div className="space-y-4 pt-4">
-          <div>
-            <Input
-              placeholder="To: email@example.com"
-              value={newEmailTo}
-              onChange={(e) => setNewEmailTo(e.target.value)}
-            />
-          </div>
-          <div>
-            <Input
-              placeholder="Subject"
-              value={newEmailSubject}
-              onChange={(e) => setNewEmailSubject(e.target.value)}
-            />
-          </div>
-          <div>
-            <Textarea
-              placeholder="Write your message..."
-              value={newEmailBody}
-              onChange={(e) => setNewEmailBody(e.target.value)}
-              className="min-h-[200px]"
-            />
-          </div>
-          <div className="flex justify-end">
-            <Button onClick={handleSendNewEmail} disabled={sendMutation.isPending}>
-              <Send className="mr-2 h-4 w-4" />
-              {sendMutation.isPending ? "Sending..." : "Send"}
-            </Button>
-          </div>
-        </div>
-      </DialogContent>
-    </Dialog>
-  );
-
   const renderMobileView = () => {
     if (selectedThreadId && selectedThread) {
       return (
@@ -452,7 +406,49 @@ export default function UnifiedInbox() {
                     </div>
                   )}
                 </div>
-                <NewEmailDialog />
+                <Dialog open={newEmailOpen} onOpenChange={setNewEmailOpen}>
+                  <DialogTrigger asChild>
+                    <Button size="sm">
+                      <Plus className="mr-2 h-4 w-4" />
+                      Compose
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-[500px]">
+                    <DialogHeader>
+                      <DialogTitle>New Email</DialogTitle>
+                    </DialogHeader>
+                    <div className="space-y-4 pt-4">
+                      <div>
+                        <Input
+                          placeholder="To: email@example.com"
+                          value={newEmailTo}
+                          onChange={(e) => setNewEmailTo(e.target.value)}
+                        />
+                      </div>
+                      <div>
+                        <Input
+                          placeholder="Subject"
+                          value={newEmailSubject}
+                          onChange={(e) => setNewEmailSubject(e.target.value)}
+                        />
+                      </div>
+                      <div>
+                        <Textarea
+                          placeholder="Write your message..."
+                          value={newEmailBody}
+                          onChange={(e) => setNewEmailBody(e.target.value)}
+                          className="min-h-[200px]"
+                        />
+                      </div>
+                      <div className="flex justify-end">
+                        <Button onClick={handleSendNewEmail} disabled={sendMutation.isPending}>
+                          <Send className="mr-2 h-4 w-4" />
+                          {sendMutation.isPending ? "Sending..." : "Send"}
+                        </Button>
+                      </div>
+                    </div>
+                  </DialogContent>
+                </Dialog>
               </div>
             </CardHeader>
             <CardContent className="flex-1 overflow-hidden p-3">
@@ -529,7 +525,49 @@ export default function UnifiedInbox() {
                         </div>
                       )}
                     </div>
-                    <NewEmailDialog />
+                    <Dialog open={newEmailOpen} onOpenChange={setNewEmailOpen}>
+                  <DialogTrigger asChild>
+                    <Button size="sm">
+                      <Plus className="mr-2 h-4 w-4" />
+                      Compose
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-[500px]">
+                    <DialogHeader>
+                      <DialogTitle>New Email</DialogTitle>
+                    </DialogHeader>
+                    <div className="space-y-4 pt-4">
+                      <div>
+                        <Input
+                          placeholder="To: email@example.com"
+                          value={newEmailTo}
+                          onChange={(e) => setNewEmailTo(e.target.value)}
+                        />
+                      </div>
+                      <div>
+                        <Input
+                          placeholder="Subject"
+                          value={newEmailSubject}
+                          onChange={(e) => setNewEmailSubject(e.target.value)}
+                        />
+                      </div>
+                      <div>
+                        <Textarea
+                          placeholder="Write your message..."
+                          value={newEmailBody}
+                          onChange={(e) => setNewEmailBody(e.target.value)}
+                          className="min-h-[200px]"
+                        />
+                      </div>
+                      <div className="flex justify-end">
+                        <Button onClick={handleSendNewEmail} disabled={sendMutation.isPending}>
+                          <Send className="mr-2 h-4 w-4" />
+                          {sendMutation.isPending ? "Sending..." : "Send"}
+                        </Button>
+                      </div>
+                    </div>
+                  </DialogContent>
+                </Dialog>
                   </div>
                 </CardHeader>
                 <CardContent className="flex-1 overflow-hidden px-2 py-1">
