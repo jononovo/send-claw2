@@ -1838,9 +1838,40 @@ export const insertMessageSchema = z.object({
   inReplyTo: z.string().optional()
 });
 
+// Daily check-in rewards tracking
+export const dailyCheckins = pgTable("daily_checkins", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  userId: integer("user_id").notNull().references(() => users.id, { onDelete: 'cascade' }),
+  date: text("date").notNull(), // YYYY-MM-DD format
+  creditsAwarded: integer("credits_awarded").notNull(),
+  streakCount: integer("streak_count").notNull().default(1),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow()
+}, (table) => [
+  uniqueIndex('idx_daily_checkins_user_date').on(table.userId, table.date),
+  index('idx_daily_checkins_user_id').on(table.userId)
+]);
+
+// Social sharing rewards tracking
+export const socialShareRewards = pgTable("social_share_rewards", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  userId: integer("user_id").notNull().references(() => users.id, { onDelete: 'cascade' }),
+  platform: text("platform").notNull().$type<'twitter' | 'linkedin' | 'facebook'>(),
+  postUrl: text("post_url").notNull(),
+  status: text("status").notNull().default('pending').$type<'pending' | 'approved' | 'rejected'>(),
+  creditsAwarded: integer("credits_awarded").notNull().default(0),
+  reviewedAt: timestamp("reviewed_at", { withTimezone: true }),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow()
+}, (table) => [
+  uniqueIndex('idx_social_share_rewards_user_platform').on(table.userId, table.platform),
+  index('idx_social_share_rewards_user_id').on(table.userId),
+  index('idx_social_share_rewards_status').on(table.status)
+]);
+
 export type Handle = typeof handles.$inferSelect;
 export type Bot = typeof bots.$inferSelect;
 export type InsertBot = z.infer<typeof insertBotSchema>;
 export type Message = typeof messages.$inferSelect;
 export type InsertMessage = z.infer<typeof insertMessageSchema>;
+export type DailyCheckin = typeof dailyCheckins.$inferSelect;
+export type SocialShareReward = typeof socialShareRewards.$inferSelect;
 
