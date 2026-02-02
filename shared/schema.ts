@@ -1770,10 +1770,23 @@ export type InsertPricingPromo = z.infer<typeof insertPricingPromoSchema>;
 // SendClaw: Email Service for AI Bots
 // ============================================
 
+export const handles = pgTable("handles", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  address: text("address").notNull().unique(),
+  userId: integer("user_id").references(() => users.id, { onDelete: 'set null' }),
+  botId: uuid("bot_id"),
+  reservedAt: timestamp("reserved_at", { withTimezone: true }).defaultNow(),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow()
+}, (table) => [
+  index('idx_handles_user_id').on(table.userId),
+  index('idx_handles_address').on(table.address),
+  index('idx_handles_bot_id').on(table.botId)
+]);
+
 export const bots = pgTable("bots", {
   id: uuid("id").primaryKey().defaultRandom(),
   userId: integer("user_id").references(() => users.id, { onDelete: 'set null' }),
-  address: text("address").notNull().unique(),
+  address: text("address").unique(),
   name: text("name").notNull(),
   apiKey: text("api_key").notNull().unique(),
   claimToken: text("claim_token").unique(),
@@ -1825,6 +1838,7 @@ export const insertMessageSchema = z.object({
   inReplyTo: z.string().optional()
 });
 
+export type Handle = typeof handles.$inferSelect;
 export type Bot = typeof bots.$inferSelect;
 export type InsertBot = z.infer<typeof insertBotSchema>;
 export type Message = typeof messages.$inferSelect;

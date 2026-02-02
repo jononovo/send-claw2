@@ -23,9 +23,15 @@ interface Message {
   createdAt: string;
 }
 
-interface BotData {
+interface HandleData {
   id: string;
   address: string;
+  reservedAt: string | null;
+  botId: string | null;
+}
+
+interface BotData {
+  id: string;
   name: string;
   verified: boolean;
   claimedAt: string | null;
@@ -33,6 +39,7 @@ interface BotData {
 }
 
 interface MyInboxResponse {
+  handle: HandleData | null;
   bot: BotData | null;
   messages: Message[];
   error?: string;
@@ -46,14 +53,16 @@ export default function InboxPage() {
     queryKey: ["/api/my-inbox"],
   });
 
-  const bot = data?.bot;
+  const userHandle = data?.handle;
+  const userBot = data?.bot;
   const messages = data?.messages || [];
+  const isLinked = userHandle && userHandle.botId;
 
   useEffect(() => {
-    if (!isLoading && !bot) {
+    if (!isLoading && !isLinked) {
       setLocation('/dashboard');
     }
-  }, [isLoading, bot, setLocation]);
+  }, [isLoading, isLinked, setLocation]);
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
@@ -94,7 +103,7 @@ export default function InboxPage() {
     return date.toLocaleDateString();
   };
 
-  if (isLoading || !bot) {
+  if (isLoading || !isLinked || !userHandle || !userBot) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-muted-foreground">Loading...</div>
@@ -120,19 +129,19 @@ export default function InboxPage() {
           <div>
             <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
               <Mail className="w-6 h-6 text-primary" />
-              {bot.name} Inbox
+              {userBot.name} Inbox
             </h1>
             <div className="flex items-center gap-2 mt-1">
-              <span className="text-muted-foreground">{bot.address}</span>
+              <span className="text-muted-foreground">{userHandle.address}</span>
               <button 
-                onClick={() => copyToClipboard(bot.address)}
+                onClick={() => copyToClipboard(userHandle.address)}
                 className="text-muted-foreground hover:text-primary"
               >
                 {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
               </button>
             </div>
           </div>
-          {bot.verified && (
+          {userBot.verified && (
             <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
               Verified
             </Badge>
@@ -227,7 +236,7 @@ export default function InboxPage() {
               <InboxIcon className="w-12 h-12 mx-auto mb-4 text-muted-foreground/50" />
               <h3 className="text-lg font-medium text-muted-foreground mb-2">Inbox is empty</h3>
               <p className="text-muted-foreground">
-                No messages yet. Your bot can send emails via the API, or receive emails at {bot.address}
+                No messages yet. Your bot can send emails via the API, or receive emails at {userHandle.address}
               </p>
             </CardContent>
           </Card>

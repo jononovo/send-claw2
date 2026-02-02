@@ -8,19 +8,25 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
-import { Mail, Key, Copy, Check, Inbox, Send, Eye, EyeOff, ArrowRight, Pencil, Save, Bot, Shield } from "lucide-react";
+import { Mail, Key, Copy, Check, Inbox, Send, Eye, EyeOff, ArrowRight, Pencil, Save, Bot, Shield, Link2 } from "lucide-react";
+
+interface HandleData {
+  id: string;
+  address: string;
+  reservedAt: string | null;
+  botId: string | null;
+}
 
 interface BotData {
   id: string;
-  address: string;
   name: string;
   verified: boolean;
   claimedAt: string | null;
   createdAt: string;
-  apiKey?: string;
 }
 
 interface MyInboxResponse {
+  handle: HandleData | null;
   bot: BotData | null;
   messages: any[];
   error?: string;
@@ -33,7 +39,6 @@ export default function Dashboard() {
   const [isEditingHandle, setIsEditingHandle] = useState(false);
   const [claimToken, setClaimToken] = useState("");
   const [copied, setCopied] = useState<string | null>(null);
-  const [showApiKey, setShowApiKey] = useState(false);
 
   const { data, isLoading, refetch } = useQuery<MyInboxResponse>({
     queryKey: ["/api/my-inbox"],
@@ -103,11 +108,15 @@ export default function Dashboard() {
     setTimeout(() => setCopied(null), 2000);
   };
 
-  const bot = data?.bot;
+  const userHandle = data?.handle;
+  const userBot = data?.bot;
   const messages = data?.messages || [];
   const inboundCount = messages.filter(m => m.direction === 'inbound').length;
   const outboundCount = messages.filter(m => m.direction === 'outbound').length;
-  const hasHandle = !!bot?.address;
+  
+  const hasHandle = !!userHandle;
+  const hasBot = !!userBot;
+  const isLinked = hasHandle && userHandle.botId;
 
   if (isLoading) {
     return (
@@ -139,7 +148,7 @@ export default function Dashboard() {
                     variant="ghost" 
                     size="sm"
                     onClick={() => {
-                      setHandle(bot.address.replace('@sendclaw.com', ''));
+                      setHandle(userHandle.address.replace(`@sendclaw.com`, '').split('@')[0]);
                       setIsEditingHandle(true);
                     }}
                   >
@@ -155,9 +164,9 @@ export default function Dashboard() {
             <CardContent>
               {hasHandle && !isEditingHandle ? (
                 <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
-                  <span className="font-medium text-foreground">{bot.address}</span>
+                  <span className="font-medium text-foreground">{userHandle.address}</span>
                   <button 
-                    onClick={() => copyToClipboard(bot.address, 'address')}
+                    onClick={() => copyToClipboard(userHandle.address, 'address')}
                     className="text-muted-foreground hover:text-primary p-2"
                   >
                     {copied === 'address' ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
@@ -209,26 +218,41 @@ export default function Dashboard() {
             <CardHeader className="pb-3">
               <div className="flex items-center gap-2">
                 <Bot className="w-5 h-5 text-primary" />
-                <CardTitle className="text-lg">Bot Details</CardTitle>
+                <CardTitle className="text-lg">Bot Connection</CardTitle>
               </div>
               <CardDescription>
-                {bot?.claimedAt ? "Your linked bot" : "Claim a bot using its token"}
+                {hasBot ? "Your linked AI bot" : "Connect an AI bot to send emails"}
               </CardDescription>
             </CardHeader>
             <CardContent>
-              {bot?.claimedAt ? (
-                <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
-                  <div>
-                    <p className="font-medium text-foreground">{bot.name}</p>
-                    <p className="text-sm text-muted-foreground">
-                      Claimed {new Date(bot.claimedAt).toLocaleDateString()}
-                    </p>
+              {hasBot ? (
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
+                    <div>
+                      <p className="font-medium text-foreground">{userBot.name}</p>
+                      <p className="text-sm text-muted-foreground">
+                        Claimed {userBot.claimedAt ? new Date(userBot.claimedAt).toLocaleDateString() : 'recently'}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {isLinked && (
+                        <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
+                          <Link2 className="w-3 h-3 mr-1" />
+                          Linked
+                        </Badge>
+                      )}
+                      {userBot.verified && (
+                        <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+                          <Shield className="w-3 h-3 mr-1" />
+                          Verified
+                        </Badge>
+                      )}
+                    </div>
                   </div>
-                  {bot.verified && (
-                    <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
-                      <Shield className="w-3 h-3 mr-1" />
-                      Verified
-                    </Badge>
+                  {!isLinked && hasHandle && (
+                    <p className="text-sm text-amber-600 bg-amber-50 p-2 rounded">
+                      Bot is claimed but not linked to your handle. This may happen if you reserved the handle after claiming.
+                    </p>
                   )}
                 </div>
               ) : (
@@ -240,7 +264,7 @@ export default function Dashboard() {
                     onKeyDown={(e) => e.key === "Enter" && handleClaim()}
                   />
                   <p className="text-xs text-muted-foreground">
-                    Your bot provided this token when it registered via the API.
+                    Your AI bot provides this token when it registers via the API.
                   </p>
                   <Button 
                     onClick={handleClaim}
@@ -284,47 +308,16 @@ export default function Dashboard() {
                 onClick={() => setLocation('/inbox')}
                 variant="outline"
                 className="w-full"
-                disabled={!hasHandle}
+                disabled={!isLinked}
               >
                 <Inbox className="w-4 h-4 mr-2" />
                 View Inbox
                 <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
-            </CardContent>
-          </Card>
-
-          {/* API Key Section */}
-          <Card>
-            <CardHeader className="pb-3">
-              <div className="flex items-center gap-2">
-                <Key className="w-5 h-5 text-primary" />
-                <CardTitle className="text-lg">API Access</CardTitle>
-              </div>
-              <CardDescription>
-                Use this key to send emails programmatically
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              {hasHandle ? (
-                <div className="space-y-3">
-                  <div className="flex items-center gap-2 p-3 bg-muted rounded-lg">
-                    <code className="flex-1 text-sm font-mono text-muted-foreground overflow-hidden">
-                      {showApiKey ? (bot.apiKey || "sk_••••••••••••••••") : "sk_••••••••••••••••••••••••"}
-                    </code>
-                    <button 
-                      onClick={() => setShowApiKey(!showApiKey)}
-                      className="text-muted-foreground hover:text-foreground p-1"
-                    >
-                      {showApiKey ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                    </button>
-                  </div>
-                  <p className="text-xs text-muted-foreground">
-                    API key is hidden for security. Contact support if you need to regenerate.
-                  </p>
-                </div>
-              ) : (
-                <p className="text-sm text-muted-foreground p-3 bg-muted rounded-lg">
-                  Reserve a handle first to get your API key.
+              
+              {!isLinked && (
+                <p className="text-xs text-muted-foreground text-center mt-2">
+                  {!hasHandle ? "Reserve a handle first" : !hasBot ? "Connect a bot first" : "Link your bot to your handle"}
                 </p>
               )}
             </CardContent>

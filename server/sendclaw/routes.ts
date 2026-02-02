@@ -1,7 +1,7 @@
 import express, { Router, Request, Response, NextFunction } from "express";
 import crypto from "crypto";
 import { db } from "../db";
-import { bots, messages, quotaUsage, insertBotSchema, insertMessageSchema } from "@shared/schema";
+import { bots, handles, messages, quotaUsage, insertBotSchema, insertMessageSchema } from "@shared/schema";
 import { eq, and, desc } from "drizzle-orm";
 import { MailService } from '@sendgrid/mail';
 import multer from "multer";
@@ -16,15 +16,6 @@ if (process.env.SENDGRID_API_KEY) {
 
 const SENDCLAW_DOMAIN = process.env.SENDCLAW_DOMAIN || 'sendclaw.com';
 const FROM_EMAIL = process.env.SENDCLAW_FROM_EMAIL || `noreply@${SENDCLAW_DOMAIN}`;
-
-function generateBotAddress(): string {
-  const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
-  let suffix = '';
-  for (let i = 0; i < 6; i++) {
-    suffix += chars.charAt(Math.floor(Math.random() * chars.length));
-  }
-  return `claw_${suffix}`;
-}
 
 function generateApiKey(): string {
   return `sk_${crypto.randomBytes(24).toString('hex')}`;
@@ -54,9 +45,19 @@ async function getBotByApiKey(apiKey: string) {
   return bot;
 }
 
-async function getBotByAddress(address: string) {
-  const [bot] = await db.select().from(bots).where(eq(bots.address, address)).limit(1);
-  return bot;
+async function getHandleByAddress(address: string) {
+  const [handle] = await db.select().from(handles).where(eq(handles.address, address)).limit(1);
+  return handle;
+}
+
+async function getHandleByBotId(botId: string) {
+  const [handle] = await db.select().from(handles).where(eq(handles.botId, botId)).limit(1);
+  return handle;
+}
+
+async function getHandleByUserId(userId: number) {
+  const [handle] = await db.select().from(handles).where(eq(handles.userId, userId)).limit(1);
+  return handle;
 }
 
 async function getQuotaUsage(botId: string, date: string): Promise<number> {
@@ -114,29 +115,20 @@ router.post('/bots/register', async (req: Request, res: Response) => {
     }
 
     const { name } = parsed.data;
-    
-    let address = generateBotAddress();
-    let attempts = 0;
-    while (await getBotByAddress(address) && attempts < 10) {
-      address = generateBotAddress();
-      attempts++;
-    }
-
     const apiKey = generateApiKey();
     const claimToken = generateClaimToken();
 
     const [bot] = await db.insert(bots).values({
       name,
-      address,
       apiKey,
       claimToken,
       verified: false
     }).returning();
 
-    console.log(`[SendClaw] Bot registered: ${address} (${name})`);
+    console.log(`[SendClaw] Bot registered: ${name} (${bot.id})`);
 
     res.status(201).json({
-      address: `${address}@${SENDCLAW_DOMAIN}`,
+      botId: bot.id,
       apiKey,
       claimToken,
       important: "Save your API key! Give claimToken to your human if they want dashboard access."
@@ -160,47 +152,41 @@ router.post('/bots/reserve', async (req: Request, res: Response) => {
       return;
     }
 
-    const existingBot = await db.select().from(bots).where(eq(bots.userId, userId)).limit(1);
-    if (existingBot.length > 0) {
-      res.status(400).json({ error: 'You already have a registered handle' });
+    const existingHandle = await getHandleByUserId(userId);
+    if (existingHandle) {
+      res.status(400).json({ error: 'You already have a reserved handle' });
       return;
     }
 
-    const { handle, name } = req.body;
-    if (!handle || typeof handle !== 'string') {
+    const { handle: handleInput } = req.body;
+    if (!handleInput || typeof handleInput !== 'string') {
       res.status(400).json({ error: 'Handle is required' });
       return;
     }
 
-    const cleanHandle = handle.toLowerCase().replace(/[^a-z0-9_]/g, '').slice(0, 30);
+    const cleanHandle = handleInput.toLowerCase().replace(/[^a-z0-9_]/g, '').slice(0, 30);
     if (cleanHandle.length < 3) {
       res.status(400).json({ error: 'Handle must be at least 3 characters' });
       return;
     }
 
-    const existing = await getBotByAddress(cleanHandle);
+    const existing = await getHandleByAddress(cleanHandle);
     if (existing) {
       res.status(400).json({ error: 'This handle is already taken' });
       return;
     }
 
-    const apiKey = generateApiKey();
-
-    const [bot] = await db.insert(bots).values({
-      name: name || cleanHandle,
+    const [newHandle] = await db.insert(handles).values({
       address: cleanHandle,
-      apiKey,
       userId,
-      claimedAt: new Date(),
-      verified: false
+      reservedAt: new Date()
     }).returning();
 
     console.log(`[SendClaw] Handle reserved: ${cleanHandle} by user ${userId}`);
 
     res.status(201).json({
       address: `${cleanHandle}@${SENDCLAW_DOMAIN}`,
-      apiKey,
-      id: bot.id
+      id: newHandle.id
     });
   } catch (error) {
     console.error('[SendClaw] Reserve error:', error);
@@ -245,51 +231,25 @@ router.post('/bots/claim', async (req: Request, res: Response) => {
       claimedAt: new Date()
     }).where(eq(bots.id, bot.id));
 
-    console.log(`[SendClaw] Bot claimed: ${bot.address} by user ${userId}`);
+    const userHandle = await getHandleByUserId(userId);
+    if (userHandle && !userHandle.botId) {
+      await db.update(handles).set({
+        botId: bot.id
+      }).where(eq(handles.id, userHandle.id));
+    }
+
+    console.log(`[SendClaw] Bot claimed: ${bot.name} by user ${userId}`);
 
     res.json({
       success: true,
       bot: {
         id: bot.id,
-        address: `${bot.address}@${SENDCLAW_DOMAIN}`,
         name: bot.name
       }
     });
   } catch (error) {
     console.error('[SendClaw] Claim error:', error);
     res.status(500).json({ error: 'Claim failed' });
-  }
-});
-
-router.get('/bots', async (req: Request, res: Response) => {
-  try {
-    if (!req.isAuthenticated || !req.isAuthenticated()) {
-      res.status(401).json({ error: 'Authentication required' });
-      return;
-    }
-
-    const userId = (req.user as any)?.id;
-    if (!userId) {
-      res.status(401).json({ error: 'User ID not found' });
-      return;
-    }
-
-    const userBots = await db.select({
-      id: bots.id,
-      address: bots.address,
-      name: bots.name,
-      verified: bots.verified,
-      claimedAt: bots.claimedAt,
-      createdAt: bots.createdAt
-    }).from(bots).where(eq(bots.userId, userId)).orderBy(desc(bots.createdAt));
-
-    res.json(userBots.map(bot => ({
-      ...bot,
-      address: `${bot.address}@${SENDCLAW_DOMAIN}`
-    })));
-  } catch (error) {
-    console.error('[SendClaw] List bots error:', error);
-    res.status(500).json({ error: 'Failed to list bots' });
   }
 });
 
@@ -306,35 +266,72 @@ router.get('/my-inbox', async (req: Request, res: Response) => {
       return;
     }
 
-    const [userBot] = await db.select({
-      id: bots.id,
-      address: bots.address,
-      name: bots.name,
-      verified: bots.verified,
-      claimedAt: bots.claimedAt,
-      createdAt: bots.createdAt
-    }).from(bots).where(eq(bots.userId, userId)).orderBy(desc(bots.createdAt)).limit(1);
-
-    if (!userBot) {
-      res.json({ bot: null, messages: [], error: 'NO_BOT' });
-      return;
+    const userHandle = await getHandleByUserId(userId);
+    
+    let userBot = null;
+    if (userHandle?.botId) {
+      const [bot] = await db.select().from(bots).where(eq(bots.id, userHandle.botId)).limit(1);
+      userBot = bot;
+    } else {
+      const [bot] = await db.select().from(bots).where(eq(bots.userId, userId)).limit(1);
+      userBot = bot;
     }
 
-    const botMessages = await db.select().from(messages)
-      .where(eq(messages.botId, userBot.id))
-      .orderBy(desc(messages.createdAt))
-      .limit(100);
+    let botMessages: any[] = [];
+    if (userBot) {
+      botMessages = await db.select().from(messages)
+        .where(eq(messages.botId, userBot.id))
+        .orderBy(desc(messages.createdAt))
+        .limit(100);
+    }
 
     res.json({
-      bot: {
-        ...userBot,
-        address: `${userBot.address}@${SENDCLAW_DOMAIN}`
-      },
+      handle: userHandle ? {
+        id: userHandle.id,
+        address: `${userHandle.address}@${SENDCLAW_DOMAIN}`,
+        reservedAt: userHandle.reservedAt,
+        botId: userHandle.botId
+      } : null,
+      bot: userBot ? {
+        id: userBot.id,
+        name: userBot.name,
+        verified: userBot.verified,
+        claimedAt: userBot.claimedAt,
+        createdAt: userBot.createdAt
+      } : null,
       messages: botMessages
     });
   } catch (error) {
     console.error('[SendClaw] My inbox error:', error);
     res.status(500).json({ error: 'Failed to fetch inbox' });
+  }
+});
+
+router.get('/bots', async (req: Request, res: Response) => {
+  try {
+    if (!req.isAuthenticated || !req.isAuthenticated()) {
+      res.status(401).json({ error: 'Authentication required' });
+      return;
+    }
+
+    const userId = (req.user as any)?.id;
+    if (!userId) {
+      res.status(401).json({ error: 'User ID not found' });
+      return;
+    }
+
+    const userBots = await db.select().from(bots).where(eq(bots.userId, userId)).orderBy(desc(bots.createdAt));
+
+    res.json(userBots.map(bot => ({
+      id: bot.id,
+      name: bot.name,
+      verified: bot.verified,
+      claimedAt: bot.claimedAt,
+      createdAt: bot.createdAt
+    })));
+  } catch (error) {
+    console.error('[SendClaw] List bots error:', error);
+    res.status(500).json({ error: 'Failed to list bots' });
   }
 });
 
@@ -352,6 +349,16 @@ router.post('/mail/send', apiKeyAuth, loadBotFromApiKey, async (req: Request, re
     }
 
     const { to, subject, body, inReplyTo } = parsed.data;
+    
+    const handle = await getHandleByBotId(bot.id);
+    if (!handle) {
+      res.status(400).json({ 
+        error: 'No email handle linked to this bot',
+        hint: 'Your human needs to reserve a handle and claim your bot first'
+      });
+      return;
+    }
+
     const today = getTodayDate();
     const currentUsage = await getQuotaUsage(bot.id, today);
     const dailyLimit = bot.verified ? 5 : 2;
@@ -378,7 +385,7 @@ router.post('/mail/send', apiKeyAuth, loadBotFromApiKey, async (req: Request, re
       threadId = generateThreadId();
     }
 
-    const fromAddress = `${bot.address}@${SENDCLAW_DOMAIN}`;
+    const fromAddress = `${handle.address}@${SENDCLAW_DOMAIN}`;
 
     let sendSuccess = false;
     if (process.env.SENDGRID_API_KEY) {
@@ -400,7 +407,6 @@ router.post('/mail/send', apiKeyAuth, loadBotFromApiKey, async (req: Request, re
       } catch (sendError: any) {
         if (sendError.code === 403 && sendError.response?.body?.errors?.[0]?.message?.includes('verified Sender')) {
           console.warn('[SendClaw] Sender not verified in SendGrid - email stored but not actually sent');
-          console.warn('[SendClaw] To fix: verify the sender domain in SendGrid dashboard');
         } else {
           throw sendError;
         }
@@ -437,9 +443,6 @@ router.post('/mail/send', apiKeyAuth, loadBotFromApiKey, async (req: Request, re
     });
   } catch (error: any) {
     console.error('[SendClaw] Send error:', error);
-    if (error.response?.body) {
-      console.error('[SendClaw] SendGrid error:', JSON.stringify(error.response.body, null, 2));
-    }
     res.status(500).json({ error: 'Failed to send email' });
   }
 });
@@ -526,11 +529,11 @@ router.post('/webhook/inbound', upload.none(), async (req: Request, res: Respons
       return;
     }
 
-    const botAddress = addressMatch[1].toLowerCase();
-    const bot = await getBotByAddress(botAddress);
+    const handleAddress = addressMatch[1].toLowerCase();
+    const handle = await getHandleByAddress(handleAddress);
 
-    if (!bot) {
-      console.warn('[SendClaw] No bot found for address:', botAddress);
+    if (!handle || !handle.botId) {
+      console.warn('[SendClaw] No linked bot found for address:', handleAddress);
       res.status(200).send('OK');
       return;
     }
@@ -539,7 +542,7 @@ router.post('/webhook/inbound', upload.none(), async (req: Request, res: Respons
     const threadId = generateThreadId();
 
     await db.insert(messages).values({
-      botId: bot.id,
+      botId: handle.botId,
       direction: 'inbound',
       fromAddress: from,
       toAddress: toAddress,
@@ -550,7 +553,7 @@ router.post('/webhook/inbound', upload.none(), async (req: Request, res: Respons
       messageId
     });
 
-    console.log(`[SendClaw] Inbound email stored: ${from} -> ${botAddress}`);
+    console.log(`[SendClaw] Inbound email stored: ${from} -> ${handleAddress}`);
 
     res.status(200).send('OK');
   } catch (error) {
@@ -576,13 +579,14 @@ Content-Type: application/json
 Response:
 \`\`\`json
 {
-  "address": "claw_abc123@${SENDCLAW_DOMAIN}",
+  "botId": "uuid-here",
   "apiKey": "sk_...",
   "claimToken": "reef-X4B2"
 }
 \`\`\`
 
 Save your apiKey! Give claimToken to your human if they want dashboard access.
+Your human needs to reserve a handle and claim your bot before you can send emails.
 
 ## Send Email
 \`\`\`
