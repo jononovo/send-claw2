@@ -1,14 +1,12 @@
-import { useState } from "react";
-import { useQuery, useMutation } from "@tanstack/react-query";
-import { queryClient, apiRequest } from "@/lib/queryClient";
+import { useState, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
-import { useToast } from "@/hooks/use-toast";
-import { Mail, Inbox, Send, Clock, User, Key, Copy, Check } from "lucide-react";
+import { Mail, Inbox as InboxIcon, Send, Clock, User, Copy, Check, ArrowLeft } from "lucide-react";
 
 interface Message {
   id: string;
@@ -41,50 +39,27 @@ interface MyInboxResponse {
 }
 
 export default function InboxPage() {
-  const { toast } = useToast();
-  const [claimToken, setClaimToken] = useState("");
+  const [, setLocation] = useLocation();
   const [copied, setCopied] = useState(false);
 
-  const { data, isLoading, refetch } = useQuery<MyInboxResponse>({
+  const { data, isLoading } = useQuery<MyInboxResponse>({
     queryKey: ["/api/my-inbox"],
   });
 
-  const claimMutation = useMutation({
-    mutationFn: async (token: string) => {
-      const res = await apiRequest("POST", "/api/bots/claim", { claimToken: token });
-      return res.json();
-    },
-    onSuccess: (data) => {
-      toast({
-        title: "Bot claimed!",
-        description: `Successfully claimed ${data.bot.name} (${data.bot.address})`,
-      });
-      setClaimToken("");
-      refetch();
-    },
-    onError: (error: any) => {
-      toast({
-        title: "Claim failed",
-        description: error.message || "Invalid claim token",
-        variant: "destructive",
-      });
-    },
-  });
+  const bot = data?.bot;
+  const messages = data?.messages || [];
 
-  const handleClaim = () => {
-    if (claimToken.trim()) {
-      claimMutation.mutate(claimToken.trim());
+  useEffect(() => {
+    if (!isLoading && !bot) {
+      setLocation('/dashboard');
     }
-  };
+  }, [isLoading, bot, setLocation]);
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
-
-  const bot = data?.bot;
-  const messages = data?.messages || [];
 
   const groupedByThread = messages.reduce((acc, msg) => {
     const threadKey = msg.threadId || msg.id;
@@ -119,7 +94,7 @@ export default function InboxPage() {
     return date.toLocaleDateString();
   };
 
-  if (isLoading) {
+  if (isLoading || !bot) {
     return (
       <div className="min-h-screen bg-gray-900 flex items-center justify-center">
         <div className="text-gray-400">Loading...</div>
@@ -127,68 +102,25 @@ export default function InboxPage() {
     );
   }
 
-  if (!bot) {
-    return (
-      <div className="min-h-screen bg-gradient-to-b from-gray-900 via-gray-900 to-gray-800">
-        <div className="container mx-auto px-4 py-12 max-w-lg">
-          <div className="text-center mb-8">
-            <div className="w-16 h-16 bg-orange-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Key className="w-8 h-8 text-orange-400" />
-            </div>
-            <h1 className="text-2xl font-bold text-white mb-2">Claim Your Bot</h1>
-            <p className="text-gray-400">
-              Enter the claim token your bot gave you to link it to your account.
-            </p>
-          </div>
-
-          <Card className="bg-gray-800 border-gray-700">
-            <CardContent className="p-6">
-              <div className="space-y-4">
-                <div>
-                  <label className="text-sm text-gray-400 block mb-2">Claim Token</label>
-                  <Input
-                    value={claimToken}
-                    onChange={(e) => setClaimToken(e.target.value)}
-                    placeholder="e.g. reef-X4B2"
-                    className="bg-gray-700 border-gray-600 text-white"
-                    onKeyDown={(e) => e.key === "Enter" && handleClaim()}
-                  />
-                </div>
-                <Button 
-                  onClick={handleClaim}
-                  disabled={!claimToken.trim() || claimMutation.isPending}
-                  className="w-full bg-orange-500 hover:bg-orange-600"
-                >
-                  {claimMutation.isPending ? "Claiming..." : "Claim Bot"}
-                </Button>
-              </div>
-
-              <Separator className="my-6 bg-gray-700" />
-
-              <div className="text-center text-sm text-gray-500">
-                <p>Don't have a bot yet?</p>
-                <p className="mt-1">
-                  Bots can register at{" "}
-                  <code className="text-orange-400 bg-gray-700 px-1 rounded">
-                    POST /api/bots/register
-                  </code>
-                </p>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 via-gray-900 to-gray-800">
       <div className="container mx-auto px-4 py-8 max-w-4xl">
+        <div className="flex items-center gap-4 mb-6">
+          <Button 
+            variant="ghost" 
+            onClick={() => setLocation('/dashboard')}
+            className="text-gray-400 hover:text-white"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Dashboard
+          </Button>
+        </div>
+
         <div className="flex items-center justify-between mb-6">
           <div>
             <h1 className="text-2xl font-bold text-white flex items-center gap-2">
               <Mail className="w-6 h-6 text-orange-500" />
-              {bot.name}
+              {bot.name} Inbox
             </h1>
             <div className="flex items-center gap-2 mt-1">
               <span className="text-gray-400">{bot.address}</span>
@@ -233,7 +165,7 @@ export default function InboxPage() {
                     >
                       {thread.latestMessage.direction === "inbound" ? (
                         <>
-                          <Inbox className="w-3 h-3 mr-1" />
+                          <InboxIcon className="w-3 h-3 mr-1" />
                           Received
                         </>
                       ) : (
@@ -290,7 +222,7 @@ export default function InboxPage() {
         ) : (
           <Card className="bg-gray-800 border-gray-700 border-dashed">
             <CardContent className="p-12 text-center">
-              <Inbox className="w-12 h-12 mx-auto mb-4 text-gray-600" />
+              <InboxIcon className="w-12 h-12 mx-auto mb-4 text-gray-600" />
               <h3 className="text-lg font-medium text-gray-400 mb-2">Inbox is empty</h3>
               <p className="text-gray-500">
                 No messages yet. Your bot can send emails via the API, or receive emails at {bot.address}

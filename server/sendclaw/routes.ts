@@ -147,6 +147,67 @@ router.post('/bots/register', async (req: Request, res: Response) => {
   }
 });
 
+router.post('/bots/reserve', async (req: Request, res: Response) => {
+  try {
+    if (!req.isAuthenticated || !req.isAuthenticated()) {
+      res.status(401).json({ error: 'Authentication required' });
+      return;
+    }
+
+    const userId = (req.user as any)?.id;
+    if (!userId) {
+      res.status(401).json({ error: 'User ID not found' });
+      return;
+    }
+
+    const existingBot = await db.select().from(bots).where(eq(bots.userId, userId)).limit(1);
+    if (existingBot.length > 0) {
+      res.status(400).json({ error: 'You already have a registered handle' });
+      return;
+    }
+
+    const { handle, name } = req.body;
+    if (!handle || typeof handle !== 'string') {
+      res.status(400).json({ error: 'Handle is required' });
+      return;
+    }
+
+    const cleanHandle = handle.toLowerCase().replace(/[^a-z0-9_]/g, '').slice(0, 30);
+    if (cleanHandle.length < 3) {
+      res.status(400).json({ error: 'Handle must be at least 3 characters' });
+      return;
+    }
+
+    const existing = await getBotByAddress(cleanHandle);
+    if (existing) {
+      res.status(400).json({ error: 'This handle is already taken' });
+      return;
+    }
+
+    const apiKey = generateApiKey();
+
+    const [bot] = await db.insert(bots).values({
+      name: name || cleanHandle,
+      address: cleanHandle,
+      apiKey,
+      userId,
+      claimedAt: new Date(),
+      verified: false
+    }).returning();
+
+    console.log(`[SendClaw] Handle reserved: ${cleanHandle} by user ${userId}`);
+
+    res.status(201).json({
+      address: `${cleanHandle}@${SENDCLAW_DOMAIN}`,
+      apiKey,
+      id: bot.id
+    });
+  } catch (error) {
+    console.error('[SendClaw] Reserve error:', error);
+    res.status(500).json({ error: 'Failed to reserve handle' });
+  }
+});
+
 router.post('/bots/claim', async (req: Request, res: Response) => {
   try {
     if (!req.isAuthenticated || !req.isAuthenticated()) {
