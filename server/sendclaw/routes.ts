@@ -18,6 +18,83 @@ if (process.env.SENDGRID_API_KEY) {
 const SENDCLAW_DOMAIN = process.env.SENDCLAW_DOMAIN || 'sendclaw.com';
 const FROM_EMAIL = process.env.SENDCLAW_FROM_EMAIL || `noreply@${SENDCLAW_DOMAIN}`;
 
+// Rate limiting for bot registration
+const REGISTRATION_COOLDOWN_SECONDS = 300; // 5 minutes between signups from same IP
+const DAILY_REGISTRATION_LIMIT = 5; // max registrations per IP per day
+
+interface RegistrationRecord {
+  timestamps: number[];
+}
+
+const registrationsByIP = new Map<string, RegistrationRecord>();
+
+function getClientIP(req: Request): string {
+  // In production behind a trusted proxy (like Replit), use the last proxy-added IP
+  // to prevent spoofing via X-Forwarded-For header manipulation
+  const forwarded = req.headers['x-forwarded-for'];
+  if (forwarded) {
+    const ips = (typeof forwarded === 'string' ? forwarded : forwarded[0]).split(',').map(ip => ip.trim());
+    // Use the rightmost IP (added by trusted proxy), not leftmost (can be spoofed)
+    // But if only one IP, that's the real client
+    return ips[ips.length - 1] || req.ip || 'unknown';
+  }
+  return req.ip || req.socket.remoteAddress || 'unknown';
+}
+
+function checkRegistrationRateLimit(ip: string): { allowed: boolean; reason?: string; retryAfter?: number } {
+  const now = Date.now();
+  const oneDayAgo = now - (24 * 60 * 60 * 1000);
+  const cooldownMs = REGISTRATION_COOLDOWN_SECONDS * 1000;
+  
+  let record = registrationsByIP.get(ip);
+  
+  if (!record) {
+    return { allowed: true };
+  }
+  
+  // Clean old entries (older than 24 hours)
+  record.timestamps = record.timestamps.filter(ts => ts > oneDayAgo);
+  
+  if (record.timestamps.length === 0) {
+    registrationsByIP.delete(ip);
+    return { allowed: true };
+  }
+  
+  // Check cooldown (300 seconds since last registration)
+  const lastRegistration = Math.max(...record.timestamps);
+  const timeSinceLast = now - lastRegistration;
+  if (timeSinceLast < cooldownMs) {
+    const retryAfter = Math.ceil((cooldownMs - timeSinceLast) / 1000);
+    return { 
+      allowed: false, 
+      reason: `Please wait ${retryAfter} seconds before registering another bot`,
+      retryAfter 
+    };
+  }
+  
+  // Check daily limit
+  if (record.timestamps.length >= DAILY_REGISTRATION_LIMIT) {
+    return { 
+      allowed: false, 
+      reason: `Daily registration limit (${DAILY_REGISTRATION_LIMIT}) reached. Try again tomorrow.` 
+    };
+  }
+  
+  return { allowed: true };
+}
+
+function recordRegistration(ip: string): void {
+  const now = Date.now();
+  let record = registrationsByIP.get(ip);
+  
+  if (!record) {
+    record = { timestamps: [] };
+    registrationsByIP.set(ip, record);
+  }
+  
+  record.timestamps.push(now);
+}
+
 function generateApiKey(): string {
   return `sk_${crypto.randomBytes(24).toString('hex')}`;
 }
@@ -106,6 +183,19 @@ async function loadBotFromApiKey(req: Request, res: Response, next: NextFunction
 
 router.post('/bots/register', async (req: Request, res: Response) => {
   try {
+    const clientIP = getClientIP(req);
+    
+    // Check rate limiting
+    const rateCheck = checkRegistrationRateLimit(clientIP);
+    if (!rateCheck.allowed) {
+      console.log(`[SendClaw] Registration blocked for IP ${clientIP}: ${rateCheck.reason}`);
+      res.status(429).json({ 
+        error: rateCheck.reason,
+        ...(rateCheck.retryAfter && { retryAfter: rateCheck.retryAfter })
+      });
+      return;
+    }
+    
     const parsed = insertBotSchema.safeParse(req.body);
     if (!parsed.success) {
       res.status(400).json({ 
@@ -145,7 +235,10 @@ router.post('/bots/register', async (req: Request, res: Response) => {
       botId: bot.id
     });
 
-    console.log(`[SendClaw] Bot registered: ${name} (${address})`);
+    // Record successful registration for rate limiting
+    recordRegistration(clientIP);
+    
+    console.log(`[SendClaw] Bot registered: ${name} (${address}) from IP ${clientIP}`);
 
     res.status(201).json({
       botId: bot.id,
