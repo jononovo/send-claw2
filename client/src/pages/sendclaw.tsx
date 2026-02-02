@@ -211,8 +211,9 @@ export default function SendClawDashboard() {
                     color: 'white',
                     fontSize: '14px'
                   }}
+                  className="placeholder:text-gray-500"
                 />
-                <span style={{ color: '#9ca3af', whiteSpace: 'nowrap' }}>
+                <span style={{ color: '#e5e7eb', whiteSpace: 'nowrap' }}>
                   .sendclaw.com
                 </span>
                 <button style={{ color: '#fb923c', padding: '8px' }}>
