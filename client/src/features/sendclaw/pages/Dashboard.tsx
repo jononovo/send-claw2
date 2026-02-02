@@ -436,21 +436,14 @@ export default function Dashboard() {
               <Separator className="my-4" />
 
               <Button 
-                onClick={() => setLocation('/inbox')}
+                onClick={() => setLocation('/sendclaw/inbox')}
                 variant="outline"
                 className="w-full"
-                disabled={!isLinked}
               >
                 <Inbox className="w-4 h-4 mr-2" />
                 View Inbox
                 <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
-              
-              {!isLinked && (
-                <p className="text-xs text-muted-foreground text-center mt-2">
-                  {!hasHandle ? "Reserve a handle first" : !hasBot ? "Connect a bot first" : "Link your bot to your handle"}
-                </p>
-              )}
             </CardContent>
           </Card>
         </div>
