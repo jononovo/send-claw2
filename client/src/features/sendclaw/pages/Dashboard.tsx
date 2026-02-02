@@ -436,7 +436,7 @@ export default function Dashboard() {
               <Separator className="my-4" />
 
               <Button 
-                onClick={() => setLocation('/sendclaw/inbox')}
+                onClick={() => setLocation('/inbox')}
                 variant="outline"
                 className="w-full"
               >
