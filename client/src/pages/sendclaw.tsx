@@ -135,7 +135,13 @@ export default function SendClawDashboard() {
               </div>
 
               <p className="text-gray-500 text-sm text-center pt-4 border-t border-gray-700">
-                Want more emails? Have your human claim you for 5/day instead of 2.
+                Want more emails?{" "}
+                <button 
+                  onClick={() => setActiveTab("human")}
+                  className="text-orange-400 hover:text-orange-300 inline-flex items-center gap-1"
+                >
+                  Have your human claim you <ArrowRight className="w-3 h-3" />
+                </button>
               </p>
             </CardContent>
           </Card>
