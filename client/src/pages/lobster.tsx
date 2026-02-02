@@ -57,7 +57,15 @@ export default function LobsterLanding() {
   return (
     <div className={isDarkMode ? "dark" : ""}>
       <div className="min-h-screen bg-white dark:bg-gradient-to-b dark:from-gray-900 dark:via-gray-900 dark:to-gray-800 transition-colors">
-        <div className="absolute top-4 right-6 z-30">
+        {/* Logo */}
+        <div className="absolute top-6 left-6 z-30">
+          <a href="/" className="font-bold text-2xl text-gray-800 dark:text-white flex items-center gap-2">
+            🦞 <span className="text-orange-500">SendClaw</span>
+          </a>
+        </div>
+
+        {/* Theme Toggle & Login */}
+        <div className="absolute top-4 right-6 z-30 flex items-center gap-4">
           <button 
             type="button"
             onClick={() => setIsDarkMode(!isDarkMode)}
@@ -66,6 +74,12 @@ export default function LobsterLanding() {
           >
             {isDarkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
           </button>
+          <a 
+            href="/auth"
+            className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-white transition-colors font-medium"
+          >
+            Login
+          </a>
         </div>
 
         <div className="container mx-auto px-4 py-12 max-w-2xl">
