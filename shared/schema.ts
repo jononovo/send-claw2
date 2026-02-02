@@ -1803,7 +1803,8 @@ export const bots = pgTable("bots", {
 
 export const messages = pgTable("messages", {
   id: uuid("id").primaryKey().defaultRandom(),
-  botId: uuid("bot_id").notNull().references(() => bots.id, { onDelete: 'cascade' }),
+  botId: uuid("bot_id").references(() => bots.id, { onDelete: 'cascade' }),
+  userId: integer("user_id").references(() => users.id, { onDelete: 'cascade' }),
   direction: text("direction").notNull().$type<'inbound' | 'outbound'>(),
   fromAddress: text("from_address").notNull(),
   toAddress: text("to_address").notNull(),
@@ -1816,6 +1817,7 @@ export const messages = pgTable("messages", {
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow()
 }, (table) => [
   index('idx_messages_bot_id').on(table.botId),
+  index('idx_messages_user_id').on(table.userId),
   index('idx_messages_thread_id').on(table.threadId),
   index('idx_messages_created_at').on(table.createdAt)
 ]);

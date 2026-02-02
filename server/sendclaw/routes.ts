@@ -2,7 +2,7 @@ import express, { Router, Request, Response, NextFunction } from "express";
 import crypto from "crypto";
 import { db } from "../db";
 import { bots, handles, messages, quotaUsage, dailyCheckins, socialShareRewards, insertBotSchema, insertMessageSchema } from "@shared/schema";
-import { eq, and, desc, sql } from "drizzle-orm";
+import { eq, and, desc, sql, or } from "drizzle-orm";
 import { MailService } from '@sendgrid/mail';
 import multer from "multer";
 import { CreditRewardService } from "../features/billing/rewards/service";
@@ -339,10 +339,15 @@ router.get('/my-inbox', async (req: Request, res: Response) => {
       userBot = bot;
     }
 
-    let botMessages: any[] = [];
+    let userMessages: any[] = [];
     if (userBot) {
-      botMessages = await db.select().from(messages)
-        .where(eq(messages.botId, userBot.id))
+      userMessages = await db.select().from(messages)
+        .where(or(eq(messages.botId, userBot.id), eq(messages.userId, userId)))
+        .orderBy(desc(messages.createdAt))
+        .limit(100);
+    } else {
+      userMessages = await db.select().from(messages)
+        .where(eq(messages.userId, userId))
         .orderBy(desc(messages.createdAt))
         .limit(100);
     }
@@ -362,7 +367,7 @@ router.get('/my-inbox', async (req: Request, res: Response) => {
         claimedAt: userBot.claimedAt,
         createdAt: userBot.createdAt
       } : null,
-      messages: botMessages
+      messages: userMessages
     });
   } catch (error) {
     console.error('[SendClaw] My inbox error:', error);
@@ -426,14 +431,6 @@ router.post('/inbox/send', async (req: Request, res: Response) => {
       userBot = bot;
     }
 
-    if (!userBot) {
-      res.status(400).json({ 
-        error: 'No bot linked to your account. Claim a bot first to send emails.',
-        hint: 'Use a claim token from your bot to link it to your account.'
-      });
-      return;
-    }
-
     const parsed = insertMessageSchema.safeParse(req.body);
     if (!parsed.success) {
       res.status(400).json({ 
@@ -458,7 +455,8 @@ router.post('/inbox/send', async (req: Request, res: Response) => {
     }
 
     const fromAddress = `${userHandle.address}@${SENDCLAW_DOMAIN}`;
-    const senderDisplayName = userBot.senderName;
+    const user = req.user as any;
+    const senderDisplayName = userBot?.senderName || user?.displayName || userHandle.address;
 
     if (process.env.SENDGRID_API_KEY) {
       try {
@@ -487,7 +485,8 @@ router.post('/inbox/send', async (req: Request, res: Response) => {
     }
 
     await db.insert(messages).values({
-      botId: userBot.id,
+      botId: userBot?.id || null,
+      userId: userId,
       direction: 'outbound',
       fromAddress,
       toAddress: to,
