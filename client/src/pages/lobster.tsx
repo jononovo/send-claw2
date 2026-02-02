@@ -241,7 +241,7 @@ export default function LobsterLanding() {
                     className="placeholder:text-gray-400 dark:placeholder:text-gray-600"
                   />
                   <span style={{ color: isDarkMode ? '#e5e7eb' : '#374151', whiteSpace: 'nowrap' }}>
-                    .sendclaw.com
+                    @sendclaw.com
                   </span>
                   <button 
                     onClick={handleReserve}

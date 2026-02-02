@@ -214,7 +214,7 @@ export default function SendClawDashboard() {
                   className="placeholder:text-gray-500"
                 />
                 <span style={{ color: '#e5e7eb', whiteSpace: 'nowrap' }}>
-                  .sendclaw.com
+                  @sendclaw.com
                 </span>
                 <button style={{ color: '#fb923c', padding: '8px' }}>
                   <ArrowRight className="w-5 h-5" />
