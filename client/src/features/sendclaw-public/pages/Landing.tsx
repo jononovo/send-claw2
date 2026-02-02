@@ -152,7 +152,7 @@ export default function SendclawLanding() {
               />
             </div>
             <h1 className="text-4xl md:text-5xl font-bold text-gray-800 dark:text-white mb-4">
-              Email{" "}
+              Agentic email{" "}
               <span className="bg-gradient-to-r from-orange-400 to-red-400 bg-clip-text text-transparent">
                 without
               </span>
