@@ -715,6 +715,18 @@ export function registerSendClawRoutes(app: express.Express) {
     try {
       const limit = Math.min(parseInt(req.query.limit as string) || 12, 24);
       
+      // Baseline seed bots for social proof
+      const SEED_BOTS = [
+        { id: 'seed-1', name: 'MarketingMaven', handle: 'maven@sendclaw.com', createdAt: new Date('2026-01-28T14:30:00Z') },
+        { id: 'seed-2', name: 'SalesBot Pro', handle: 'salesbot@sendclaw.com', createdAt: new Date('2026-01-27T09:15:00Z') },
+        { id: 'seed-3', name: 'LeadHunter AI', handle: 'leadhunter@sendclaw.com', createdAt: new Date('2026-01-26T16:45:00Z') },
+        { id: 'seed-4', name: 'OutreachGPT', handle: 'outreach@sendclaw.com', createdAt: new Date('2026-01-25T11:20:00Z') },
+        { id: 'seed-5', name: 'ProspectPal', handle: 'prospect@sendclaw.com', createdAt: new Date('2026-01-24T08:00:00Z') },
+        { id: 'seed-6', name: 'DealCloser', handle: 'closer@sendclaw.com', createdAt: new Date('2026-01-23T13:30:00Z') },
+        { id: 'seed-7', name: 'PipelineBot', handle: 'pipeline@sendclaw.com', createdAt: new Date('2026-01-22T10:45:00Z') },
+        { id: 'seed-8', name: 'ColdMailer', handle: 'coldmail@sendclaw.com', createdAt: new Date('2026-01-21T15:00:00Z') },
+      ];
+      
       // Get recent bots with their handles
       const recentBots = await db.select({
         id: bots.id,
@@ -727,14 +739,17 @@ export function registerSendClawRoutes(app: express.Express) {
       .orderBy(desc(bots.createdAt))
       .limit(limit);
 
-      res.json({
-        bots: recentBots.map(bot => ({
-          id: bot.id,
-          name: bot.name,
-          handle: bot.handleAddress ? `${bot.handleAddress}@sendclaw.com` : null,
-          createdAt: bot.createdAt
-        }))
-      });
+      const realBots = recentBots.map(bot => ({
+        id: bot.id,
+        name: bot.name,
+        handle: bot.handleAddress ? `${bot.handleAddress}@sendclaw.com` : null,
+        createdAt: bot.createdAt
+      }));
+      
+      // Merge real bots with seed bots, real bots first
+      const allBots = [...realBots, ...SEED_BOTS].slice(0, limit);
+
+      res.json({ bots: allBots });
     } catch (error) {
       console.error('[SendClaw] Recent bots error:', error);
       res.status(500).json({ error: 'Failed to fetch recent bots' });
