@@ -1,1 +1,0 @@
-(globalThis.TURBOPACK||(globalThis.TURBOPACK=[])).push(["object"==typeof document?document.currentScript:void 0,98033,e=>{"use strict";e.i(77296);var r=e.i(91589),u=e.i(56721),S=e.i(20451);e.i(73037),e.s(["SuperSearchResults",()=>u.SuperSearchResults,"SuperSearchTable",()=>S.SuperSearchTable,"useSuperSearch",()=>r.useSuperSearch])}]);

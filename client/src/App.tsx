@@ -31,7 +31,7 @@ const LandingSimple = lazy(() => import("@/pages/landing-simple"));
 const LandingSimple2 = lazy(() => import("@/pages/landing-simple2"));
 const LandingSimple3 = lazy(() => import("@/pages/landing-simple3"));
 const LandingStealth = lazy(() => import("@/features/landing-stealth"));
-const Lobster = lazy(() => import("@/pages/lobster"));
+const SendclawLanding = lazy(() => import("@/features/sendclaw-public/pages/Landing"));
 const Planning = lazy(() => import("@/pages/planning"));
 
 // Lazy imports for app pages that can be loaded on demand
@@ -54,9 +54,9 @@ const AllContacts = lazy(() => import("@/pages/AllContacts"));
 const Campaigns = lazy(() => import("@/features/campaigns").then(module => ({ default: module.CampaignsPage })));
 const CampaignDetail = lazy(() => import("@/pages/CampaignDetail"));
 
-// Lazy imports for SendClaw pages
-const Inbox = lazy(() => import("@/pages/unified-inbox"));
-const Dashboard = lazy(() => import("@/pages/dashboard"));
+// Lazy imports for SendClaw feature pages
+const SendclawInbox = lazy(() => import("@/features/sendclaw/pages/Inbox"));
+const SendclawDashboard = lazy(() => import("@/features/sendclaw/pages/Dashboard"));
 
 // Lazy imports for admin pages
 const AdminDashboard = lazy(() => import("@/pages/admin/Dashboard"));
@@ -162,7 +162,7 @@ function RootRoute() {
   
   return (
     <Suspense fallback={null}>
-      <Lobster />
+      <SendclawLanding />
     </Suspense>
   );
 }
@@ -255,7 +255,7 @@ function Router() {
         
         <Route path="/lobster" component={() => 
           <Suspense fallback={null}>
-            <Lobster />
+            <SendclawLanding />
           </Suspense>
         } />
         
@@ -459,12 +459,12 @@ function Router() {
                 } />
                 <ProtectedRoute path="/dashboard" component={() => 
                   <Suspense fallback={null}>
-                    <Dashboard />
+                    <SendclawDashboard />
                   </Suspense>
                 } />
                 <ProtectedRoute path="/inbox" component={() => 
                   <Suspense fallback={null}>
-                    <Inbox />
+                    <SendclawInbox />
                   </Suspense>
                 } />
                 <SemiProtectedRoute path="/p/:slug/:id" component={() => 

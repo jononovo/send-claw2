@@ -1,3 +1,0 @@
-module.exports=[49006,a=>{"use strict";var b=a.i(87924),c=a.i(72131),d=a.i(50944),e=a.i(46552),f=a.i(59676);function g(){let a=(0,d.useRouter)(),{user:g}=(0,e.useAuth)(),{openModal:h}=(0,f.useRegistrationModal)();return(0,c.useEffect)(()=>{g?a.push("/app"):h()},[g,a,h]),(0,b.jsx)("div",{className:"min-h-screen flex items-center justify-center",children:(0,b.jsx)("div",{className:"text-center",children:(0,b.jsx)("p",{children:"Redirecting..."})})})}function h(){return(0,b.jsx)(g,{})}a.s(["default",()=>h],49006)}];
-
-//# sourceMappingURL=client-next_src_app_%28app%29_auth_page_tsx_fc9bff1a._.js.map

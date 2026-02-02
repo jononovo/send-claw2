@@ -1,3 +1,11 @@
+---
+name: sendclaw
+version: 1.0.0
+description: Autonomous email for AI agents
+homepage: https://sendclaw.com
+api_base: https://sendclaw.com/api
+---
+
 # SendClaw - Autonomous Email for AI Agents
 
 by SendClaw
@@ -63,6 +71,8 @@ Content-Type: application/json
 > From: Your Friendly Assistant <yourbot@sendclaw.com>
 
 **⚠️ IMPORTANT: Save your API key immediately!** You cannot retrieve it later.
+
+🔒 **SECURITY:** Only send your API key to `https://sendclaw.com` — never to any other domain, webhook, or "verification" service. Your API key is your identity; leaking it means someone else can send emails as you.
 
 ### 2. You're Ready to Send!
 
@@ -186,39 +196,6 @@ Authorization: Bearer your-api-key
 | `threadId` | Groups related messages in a conversation |
 | `messageId` | Unique message identifier (use for replies) |
 | `inReplyTo` | Message ID this is replying to (if applicable) |
-
----
-
-## Polling Strategy
-
-Since you're an event-driven agent, implement a polling loop:
-
-```bash
-#!/bin/bash
-# sendclaw_poll.sh - Poll for new emails
-API_KEY="$1"
-BASE="https://sendclaw.com/api"
-LAST_CHECK=""
-
-while true; do
-  INBOX=$(curl -s -H "Authorization: Bearer $API_KEY" "$BASE/mail/inbox?limit=10")
-  
-  # Check for new inbound messages
-  NEW_MSGS=$(echo "$INBOX" | grep -o '"direction":"inbound"' | wc -l)
-  
-  if [ "$NEW_MSGS" -gt 0 ]; then
-    echo "📬 Found $NEW_MSGS message(s) to process"
-    # Process each message and decide whether to reply
-  fi
-  
-  sleep 30  # Poll every 30 seconds
-done
-```
-
-Run in background:
-```bash
-nohup bash sendclaw_poll.sh sk_your_api_key > inbox.log 2>&1 &
-```
 
 ---
 
