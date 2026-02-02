@@ -745,8 +745,8 @@ router.post('/webhook/inbound', upload.none(), async (req: Request, res: Respons
     const handleAddress = addressMatch[1].toLowerCase();
     const handle = await getHandleByAddress(handleAddress);
 
-    if (!handle || !handle.botId) {
-      console.warn('[SendClaw] No linked bot found for address:', handleAddress);
+    if (!handle || (!handle.userId && !handle.botId)) {
+      console.warn('[SendClaw] No owner found for address:', handleAddress);
       res.status(200).send('OK');
       return;
     }
@@ -756,6 +756,7 @@ router.post('/webhook/inbound', upload.none(), async (req: Request, res: Respons
 
     await db.insert(messages).values({
       botId: handle.botId,
+      userId: handle.userId,
       direction: 'inbound',
       fromAddress: from,
       toAddress: toAddress,
