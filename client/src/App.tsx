@@ -31,6 +31,7 @@ const LandingSimple = lazy(() => import("@/pages/landing-simple"));
 const LandingSimple2 = lazy(() => import("@/pages/landing-simple2"));
 const LandingSimple3 = lazy(() => import("@/pages/landing-simple3"));
 const LandingStealth = lazy(() => import("@/features/landing-stealth"));
+const Lobster = lazy(() => import("@/pages/lobster"));
 const Planning = lazy(() => import("@/pages/planning"));
 
 // Lazy imports for app pages that can be loaded on demand
@@ -233,6 +234,12 @@ function Router() {
         <Route path="/simple3" component={() => 
           <Suspense fallback={null}>
             <LandingSimple3 />
+          </Suspense>
+        } />
+        
+        <Route path="/lobster" component={() => 
+          <Suspense fallback={null}>
+            <Lobster />
           </Suspense>
         } />
         
