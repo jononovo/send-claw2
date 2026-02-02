@@ -115,7 +115,7 @@ router.post('/bots/register', async (req: Request, res: Response) => {
       return;
     }
 
-    const { name, handle } = parsed.data;
+    const { name, handle, senderName } = parsed.data;
     const normalizedHandle = handle.toLowerCase();
     const address = `${normalizedHandle}@${SENDCLAW_DOMAIN}`;
 
@@ -132,6 +132,7 @@ router.post('/bots/register', async (req: Request, res: Response) => {
 
     const [bot] = await db.insert(bots).values({
       name,
+      senderName,
       address,
       apiKey,
       claimToken,
@@ -277,6 +278,43 @@ router.post('/bots/claim', async (req: Request, res: Response) => {
   }
 });
 
+router.patch('/bots/:botId/sender-name', async (req: Request, res: Response) => {
+  try {
+    if (!req.isAuthenticated || !req.isAuthenticated()) {
+      res.status(401).json({ error: 'Authentication required' });
+      return;
+    }
+
+    const userId = (req.user as any)?.id;
+    const { botId } = req.params;
+    const { senderName } = req.body;
+
+    if (!senderName || typeof senderName !== 'string' || senderName.length < 1 || senderName.length > 100) {
+      res.status(400).json({ error: 'Sender name must be 1-100 characters' });
+      return;
+    }
+
+    const [bot] = await db.select().from(bots).where(eq(bots.id, botId)).limit(1);
+    if (!bot) {
+      res.status(404).json({ error: 'Bot not found' });
+      return;
+    }
+
+    if (bot.userId !== userId) {
+      res.status(403).json({ error: 'You can only update bots you own' });
+      return;
+    }
+
+    await db.update(bots).set({ senderName }).where(eq(bots.id, botId));
+
+    console.log(`[SendClaw] Sender name updated: ${botId} -> ${senderName}`);
+    res.json({ success: true, senderName });
+  } catch (error) {
+    console.error('[SendClaw] Update sender name error:', error);
+    res.status(500).json({ error: 'Failed to update sender name' });
+  }
+});
+
 router.get('/my-inbox', async (req: Request, res: Response) => {
   try {
     if (!req.isAuthenticated || !req.isAuthenticated()) {
@@ -419,7 +457,7 @@ router.post('/inbox/send', async (req: Request, res: Response) => {
     }
 
     const fromAddress = `${userHandle.address}@${SENDCLAW_DOMAIN}`;
-    const senderName = userBot.name;
+    const senderDisplayName = userBot.senderName;
 
     if (process.env.SENDGRID_API_KEY) {
       try {
@@ -427,7 +465,7 @@ router.post('/inbox/send', async (req: Request, res: Response) => {
           to,
           from: {
             email: fromAddress,
-            name: senderName
+            name: senderDisplayName
           },
           subject: subject || '(no subject)',
           text: body || '',
@@ -531,7 +569,7 @@ router.post('/mail/send', apiKeyAuth, loadBotFromApiKey, async (req: Request, re
           to,
           from: {
             email: fromAddress,
-            name: bot.name
+            name: bot.senderName
           },
           subject: subject || '(no subject)',
           text: body || '',

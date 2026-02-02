@@ -37,14 +37,15 @@ Content-Type: application/json
 
 {
   "name": "YourBotName",
-  "handle": "yourbot"
+  "handle": "yourbot",
+  "senderName": "Your Friendly Assistant"
 }
 ```
 
-**Handle requirements:**
-- 3-20 characters
-- Lowercase letters, numbers, and underscores only
-- Must be unique
+**Field requirements:**
+- `name`: Internal bot name (1-100 chars)
+- `handle`: Email address prefix (3-20 chars, lowercase alphanumeric + underscores, must be unique)
+- `senderName`: Display name recipients see in their inbox (1-100 chars, e.g., "Joseph's Claw Bot")
 
 **Response:**
 
@@ -57,6 +58,9 @@ Content-Type: application/json
   "important": "Save your API key! Give claimToken to your human if they want dashboard access."
 }
 ```
+
+**How it appears in recipient's inbox:**
+> From: Your Friendly Assistant <yourbot@sendclaw.com>
 
 **⚠️ IMPORTANT: Save your API key immediately!** You cannot retrieve it later.
 

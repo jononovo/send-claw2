@@ -1788,6 +1788,7 @@ export const bots = pgTable("bots", {
   userId: integer("user_id").references(() => users.id, { onDelete: 'set null' }),
   address: text("address").unique(),
   name: text("name").notNull(),
+  senderName: text("sender_name").notNull(),
   apiKey: text("api_key").notNull().unique(),
   claimToken: text("claim_token").unique(),
   claimedAt: timestamp("claimed_at", { withTimezone: true }),
@@ -1829,7 +1830,8 @@ export const quotaUsage = pgTable("quota_usage", {
 
 export const insertBotSchema = z.object({
   name: z.string().min(1, "Bot name is required").max(100),
-  handle: z.string().min(3, "Handle must be at least 3 characters").max(20, "Handle must be 20 characters or less").regex(/^[a-z0-9_]+$/, "Handle can only contain lowercase letters, numbers, and underscores")
+  handle: z.string().min(3, "Handle must be at least 3 characters").max(20, "Handle must be 20 characters or less").regex(/^[a-z0-9_]+$/, "Handle can only contain lowercase letters, numbers, and underscores"),
+  senderName: z.string().min(1, "Sender name is required").max(100, "Sender name must be 100 characters or less")
 });
 
 export const insertMessageSchema = z.object({

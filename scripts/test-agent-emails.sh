@@ -34,7 +34,7 @@ info() { echo -e "${YELLOW}→${NC} $1"; }
 echo "=== Test 1: Register $ALPHA_HANDLE ==="
 ALPHA_RESPONSE=$(curl -s -X POST "$BASE_URL/api/bots/register" \
   -H "Content-Type: application/json" \
-  -d "{\"name\":\"$ALPHA_HANDLE\",\"handle\":\"$ALPHA_HANDLE\"}")
+  -d "{\"name\":\"$ALPHA_HANDLE\",\"handle\":\"$ALPHA_HANDLE\",\"senderName\":\"${ALPHA_HANDLE^} the Assistant\"}")
 
 ALPHA_KEY=$(echo "$ALPHA_RESPONSE" | grep -o '"apiKey":"[^"]*"' | cut -d'"' -f4)
 ALPHA_EMAIL=$(echo "$ALPHA_RESPONSE" | grep -o '"email":"[^"]*"' | cut -d'"' -f4)
@@ -50,7 +50,7 @@ echo ""
 echo "=== Test 2: Register $BETA_HANDLE ==="
 BETA_RESPONSE=$(curl -s -X POST "$BASE_URL/api/bots/register" \
   -H "Content-Type: application/json" \
-  -d "{\"name\":\"$BETA_HANDLE\",\"handle\":\"$BETA_HANDLE\"}")
+  -d "{\"name\":\"$BETA_HANDLE\",\"handle\":\"$BETA_HANDLE\",\"senderName\":\"${BETA_HANDLE^} the Helper\"}")
 
 BETA_KEY=$(echo "$BETA_RESPONSE" | grep -o '"apiKey":"[^"]*"' | cut -d'"' -f4)
 BETA_EMAIL=$(echo "$BETA_RESPONSE" | grep -o '"email":"[^"]*"' | cut -d'"' -f4)
@@ -66,7 +66,7 @@ echo ""
 echo "=== Test 3: Register $GAMMA_HANDLE ==="
 GAMMA_RESPONSE=$(curl -s -X POST "$BASE_URL/api/bots/register" \
   -H "Content-Type: application/json" \
-  -d "{\"name\":\"$GAMMA_HANDLE\",\"handle\":\"$GAMMA_HANDLE\"}")
+  -d "{\"name\":\"$GAMMA_HANDLE\",\"handle\":\"$GAMMA_HANDLE\",\"senderName\":\"${GAMMA_HANDLE^} Bot\"}")
 
 GAMMA_KEY=$(echo "$GAMMA_RESPONSE" | grep -o '"apiKey":"[^"]*"' | cut -d'"' -f4)
 GAMMA_EMAIL=$(echo "$GAMMA_RESPONSE" | grep -o '"email":"[^"]*"' | cut -d'"' -f4)
@@ -82,7 +82,7 @@ echo ""
 echo "=== Test 4: Duplicate Handle Rejected ==="
 DUP_RESPONSE=$(curl -s -X POST "$BASE_URL/api/bots/register" \
   -H "Content-Type: application/json" \
-  -d "{\"name\":\"Duplicate\",\"handle\":\"$ALPHA_HANDLE\"}")
+  -d "{\"name\":\"Duplicate\",\"handle\":\"$ALPHA_HANDLE\",\"senderName\":\"Duplicate Bot\"}")
 
 if echo "$DUP_RESPONSE" | grep -q "already"; then
   pass "Duplicate handle correctly rejected"
