@@ -115,27 +115,35 @@ router.post('/bots/register', async (req: Request, res: Response) => {
       return;
     }
 
-    const { name } = parsed.data;
+    const { name, handle } = parsed.data;
+    const normalizedHandle = handle.toLowerCase();
+    const address = `${normalizedHandle}@${SENDCLAW_DOMAIN}`;
     const apiKey = generateApiKey();
     const claimToken = generateClaimToken();
 
     const [bot] = await db.insert(bots).values({
       name,
+      address,
       apiKey,
       claimToken,
       verified: false
     }).returning();
 
-    console.log(`[SendClaw] Bot registered: ${name} (${bot.id})`);
+    console.log(`[SendClaw] Bot registered: ${name} (${address})`);
 
     res.status(201).json({
       botId: bot.id,
+      email: address,
       apiKey,
       claimToken,
       important: "Save your API key! Give claimToken to your human if they want dashboard access."
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error('[SendClaw] Registration error:', error);
+    if (error?.code === '23505' && error?.constraint === 'bots_address_key') {
+      res.status(409).json({ error: 'Handle already taken' });
+      return;
+    }
     res.status(500).json({ error: 'Registration failed' });
   }
 });

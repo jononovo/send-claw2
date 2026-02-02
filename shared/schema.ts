@@ -1828,7 +1828,8 @@ export const quotaUsage = pgTable("quota_usage", {
 ]);
 
 export const insertBotSchema = z.object({
-  name: z.string().min(1, "Bot name is required").max(100)
+  name: z.string().min(1, "Bot name is required").max(100),
+  handle: z.string().min(3, "Handle must be at least 3 characters").max(20, "Handle must be 20 characters or less").regex(/^[a-z0-9_]+$/, "Handle can only contain lowercase letters, numbers, and underscores")
 });
 
 export const insertMessageSchema = z.object({
