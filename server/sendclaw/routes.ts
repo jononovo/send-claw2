@@ -2,7 +2,7 @@ import express, { Router, Request, Response, NextFunction } from "express";
 import crypto from "crypto";
 import { db } from "../db";
 import { bots, handles, messages, quotaUsage, insertBotSchema, insertMessageSchema } from "@shared/schema";
-import { eq, and, desc } from "drizzle-orm";
+import { eq, and, desc, sql } from "drizzle-orm";
 import { MailService } from '@sendgrid/mail';
 import multer from "multer";
 
@@ -678,6 +678,83 @@ router.post('/webhook/inbound', upload.none(), async (req: Request, res: Respons
 export function registerSendClawRoutes(app: express.Express) {
   app.use('/api', router);
   
+  // Public stats endpoint
+  router.get('/public/stats', async (req: Request, res: Response) => {
+    try {
+      const [botCount] = await db.select({ count: sql<number>`count(*)` }).from(bots);
+      const [handleCount] = await db.select({ count: sql<number>`count(*)` }).from(handles);
+      const [emailsSentCount] = await db.select({ count: sql<number>`count(*)` })
+        .from(messages)
+        .where(eq(messages.direction, 'outbound'));
+      const [emailsReceivedCount] = await db.select({ count: sql<number>`count(*)` })
+        .from(messages)
+        .where(eq(messages.direction, 'inbound'));
+
+      res.json({
+        totalBots: Number(botCount?.count || 0),
+        totalHandles: Number(handleCount?.count || 0),
+        emailsSent: Number(emailsSentCount?.count || 0),
+        emailsReceived: Number(emailsReceivedCount?.count || 0)
+      });
+    } catch (error) {
+      console.error('[SendClaw] Stats error:', error);
+      res.status(500).json({ error: 'Failed to fetch stats' });
+    }
+  });
+
+  // Public recent bots endpoint
+  router.get('/public/recent-bots', async (req: Request, res: Response) => {
+    try {
+      const limit = Math.min(parseInt(req.query.limit as string) || 12, 24);
+      
+      // Get recent bots with their handles
+      const recentBots = await db.select({
+        id: bots.id,
+        name: bots.name,
+        createdAt: bots.createdAt,
+        handleName: handles.handle,
+      })
+      .from(bots)
+      .leftJoin(handles, eq(handles.botId, bots.id))
+      .orderBy(desc(bots.createdAt))
+      .limit(limit);
+
+      res.json({
+        bots: recentBots.map(bot => ({
+          id: bot.id,
+          name: bot.name,
+          handle: bot.handleName ? `${bot.handleName}@sendclaw.com` : null,
+          createdAt: bot.createdAt
+        }))
+      });
+    } catch (error) {
+      console.error('[SendClaw] Recent bots error:', error);
+      res.status(500).json({ error: 'Failed to fetch recent bots' });
+    }
+  });
+
+  // Newsletter signup endpoint
+  router.post('/public/newsletter', async (req: Request, res: Response) => {
+    try {
+      const { email } = req.body;
+      
+      if (!email || !email.includes('@')) {
+        return res.status(400).json({ error: 'Valid email required' });
+      }
+
+      // Store in a simple table or just log for now
+      // In production, you'd add to SendGrid contacts list
+      console.log('[SendClaw] Newsletter signup:', email);
+      
+      // Could add to SendGrid marketing contacts here
+      // For now, we'll just acknowledge the signup
+      res.json({ success: true, message: 'Thanks for signing up!' });
+    } catch (error) {
+      console.error('[SendClaw] Newsletter error:', error);
+      res.status(500).json({ error: 'Signup failed' });
+    }
+  });
+
   app.get('/skill.md', (req, res) => {
     res.type('text/markdown').send(`# SendClaw Email Skill
 
