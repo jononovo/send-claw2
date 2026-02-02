@@ -55,19 +55,27 @@ export default function Dashboard() {
       const res = await apiRequest("POST", "/api/bots/reserve", { handle: handleName });
       return res.json();
     },
-    onSuccess: (data) => {
+    onSuccess: async (data) => {
+      if (handleSenderName.trim() && data.id) {
+        try {
+          await apiRequest("PATCH", `/api/handles/${data.id}/sender-name`, { senderName: handleSenderName.trim() });
+        } catch (e) {
+          console.error("Failed to save sender name:", e);
+        }
+      }
       toast({
-        title: "Handle reserved!",
+        title: "Handle saved!",
         description: `Your email is now ${data.address}`,
       });
       setHandle("");
+      setHandleSenderName("");
       setIsEditingHandle(false);
       refetch();
     },
     onError: (error: any) => {
       toast({
-        title: "Reservation failed",
-        description: error.message || "Could not reserve handle",
+        title: "Save failed",
+        description: error.message || "Could not save handle",
         variant: "destructive",
       });
     },
@@ -213,6 +221,7 @@ export default function Dashboard() {
                     size="sm"
                     onClick={() => {
                       setHandle(userHandle.address.replace(`@sendclaw.com`, '').split('@')[0]);
+                      setHandleSenderName(userHandle.senderName || "");
                       setIsEditingHandle(true);
                     }}
                   >
@@ -222,43 +231,74 @@ export default function Dashboard() {
                 )}
               </div>
               <CardDescription>
-                {hasHandle ? "Your SendClaw email address" : "Reserve your @sendclaw.com handle"}
+                {hasHandle ? "Your SendClaw email identity" : "Reserve your @sendclaw.com handle"}
               </CardDescription>
             </CardHeader>
             <CardContent>
               {hasHandle && !isEditingHandle ? (
-                <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
-                  <span className="font-medium text-foreground">{userHandle.address}</span>
-                  <button 
-                    onClick={() => copyToClipboard(userHandle.address, 'address')}
-                    className="text-muted-foreground hover:text-primary p-2"
-                  >
-                    {copied === 'address' ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-                  </button>
+                <div className="space-y-3">
+                  <div>
+                    <p className="text-xs text-muted-foreground mb-1">Email Address</p>
+                    <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
+                      <span className="font-medium text-foreground">{userHandle.address}</span>
+                      <button 
+                        onClick={() => copyToClipboard(userHandle.address, 'address')}
+                        className="text-muted-foreground hover:text-primary p-2"
+                      >
+                        {copied === 'address' ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                      </button>
+                    </div>
+                  </div>
+                  <div>
+                    <p className="text-xs text-muted-foreground mb-1">Sender Name</p>
+                    <div className="p-3 bg-muted rounded-lg">
+                      <span className="font-medium text-foreground">
+                        {userHandle.senderName || <span className="text-muted-foreground italic">Not set</span>}
+                      </span>
+                    </div>
+                  </div>
                 </div>
               ) : (
-                <div className="space-y-3">
-                  <div className="flex items-center gap-2 bg-muted rounded-lg px-3">
-                    <Input
-                      value={handle}
-                      onChange={(e) => setHandle(e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, ''))}
-                      placeholder="yourname"
-                      className="bg-transparent border-0 focus-visible:ring-0"
-                      onKeyDown={(e) => e.key === "Enter" && handleReserve()}
-                    />
-                    <span className="text-muted-foreground whitespace-nowrap">@sendclaw.com</span>
+                <div className="space-y-4">
+                  <div>
+                    <p className="text-xs text-muted-foreground mb-1">Email Address</p>
+                    <div className="flex items-center gap-2 bg-muted rounded-lg px-3">
+                      <Input
+                        value={handle}
+                        onChange={(e) => setHandle(e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, ''))}
+                        placeholder="yourname"
+                        className="bg-transparent border-0 focus-visible:ring-0"
+                      />
+                      <span className="text-muted-foreground whitespace-nowrap">@sendclaw.com</span>
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Letters, numbers, and underscores only. Min 3 characters.
+                    </p>
                   </div>
-                  <p className="text-xs text-muted-foreground">
-                    Letters, numbers, and underscores only. Min 3 characters.
-                  </p>
+                  <div>
+                    <p className="text-xs text-muted-foreground mb-1">Sender Name</p>
+                    <Input
+                      value={handleSenderName}
+                      onChange={(e) => setHandleSenderName(e.target.value)}
+                      placeholder="e.g., John Smith"
+                      className="bg-muted"
+                    />
+                    <p className="text-xs text-muted-foreground mt-1">
+                      This is what recipients see as the "From" name.
+                    </p>
+                  </div>
                   <div className="flex gap-2">
                     <Button 
-                      onClick={handleReserve}
-                      disabled={handle.length < 3 || reserveMutation.isPending}
+                      onClick={() => {
+                        if (handle.trim().length >= 3) {
+                          reserveMutation.mutate(handle.trim());
+                        }
+                      }}
+                      disabled={handle.length < 3 || reserveMutation.isPending || handleSenderNameMutation.isPending}
                       className="flex-1"
                     >
                       <Save className="w-4 h-4 mr-2" />
-                      {reserveMutation.isPending ? "Saving..." : "Save Handle"}
+                      {reserveMutation.isPending || handleSenderNameMutation.isPending ? "Saving..." : "Save"}
                     </Button>
                     {isEditingHandle && (
                       <Button 
@@ -266,6 +306,7 @@ export default function Dashboard() {
                         onClick={() => {
                           setIsEditingHandle(false);
                           setHandle("");
+                          setHandleSenderName("");
                         }}
                       >
                         Cancel
@@ -276,77 +317,6 @@ export default function Dashboard() {
               )}
             </CardContent>
           </Card>
-
-          {/* Sender Name Section - show if user has a handle */}
-          {hasHandle && (
-            <Card>
-              <CardHeader className="pb-3">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <Send className="w-5 h-5 text-primary" />
-                    <CardTitle className="text-lg">Sender Name</CardTitle>
-                  </div>
-                  {!isEditingHandleSenderName && (
-                    <Button 
-                      variant="ghost" 
-                      size="sm"
-                      onClick={() => {
-                        setHandleSenderName(userHandle.senderName || "");
-                        setIsEditingHandleSenderName(true);
-                      }}
-                    >
-                      <Pencil className="w-4 h-4 mr-1" />
-                      Edit
-                    </Button>
-                  )}
-                </div>
-                <CardDescription>
-                  How your name appears in recipient inboxes
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                {!isEditingHandleSenderName ? (
-                  <div className="p-3 bg-muted rounded-lg">
-                    <span className="font-medium text-foreground">
-                      {userHandle.senderName || <span className="text-muted-foreground italic">Not set</span>}
-                    </span>
-                  </div>
-                ) : (
-                  <div className="space-y-3">
-                    <Input
-                      value={handleSenderName}
-                      onChange={(e) => setHandleSenderName(e.target.value)}
-                      placeholder="e.g., John Smith"
-                      className="bg-muted"
-                      onKeyDown={(e) => e.key === "Enter" && handleHandleSenderNameSave()}
-                    />
-                    <p className="text-xs text-muted-foreground">
-                      This is what recipients see as the "From" name in their inbox.
-                    </p>
-                    <div className="flex gap-2">
-                      <Button 
-                        onClick={handleHandleSenderNameSave}
-                        disabled={!handleSenderName.trim() || handleSenderNameMutation.isPending}
-                        className="flex-1"
-                      >
-                        <Save className="w-4 h-4 mr-2" />
-                        {handleSenderNameMutation.isPending ? "Saving..." : "Save"}
-                      </Button>
-                      <Button 
-                        variant="outline"
-                        onClick={() => {
-                          setIsEditingHandleSenderName(false);
-                          setHandleSenderName("");
-                        }}
-                      >
-                        Cancel
-                      </Button>
-                    </div>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          )}
 
           {/* Bot Section */}
           <Card>
