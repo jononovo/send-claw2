@@ -163,12 +163,11 @@ function Router() {
   return (
     <>
       <Switch>
-        {/* Default landing page - Simple Landing 3 */}
-        <Route path="/" component={() => 
-          <Suspense fallback={null}>
-            <LandingSimple3 />
-          </Suspense>
-        } />
+        {/* Default landing page - redirect to dashboard */}
+        <Route path="/" component={() => {
+          window.location.href = '/dashboard';
+          return null;
+        }} />
         
         {/* React version of landing page for comparison */}
         <Route path="/react-landing" component={() => 

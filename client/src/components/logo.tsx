@@ -96,11 +96,11 @@ export function Logo({
   );
   
   // If logo should be a link, wrap in Link component
-  // Links to /app/new-search to trigger a fresh search state
+  // Links to /dashboard as the main entry point
   if (asLink) {
     return (
       <Link 
-        href="/app/new-search" 
+        href="/dashboard" 
         className="group hover:opacity-90 transition-opacity"
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
