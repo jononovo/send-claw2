@@ -30,6 +30,8 @@ The platform comprises a React SPA frontend (TypeScript, Vite, Tailwind, shadcn/
 - **Drip Email Engine**: Handles system-to-user transactional emails (e.g., access confirmations) via SendGrid, with scheduled sequences and immediate send capabilities.
 - **Credit System**: A generic system (`CreditService`) manages credit checks, deductions, and top-ups, with defined costs for various actions (e.g., `company_search`: 10 credits, `email_search`: 160 credits).
 - **Credit Reward & Progress Tracking System**: Uses a `user_progress` table and `CreditRewardService` for awarding credits based on user milestones across different namespaces (e.g., registration, onboarding, challenges).
+- **Daily Check-in Rewards**: Users can claim daily credits (10-20 based on streak). Tables: `daily_checkins`. Streak bonus: 3+ days = 15 credits, 7+ days = 20 credits max. Endpoints: `GET/POST /api/rewards/daily-checkin`.
+- **Social Sharing Rewards**: One-time credits for sharing on social platforms. Tables: `social_share_rewards`. Credits: Twitter/LinkedIn 50, Facebook 30. Endpoints: `GET/POST /api/rewards/share`.
 - **Attribution Tracking System**: Captures first-touch UTM parameters and click IDs, storing them in `user_attribution` to track user acquisition sources and conversion events (e.g., `registration_complete`, `search_performed`).
 
 **System Design Choices:**
