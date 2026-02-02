@@ -116,7 +116,7 @@ export default function LobsterLanding() {
           </a>
         </div>
 
-        {/* Theme Toggle & Login */}
+        {/* Theme Toggle, Community & Login */}
         <div className="absolute top-4 right-6 z-30 flex items-center gap-4">
           <button 
             type="button"
@@ -126,6 +126,14 @@ export default function LobsterLanding() {
           >
             {isDarkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
           </button>
+          <a 
+            href="https://x.com/sendclawcom"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-white transition-colors font-medium"
+          >
+            Community
+          </a>
           <a 
             href="/dashboard"
             className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-white transition-colors font-medium"
