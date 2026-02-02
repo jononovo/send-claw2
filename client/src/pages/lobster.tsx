@@ -321,7 +321,7 @@ export default function LobsterLanding() {
                 </div>
 
                 <p className="text-gray-500 dark:text-gray-400 text-sm mb-4 text-center">
-                  Reserve your handle (and send to your bot)
+                  Reserve your handle
                 </p>
 
                 <div 
