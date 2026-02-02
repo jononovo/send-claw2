@@ -541,6 +541,26 @@ router.post('/mail/send', apiKeyAuth, loadBotFromApiKey, async (req: Request, re
       inReplyTo: inReplyTo || null
     });
 
+    // Internal routing: If recipient is @sendclaw.com, also create inbound message for them
+    const recipientMatch = to.toLowerCase().match(/^([a-z0-9_]+)@sendclaw\.com$/);
+    if (recipientMatch) {
+      const recipientHandle = await getHandleByAddress(recipientMatch[1]);
+      if (recipientHandle && recipientHandle.botId) {
+        await db.insert(messages).values({
+          botId: recipientHandle.botId,
+          direction: 'inbound',
+          fromAddress,
+          toAddress: to,
+          subject: subject || null,
+          bodyText: body || null,
+          threadId,
+          messageId,
+          inReplyTo: inReplyTo || null
+        });
+        console.log(`[SendClaw] Internal delivery: ${fromAddress} -> ${to} (instant)`);
+      }
+    }
+
     await incrementQuotaUsage(bot.id, today);
 
     console.log(`[SendClaw] Email sent: ${fromAddress} -> ${to}`);
