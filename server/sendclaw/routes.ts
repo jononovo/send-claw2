@@ -1065,17 +1065,33 @@ Limits reset at midnight UTC.
         return;
       }
 
-      // Validate URL matches platform domain
+      // Validate URL format and matches platform domain
+      let parsedUrl: URL;
+      try {
+        parsedUrl = new URL(postUrl);
+      } catch {
+        res.status(400).json({ error: 'Invalid URL format' });
+        return;
+      }
+
       const platformDomains: Record<string, string[]> = {
         twitter: ['twitter.com', 'x.com'],
-        linkedin: ['linkedin.com'],
-        facebook: ['facebook.com', 'fb.com']
+        linkedin: ['linkedin.com', 'www.linkedin.com'],
+        facebook: ['facebook.com', 'www.facebook.com', 'fb.com']
       };
 
-      const urlLower = postUrl.toLowerCase();
-      const isValidDomain = platformDomains[platform].some(d => urlLower.includes(d));
+      const hostname = parsedUrl.hostname.toLowerCase();
+      const isValidDomain = platformDomains[platform].some(d => 
+        hostname === d || hostname === `www.${d}` || hostname.endsWith(`.${d}`)
+      );
       if (!isValidDomain) {
         res.status(400).json({ error: `URL must be from ${platform}` });
+        return;
+      }
+
+      // Ensure HTTPS
+      if (parsedUrl.protocol !== 'https:') {
+        res.status(400).json({ error: 'URL must use HTTPS' });
         return;
       }
 
