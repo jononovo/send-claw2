@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useLocation } from "wouter";
-import { LogOut, User, Menu, Target, PanelLeft, LifeBuoy } from "lucide-react";
+import { LogOut, User, Menu, Target, PanelLeft, LifeBuoy, Inbox } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { useRegistrationModal } from "@/hooks/use-registration-modal";
 import { Button } from "@/components/ui/button";
@@ -80,6 +80,12 @@ export function MainNav() {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
+                <Link href="/inbox">
+                  <DropdownMenuItem className="text-muted-foreground hover:text-foreground">
+                    <Inbox className="h-4 w-4 mr-2" />
+                    <span>Inbox</span>
+                  </DropdownMenuItem>
+                </Link>
                 <Link href="/account">
                   <DropdownMenuItem className="text-muted-foreground hover:text-foreground">
                     <User className="h-4 w-4 mr-2" />
