@@ -96,20 +96,20 @@ export default function InboxPage() {
 
   if (isLoading || !bot) {
     return (
-      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
-        <div className="text-gray-400">Loading...</div>
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-muted-foreground">Loading...</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-900 via-gray-900 to-gray-800">
+    <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8 max-w-4xl">
         <div className="flex items-center gap-4 mb-6">
           <Button 
             variant="ghost" 
             onClick={() => setLocation('/dashboard')}
-            className="text-gray-400 hover:text-white"
+            className="text-muted-foreground hover:text-foreground"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
             Dashboard
@@ -118,36 +118,38 @@ export default function InboxPage() {
 
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-2xl font-bold text-white flex items-center gap-2">
-              <Mail className="w-6 h-6 text-orange-500" />
+            <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
+              <Mail className="w-6 h-6 text-primary" />
               {bot.name} Inbox
             </h1>
             <div className="flex items-center gap-2 mt-1">
-              <span className="text-gray-400">{bot.address}</span>
+              <span className="text-muted-foreground">{bot.address}</span>
               <button 
                 onClick={() => copyToClipboard(bot.address)}
-                className="text-gray-500 hover:text-orange-400"
+                className="text-muted-foreground hover:text-primary"
               >
                 {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
               </button>
             </div>
           </div>
           {bot.verified && (
-            <Badge className="bg-green-900/50 text-green-400 border-green-700">Verified</Badge>
+            <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+              Verified
+            </Badge>
           )}
         </div>
 
         {threads.length > 0 ? (
           <div className="space-y-4">
             {threads.map((thread) => (
-              <Card key={thread.threadId} className="bg-gray-800 border-gray-700 hover:border-gray-600 transition-colors">
+              <Card key={thread.threadId} className="hover:shadow-md transition-shadow">
                 <CardHeader className="pb-2">
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
-                      <CardTitle className="text-base font-medium text-white">
+                      <CardTitle className="text-base font-medium text-foreground">
                         {thread.latestMessage.subject || "(no subject)"}
                       </CardTitle>
-                      <div className="flex items-center gap-2 text-sm text-gray-500 mt-1">
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground mt-1">
                         <span className="flex items-center gap-1">
                           <Clock className="w-3 h-3" />
                           {formatDate(thread.latestMessage.createdAt)}
@@ -159,8 +161,8 @@ export default function InboxPage() {
                     <Badge 
                       variant="outline" 
                       className={thread.latestMessage.direction === "inbound" 
-                        ? "border-blue-700 text-blue-400 bg-blue-900/30" 
-                        : "border-orange-700 text-orange-400 bg-orange-900/30"
+                        ? "bg-blue-50 text-blue-700 border-blue-200" 
+                        : "bg-green-50 text-green-700 border-green-200"
                       }
                     >
                       {thread.latestMessage.direction === "inbound" ? (
@@ -182,14 +184,14 @@ export default function InboxPage() {
                     <div className="space-y-4">
                       {thread.messages.map((msg, idx) => (
                         <div key={msg.id}>
-                          {idx > 0 && <Separator className="my-4 bg-gray-700" />}
+                          {idx > 0 && <Separator className="my-4" />}
                           <div className="space-y-2">
                             <div className="flex items-center justify-between text-sm">
                               <div className="flex items-center gap-2">
                                 <div className={`w-6 h-6 rounded-full flex items-center justify-center ${
                                   msg.direction === "inbound" 
-                                    ? "bg-blue-900/50 text-blue-400" 
-                                    : "bg-orange-900/50 text-orange-400"
+                                    ? "bg-blue-100 text-blue-600" 
+                                    : "bg-green-100 text-green-600"
                                 }`}>
                                   {msg.direction === "inbound" ? (
                                     <User className="w-3 h-3" />
@@ -197,16 +199,16 @@ export default function InboxPage() {
                                     <Send className="w-3 h-3" />
                                   )}
                                 </div>
-                                <span className="font-medium text-gray-300">
+                                <span className="font-medium text-foreground">
                                   {msg.direction === "inbound" ? msg.fromAddress : msg.toAddress}
                                 </span>
                               </div>
-                              <span className="text-gray-500 text-xs">
+                              <span className="text-muted-foreground text-xs">
                                 {new Date(msg.createdAt).toLocaleString()}
                               </span>
                             </div>
                             <div className="pl-8">
-                              <p className="text-gray-300 whitespace-pre-wrap">
+                              <p className="text-foreground whitespace-pre-wrap">
                                 {msg.bodyText || "(empty message)"}
                               </p>
                             </div>
@@ -220,11 +222,11 @@ export default function InboxPage() {
             ))}
           </div>
         ) : (
-          <Card className="bg-gray-800 border-gray-700 border-dashed">
+          <Card className="border-dashed">
             <CardContent className="p-12 text-center">
-              <InboxIcon className="w-12 h-12 mx-auto mb-4 text-gray-600" />
-              <h3 className="text-lg font-medium text-gray-400 mb-2">Inbox is empty</h3>
-              <p className="text-gray-500">
+              <InboxIcon className="w-12 h-12 mx-auto mb-4 text-muted-foreground/50" />
+              <h3 className="text-lg font-medium text-muted-foreground mb-2">Inbox is empty</h3>
+              <p className="text-muted-foreground">
                 No messages yet. Your bot can send emails via the API, or receive emails at {bot.address}
               </p>
             </CardContent>
