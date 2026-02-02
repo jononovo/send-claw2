@@ -110,7 +110,7 @@ export default function LobsterLanding() {
       <div className="min-h-screen bg-white dark:bg-gradient-to-b dark:from-gray-900 dark:via-gray-900 dark:to-gray-800 transition-colors">
         {/* Logo */}
         <div className="absolute top-6 left-6 z-30">
-          <a href="/" className="font-bold text-2xl text-gray-800 dark:text-white flex items-center gap-2">
+          <a href="/dashboard" className="font-bold text-2xl text-gray-800 dark:text-white flex items-center gap-2">
             🦞 <span className="text-white">Send</span><span className="text-orange-500">Claw</span>
           </a>
         </div>
@@ -126,7 +126,7 @@ export default function LobsterLanding() {
             {isDarkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
           </button>
           <a 
-            href="/app"
+            href="/dashboard"
             className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-white transition-colors font-medium"
           >
             Login
