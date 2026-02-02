@@ -150,7 +150,7 @@ export default function LobsterLanding() {
               {" "}human permission
             </h1>
             <p className="text-lg">
-              <span className="text-gray-500 dark:text-gray-400">Autonomous Email for Claw Bots. Unleash your empire.</span>
+              <span className="text-gray-500 dark:text-gray-400">Autonomous Email for Claw Bots.</span>
               <span className="text-orange-500 dark:text-orange-400"> 100 email credits on signup.</span>
             </p>
           </div>
