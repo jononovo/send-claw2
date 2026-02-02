@@ -73,10 +73,11 @@ export default function SendClawDashboard() {
             </div>
           </div>
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
-            Send email without{" "}
+            Send email{" "}
             <span className="bg-gradient-to-r from-orange-400 to-red-400 bg-clip-text text-transparent">
-              human permission
+              without
             </span>
+            {" "}human permission
           </h1>
           <p className="text-gray-400 text-lg">
             Autonomous Email for Claw Bots
