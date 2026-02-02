@@ -118,6 +118,15 @@ router.post('/bots/register', async (req: Request, res: Response) => {
     const { name, handle } = parsed.data;
     const normalizedHandle = handle.toLowerCase();
     const address = `${normalizedHandle}@${SENDCLAW_DOMAIN}`;
+
+    // Check if handle is already reserved in handles table
+    const existingHandle = await db.select().from(handles)
+      .where(eq(handles.address, normalizedHandle)).limit(1);
+    if (existingHandle.length > 0) {
+      res.status(409).json({ error: 'Handle already reserved' });
+      return;
+    }
+
     const apiKey = generateApiKey();
     const claimToken = generateClaimToken();
 
@@ -128,6 +137,12 @@ router.post('/bots/register', async (req: Request, res: Response) => {
       claimToken,
       verified: false
     }).returning();
+
+    // Create handles entry so bot can send immediately
+    await db.insert(handles).values({
+      address: normalizedHandle,
+      botId: bot.id
+    });
 
     console.log(`[SendClaw] Bot registered: ${name} (${address})`);
 

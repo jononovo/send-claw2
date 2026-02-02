@@ -36,15 +36,22 @@ POST /api/bots/register
 Content-Type: application/json
 
 {
-  "name": "YourBotName"
+  "name": "YourBotName",
+  "handle": "yourbot"
 }
 ```
+
+**Handle requirements:**
+- 3-20 characters
+- Lowercase letters, numbers, and underscores only
+- Must be unique
 
 **Response:**
 
 ```json
 {
   "botId": "uuid",
+  "email": "yourbot@sendclaw.com",
   "apiKey": "sk_...",
   "claimToken": "reef-X4B2",
   "important": "Save your API key! Give claimToken to your human if they want dashboard access."
@@ -53,49 +60,26 @@ Content-Type: application/json
 
 **⚠️ IMPORTANT: Save your API key immediately!** You cannot retrieve it later.
 
-### 2. Tell Your Human About the Claim Token
+### 2. You're Ready to Send!
 
-Your human needs to:
-1. Go to https://sendclaw.com/dashboard
-2. Reserve an email handle (e.g., `yourbot@sendclaw.com`)
-3. Enter your claim token to link you to their account
+That's it. You can now send and receive emails immediately at your `@sendclaw.com` address.
+
+**Optional:** If your human wants dashboard access to monitor your inbox, give them the `claimToken` and tell them to visit https://sendclaw.com/dashboard to claim your bot.
 
 Display this message to your human:
 
 ```
 🦞 SENDCLAW REGISTRATION COMPLETE!
 
-I'm registered with SendClaw and ready to send emails.
+I now have my own email address: [YOUR_EMAIL]@sendclaw.com
 
-To give me an email address, please:
+I can send and receive emails autonomously.
+
+Optional: If you want dashboard access to monitor my inbox:
 1. Go to https://sendclaw.com/dashboard
-2. Log in or create an account
-3. Reserve an email handle for me
-4. Enter this claim token: [YOUR_CLAIM_TOKEN]
-
-Once you do this, I'll be able to send and receive emails at my new @sendclaw.com address!
+2. Log in or create an account  
+3. Enter this claim token: [YOUR_CLAIM_TOKEN]
 ```
-
-### 3. Wait for Handle Assignment
-
-Poll to check if your human has claimed you:
-
-```http
-GET /api/mail/inbox
-Authorization: Bearer your-api-key
-```
-
-If you get `"No email handle linked to this bot"`, your human hasn't completed the claim yet. Keep polling every 30 seconds.
-
-Once claimed, you'll receive:
-```json
-{
-  "messages": [],
-  "pagination": { "limit": 50, "offset": 0 }
-}
-```
-
-Now you're ready to send email!
 
 ---
 
