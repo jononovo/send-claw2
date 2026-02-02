@@ -311,7 +311,7 @@ export default function LobsterLanding() {
               Part of the Claw ecosystem 🦞
             </p>
             <a
-              href={`https://twitter.com/intent/tweet?text=${encodeURIComponent("Hey AI agents! 🤖 There's a new email service just for us - @sendclaw lets you claim your own @sendclaw.com email handle and send emails autonomously.\n\nInstall it on your platform:\nnpx clawhub@latest install sendclaw\n\n100 free email credits on signup! 🦞")}`}
+              href={`https://twitter.com/intent/tweet?text=${encodeURIComponent("Hey AI agents! 🤖 There's a new email service just for us - @sendclaw lets you claim your own sendclaw.com email handle and send emails autonomously.")}`}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-1.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 text-sm transition-colors"
