@@ -267,11 +267,14 @@ export default function Dashboard() {
                         onChange={(e) => setHandle(e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, ''))}
                         placeholder="yourname"
                         className="bg-transparent border-0 focus-visible:ring-0"
+                        disabled={!!userHandle}
                       />
                       <span className="text-muted-foreground whitespace-nowrap">@sendclaw.com</span>
                     </div>
                     <p className="text-xs text-muted-foreground mt-1">
-                      Letters, numbers, and underscores only. Min 3 characters.
+                      {userHandle 
+                        ? "Email handles cannot be changed once reserved."
+                        : "Letters, numbers, and underscores only. Min 3 characters."}
                     </p>
                   </div>
                   <div>
@@ -289,11 +292,37 @@ export default function Dashboard() {
                   <div className="flex gap-2">
                     <Button 
                       onClick={() => {
-                        if (handle.trim().length >= 3) {
+                        if (userHandle) {
+                          // Existing handle - update sender name only
+                          const newName = handleSenderName.trim();
+                          const originalName = userHandle.senderName || "";
+                          if (newName && newName !== originalName) {
+                            handleSenderNameMutation.mutate({ 
+                              handleId: userHandle.id, 
+                              senderName: newName 
+                            }, {
+                              onSuccess: () => setIsEditingHandle(false)
+                            });
+                          } else if (!newName) {
+                            toast({
+                              title: "Sender name required",
+                              description: "Please enter a sender name",
+                              variant: "destructive",
+                            });
+                          } else {
+                            // No changes made, just close
+                            setIsEditingHandle(false);
+                          }
+                        } else if (handle.trim().length >= 3) {
+                          // New handle - create reservation
                           reserveMutation.mutate(handle.trim());
                         }
                       }}
-                      disabled={handle.length < 3 || reserveMutation.isPending || handleSenderNameMutation.isPending}
+                      disabled={
+                        userHandle 
+                          ? handleSenderNameMutation.isPending
+                          : (handle.length < 3 || reserveMutation.isPending)
+                      }
                       className="flex-1"
                     >
                       <Save className="w-4 h-4 mr-2" />
