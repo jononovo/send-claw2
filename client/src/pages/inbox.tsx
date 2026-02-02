@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
@@ -58,11 +58,6 @@ export default function InboxPage() {
   const messages = data?.messages || [];
   const isLinked = userHandle && userHandle.botId;
 
-  useEffect(() => {
-    if (!isLoading && !isLinked) {
-      setLocation('/dashboard');
-    }
-  }, [isLoading, isLinked, setLocation]);
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
@@ -103,7 +98,7 @@ export default function InboxPage() {
     return date.toLocaleDateString();
   };
 
-  if (isLoading || !isLinked || !userHandle || !userBot) {
+  if (isLoading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-muted-foreground">Loading...</div>
@@ -129,19 +124,21 @@ export default function InboxPage() {
           <div>
             <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
               <Mail className="w-6 h-6 text-primary" />
-              {userBot.name} Inbox
+              {userBot?.name ? `${userBot.name} Inbox` : 'Inbox'}
             </h1>
-            <div className="flex items-center gap-2 mt-1">
-              <span className="text-muted-foreground">{userHandle.address}</span>
-              <button 
-                onClick={() => copyToClipboard(userHandle.address)}
-                className="text-muted-foreground hover:text-primary"
-              >
-                {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-              </button>
-            </div>
+            {userHandle && (
+              <div className="flex items-center gap-2 mt-1">
+                <span className="text-muted-foreground">{userHandle.address}</span>
+                <button 
+                  onClick={() => copyToClipboard(userHandle.address)}
+                  className="text-muted-foreground hover:text-primary"
+                >
+                  {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                </button>
+              </div>
+            )}
           </div>
-          {userBot.verified && (
+          {userBot?.verified && (
             <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
               Verified
             </Badge>
@@ -236,7 +233,10 @@ export default function InboxPage() {
               <InboxIcon className="w-12 h-12 mx-auto mb-4 text-muted-foreground/50" />
               <h3 className="text-lg font-medium text-muted-foreground mb-2">Inbox is empty</h3>
               <p className="text-muted-foreground">
-                No messages yet. Your bot can send emails via the API, or receive emails at {userHandle.address}
+                {userHandle 
+                  ? `No messages yet. Your bot can send emails via the API, or receive emails at ${userHandle.address}`
+                  : "Reserve a handle and connect a bot to start receiving emails."
+                }
               </p>
             </CardContent>
           </Card>
