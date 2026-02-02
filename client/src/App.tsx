@@ -32,7 +32,6 @@ const LandingSimple2 = lazy(() => import("@/pages/landing-simple2"));
 const LandingSimple3 = lazy(() => import("@/pages/landing-simple3"));
 const LandingStealth = lazy(() => import("@/features/landing-stealth"));
 const Planning = lazy(() => import("@/pages/planning"));
-const LobsterLanding = lazy(() => import("@/pages/lobster"));
 
 // Lazy imports for app pages that can be loaded on demand
 const Home = lazy(() => import("@/pages/home"));
@@ -55,8 +54,6 @@ const Campaigns = lazy(() => import("@/features/campaigns").then(module => ({ de
 const CampaignDetail = lazy(() => import("@/pages/CampaignDetail"));
 
 // Lazy imports for SendClaw pages
-const SendClawDashboard = lazy(() => import("@/pages/sendclaw"));
-const SendClawInbox = lazy(() => import("@/pages/sendclaw-inbox"));
 const Inbox = lazy(() => import("@/pages/inbox"));
 const Dashboard = lazy(() => import("@/pages/dashboard"));
 
@@ -236,13 +233,6 @@ function Router() {
         <Route path="/simple3" component={() => 
           <Suspense fallback={null}>
             <LandingSimple3 />
-          </Suspense>
-        } />
-        
-        {/* SendClaw / Lobster Landing Page */}
-        <Route path="/lobster" component={() => 
-          <Suspense fallback={null}>
-            <LobsterLanding />
           </Suspense>
         } />
         
@@ -452,16 +442,6 @@ function Router() {
                 <ProtectedRoute path="/inbox" component={() => 
                   <Suspense fallback={null}>
                     <Inbox />
-                  </Suspense>
-                } />
-                <ProtectedRoute path="/sendclaw" component={() => 
-                  <Suspense fallback={null}>
-                    <SendClawDashboard />
-                  </Suspense>
-                } />
-                <ProtectedRoute path="/sendclaw/:botId" component={() => 
-                  <Suspense fallback={null}>
-                    <SendClawInbox />
                   </Suspense>
                 } />
                 <SemiProtectedRoute path="/p/:slug/:id" component={() => 
