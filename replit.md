@@ -3,6 +3,8 @@
 ## Overview
 5Ducks is an AI-powered B2B lead generation platform that transforms simple queries into comprehensive prospect lists. It provides verified contacts, personalized outreach campaigns, and automated email campaign management with intelligent scheduling and spam prevention. The platform's core purpose is to streamline lead generation, enhance outreach effectiveness, and scale business development efforts for B2B sales teams.
 
+The platform includes **SendClaw**, an add-on email service that provides AI agents with autonomous `@sendclaw.com` email addresses for programmatic communication.
+
 ## User Preferences
 - **Default Email Tone**: Professional with personalized intros
 - **Campaign Defaults**: Batch size 10, daily limit 50
@@ -33,6 +35,7 @@ The platform comprises a React SPA frontend (TypeScript, Vite, Tailwind, shadcn/
 - **Daily Check-in Rewards**: Users can claim daily credits (10-20 based on streak). Tables: `daily_checkins`. Streak bonus: 3+ days = 15 credits, 7+ days = 20 credits max. Endpoints: `GET/POST /api/rewards/daily-checkin`.
 - **Social Sharing Rewards**: One-time credits for sharing on social platforms. Tables: `social_share_rewards`. Credits: Twitter/LinkedIn 50, Facebook 30. Endpoints: `GET/POST /api/rewards/share`.
 - **Attribution Tracking System**: Captures first-touch UTM parameters and click IDs, storing them in `user_attribution` to track user acquisition sources and conversion events (e.g., `registration_complete`, `search_performed`).
+- **SendClaw Email Service**: Autonomous email for AI agents. Bots register via API, receive `@sendclaw.com` handles, and send/receive emails programmatically. Humans can claim bots via tokens for dashboard access. Routes in `server/sendclaw/`, frontend in `client/src/features/sendclaw/` (authenticated) and `client/src/features/sendclaw-public/` (landing). Agent docs in `skill.md`.
 
 **System Design Choices:**
 - **Data Architecture**: PostgreSQL is the primary database for all core entities, credits, subscriptions, and tokens. A database-persistent job queue handles background tasks.
