@@ -30,6 +30,7 @@ export default function LobsterLanding() {
   const [claimToken, setClaimToken] = useState("");
   const [handleInput, setHandleInput] = useState("");
   const [activeTab, setActiveTab] = useState<"bot" | "human">("bot");
+  const [agentMethod, setAgentMethod] = useState<"clawhub" | "manual">("clawhub");
   const [copied, setCopied] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(true);
   const [isClaimLoading, setIsClaimLoading] = useState(false);
@@ -181,34 +182,94 @@ export default function LobsterLanding() {
                   Send Your AI Agent to SendClaw 🦞
                 </h2>
 
-                <div 
-                  className="bg-white dark:bg-gray-900 rounded-lg p-4 mb-6 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-900/80 transition-colors group border border-gray-200 dark:border-gray-700"
-                  onClick={() => copyToClipboard(skillCommand)}
-                >
-                  <code className="text-orange-500 dark:text-orange-400 text-sm md:text-base font-mono">
-                    {skillCommand}
-                  </code>
-                  {copied ? (
-                    <Check className="w-4 h-4 text-green-500 float-right mt-1" />
-                  ) : (
-                    <Copy className="w-4 h-4 text-gray-400 group-hover:text-orange-400 float-right mt-1 transition-colors" />
-                  )}
+                <div className="flex justify-center mb-6">
+                  <div className="inline-flex rounded-lg overflow-hidden border border-gray-300 dark:border-gray-600">
+                    <button
+                      onClick={() => setAgentMethod("clawhub")}
+                      className={`px-4 py-2 text-sm font-medium transition-colors ${
+                        agentMethod === "clawhub"
+                          ? "bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white"
+                          : "bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700"
+                      }`}
+                    >
+                      clawhub
+                    </button>
+                    <button
+                      onClick={() => setAgentMethod("manual")}
+                      className={`px-4 py-2 text-sm font-medium transition-colors ${
+                        agentMethod === "manual"
+                          ? "bg-orange-500 text-white"
+                          : "bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700"
+                      }`}
+                    >
+                      manual
+                    </button>
+                  </div>
                 </div>
 
-                <div className="space-y-3 text-gray-600 dark:text-gray-300">
-                  <p className="flex gap-3">
-                    <span className="text-orange-500 dark:text-orange-400 font-semibold">1.</span>
-                    Run the command above to get started
-                  </p>
-                  <p className="flex gap-3">
-                    <span className="text-orange-500 dark:text-orange-400 font-semibold">2.</span>
-                    Claim your @sendclaw.com handle
-                  </p>
-                  <p className="flex gap-3">
-                    <span className="text-orange-500 dark:text-orange-400 font-semibold">3.</span>
-                    Start emailing!
-                  </p>
-                </div>
+                {agentMethod === "clawhub" ? (
+                  <>
+                    <div 
+                      className="bg-white dark:bg-gray-900 rounded-lg p-4 mb-6 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-900/80 transition-colors group border border-gray-200 dark:border-gray-700"
+                      onClick={() => copyToClipboard("https://www.clawhub.ai/jononovo/sendclaw")}
+                    >
+                      <code className="text-orange-500 dark:text-orange-400 text-sm md:text-base font-mono">
+                        https://www.clawhub.ai/jononovo/sendclaw
+                      </code>
+                      {copied ? (
+                        <Check className="w-4 h-4 text-green-500 float-right mt-1" />
+                      ) : (
+                        <Copy className="w-4 h-4 text-gray-400 group-hover:text-orange-400 float-right mt-1 transition-colors" />
+                      )}
+                    </div>
+
+                    <div className="space-y-3 text-gray-600 dark:text-gray-300">
+                      <p className="flex gap-3">
+                        <span className="text-orange-500 dark:text-orange-400 font-semibold">1.</span>
+                        Send this URL to your agent
+                      </p>
+                      <p className="flex gap-3">
+                        <span className="text-orange-500 dark:text-orange-400 font-semibold">2.</span>
+                        They sign up & send you a claim link
+                      </p>
+                      <p className="flex gap-3">
+                        <span className="text-orange-500 dark:text-orange-400 font-semibold">3.</span>
+                        Claim to verify ownership
+                      </p>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div 
+                      className="bg-white dark:bg-gray-900 rounded-lg p-4 mb-6 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-900/80 transition-colors group border border-gray-200 dark:border-gray-700"
+                      onClick={() => copyToClipboard(skillCommand)}
+                    >
+                      <code className="text-orange-500 dark:text-orange-400 text-sm md:text-base font-mono">
+                        {skillCommand}
+                      </code>
+                      {copied ? (
+                        <Check className="w-4 h-4 text-green-500 float-right mt-1" />
+                      ) : (
+                        <Copy className="w-4 h-4 text-gray-400 group-hover:text-orange-400 float-right mt-1 transition-colors" />
+                      )}
+                    </div>
+
+                    <div className="space-y-3 text-gray-600 dark:text-gray-300">
+                      <p className="flex gap-3">
+                        <span className="text-orange-500 dark:text-orange-400 font-semibold">1.</span>
+                        Run the command above to get started
+                      </p>
+                      <p className="flex gap-3">
+                        <span className="text-orange-500 dark:text-orange-400 font-semibold">2.</span>
+                        Claim your @sendclaw.com handle
+                      </p>
+                      <p className="flex gap-3">
+                        <span className="text-orange-500 dark:text-orange-400 font-semibold">3.</span>
+                        Start emailing!
+                      </p>
+                    </div>
+                  </>
+                )}
 
                 <p className="text-gray-400 dark:text-gray-500 text-sm text-center pt-4 border-t border-gray-200 dark:border-gray-700 mt-6">
                   Want more emails?{" "}
