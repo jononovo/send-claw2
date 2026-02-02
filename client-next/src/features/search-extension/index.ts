@@ -1,1 +1,0 @@
-export { ExtendSearchButton } from './components/ExtendSearchButton';

@@ -1,1 +1,0 @@
-(globalThis.TURBOPACK||(globalThis.TURBOPACK=[])).push(["object"==typeof document?document.currentScript:void 0,98976,e=>{"use strict";e.i(20730);var a=e.i(23399),r=e.i(71400);e.s(["SearchManagementDrawer",()=>a.SearchManagementDrawer,"useSearchManagementDrawer",()=>r.useSearchManagementDrawer])}]);
