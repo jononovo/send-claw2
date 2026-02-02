@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Loader2, Sparkles, AlertCircle, Save, Check } from 'lucide-react';
+import { Loader2, Sparkles, AlertCircle, Save, Check, Plus } from 'lucide-react';
 import { useMutation } from '@tanstack/react-query';
 import { SuperSearchTable } from './SuperSearchTable';
 import { Button } from '@/components/ui/button';
@@ -11,6 +11,7 @@ interface SuperSearchResultsProps {
   query?: string;
   onSaved?: (listId: number) => void;
   alreadySaved?: boolean;
+  onExpandResults?: (additionalCount: number) => void;
 }
 
 function formatFieldLabel(field: string): string {
@@ -58,8 +59,8 @@ function buildColumnsFromPlan(plan: SearchPlan): string[] {
   return columns;
 }
 
-export function SuperSearchResults({ state, query, onSaved, alreadySaved = false }: SuperSearchResultsProps) {
-  const { status, plan, results, progressMessages, error, completionStats } = state;
+export function SuperSearchResults({ state, query, onSaved, alreadySaved = false, onExpandResults }: SuperSearchResultsProps) {
+  const { status, plan, results, progressMessages, error, completionStats, isExpanding } = state;
   const [isSaved, setIsSaved] = useState(alreadySaved);
 
   // Sync alreadySaved prop to local state when it changes
@@ -146,39 +147,57 @@ export function SuperSearchResults({ state, query, onSaved, alreadySaved = false
         </div>
       )}
 
+      {isExpanding && (
+        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+          <Loader2 className="h-4 w-4 animate-spin" />
+          <span>Adding more results... ({results.length} total)</span>
+        </div>
+      )}
+
       {status === 'complete' && completionStats && (
         <div className="flex items-center justify-between bg-muted/50 rounded-lg p-3">
           <div className="text-sm text-muted-foreground">
-            Search complete: {completionStats.totalResults} results found, 
-            {completionStats.companiesSaved} companies and {completionStats.contactsSaved} contacts saved.
+            Search complete: {results.length} results found.
           </div>
-          {query && !isSaved && (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => saveMutation.mutate()}
-              disabled={saveMutation.isPending}
-              className="ml-4"
-            >
-              {saveMutation.isPending ? (
-                <>
-                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                  Saving...
-                </>
-              ) : (
-                <>
-                  <Save className="h-4 w-4 mr-2" />
-                  Save Results
-                </>
-              )}
-            </Button>
-          )}
-          {isSaved && (
-            <div className="flex items-center gap-2 text-sm text-green-600 ml-4">
-              <Check className="h-4 w-4" />
-              Saved!
-            </div>
-          )}
+          <div className="flex items-center gap-2">
+            {onExpandResults && !isExpanding && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => onExpandResults(5)}
+                disabled={isExpanding}
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                Add 5 More
+              </Button>
+            )}
+            {query && !isSaved && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => saveMutation.mutate()}
+                disabled={saveMutation.isPending}
+              >
+                {saveMutation.isPending ? (
+                  <>
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    Saving...
+                  </>
+                ) : (
+                  <>
+                    <Save className="h-4 w-4 mr-2" />
+                    Save Results
+                  </>
+                )}
+              </Button>
+            )}
+            {isSaved && (
+              <div className="flex items-center gap-2 text-sm text-green-600">
+                <Check className="h-4 w-4" />
+                Saved!
+              </div>
+            )}
+          </div>
         </div>
       )}
     </div>

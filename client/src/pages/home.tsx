@@ -2115,6 +2115,11 @@ export default function Home({ isNewSearch = false }: HomeProps) {
                       console.log(`Super Search saved with list ID: ${listId}`);
                       setSuperSearchAlreadySaved(true);
                     }}
+                    onExpandResults={(additionalCount) => {
+                      if (currentQuery) {
+                        superSearch.expandResults(currentQuery, additionalCount);
+                      }
+                    }}
                   />
                 </Suspense>
                 {superSearch.status === 'complete' && (
