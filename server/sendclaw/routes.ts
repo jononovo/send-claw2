@@ -315,6 +315,43 @@ router.patch('/bots/:botId/sender-name', async (req: Request, res: Response) => 
   }
 });
 
+router.patch('/handles/:handleId/sender-name', async (req: Request, res: Response) => {
+  try {
+    if (!req.isAuthenticated || !req.isAuthenticated()) {
+      res.status(401).json({ error: 'Authentication required' });
+      return;
+    }
+
+    const userId = (req.user as any)?.id;
+    const { handleId } = req.params;
+    const { senderName } = req.body;
+
+    if (!senderName || typeof senderName !== 'string' || senderName.length < 1 || senderName.length > 100) {
+      res.status(400).json({ error: 'Sender name must be 1-100 characters' });
+      return;
+    }
+
+    const [handle] = await db.select().from(handles).where(eq(handles.id, handleId)).limit(1);
+    if (!handle) {
+      res.status(404).json({ error: 'Handle not found' });
+      return;
+    }
+
+    if (handle.userId !== userId) {
+      res.status(403).json({ error: 'Not authorized to modify this handle' });
+      return;
+    }
+
+    await db.update(handles).set({ senderName }).where(eq(handles.id, handleId));
+
+    console.log(`[SendClaw] Handle sender name updated: ${handle.address} -> "${senderName}"`);
+    res.json({ success: true, senderName });
+  } catch (error) {
+    console.error('[SendClaw] Update handle sender name error:', error);
+    res.status(500).json({ error: 'Failed to update sender name' });
+  }
+});
+
 router.get('/my-inbox', async (req: Request, res: Response) => {
   try {
     if (!req.isAuthenticated || !req.isAuthenticated()) {
@@ -356,6 +393,7 @@ router.get('/my-inbox', async (req: Request, res: Response) => {
       handle: userHandle ? {
         id: userHandle.id,
         address: `${userHandle.address}@${SENDCLAW_DOMAIN}`,
+        senderName: userHandle.senderName,
         reservedAt: userHandle.reservedAt,
         botId: userHandle.botId
       } : null,
@@ -456,7 +494,7 @@ router.post('/inbox/send', async (req: Request, res: Response) => {
 
     const fromAddress = `${userHandle.address}@${SENDCLAW_DOMAIN}`;
     const user = req.user as any;
-    const senderDisplayName = userBot?.senderName || user?.displayName || userHandle.address;
+    const senderDisplayName = userBot?.senderName || userHandle.senderName || user?.displayName || userHandle.address;
 
     if (process.env.SENDGRID_API_KEY) {
       try {

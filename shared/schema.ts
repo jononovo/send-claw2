@@ -1775,6 +1775,7 @@ export const handles = pgTable("handles", {
   address: text("address").notNull().unique(),
   userId: integer("user_id").references(() => users.id, { onDelete: 'set null' }),
   botId: uuid("bot_id"),
+  senderName: text("sender_name"),
   reservedAt: timestamp("reserved_at", { withTimezone: true }).defaultNow(),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow()
 }, (table) => [

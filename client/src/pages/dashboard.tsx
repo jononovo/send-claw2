@@ -13,6 +13,7 @@ import { Mail, Key, Copy, Check, Inbox, Send, Eye, EyeOff, ArrowRight, Pencil, S
 interface HandleData {
   id: string;
   address: string;
+  senderName: string | null;
   reservedAt: string | null;
   botId: string | null;
 }
@@ -40,6 +41,8 @@ export default function Dashboard() {
   const [isEditingHandle, setIsEditingHandle] = useState(false);
   const [senderName, setSenderName] = useState("");
   const [isEditingSenderName, setIsEditingSenderName] = useState(false);
+  const [handleSenderName, setHandleSenderName] = useState("");
+  const [isEditingHandleSenderName, setIsEditingHandleSenderName] = useState(false);
   const [claimToken, setClaimToken] = useState("");
   const [copied, setCopied] = useState<string | null>(null);
 
@@ -115,6 +118,29 @@ export default function Dashboard() {
     },
   });
 
+  const handleSenderNameMutation = useMutation({
+    mutationFn: async ({ handleId, senderName }: { handleId: string; senderName: string }) => {
+      const res = await apiRequest("PATCH", `/api/handles/${handleId}/sender-name`, { senderName });
+      return res.json();
+    },
+    onSuccess: () => {
+      toast({
+        title: "Sender name updated!",
+        description: "Your display name has been saved",
+      });
+      setHandleSenderName("");
+      setIsEditingHandleSenderName(false);
+      refetch();
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Update failed",
+        description: error.message || "Could not update sender name",
+        variant: "destructive",
+      });
+    },
+  });
+
   const handleReserve = () => {
     if (handle.trim()) {
       reserveMutation.mutate(handle.trim());
@@ -130,6 +156,12 @@ export default function Dashboard() {
   const handleSenderNameSave = () => {
     if (senderName.trim() && userBot?.id) {
       senderNameMutation.mutate({ botId: userBot.id, senderName: senderName.trim() });
+    }
+  };
+
+  const handleHandleSenderNameSave = () => {
+    if (handleSenderName.trim() && userHandle?.id) {
+      handleSenderNameMutation.mutate({ handleId: userHandle.id, senderName: handleSenderName.trim() });
     }
   };
 
