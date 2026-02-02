@@ -62,10 +62,17 @@
       })();
     </script>
     
-    <!-- Initialize dataLayer, gtag, and fbq queue early (before interaction) -->
+    <!-- Google Analytics (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-88VF3SVC0X"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-88VF3SVC0X');
+    </script>
+    
+    <!-- Initialize fbq queue early (before interaction) -->
+    <script>
       
       !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
       n.callMethod.apply(n,arguments):n.queue.push(arguments)};
