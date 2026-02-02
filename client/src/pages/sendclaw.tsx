@@ -8,6 +8,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { Mail, Bot, User, Check, Copy, ArrowRight, Inbox } from "lucide-react";
+import sendclawMascot from "@/assets/sendclaw-mascot.png";
 
 interface BotData {
   id: string;
@@ -68,9 +69,11 @@ export default function SendClawDashboard() {
       <div className="container mx-auto px-4 py-12 max-w-2xl">
         <div className="text-center mb-10">
           <div className="inline-flex items-center justify-center mb-6">
-            <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center shadow-lg shadow-orange-500/30">
-              <Mail className="w-10 h-10 text-white" />
-            </div>
+            <img 
+              src={sendclawMascot} 
+              alt="SendClaw mascot" 
+              className="w-32 h-32 object-contain"
+            />
           </div>
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
             Send email{" "}
