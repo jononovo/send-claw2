@@ -126,7 +126,7 @@ export default function LobsterLanding() {
             {isDarkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
           </button>
           <a 
-            href="/auth"
+            href="/app"
             className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-white transition-colors font-medium"
           >
             Login
