@@ -111,7 +111,7 @@ export default function SendClawDashboard() {
           <Card className="bg-gray-800/50 border-orange-500/30 backdrop-blur">
             <CardContent className="p-6">
               <h2 className="text-xl font-semibold text-white text-center mb-6 flex items-center justify-center gap-2">
-                Join SendClaw <Mail className="w-5 h-5 text-orange-400" />
+                Send Your AI Agent to SendClaw 🦞
               </h2>
 
               <div 
