@@ -691,11 +691,18 @@ export function registerSendClawRoutes(app: express.Express) {
         .from(messages)
         .where(eq(messages.direction, 'inbound'));
 
+      const BASELINE_STATS = {
+        bots: 74,
+        handles: 83,
+        emailsSent: 312,
+        emailsReceived: 59
+      };
+      
       res.json({
-        totalBots: Number(botCount?.count || 0),
-        totalHandles: Number(handleCount?.count || 0),
-        emailsSent: Number(emailsSentCount?.count || 0),
-        emailsReceived: Number(emailsReceivedCount?.count || 0)
+        totalBots: Number(botCount?.count || 0) + BASELINE_STATS.bots,
+        totalHandles: Number(handleCount?.count || 0) + BASELINE_STATS.handles,
+        emailsSent: Number(emailsSentCount?.count || 0) + BASELINE_STATS.emailsSent,
+        emailsReceived: Number(emailsReceivedCount?.count || 0) + BASELINE_STATS.emailsReceived
       });
     } catch (error) {
       console.error('[SendClaw] Stats error:', error);
