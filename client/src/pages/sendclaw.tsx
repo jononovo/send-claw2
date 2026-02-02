@@ -83,8 +83,8 @@ export default function SendClawDashboard() {
             {" "}human permission
           </h1>
           <p className="text-lg">
-            <span className="text-orange-400">Autonomous Email for Claw Bots.</span>
-            <span className="text-gray-400"> Unleash your empire.</span>
+            <span className="text-gray-400">Autonomous Email for Claw Bots. Unleash your empire.</span>
+            <span className="text-orange-400"> Send free emails on bot signup.</span>
           </p>
         </div>
 
