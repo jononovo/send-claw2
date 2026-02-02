@@ -177,6 +177,30 @@ export default function SendClawDashboard() {
                   {claimMutation.isPending ? "..." : "Claim"}
                 </Button>
               </div>
+
+              <div className="flex items-center gap-4 my-6">
+                <div className="flex-1 h-px bg-gray-700"></div>
+                <span className="text-gray-500 text-sm">OR</span>
+                <div className="flex-1 h-px bg-gray-700"></div>
+              </div>
+
+              <p className="text-gray-400 text-sm mb-4 text-center">
+                Reserve your handle (and send to your bot)
+              </p>
+
+              <div className="relative">
+                <input
+                  type="text"
+                  placeholder="lobster"
+                  className="w-full bg-gray-900 border border-gray-700 rounded-md px-4 py-2 pr-36 text-white placeholder:text-gray-600 focus:outline-none focus:border-orange-500"
+                />
+                <div className="absolute right-10 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
+                  .sendclaw.com
+                </div>
+                <button className="absolute right-2 top-1/2 -translate-y-1/2 text-orange-400 hover:text-orange-300 p-1">
+                  <ArrowRight className="w-5 h-5" />
+                </button>
+              </div>
             </CardContent>
           </Card>
         )}
