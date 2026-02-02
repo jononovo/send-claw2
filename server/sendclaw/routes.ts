@@ -232,6 +232,51 @@ router.get('/bots', async (req: Request, res: Response) => {
   }
 });
 
+router.get('/my-inbox', async (req: Request, res: Response) => {
+  try {
+    if (!req.isAuthenticated || !req.isAuthenticated()) {
+      res.status(401).json({ error: 'Authentication required' });
+      return;
+    }
+
+    const userId = (req.user as any)?.id;
+    if (!userId) {
+      res.status(401).json({ error: 'User ID not found' });
+      return;
+    }
+
+    const [userBot] = await db.select({
+      id: bots.id,
+      address: bots.address,
+      name: bots.name,
+      verified: bots.verified,
+      claimedAt: bots.claimedAt,
+      createdAt: bots.createdAt
+    }).from(bots).where(eq(bots.userId, userId)).orderBy(desc(bots.createdAt)).limit(1);
+
+    if (!userBot) {
+      res.json({ bot: null, messages: [], error: 'NO_BOT' });
+      return;
+    }
+
+    const botMessages = await db.select().from(messages)
+      .where(eq(messages.botId, userBot.id))
+      .orderBy(desc(messages.createdAt))
+      .limit(100);
+
+    res.json({
+      bot: {
+        ...userBot,
+        address: `${userBot.address}@${SENDCLAW_DOMAIN}`
+      },
+      messages: botMessages
+    });
+  } catch (error) {
+    console.error('[SendClaw] My inbox error:', error);
+    res.status(500).json({ error: 'Failed to fetch inbox' });
+  }
+});
+
 router.post('/mail/send', apiKeyAuth, loadBotFromApiKey, async (req: Request, res: Response) => {
   try {
     const bot = (req as any).bot;
