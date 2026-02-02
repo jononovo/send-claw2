@@ -1,0 +1,113 @@
+index-aCdvgfG8.js:280 Firebase auth state changed: jon@5ducks.ai
+index-aCdvgfG8.js:49 API Request: POST /api/inbox/send Object
+index-aCdvgfG8.js:93 `DialogContent` requires a `DialogTitle` for the component to be accessible for screen reader users.
+
+If you want to hide the `DialogTitle`, you can wrap it with our VisuallyHidden component.
+
+For more information, see https://radix-ui.com/primitives/docs/components/dialog
+(anonymous) @ index-aCdvgfG8.js:93
+index-aCdvgfG8.js:93 Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+(anonymous) @ index-aCdvgfG8.js:93
+index-aCdvgfG8.js:93 `DialogContent` requires a `DialogTitle` for the component to be accessible for screen reader users.
+
+If you want to hide the `DialogTitle`, you can wrap it with our VisuallyHidden component.
+
+For more information, see https://radix-ui.com/primitives/docs/components/dialog
+(anonymous) @ index-aCdvgfG8.js:93
+index-aCdvgfG8.js:93 Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+(anonymous) @ index-aCdvgfG8.js:93
+index-aCdvgfG8.js:49 API Request: POST /api/bots/reserve Object
+api/bots/reserve:1  Failed to load resource: the server responded with a status of 400 ()
+index-aCdvgfG8.js:49 API Request Error: POST /api/bots/reserve Object
+Hr @ index-aCdvgfG8.js:49
+index-aCdvgfG8.js:49 API Request: POST /api/bots/reserve {hasData: true, timestamp: '2026-02-02T20:56:20.006Z'}
+index-aCdvgfG8.js:49  POST https://sendclaw.com/api/bots/reserve 400 (Bad Request)
+Hr @ index-aCdvgfG8.js:49
+mutationFn @ Dashboard-Br0TgxN9.js:1
+fn @ index-aCdvgfG8.js:49
+x @ index-aCdvgfG8.js:49
+start @ index-aCdvgfG8.js:49
+execute @ index-aCdvgfG8.js:49
+await in execute
+mutate @ index-aCdvgfG8.js:49
+(anonymous) @ index-aCdvgfG8.js:49
+onClick @ Dashboard-Br0TgxN9.js:1
+iC @ index-aCdvgfG8.js:38
+lC @ index-aCdvgfG8.js:38
+cC @ index-aCdvgfG8.js:38
+Rm @ index-aCdvgfG8.js:38
+Vy @ index-aCdvgfG8.js:38
+(anonymous) @ index-aCdvgfG8.js:38
+Pp @ index-aCdvgfG8.js:41
+hy @ index-aCdvgfG8.js:38
+bu @ index-aCdvgfG8.js:38
+tp @ index-aCdvgfG8.js:38
+TC @ index-aCdvgfG8.js:38
+index-aCdvgfG8.js:49 API Request Error: POST /api/bots/reserve {error: '400: {"error":"You already have a reserved handle"}', timestamp: '2026-02-02T20:56:20.247Z'}
+Hr @ index-aCdvgfG8.js:49
+await in Hr
+mutationFn @ Dashboard-Br0TgxN9.js:1
+fn @ index-aCdvgfG8.js:49
+x @ index-aCdvgfG8.js:49
+start @ index-aCdvgfG8.js:49
+execute @ index-aCdvgfG8.js:49
+await in execute
+mutate @ index-aCdvgfG8.js:49
+(anonymous) @ index-aCdvgfG8.js:49
+onClick @ Dashboard-Br0TgxN9.js:1
+iC @ index-aCdvgfG8.js:38
+lC @ index-aCdvgfG8.js:38
+cC @ index-aCdvgfG8.js:38
+Rm @ index-aCdvgfG8.js:38
+Vy @ index-aCdvgfG8.js:38
+(anonymous) @ index-aCdvgfG8.js:38
+Pp @ index-aCdvgfG8.js:41
+hy @ index-aCdvgfG8.js:38
+bu @ index-aCdvgfG8.js:38
+tp @ index-aCdvgfG8.js:38
+TC @ index-aCdvgfG8.js:38
+dashboard:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+dashboard:1 Unchecked runtime.lastError: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+dashboard:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+dashboard:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+dashboard:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+dashboard:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+dashboard:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+dashboard:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+dashboard:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+dashboard:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+dashboard:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+dashboard:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+dashboard:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+dashboard:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+dashboard:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+dashboard:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+dashboard:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+dashboard:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+dashboard:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+dashboard:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+dashboard:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+dashboard:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+dashboard:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+dashboard:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+dashboard:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+dashboard:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+about:blank:1 Unchecked runtime.lastError: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+dashboard:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+dashboard:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+dashboard:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+dashboard:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+dashboard:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+dashboard:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+dashboard:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+dashboard:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+dashboard:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+dashboard:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+dashboard:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+dashboard:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+dashboard:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+dashboard:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+dashboard:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+dashboard:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+dashboard:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+sw_iframe.html?origin=https%3A%2F%2Fsendclaw.com:1 Unchecked runtime.lastError: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
