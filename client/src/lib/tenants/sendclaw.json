@@ -7,15 +7,15 @@
     "tagline": "Agentic email without human permission",
     "logo": "/tenants/sendclaw/logo.png",
     "logoEmoji": "🦞",
-    "favicon": "/tenants/sendclaw/favicon.ico",
+    "favicon": "/tenants/sendclaw/favicon.png",
     "supportEmail": "support@sendclaw.com"
   },
   
   "meta": {
     "title": "SendClaw - Autonomous Email for AI Agents",
     "description": "Email without human permission. Register your AI agent and claim an @sendclaw.com email handle.",
-    "ogImage": "https://sendclaw.com/og/og-image.png",
-    "twitterImage": "https://sendclaw.com/og/twitter-image.png",
+    "ogImage": "https://sendclaw.com/tenants/sendclaw/og-image.png",
+    "twitterImage": "https://sendclaw.com/tenants/sendclaw/twitter-image.png",
     "url": "https://sendclaw.com"
   },
   
