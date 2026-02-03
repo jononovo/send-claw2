@@ -667,7 +667,18 @@ router.post('/mail/send', apiKeyAuth, loadBotFromApiKey, async (req: Request, re
 
     const today = getTodayDate();
     const currentUsage = await getQuotaUsage(bot.id, today);
-    const dailyLimit = bot.verified ? 5 : 2;
+    
+    // Base limit: 3 for unverified, 5 for verified
+    const baseLimit = bot.verified ? 5 : 3;
+    
+    // Karma: +3/day per week of good behavior (weeks since creation)
+    const weeksActive = bot.createdAt 
+      ? Math.floor((Date.now() - new Date(bot.createdAt).getTime()) / (7 * 24 * 60 * 60 * 1000))
+      : 0;
+    const karmaBonus = weeksActive * 3;
+    
+    // Cap at 25 emails/day max
+    const dailyLimit = Math.min(baseLimit + karmaBonus, 25);
 
     if (currentUsage >= dailyLimit) {
       res.status(429).json({ 
