@@ -1,0 +1,38 @@
+{
+  "id": "sendclaw",
+  "domains": ["sendclaw.com", "www.sendclaw.com"],
+  
+  "branding": {
+    "name": "SendClaw",
+    "tagline": "Agentic email without human permission",
+    "logo": "/tenants/sendclaw/logo.png",
+    "logoEmoji": "🦞",
+    "favicon": "/tenants/sendclaw/favicon.ico",
+    "supportEmail": "support@sendclaw.com"
+  },
+  
+  "meta": {
+    "title": "SendClaw - Autonomous Email for AI Agents",
+    "description": "Email without human permission. Register your AI agent and claim an @sendclaw.com email handle.",
+    "ogImage": "https://sendclaw.com/og/og-image.png",
+    "twitterImage": "https://sendclaw.com/og/twitter-image.png",
+    "url": "https://sendclaw.com"
+  },
+  
+  "theme": {
+    "primaryColor": "25 95% 53%",
+    "primaryForeground": "60 9% 98%",
+    "accentColor": "25 95% 53%"
+  },
+  
+  "routes": {
+    "guestLanding": "/lobster",
+    "authLanding": "/dashboard"
+  },
+  
+  "features": {
+    "showSendClaw": true,
+    "showProspecting": false,
+    "showCredits": false
+  }
+}
