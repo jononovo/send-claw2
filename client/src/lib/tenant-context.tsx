@@ -70,13 +70,16 @@ function updateFavicon(tenant: TenantConfig) {
 }
 
 function updateMetaTags(tenant: TenantConfig) {
-  // Update description
+  // Update or create description
   let descMeta = document.querySelector('meta[name="description"]') as HTMLMetaElement;
-  if (descMeta) {
-    descMeta.content = tenant.meta.description;
+  if (!descMeta) {
+    descMeta = document.createElement('meta');
+    descMeta.name = 'description';
+    document.head.appendChild(descMeta);
   }
+  descMeta.content = tenant.meta.description;
   
-  // Update OG tags
+  // Update or create OG tags
   const ogTags: Record<string, string> = {
     'og:title': tenant.meta.title,
     'og:description': tenant.meta.description,
@@ -87,12 +90,15 @@ function updateMetaTags(tenant: TenantConfig) {
   
   for (const [property, content] of Object.entries(ogTags)) {
     let meta = document.querySelector(`meta[property="${property}"]`) as HTMLMetaElement;
-    if (meta) {
-      meta.content = content;
+    if (!meta) {
+      meta = document.createElement('meta');
+      meta.setAttribute('property', property);
+      document.head.appendChild(meta);
     }
+    meta.content = content;
   }
   
-  // Update Twitter tags
+  // Update or create Twitter tags
   const twitterTags: Record<string, string> = {
     'twitter:title': tenant.meta.title,
     'twitter:description': tenant.meta.description,
@@ -101,8 +107,11 @@ function updateMetaTags(tenant: TenantConfig) {
   
   for (const [name, content] of Object.entries(twitterTags)) {
     let meta = document.querySelector(`meta[name="${name}"]`) as HTMLMetaElement;
-    if (meta) {
-      meta.content = content;
+    if (!meta) {
+      meta = document.createElement('meta');
+      meta.name = name;
+      document.head.appendChild(meta);
     }
+    meta.content = content;
   }
 }

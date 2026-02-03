@@ -73,11 +73,11 @@ export function Logo({
   );
   
   // If logo should be a link, wrap in Link component
-  // Links to /dashboard as the main entry point
+  // Links to tenant-configured authLanding route
   if (asLink) {
     return (
       <Link 
-        href="/dashboard" 
+        href={tenant.routes.authLanding} 
         className="group hover:opacity-90 transition-opacity"
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
