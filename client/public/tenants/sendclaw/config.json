@@ -20,9 +20,9 @@
   },
   
   "theme": {
-    "primaryColor": "25 95% 53%",
-    "primaryForeground": "60 9% 98%",
-    "accentColor": "25 95% 53%"
+    "primaryColor": "45 93% 47%",
+    "primaryForeground": "30 10% 10%",
+    "accentColor": "25 55% 35%"
   },
   
   "routes": {
