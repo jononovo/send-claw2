@@ -39,7 +39,7 @@ export interface IStorage {
   // User Auth
   getUserByEmail(email: string): Promise<User | undefined>;
   getUserById(id: number): Promise<User | undefined>;
-  createUser(data: { email: string; password: string; username?: string }): Promise<User>;
+  createUser(data: { email: string; password: string; username?: string; signupTenant?: string }): Promise<User>;
   updateUser(id: number, data: Partial<User>): Promise<User | undefined>;
 
   // User Preferences
@@ -232,13 +232,14 @@ class DatabaseStorage implements IStorage {
     return user;
   }
 
-  async createUser(data: { email: string; password: string; username?: string }): Promise<User> {
+  async createUser(data: { email: string; password: string; username?: string; signupTenant?: string }): Promise<User> {
     const [user] = await db
       .insert(users)
       .values({
         email: data.email,
         username: data.username || data.email.split('@')[0],
-        password: data.password
+        password: data.password,
+        signupTenant: data.signupTenant
       })
       .returning();
 

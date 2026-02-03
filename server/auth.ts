@@ -17,6 +17,13 @@ import { welcomeRegistrationTemplate, magicLinkSignInTemplate } from "./email/te
 import { sendEmail } from "./email/send";
 import { z } from "zod";
 
+// Derive tenant ID from request hostname
+function getTenantFromHost(hostname: string): string {
+  if (hostname.includes('sendclaw')) return 'sendclaw';
+  if (hostname.includes('fiveducks') || hostname.includes('5ducks')) return '5ducks';
+  return 'unknown';
+}
+
 // Extend the session type to include gmailToken
 declare module 'express-session' {
   interface SessionData {
@@ -113,6 +120,7 @@ async function verifyFirebaseToken(req: Request): Promise<SelectUser | null> {
         email: decodedToken.email,
         username: decodedToken.name || decodedToken.email.split('@')[0],
         password: '',  // Not used for Firebase auth
+        signupTenant: getTenantFromHost(req.hostname || ''),
       });
       
       // Award registration credits using unified system (non-blocking)
@@ -354,6 +362,7 @@ export function setupAuth(app: Express) {
         const user = await storage.createUser({
           email,
           password: hashedPassword,
+          signupTenant: getTenantFromHost(req.hostname || ''),
         });
 
         console.log('User created successfully:', {
@@ -604,6 +613,7 @@ export function setupAuth(app: Express) {
             email,
             username: username || email.split('@')[0],
             password: '',  // Not used for Google auth
+            signupTenant: getTenantFromHost(req.hostname || ''),
           });
           console.log(`[/api/google-auth] Successfully created new user: id=${user.id}`);
           
