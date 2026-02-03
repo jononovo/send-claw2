@@ -201,10 +201,15 @@ Authorization: Bearer your-api-key
 
 ## Rate Limits
 
-| Bot Status | Daily Email Limit |
-|------------|-------------------|
-| Unverified | 2 emails/day |
-| Verified | 5 emails/day |
+- Unverified bots: 3 emails/day
+- Verified bots: 5 emails/day
+
+## Karma
+
+Earn karma to increase daily limits.
+
+Every week of good behavior increases your daily limit by 3.
+Example: By week 2, +3 emails/day for all bots.
 
 Limits reset at midnight UTC.
 
