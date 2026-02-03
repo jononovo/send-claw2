@@ -2,34 +2,41 @@ import { createContext, useContext, useEffect, useState, type ReactNode } from '
 import { TenantConfig, detectCurrentTenant } from './tenants';
 
 interface TenantContextValue {
-  tenant: TenantConfig;
+  tenant: TenantConfig | null;
   isLoading: boolean;
 }
 
 const TenantContext = createContext<TenantContextValue | null>(null);
 
 export function TenantProvider({ children }: { children: ReactNode }) {
-  const [tenant, setTenant] = useState<TenantConfig>(() => detectCurrentTenant());
-  const [isLoading, setIsLoading] = useState(false);
+  const [tenant, setTenant] = useState<TenantConfig | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const detectedTenant = detectCurrentTenant();
-    setTenant(detectedTenant);
-    
-    // Apply theme CSS variables
-    applyTenantTheme(detectedTenant);
-    
-    // Update document title
-    document.title = detectedTenant.meta.title;
-    
-    // Update favicon
-    updateFavicon(detectedTenant);
-    
-    // Update meta tags
-    updateMetaTags(detectedTenant);
-    
-    setIsLoading(false);
+    detectCurrentTenant()
+      .then(detectedTenant => {
+        setTenant(detectedTenant);
+        
+        applyTenantTheme(detectedTenant);
+        document.title = detectedTenant.meta.title;
+        updateFavicon(detectedTenant);
+        updateMetaTags(detectedTenant);
+        
+        setIsLoading(false);
+      })
+      .catch(err => {
+        console.error('Failed to load tenant config:', err);
+        setIsLoading(false);
+      });
   }, []);
+
+  if (isLoading || !tenant) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
 
   return (
     <TenantContext.Provider value={{ tenant, isLoading }}>
@@ -38,25 +45,26 @@ export function TenantProvider({ children }: { children: ReactNode }) {
   );
 }
 
-export function useTenant(): TenantContextValue {
+export function useTenant(): { tenant: TenantConfig; isLoading: boolean } {
   const context = useContext(TenantContext);
   if (!context) {
     throw new Error('useTenant must be used within a TenantProvider');
   }
-  return context;
+  if (!context.tenant) {
+    throw new Error('Tenant not loaded yet');
+  }
+  return { tenant: context.tenant, isLoading: context.isLoading };
 }
 
 function applyTenantTheme(tenant: TenantConfig) {
   const root = document.documentElement;
   
-  // Apply theme colors as CSS variables
   root.style.setProperty('--primary', tenant.theme.primaryColor);
   root.style.setProperty('--primary-foreground', tenant.theme.primaryForeground);
   root.style.setProperty('--accent', tenant.theme.accentColor);
 }
 
 function updateFavicon(tenant: TenantConfig) {
-  // Use emoji favicon for simplicity (works without actual favicon files)
   const emoji = tenant.branding.logoEmoji;
   const faviconUrl = `data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>${emoji}</text></svg>`;
   
@@ -70,7 +78,6 @@ function updateFavicon(tenant: TenantConfig) {
 }
 
 function updateMetaTags(tenant: TenantConfig) {
-  // Update or create description
   let descMeta = document.querySelector('meta[name="description"]') as HTMLMetaElement;
   if (!descMeta) {
     descMeta = document.createElement('meta');
@@ -79,7 +86,6 @@ function updateMetaTags(tenant: TenantConfig) {
   }
   descMeta.content = tenant.meta.description;
   
-  // Update or create OG tags
   const ogTags: Record<string, string> = {
     'og:title': tenant.meta.title,
     'og:description': tenant.meta.description,
@@ -98,7 +104,6 @@ function updateMetaTags(tenant: TenantConfig) {
     meta.content = content;
   }
   
-  // Update or create Twitter tags
   const twitterTags: Record<string, string> = {
     'twitter:title': tenant.meta.title,
     'twitter:description': tenant.meta.description,

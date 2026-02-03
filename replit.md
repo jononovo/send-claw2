@@ -42,7 +42,11 @@ The platform comprises a React SPA frontend (TypeScript, Vite, Tailwind, shadcn/
 - **Authentication**: Firebase for authentication, Passport.js for session management.
 - **Concurrency & Rate Limits**: Limits apply to simultaneous company processing (7), parallel email sends (10), demo user searches (10/hour), and campaign emails (500/day with 30s spacing).
 - **Modular Code Architecture**: Features are organized into modules (`server/features/[name]`, `client/src/features/[name]`) for maintainability.
-- **Multi-Tenancy Architecture**: Client-side tenant detection based on hostname. Tenant configs in `client/src/lib/tenants/` (sendclaw.json for sendclaw.com, 5ducks.json for fiveducks.ai) define branding (name, emoji, tagline), theme (colors), routes (guestLanding, authLanding), and feature flags (showSendClaw, showProspecting, showCredits). TenantProvider in `client/src/lib/tenant-context.tsx` applies theme CSS variables, updates meta tags, and manages favicon. Logo component and landing pages are tenant-aware. Note: Tenant isolation is cosmetic/branding only; server-side enforcement would be needed for true data isolation.
+- **Multi-Tenancy Architecture**: Client-side tenant detection based on hostname. Each tenant has a self-contained folder in `client/public/tenants/{id}/` containing:
+  - `config.json` - Branding (name, emoji, tagline), theme (colors), routes (guestLanding, authLanding), feature flags
+  - `images/` - Logo, favicon, og-image, and other tenant-specific assets
+  
+  Current tenants: `5ducks` (fiveducks.ai) and `sendclaw` (sendclaw.com). TenantProvider in `client/src/lib/tenant-context.tsx` fetches config at runtime, applies theme CSS variables, updates meta tags, and manages favicon. Signup tenant is tracked server-side via `signup_tenant` column in users table. Note: Tenant isolation is cosmetic/branding only; server-side enforcement would be needed for true data isolation.
 
 ## External Dependencies
 - **Perplexity**: For company and contact discovery.

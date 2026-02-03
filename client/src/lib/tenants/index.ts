@@ -1,6 +1,3 @@
-import sendclawConfig from './sendclaw.json';
-import fiveDucksConfig from './5ducks.json';
-
 export interface TenantConfig {
   id: string;
   domains: string[];
@@ -40,14 +37,39 @@ export interface TenantConfig {
   };
 }
 
-const tenants: TenantConfig[] = [
-  sendclawConfig as TenantConfig,
-  fiveDucksConfig as TenantConfig,
-];
-
+const TENANT_IDS = ['5ducks', 'sendclaw'] as const;
 const DEFAULT_TENANT_ID = 'sendclaw';
 
-export function getTenantByDomain(hostname: string): TenantConfig {
+let tenantsCache: TenantConfig[] | null = null;
+let loadingPromise: Promise<TenantConfig[]> | null = null;
+
+async function loadTenantConfig(id: string): Promise<TenantConfig> {
+  const response = await fetch(`/tenants/${id}/config.json`);
+  if (!response.ok) {
+    throw new Error(`Failed to load tenant config for ${id}`);
+  }
+  return response.json();
+}
+
+export async function loadAllTenants(): Promise<TenantConfig[]> {
+  if (tenantsCache) {
+    return tenantsCache;
+  }
+  
+  if (loadingPromise) {
+    return loadingPromise;
+  }
+  
+  loadingPromise = Promise.all(TENANT_IDS.map(loadTenantConfig))
+    .then(configs => {
+      tenantsCache = configs;
+      return configs;
+    });
+  
+  return loadingPromise;
+}
+
+export function getTenantByDomain(hostname: string, tenants: TenantConfig[]): TenantConfig {
   const normalizedHost = hostname.toLowerCase().replace(/^www\./, '');
   
   for (const tenant of tenants) {
@@ -59,21 +81,23 @@ export function getTenantByDomain(hostname: string): TenantConfig {
     }
   }
   
-  // Default tenant for development/unknown domains
   return tenants.find(t => t.id === DEFAULT_TENANT_ID) || tenants[0];
 }
 
-export function getTenantById(id: string): TenantConfig | undefined {
+export function getTenantById(id: string, tenants: TenantConfig[]): TenantConfig | undefined {
   return tenants.find(t => t.id === id);
 }
 
 export function getAllTenants(): TenantConfig[] {
-  return tenants;
+  return tenantsCache || [];
 }
 
-export function detectCurrentTenant(): TenantConfig {
+export async function detectCurrentTenant(): Promise<TenantConfig> {
+  const tenants = await loadAllTenants();
   if (typeof window === 'undefined') {
     return tenants.find(t => t.id === DEFAULT_TENANT_ID) || tenants[0];
   }
-  return getTenantByDomain(window.location.hostname);
+  return getTenantByDomain(window.location.hostname, tenants);
 }
+
+export { DEFAULT_TENANT_ID, TENANT_IDS };
