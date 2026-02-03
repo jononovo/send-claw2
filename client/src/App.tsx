@@ -14,6 +14,7 @@ import { StrategyOverlayProvider } from "@/features/strategy-chat";
 import { TopNavAdProvider, PasswordSetupModal } from "@/features/top-nav-bar-ad-message";
 import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from "@/hooks/use-theme";
+import { TenantProvider, useTenant } from "@/lib/tenant-context";
 import { InsufficientCreditsProvider } from "@/contexts/insufficient-credits-context";
 import { InsufficientCreditsModal } from "@/components/insufficient-credits-modal";
 import { InsufficientCreditsHandlerSetup } from "@/components/insufficient-credits-handler-setup";
@@ -149,20 +150,38 @@ function useHomePreload() {
 
 function RootRoute() {
   const { user, isLoading } = useAuth();
+  const { tenant } = useTenant();
   const [, setLocation] = useLocation();
   
   useEffect(() => {
     if (!isLoading && user) {
-      setLocation('/dashboard');
+      setLocation(tenant.routes.authLanding);
     }
-  }, [user, isLoading, setLocation]);
+  }, [user, isLoading, setLocation, tenant.routes.authLanding]);
   
   if (isLoading) return null;
   if (user) return null;
   
+  return <TenantGuestLanding />;
+}
+
+function TenantGuestLanding() {
+  const { tenant } = useTenant();
+  
+  const landingComponents: Record<string, React.LazyExoticComponent<() => JSX.Element>> = {
+    '/lobster': SendclawLanding,
+    '/landing-simple3': LandingSimple3,
+    '/landing-simple2': LandingSimple2,
+    '/landing-simple': LandingSimple,
+    '/landing2': Landing2,
+    '/react-landing': Landing,
+  };
+  
+  const LandingComponent = landingComponents[tenant.routes.guestLanding] || SendclawLanding;
+  
   return (
     <Suspense fallback={null}>
-      <SendclawLanding />
+      <LandingComponent />
     </Suspense>
   );
 }
@@ -539,30 +558,29 @@ function Router() {
 }
 
 function App() {
-  // Google Analytics is initialized in index.html with requestIdleCallback deferral
-  // No need to call initGA() here - it would cause duplicate script loading
-  
   return (
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider>
-        <InsufficientCreditsProvider>
-          <AuthProvider>
-            <RegistrationModalProvider>
-              <StrategyOverlayProvider>
-                <TopNavAdProvider>
-                  <Router />
-                  <DeferredGuidance />
-                  <RegistrationModalContainer />
-                  <PasswordSetupModal />
-                </TopNavAdProvider>
-              </StrategyOverlayProvider>
-              <Toaster />
-            </RegistrationModalProvider>
-            <InsufficientCreditsModal />
-            <InsufficientCreditsHandlerSetup />
-          </AuthProvider>
-        </InsufficientCreditsProvider>
-      </ThemeProvider>
+      <TenantProvider>
+        <ThemeProvider>
+          <InsufficientCreditsProvider>
+            <AuthProvider>
+              <RegistrationModalProvider>
+                <StrategyOverlayProvider>
+                  <TopNavAdProvider>
+                    <Router />
+                    <DeferredGuidance />
+                    <RegistrationModalContainer />
+                    <PasswordSetupModal />
+                  </TopNavAdProvider>
+                </StrategyOverlayProvider>
+                <Toaster />
+              </RegistrationModalProvider>
+              <InsufficientCreditsModal />
+              <InsufficientCreditsHandlerSetup />
+            </AuthProvider>
+          </InsufficientCreditsProvider>
+        </ThemeProvider>
+      </TenantProvider>
     </QueryClientProvider>
   );
 }
