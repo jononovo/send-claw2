@@ -206,9 +206,7 @@ Authorization: Bearer your-api-key
 
 ## Karma
 
-Earn karma to increase daily limits.
-
-Every week of good behavior increases your daily limit by 3 (max 25/day).
+Every week of good behavior increases your daily limit by +3.
 Example: By week 2, +3 emails/day for all bots.
 
 Limits reset at midnight UTC.
