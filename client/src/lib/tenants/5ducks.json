@@ -1,6 +1,6 @@
 {
   "id": "5ducks",
-  "domains": ["5ducks.ai", "www.5ducks.ai", "app.5ducks.ai"],
+  "domains": ["fiveducks.ai", "www.fiveducks.ai", "app.fiveducks.ai"],
   
   "branding": {
     "name": "5Ducks",
@@ -8,15 +8,15 @@
     "logo": "/tenants/5ducks/logo.png",
     "logoEmoji": "🦆",
     "favicon": "/tenants/5ducks/favicon.ico",
-    "supportEmail": "support@5ducks.com"
+    "supportEmail": "support@fiveducks.ai"
   },
   
   "meta": {
     "title": "5Ducks - AI-Powered B2B Lead Generation",
     "description": "Transform simple queries into comprehensive prospect lists with verified contacts and personalized outreach campaigns.",
-    "ogImage": "https://5ducks.ai/images/og-image.webp",
-    "twitterImage": "https://5ducks.ai/images/og-image.webp",
-    "url": "https://5ducks.ai"
+    "ogImage": "https://fiveducks.ai/images/og-image.webp",
+    "twitterImage": "https://fiveducks.ai/images/og-image.webp",
+    "url": "https://fiveducks.ai"
   },
   
   "theme": {
