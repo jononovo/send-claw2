@@ -16,13 +16,7 @@ import { dripEmailEngine } from "./email/drip-engine";
 import { welcomeRegistrationTemplate, magicLinkSignInTemplate } from "./email/templates/index";
 import { sendEmail } from "./email/send";
 import { z } from "zod";
-
-// Derive tenant ID from request hostname
-function getTenantFromHost(hostname: string): string {
-  if (hostname.includes('sendclaw')) return 'sendclaw';
-  if (hostname.includes('fiveducks') || hostname.includes('5ducks')) return '5ducks';
-  return 'unknown';
-}
+import { getTenantFromHost } from "./tenants";
 
 // Extend the session type to include gmailToken
 declare module 'express-session' {

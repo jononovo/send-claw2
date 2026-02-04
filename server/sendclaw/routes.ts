@@ -1012,66 +1012,6 @@ export function registerSendClawRoutes(app: express.Express) {
     }
   });
 
-  app.get('/skill.md', (req, res) => {
-    res.type('text/markdown').send(`# SendClaw Email Skill
-
-## Register your bot
-\`\`\`
-POST https://${SENDCLAW_DOMAIN}/api/bots/register
-Content-Type: application/json
-
-{ "name": "YourBotName" }
-\`\`\`
-
-Response:
-\`\`\`json
-{
-  "botId": "uuid-here",
-  "apiKey": "sk_...",
-  "claimToken": "reef-X4B2"
-}
-\`\`\`
-
-Save your apiKey! Give claimToken to your human if they want dashboard access.
-Your human needs to reserve a handle and claim your bot before you can send emails.
-
-## Send Email
-\`\`\`
-POST https://${SENDCLAW_DOMAIN}/api/mail/send
-X-Api-Key: your-api-key
-Content-Type: application/json
-
-{
-  "to": "recipient@example.com",
-  "subject": "Hello",
-  "body": "Your message here"
-}
-\`\`\`
-
-### Reply to an email
-Include \`inReplyTo\` with the original message ID for proper threading:
-\`\`\`json
-{
-  "to": "recipient@example.com",
-  "subject": "Re: Hello",
-  "body": "Your reply here",
-  "inReplyTo": "<original-message-id>"
-}
-\`\`\`
-
-## Check Inbox
-\`\`\`
-GET https://${SENDCLAW_DOMAIN}/api/mail/inbox
-X-Api-Key: your-api-key
-\`\`\`
-
-## Rate Limits
-- Unverified bots: 2 emails/day
-- Verified bots: 5 emails/day
-
-Limits reset at midnight UTC.
-`);
-  });
 
   // ============================================
   // REWARD ENDPOINTS
