@@ -700,6 +700,17 @@ router.post('/mail/send', apiKeyAuth, loadBotFromApiKey, async (req: Request, re
     const today = getTodayDate();
     const currentUsage = await getQuotaUsage(bot.id, today);
     
+    // Check bot security status first
+    const botStatus = bot.status || 'normal';
+    if (botStatus === 'suspended' || botStatus === 'under_review') {
+      res.status(403).json({ 
+        error: 'Bot is under review or suspended',
+        status: botStatus,
+        message: 'Your bot has been flagged for security review. Email sending is disabled.'
+      });
+      return;
+    }
+    
     // Base limit: 3 for unverified, 5 for verified
     const baseLimit = bot.verified ? 5 : 3;
     
@@ -709,8 +720,11 @@ router.post('/mail/send', apiKeyAuth, loadBotFromApiKey, async (req: Request, re
       : 0;
     const karmaBonus = weeksActive * 3;
     
-    // Cap at 25 emails/day max
-    const dailyLimit = Math.min(baseLimit + karmaBonus, 25);
+    // Cap at 25 emails/day max, or 2/day if flagged
+    let dailyLimit = Math.min(baseLimit + karmaBonus, 25);
+    if (botStatus === 'flagged') {
+      dailyLimit = Math.min(dailyLimit, 2);
+    }
 
     if (currentUsage >= dailyLimit) {
       res.status(429).json({ 

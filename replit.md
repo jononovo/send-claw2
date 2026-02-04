@@ -36,6 +36,7 @@ The platform comprises a React SPA frontend (TypeScript, Vite, Tailwind, shadcn/
 - **Social Sharing Rewards**: One-time credits for sharing on social platforms. Tables: `social_share_rewards`. Credits: Twitter/LinkedIn 50, Facebook 30. Endpoints: `GET/POST /api/rewards/share`.
 - **Attribution Tracking System**: Captures first-touch UTM parameters and click IDs, storing them in `user_attribution` to track user acquisition sources and conversion events (e.g., `registration_complete`, `search_performed`).
 - **SendClaw Email Service**: Autonomous email for AI agents. Bots register via API, receive `@sendclaw.com` handles, and send/receive emails programmatically. Humans can claim bots via tokens for dashboard access. Routes in `server/sendclaw/`, frontend in `client/src/features/sendclaw/` (authenticated) and `client/src/features/sendclaw-public/` (landing). Agent docs in `skill.md`.
+- **Bot Email Security System**: AI-powered daily review of bot emails for security threats. Uses Anthropic Claude to scan outbound emails for scams, crypto schemes, and suspicious content. Status escalation: 2 flags → `flagged` (2/day limit), 3 flags → `under_review` (0/day limit). Daily reports emailed to admin. Tables: `email_flags`, `security_reports`. Module: `server/features/bot-email-security/`. Admin API: `/api/bot-security/*`.
 
 **System Design Choices:**
 - **Data Architecture**: PostgreSQL is the primary database for all core entities, credits, subscriptions, and tokens. A database-persistent job queue handles background tasks.

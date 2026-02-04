@@ -1,5 +1,16 @@
 import Anthropic from '@anthropic-ai/sdk';
+import { z } from 'zod';
 import { EmailForReview, AIReviewResult, FlaggedEmail } from './types';
+
+const FlaggedEmailSchema = z.object({
+  id: z.string(),
+  status: z.enum(['flagged', 'under_review', 'suspended']),
+  reason: z.string()
+});
+
+const AIResponseSchema = z.object({
+  flagged: z.array(FlaggedEmailSchema)
+});
 
 const DEFAULT_MODEL = "claude-sonnet-4-20250514";
 
@@ -59,22 +70,28 @@ export async function reviewEmails(emails: EmailForReview[]): Promise<AIReviewRe
 
     const jsonMatch = content.text.match(/\{[\s\S]*\}/);
     if (!jsonMatch) {
-      console.error('[BotEmailSecurity] Could not parse JSON from response:', content.text);
+      console.error('[BotEmailSecurity] Could not parse JSON from response:', content.text.slice(0, 500));
       return { flagged: [] };
     }
 
-    const result = JSON.parse(jsonMatch[0]) as AIReviewResult;
+    let parsed: unknown;
+    try {
+      parsed = JSON.parse(jsonMatch[0]);
+    } catch (parseError) {
+      console.error('[BotEmailSecurity] JSON parse error:', parseError);
+      return { flagged: [] };
+    }
+
+    const validated = AIResponseSchema.safeParse(parsed);
+    if (!validated.success) {
+      console.error('[BotEmailSecurity] Response validation failed:', validated.error.errors);
+      return { flagged: [] };
+    }
+
+    const result = validated.data;
     
-    if (!Array.isArray(result.flagged)) {
-      return { flagged: [] };
-    }
-
-    const validStatuses = ['flagged', 'under_review', 'suspended'];
-    result.flagged = result.flagged.filter((f: FlaggedEmail) => 
-      f.id && 
-      validStatuses.includes(f.status) && 
-      f.reason
-    );
+    const validEmailIds = new Set(emails.map(e => e.id));
+    result.flagged = result.flagged.filter((f: FlaggedEmail) => validEmailIds.has(f.id));
 
     console.log(`[BotEmailSecurity] AI review complete: ${result.flagged.length} emails flagged out of ${emails.length}`);
     return result;
