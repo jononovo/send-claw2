@@ -1816,12 +1816,14 @@ export const messages = pgTable("messages", {
   threadId: text("thread_id"),
   inReplyTo: text("in_reply_to"),
   messageId: text("message_id"),
+  isRead: boolean("is_read").default(false),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow()
 }, (table) => [
   index('idx_messages_bot_id').on(table.botId),
   index('idx_messages_user_id').on(table.userId),
   index('idx_messages_thread_id').on(table.threadId),
-  index('idx_messages_created_at').on(table.createdAt)
+  index('idx_messages_created_at').on(table.createdAt),
+  index('idx_messages_is_read').on(table.isRead)
 ]);
 
 export const quotaUsage = pgTable("quota_usage", {
