@@ -153,8 +153,9 @@ router.get('/flags/:botId', requireAdmin, async (req: Request, res: Response) =>
 
 router.post('/force-review', requireAdmin, async (req: Request, res: Response) => {
   try {
-    await botEmailSecurityEngine.forceRun();
-    res.json({ success: true, message: 'Daily review triggered' });
+    const { date } = req.body;
+    await botEmailSecurityEngine.forceRun(date);
+    res.json({ success: true, message: date ? `Review triggered for ${date}` : 'Daily review triggered' });
   } catch (error) {
     console.error('[BotEmailSecurity] Force review error:', error);
     res.status(500).json({ error: 'Failed to run review' });

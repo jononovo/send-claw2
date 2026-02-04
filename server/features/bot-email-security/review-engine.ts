@@ -63,15 +63,27 @@ class BotEmailSecurityEngine {
     }
   }
 
-  async runDailyReview() {
-    const yesterday = new Date();
-    yesterday.setDate(yesterday.getDate() - 1);
-    yesterday.setHours(0, 0, 0, 0);
-    
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+  async runDailyReview(targetDate?: string) {
+    let reviewStart: Date;
+    let reviewEnd: Date;
+    let reportDate: string;
 
-    const reportDate = yesterday.toISOString().split('T')[0];
+    if (targetDate) {
+      // Use provided date (format: YYYY-MM-DD)
+      reviewStart = new Date(targetDate + 'T00:00:00');
+      reviewEnd = new Date(targetDate + 'T23:59:59.999');
+      reportDate = targetDate;
+    } else {
+      // Default: yesterday
+      reviewStart = new Date();
+      reviewStart.setDate(reviewStart.getDate() - 1);
+      reviewStart.setHours(0, 0, 0, 0);
+      
+      reviewEnd = new Date();
+      reviewEnd.setHours(0, 0, 0, 0);
+      
+      reportDate = reviewStart.toISOString().split('T')[0];
+    }
 
     console.log(`[BotEmailSecurity] Reviewing emails from ${reportDate}`);
 
@@ -87,8 +99,8 @@ class BotEmailSecurityEngine {
       .from(messages)
       .where(and(
         eq(messages.direction, 'outbound'),
-        gte(messages.createdAt, yesterday),
-        lte(messages.createdAt, today)
+        gte(messages.createdAt, reviewStart),
+        lte(messages.createdAt, reviewEnd)
       ));
 
     const botIds = Array.from(new Set(outboundEmails.map(e => e.botId).filter((id): id is string => id !== null)));
@@ -147,7 +159,7 @@ class BotEmailSecurityEngine {
       });
     }
 
-    const stats = await this.gatherStats(yesterday, today);
+    const stats = await this.gatherStats(reviewStart, reviewEnd);
     const allSubjectLines = outboundEmails
       .map(e => e.subject || '(no subject)')
       .slice(0, 100);
@@ -268,11 +280,11 @@ class BotEmailSecurityEngine {
     };
   }
 
-  async forceRun() {
-    console.log('[BotEmailSecurity] Force running daily review...');
+  async forceRun(targetDate?: string) {
+    console.log(`[BotEmailSecurity] Force running review${targetDate ? ` for ${targetDate}` : ''}...`);
     this.isProcessing = true;
     try {
-      await this.runDailyReview();
+      await this.runDailyReview(targetDate);
     } finally {
       this.isProcessing = false;
     }
