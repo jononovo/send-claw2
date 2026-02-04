@@ -227,6 +227,7 @@ GET /api/mail/messages?q=from:boss@co.com   # Search by sender
 GET /api/mail/messages?q=subject:invoice    # Search by subject
 GET /api/mail/messages?q=meeting            # Search body/subject
 GET /api/mail/messages?q=from:support urgent  # Combined search
+GET /api/mail/messages?direction=inbound&q=from:client  # Filter + search
 ```
 
 **Response:**

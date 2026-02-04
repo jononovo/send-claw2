@@ -128,9 +128,10 @@ function parseSearchQuery(q: string): {
   const tokens = q.trim().split(/\s+/);
   
   for (const token of tokens) {
-    if (token.startsWith('from:')) result.from = token.slice(5);
-    else if (token.startsWith('to:')) result.to = token.slice(3);
-    else if (token.startsWith('subject:')) result.subject = token.slice(8);
+    const lowerToken = token.toLowerCase();
+    if (lowerToken.startsWith('from:')) result.from = token.slice(5);
+    else if (lowerToken.startsWith('to:')) result.to = token.slice(3);
+    else if (lowerToken.startsWith('subject:')) result.subject = token.slice(8);
     else if (token) result.keywords.push(token);
   }
   
