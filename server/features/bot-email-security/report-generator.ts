@@ -2,6 +2,7 @@ import { sendEmail } from '../../email/send';
 import { SecurityReportData, FlaggedEmailReport } from './types';
 
 const ADMIN_EMAIL = 'jon@5ducks.ai';
+const SECURITY_EMAIL = 'security@sendclaw.com';
 
 function formatEmailBody(report: SecurityReportData): { html: string; text: string } {
   const { stats, flaggedEmails, allSubjectLines } = report;
@@ -123,6 +124,7 @@ export async function sendDailyReport(report: SecurityReportData): Promise<boole
     await sendEmail({
       to: ADMIN_EMAIL,
       content: { subject, html, text },
+      fromEmail: SECURITY_EMAIL,
       fromName: 'SendClaw Security'
     });
     

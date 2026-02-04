@@ -18,6 +18,7 @@ export interface SendEmailOptions {
   to: string;
   content: EmailContent;
   fromName?: string;
+  fromEmail?: string;
   replyTo?: string;
 }
 
@@ -31,7 +32,7 @@ export async function sendEmail(options: SendEmailOptions): Promise<boolean> {
     await sendGridService.send({
       to: options.to,
       from: {
-        email: FROM_EMAIL,
+        email: options.fromEmail || FROM_EMAIL,
         name: options.fromName || FROM_NAME
       },
       replyTo: options.replyTo,
