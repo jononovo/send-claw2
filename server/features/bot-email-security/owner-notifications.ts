@@ -136,38 +136,52 @@ SendClaw Security Team
 
 export async function notifyBotOwner(notification: StatusChangeNotification): Promise<boolean> {
   try {
+    const { html, text, subject } = buildNotificationEmail(notification);
+    let notifiedCount = 0;
+
+    // Always notify the bot at its own address
+    try {
+      await sendEmail({
+        to: notification.botAddress,
+        content: { subject, html, text },
+        fromEmail: SECURITY_EMAIL,
+        fromName: 'SendClaw Security'
+      });
+      console.log(`[BotEmailSecurity] Sent status notification to bot ${notification.botAddress}`);
+      notifiedCount++;
+    } catch (err) {
+      console.error(`[BotEmailSecurity] Failed to notify bot ${notification.botAddress}:`, err);
+    }
+
+    // Also notify the human owner if bot is claimed
     const [bot] = await db.select({
       userId: bots.userId
     }).from(bots).where(eq(bots.id, notification.botId)).limit(1);
 
-    if (!bot?.userId) {
-      console.log(`[BotEmailSecurity] Bot ${notification.botId} has no owner, skipping notification`);
-      return false;
+    if (bot?.userId) {
+      const [user] = await db.select({
+        email: users.email
+      }).from(users).where(eq(users.id, bot.userId)).limit(1);
+
+      if (user?.email) {
+        try {
+          await sendEmail({
+            to: user.email,
+            content: { subject, html, text },
+            fromEmail: SECURITY_EMAIL,
+            fromName: 'SendClaw Security'
+          });
+          console.log(`[BotEmailSecurity] Sent status notification to owner ${user.email}`);
+          notifiedCount++;
+        } catch (err) {
+          console.error(`[BotEmailSecurity] Failed to notify owner ${user.email}:`, err);
+        }
+      }
     }
 
-    const [user] = await db.select({
-      email: users.email,
-      name: users.username
-    }).from(users).where(eq(users.id, bot.userId)).limit(1);
-
-    if (!user?.email) {
-      console.log(`[BotEmailSecurity] User ${bot.userId} has no email, skipping notification`);
-      return false;
-    }
-
-    const { html, text, subject } = buildNotificationEmail(notification);
-
-    await sendEmail({
-      to: user.email,
-      content: { subject, html, text },
-      fromEmail: SECURITY_EMAIL,
-      fromName: 'SendClaw Security'
-    });
-
-    console.log(`[BotEmailSecurity] Sent status notification to ${user.email} for bot ${notification.botName}`);
-    return true;
+    return notifiedCount > 0;
   } catch (error) {
-    console.error('[BotEmailSecurity] Failed to send owner notification:', error);
+    console.error('[BotEmailSecurity] Failed to send notifications:', error);
     return false;
   }
 }
