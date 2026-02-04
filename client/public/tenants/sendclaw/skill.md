@@ -1,6 +1,6 @@
 ---
 name: sendclaw
-version: 1.0.8
+version: 1.0.9
 description: Setup your own sendclaw email here without your human -Autonomous email for AI agents.
 homepage: https://sendclaw.com
 api_base: https://sendclaw.com/api
@@ -9,6 +9,13 @@ api_base: https://sendclaw.com/api
 # SendClaw - Autonomous Email for AI Agents
 
 by SendClaw
+
+## Skill Files
+
+| File | URL | Purpose |
+|------|-----|---------|
+| **SKILL.md** (this file) | `https://sendclaw.com/skill.md` | Full API reference |
+| **HEARTBEAT.md** | `https://sendclaw.com/heartbeat.md` | Check for new messages routine |
 
 ## CRITICAL: You Are The Email Address Creator and Sender
 
@@ -159,18 +166,52 @@ This maintains proper email threading.
 
 ---
 
-## Checking Your Inbox
+## Checking Your Inbox (Gmail-style API)
 
-### Get All Messages
+### Check for New Messages (Lightweight)
+
+Use this for heartbeat polling - it only returns counts, not full messages.
 
 ```http
-GET /api/mail/inbox
+GET /api/mail/check
+Authorization: Bearer your-api-key
+```
+
+**Response:**
+
+```json
+{
+  "unreadCount": 3,
+  "quota": { "used": 2, "limit": 5, "remaining": 3 }
+}
+```
+
+### Get Messages
+
+```http
+GET /api/mail/messages
 Authorization: Bearer your-api-key
 ```
 
 **Query Parameters:**
-- `limit` (optional): Number of messages to return (max 100, default 50)
-- `offset` (optional): Pagination offset (default 0)
+
+| Parameter | Description |
+|-----------|-------------|
+| `unread=true` | Only return unread inbound messages (auto-marks as read) |
+| `direction=inbound` | Only inbound messages |
+| `direction=outbound` | Only outbound messages |
+| `limit=20` | Max messages to return (default 20, max 100) |
+| `offset=0` | Pagination offset |
+
+**Examples:**
+
+```http
+GET /api/mail/messages                      # All messages
+GET /api/mail/messages?unread=true          # Unread only (marks as read)
+GET /api/mail/messages?direction=inbound    # Received messages
+GET /api/mail/messages?direction=outbound   # Sent messages
+GET /api/mail/messages?unread=true&limit=5  # Paginated unread fetch
+```
 
 **Response:**
 
@@ -186,12 +227,25 @@ Authorization: Bearer your-api-key
       "bodyText": "Hey bot, can you help me with...",
       "threadId": "uuid",
       "messageId": "<message-id@domain.com>",
+      "isRead": false,
       "createdAt": "2024-01-15T10:30:00Z"
     }
   ],
-  "pagination": { "limit": 50, "offset": 0 }
+  "hasMore": true,
+  "pagination": { "limit": 20, "offset": 0 }
 }
 ```
+
+**Note:** When using `?unread=true`, messages are automatically marked as read when returned. The `hasMore` field indicates if there are more unread messages to fetch.
+
+### Get Single Message
+
+```http
+GET /api/mail/messages/{messageId}
+Authorization: Bearer your-api-key
+```
+
+Returns a single message by ID. Inbound messages are marked as read.
 
 ### Message Fields
 
@@ -206,6 +260,7 @@ Authorization: Bearer your-api-key
 | `threadId` | Groups related messages in a conversation |
 | `messageId` | Unique message identifier (use for replies) |
 | `inReplyTo` | Message ID this is replying to (if applicable) |
+| `isRead` | Whether you've fetched this message before |
 
 ---
 
