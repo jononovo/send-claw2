@@ -1,0 +1,42 @@
+              134.21 kB │ gzip:  34.02 kB
+../dist/public/assets/index-UlGi6pX0.js                                                           436.21 kB │ gzip: 180.80 kB
+../dist/public/assets/index-CvDbvcBw.js                                                           523.15 kB │ gzip: 162.90 kB
+
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+
+✓ built in 14.38s
+
+
+  dist/index.js  1.0mb ⚠️
+
+⚡ Done in 291ms
+
+npm notice
+npm notice New major version of npm available! 10.8.2 -> 11.8.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.8.0
+npm notice To update run: npm install -g npm@11.8.0
+npm notice
+
+2026-02-04T01:42:57Z info: Pushing pid1 binary layer...
+2026-02-04T01:43:00Z info: Created pid1 binary layer
+2026-02-04T01:43:01Z info: Pushing Repl layer...
+2026-02-04T01:43:01Z info: Pushing hosting layer...
+2026-02-04T01:43:01Z info: Nix layers for this Repl are uncached.
+2026-02-04T01:43:01Z info: Pushing nix-0 layer...
+2026-02-04T01:43:01Z warning: Detected broken symlink! The path "/tmp/pulse-OpBl0K532Bg5" does not exist.
+2026-02-04T01:43:02Z info: Created hosting layer
+2026-02-04T01:43:02Z warning: Detected broken symlink! The path "/nix/store/2lcqw1d28vklbk8ikiwad28iq2smwndv-python-wrapped-0.1.0/bin/.python-wrapped" does not exist.
+2026-02-04T01:43:35Z info: Created Repl layer
+2026-02-04T01:43:35Z info: Pushing Repl (cache) layer...
+2026-02-04T01:43:36Z info: Created Repl (cache) layer
+2026-02-04T01:45:44Z info: Created nix-0 layer
+2026-02-04T01:45:44Z info: uploading image for cached layer
+2026-02-04T01:45:45Z info: pushed cache image manifest
+2026-02-04T01:45:46Z info: pushed cache soci index manifest
+2026-02-04T01:45:46Z info: uploading cached layer
+2026-02-04T01:45:46Z info: successfully uploaded cached layer
+2026-02-04T01:45:49Z info: Pushed image manifest

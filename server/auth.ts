@@ -16,6 +16,7 @@ import { dripEmailEngine } from "./email/drip-engine";
 import { welcomeRegistrationTemplate, magicLinkSignInTemplate } from "./email/templates/index";
 import { sendEmail } from "./email/send";
 import { z } from "zod";
+import { getTenantFromHost } from "./tenants";
 
 // Extend the session type to include gmailToken
 declare module 'express-session' {
@@ -113,6 +114,7 @@ async function verifyFirebaseToken(req: Request): Promise<SelectUser | null> {
         email: decodedToken.email,
         username: decodedToken.name || decodedToken.email.split('@')[0],
         password: '',  // Not used for Firebase auth
+        signupTenant: getTenantFromHost(req.hostname || ''),
       });
       
       // Award registration credits using unified system (non-blocking)
@@ -354,6 +356,7 @@ export function setupAuth(app: Express) {
         const user = await storage.createUser({
           email,
           password: hashedPassword,
+          signupTenant: getTenantFromHost(req.hostname || ''),
         });
 
         console.log('User created successfully:', {
@@ -604,6 +607,7 @@ export function setupAuth(app: Express) {
             email,
             username: username || email.split('@')[0],
             password: '',  // Not used for Google auth
+            signupTenant: getTenantFromHost(req.hostname || ''),
           });
           console.log(`[/api/google-auth] Successfully created new user: id=${user.id}`);
           

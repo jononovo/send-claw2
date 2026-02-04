@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import type { GuidanceTooltipProps } from "../types";
 import { findElement } from "../utils/elementSelector";
-import ducklingMascot from "@/assets/duckling-mascot.png";
+const ducklingMascot = "/tenants/5ducks/duckling-mascot.png";
 
 export function GuidanceTooltip({
   targetSelector,

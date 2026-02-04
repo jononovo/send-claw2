@@ -7,6 +7,7 @@ export const users = pgTable("users", {
   password: text("password").notNull(),
   email: text("email").notNull(),
   firebaseUid: text("firebase_uid"), // Firebase UID for mapping
+  signupTenant: text("signup_tenant"), // Tenant domain where user signed up (e.g., 'sendclaw', '5ducks')
   createdAt: timestamp("created_at").defaultNow(),
   isGuest: boolean("is_guest").default(false),
   isAdmin: boolean("is_admin").default(false)

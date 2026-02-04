@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { ArrowRight, Bot, User, Copy, Check, Moon, Sun, Mail, Users, Send, Inbox } from "lucide-react";
-import sendclawMascot from "@/assets/sendclaw-mascot.png";
+const sendclawMascot = "/tenants/sendclaw/images/sendclaw-mascot.png";
 
 function formatTimeAgo(date: Date | string): string {
   const now = new Date();
