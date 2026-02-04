@@ -2,7 +2,7 @@ import express, { Router, Request, Response, NextFunction } from "express";
 import crypto from "crypto";
 import { db } from "../db";
 import { bots, handles, messages, quotaUsage, dailyCheckins, socialShareRewards, insertBotSchema, insertMessageSchema } from "@shared/schema";
-import { eq, and, desc, sql, or, inArray, ilike } from "drizzle-orm";
+import { eq, and, desc, sql, or, inArray, ilike, lt, gt, gte, lte } from "drizzle-orm";
 import { MailService } from '@sendgrid/mail';
 import multer from "multer";
 import { CreditRewardService } from "../features/billing/rewards/service";
@@ -122,9 +122,11 @@ function parseSearchQuery(q: string): {
   from?: string; 
   to?: string; 
   subject?: string; 
+  after?: Date;
+  before?: Date;
   keywords: string[];
 } {
-  const result: { from?: string; to?: string; subject?: string; keywords: string[] } = { keywords: [] };
+  const result: { from?: string; to?: string; subject?: string; after?: Date; before?: Date; keywords: string[] } = { keywords: [] };
   const tokens = q.trim().split(/\s+/);
   
   for (const token of tokens) {
@@ -132,6 +134,16 @@ function parseSearchQuery(q: string): {
     if (lowerToken.startsWith('from:')) result.from = token.slice(5);
     else if (lowerToken.startsWith('to:')) result.to = token.slice(3);
     else if (lowerToken.startsWith('subject:')) result.subject = token.slice(8);
+    else if (lowerToken.startsWith('after:')) {
+      const dateStr = token.slice(6);
+      const parsed = new Date(dateStr);
+      if (!isNaN(parsed.getTime())) result.after = parsed;
+    }
+    else if (lowerToken.startsWith('before:')) {
+      const dateStr = token.slice(7);
+      const parsed = new Date(dateStr);
+      if (!isNaN(parsed.getTime())) result.before = parsed;
+    }
     else if (token) result.keywords.push(token);
   }
   
@@ -788,17 +800,26 @@ router.get('/mail/inbox', apiKeyAuth, loadBotFromApiKey, async (req: Request, re
   try {
     const bot = (req as any).bot;
     const limit = Math.min(parseInt(req.query.limit as string) || 50, 100);
-    const offset = parseInt(req.query.offset as string) || 0;
+    const cursor = req.query.cursor as string | undefined;
+
+    const conditions: any[] = [eq(messages.botId, bot.id)];
+    if (cursor) {
+      conditions.push(lt(messages.id, cursor));
+    }
 
     const botMessages = await db.select().from(messages)
-      .where(eq(messages.botId, bot.id))
+      .where(and(...conditions))
       .orderBy(desc(messages.createdAt))
-      .limit(limit)
-      .offset(offset);
+      .limit(limit + 1);
+
+    const hasMore = botMessages.length > limit;
+    const results = hasMore ? botMessages.slice(0, limit) : botMessages;
+    const nextCursor = hasMore && results.length > 0 ? results[results.length - 1].id : null;
 
     res.json({
-      messages: botMessages,
-      pagination: { limit, offset }
+      messages: results,
+      hasMore,
+      ...(nextCursor && { nextCursor })
     });
   } catch (error) {
     console.error('[SendClaw] Inbox error:', error);
@@ -887,13 +908,18 @@ router.get('/mail/messages', apiKeyAuth, loadBotFromApiKey, async (req: Request,
   try {
     const bot = (req as any).bot;
     const limit = Math.min(parseInt(req.query.limit as string) || 20, 100);
-    const offset = parseInt(req.query.offset as string) || 0;
+    const cursor = req.query.cursor as string | undefined;
     const unreadOnly = req.query.unread === 'true';
     const direction = req.query.direction as 'inbound' | 'outbound' | undefined;
     const q = req.query.q as string | undefined;
     
     // Build query conditions
     const conditions: any[] = [eq(messages.botId, bot.id)];
+    
+    // Cursor-based pagination: get messages with id < cursor (since we order by desc)
+    if (cursor) {
+      conditions.push(lt(messages.id, cursor));
+    }
     
     if (unreadOnly) {
       conditions.push(eq(messages.isRead, false));
@@ -917,6 +943,12 @@ router.get('/mail/messages', apiKeyAuth, loadBotFromApiKey, async (req: Request,
       if (search.subject) {
         conditions.push(ilike(messages.subject, `%${search.subject}%`));
       }
+      if (search.after) {
+        conditions.push(gte(messages.createdAt, search.after));
+      }
+      if (search.before) {
+        conditions.push(lte(messages.createdAt, search.before));
+      }
       for (const keyword of search.keywords) {
         conditions.push(or(
           ilike(messages.subject, `%${keyword}%`),
@@ -925,37 +957,31 @@ router.get('/mail/messages', apiKeyAuth, loadBotFromApiKey, async (req: Request,
       }
     }
     
+    // Fetch one extra to determine hasMore
     const botMessages = await db.select().from(messages)
       .where(and(...conditions))
       .orderBy(desc(messages.createdAt))
-      .limit(limit)
-      .offset(offset);
+      .limit(limit + 1);
+    
+    // Check if there are more results
+    const hasMore = botMessages.length > limit;
+    const results = hasMore ? botMessages.slice(0, limit) : botMessages;
     
     // Auto-mark as read when fetching unread messages
-    if (unreadOnly && botMessages.length > 0) {
-      const ids = botMessages.map(m => m.id);
+    if (unreadOnly && results.length > 0) {
+      const ids = results.map(m => m.id);
       await db.update(messages)
         .set({ isRead: true })
         .where(inArray(messages.id, ids));
     }
     
-    // Check if there are more unread (for pagination)
-    let hasMore = false;
-    if (unreadOnly) {
-      const [{ remaining }] = await db.select({ remaining: sql<number>`count(*)::int` })
-        .from(messages)
-        .where(and(
-          eq(messages.botId, bot.id),
-          eq(messages.direction, 'inbound'),
-          eq(messages.isRead, false)
-        ));
-      hasMore = remaining > 0;
-    }
+    // Return next cursor if there are more results
+    const nextCursor = hasMore && results.length > 0 ? results[results.length - 1].id : null;
     
     res.json({
-      messages: botMessages,
-      ...(unreadOnly && { hasMore }),
-      pagination: { limit, offset }
+      messages: results,
+      hasMore,
+      ...(nextCursor && { nextCursor })
     });
   } catch (error) {
     console.error('[SendClaw] Messages error:', error);

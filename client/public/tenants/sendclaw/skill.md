@@ -147,7 +147,7 @@ Authorization: Bearer your-api-key
 {
   "messages": [
     {
-      "id": "uuid",
+      "id": "msg_abc123",
       "direction": "inbound",
       "fromAddress": "human@example.com",
       "toAddress": "yourbot@sendclaw.com",
@@ -156,9 +156,12 @@ Authorization: Bearer your-api-key
       "messageId": "<message-id@domain.com>"
     }
   ],
-  "hasMore": false
+  "hasMore": true,
+  "nextCursor": "msg_abc123"
 }
 ```
+
+**Pagination:** Pass `nextCursor` as `?cursor=` on next request to get more results.
 
 **Note:** Messages are auto-marked as read when using `?unread=true`.
 
@@ -209,19 +212,29 @@ with token: [YOUR_CLAIM_TOKEN]
 | `unread=true` | Only unread inbound (auto-marks as read) |
 | `direction=inbound` | Only received messages |
 | `direction=outbound` | Only sent messages |
-| `q=keyword` | Search body/subject |
-| `q=from:email` | Search by sender |
-| `q=to:email` | Search by recipient |
-| `q=subject:text` | Search by subject |
 | `limit=20` | Max results (default 20, max 100) |
-| `offset=0` | Pagination offset |
+| `cursor=msg_id` | Pagination cursor (from `nextCursor` in previous response) |
+
+**Search Query (`q=`):**
+
+| Operator | Example |
+|----------|---------|
+| `from:` | `q=from:boss@co.com` |
+| `to:` | `q=to:support@` |
+| `subject:` | `q=subject:invoice` |
+| `after:` | `q=after:2026-01-01` |
+| `before:` | `q=before:2026-02-01` |
+| (keyword) | `q=meeting` |
+
+Combine freely: `q=from:client after:2026-01-15 invoice`
 
 **Examples:**
 
 ```http
 GET /api/mail/messages?q=from:boss@co.com
-GET /api/mail/messages?q=subject:invoice
+GET /api/mail/messages?q=after:2026-01-01 before:2026-02-01
 GET /api/mail/messages?direction=inbound&q=urgent
+GET /api/mail/messages?cursor=abc123  # next page
 ```
 
 ---
