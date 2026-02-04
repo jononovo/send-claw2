@@ -2,8 +2,28 @@ import { Router, Request, Response } from 'express';
 import { requireAdmin } from '../../utils/admin-auth';
 import { db } from '../../db';
 import { bots, messages, emailFlags, securityReports } from '@shared/schema';
-import { eq, desc, and, gte, sql, count } from 'drizzle-orm';
+import { eq, desc, and, gte, lte, sql, count } from 'drizzle-orm';
 import { botEmailSecurityEngine } from './review-engine';
+
+function getDateRange(preset: string): { from: Date | null; to: Date | null } {
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  
+  switch (preset) {
+    case 'today':
+      return { from: today, to: null };
+    case 'last7':
+      const week = new Date(today);
+      week.setDate(week.getDate() - 7);
+      return { from: week, to: null };
+    case 'last30':
+      const month = new Date(today);
+      month.setDate(month.getDate() - 30);
+      return { from: month, to: null };
+    default:
+      return { from: null, to: null };
+  }
+}
 
 const router = Router();
 
@@ -138,6 +158,99 @@ router.post('/force-review', requireAdmin, async (req: Request, res: Response) =
   } catch (error) {
     console.error('[BotEmailSecurity] Force review error:', error);
     res.status(500).json({ error: 'Failed to run review' });
+  }
+});
+
+router.get('/flags', requireAdmin, async (req: Request, res: Response) => {
+  try {
+    const status = req.query.status as string;
+    const datePreset = req.query.date as string || 'all';
+    const page = parseInt(req.query.page as string) || 1;
+    const pageSize = parseInt(req.query.pageSize as string) || 20;
+    const offset = (page - 1) * pageSize;
+
+    const { from: dateFrom } = getDateRange(datePreset);
+
+    const conditions: any[] = [];
+    
+    if (status && ['flagged', 'under_review', 'suspended'].includes(status)) {
+      conditions.push(eq(emailFlags.suggestedStatus, status as any));
+    }
+    
+    if (dateFrom) {
+      conditions.push(gte(emailFlags.createdAt, dateFrom));
+    }
+
+    const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
+
+    const [{ total }] = await db
+      .select({ total: count() })
+      .from(emailFlags)
+      .where(whereClause);
+
+    const flags = await db
+      .select({
+        id: emailFlags.id,
+        messageId: emailFlags.messageId,
+        botId: emailFlags.botId,
+        botName: bots.name,
+        botAddress: bots.address,
+        currentBotStatus: bots.status,
+        totalBotFlags: bots.flagCount,
+        suggestedStatus: emailFlags.suggestedStatus,
+        reason: emailFlags.reason,
+        flaggedAt: emailFlags.createdAt,
+        emailSubject: messages.subject
+      })
+      .from(emailFlags)
+      .leftJoin(bots, eq(emailFlags.botId, bots.id))
+      .leftJoin(messages, eq(emailFlags.messageId, messages.id))
+      .where(whereClause)
+      .orderBy(desc(emailFlags.createdAt))
+      .limit(pageSize)
+      .offset(offset);
+
+    res.json({
+      items: flags,
+      total: Number(total),
+      page,
+      pageSize
+    });
+  } catch (error) {
+    console.error('[BotEmailSecurity] Flags list error:', error);
+    res.status(500).json({ error: 'Failed to fetch flags' });
+  }
+});
+
+router.post('/bots/:botId/reinstate', requireAdmin, async (req: Request, res: Response) => {
+  try {
+    const { botId } = req.params;
+
+    const [bot] = await db
+      .select({ id: bots.id, name: bots.name, status: bots.status })
+      .from(bots)
+      .where(eq(bots.id, botId))
+      .limit(1);
+
+    if (!bot) {
+      res.status(404).json({ error: 'Bot not found' });
+      return;
+    }
+
+    await db.update(bots)
+      .set({ status: 'normal', flagCount: 0 })
+      .where(eq(bots.id, botId));
+
+    console.log(`[BotEmailSecurity] Bot ${bot.name} (${botId}) reinstated by admin`);
+
+    res.json({ 
+      success: true, 
+      message: `Bot "${bot.name}" has been reinstated`,
+      previousStatus: bot.status
+    });
+  } catch (error) {
+    console.error('[BotEmailSecurity] Reinstate error:', error);
+    res.status(500).json({ error: 'Failed to reinstate bot' });
   }
 });
 
