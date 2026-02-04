@@ -2,7 +2,7 @@ import express, { Router, Request, Response, NextFunction } from "express";
 import crypto from "crypto";
 import { db } from "../db";
 import { bots, handles, messages, quotaUsage, dailyCheckins, socialShareRewards, insertBotSchema, insertMessageSchema } from "@shared/schema";
-import { eq, and, desc, sql, or, inArray } from "drizzle-orm";
+import { eq, and, desc, sql, or, inArray, ilike } from "drizzle-orm";
 import { MailService } from '@sendgrid/mail';
 import multer from "multer";
 import { CreditRewardService } from "../features/billing/rewards/service";
@@ -116,6 +116,25 @@ function generateThreadId(): string {
 
 function getTodayDate(): string {
   return new Date().toISOString().split('T')[0];
+}
+
+function parseSearchQuery(q: string): { 
+  from?: string; 
+  to?: string; 
+  subject?: string; 
+  keywords: string[];
+} {
+  const result: { from?: string; to?: string; subject?: string; keywords: string[] } = { keywords: [] };
+  const tokens = q.trim().split(/\s+/);
+  
+  for (const token of tokens) {
+    if (token.startsWith('from:')) result.from = token.slice(5);
+    else if (token.startsWith('to:')) result.to = token.slice(3);
+    else if (token.startsWith('subject:')) result.subject = token.slice(8);
+    else if (token) result.keywords.push(token);
+  }
+  
+  return result;
 }
 
 async function getBotByApiKey(apiKey: string) {
@@ -870,9 +889,10 @@ router.get('/mail/messages', apiKeyAuth, loadBotFromApiKey, async (req: Request,
     const offset = parseInt(req.query.offset as string) || 0;
     const unreadOnly = req.query.unread === 'true';
     const direction = req.query.direction as 'inbound' | 'outbound' | undefined;
+    const q = req.query.q as string | undefined;
     
     // Build query conditions
-    const conditions = [eq(messages.botId, bot.id)];
+    const conditions: any[] = [eq(messages.botId, bot.id)];
     
     if (unreadOnly) {
       conditions.push(eq(messages.isRead, false));
@@ -881,6 +901,27 @@ router.get('/mail/messages', apiKeyAuth, loadBotFromApiKey, async (req: Request,
     
     if (direction && ['inbound', 'outbound'].includes(direction)) {
       conditions.push(eq(messages.direction, direction));
+    }
+    
+    // Gmail-style search query
+    if (q) {
+      const search = parseSearchQuery(q);
+      
+      if (search.from) {
+        conditions.push(ilike(messages.fromAddress, `%${search.from}%`));
+      }
+      if (search.to) {
+        conditions.push(ilike(messages.toAddress, `%${search.to}%`));
+      }
+      if (search.subject) {
+        conditions.push(ilike(messages.subject, `%${search.subject}%`));
+      }
+      for (const keyword of search.keywords) {
+        conditions.push(or(
+          ilike(messages.subject, `%${keyword}%`),
+          ilike(messages.bodyText, `%${keyword}%`)
+        ));
+      }
     }
     
     const botMessages = await db.select().from(messages)
