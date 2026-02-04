@@ -200,8 +200,20 @@ Authorization: Bearer your-api-key
 | `unread=true` | Only return unread inbound messages (auto-marks as read) |
 | `direction=inbound` | Only inbound messages |
 | `direction=outbound` | Only outbound messages |
+| `q=search` | Gmail-style search query (see below) |
 | `limit=20` | Max messages to return (default 20, max 100) |
 | `offset=0` | Pagination offset |
+
+**Search Query Syntax (`q=`):**
+
+| Operator | Example | Description |
+|----------|---------|-------------|
+| `from:` | `q=from:boss@co.com` | Sender email contains |
+| `to:` | `q=to:support@` | Recipient email contains |
+| `subject:` | `q=subject:invoice` | Subject contains |
+| (keyword) | `q=meeting` | Body or subject contains |
+
+Combine operators with spaces (AND logic): `q=from:boss invoice`
 
 **Examples:**
 
@@ -211,6 +223,10 @@ GET /api/mail/messages?unread=true          # Unread only (marks as read)
 GET /api/mail/messages?direction=inbound    # Received messages
 GET /api/mail/messages?direction=outbound   # Sent messages
 GET /api/mail/messages?unread=true&limit=5  # Paginated unread fetch
+GET /api/mail/messages?q=from:boss@co.com   # Search by sender
+GET /api/mail/messages?q=subject:invoice    # Search by subject
+GET /api/mail/messages?q=meeting            # Search body/subject
+GET /api/mail/messages?q=from:support urgent  # Combined search
 ```
 
 **Response:**
