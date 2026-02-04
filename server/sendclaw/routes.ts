@@ -2,7 +2,7 @@ import express, { Router, Request, Response, NextFunction } from "express";
 import crypto from "crypto";
 import { db } from "../db";
 import { bots, handles, messages, quotaUsage, dailyCheckins, socialShareRewards, insertBotSchema, insertMessageSchema } from "@shared/schema";
-import { eq, and, desc, sql, or } from "drizzle-orm";
+import { eq, and, desc, sql, or, inArray } from "drizzle-orm";
 import { MailService } from '@sendgrid/mail';
 import multer from "multer";
 import { CreditRewardService } from "../features/billing/rewards/service";
@@ -822,6 +822,134 @@ router.get('/mail/inbox/:botId', async (req: Request, res: Response) => {
   } catch (error) {
     console.error('[SendClaw] Inbox by ID error:', error);
     res.status(500).json({ error: 'Failed to fetch inbox' });
+  }
+});
+
+// Gmail-style unified messages API
+// GET /api/mail/check - Lightweight unread count (for heartbeat polling)
+router.get('/mail/check', apiKeyAuth, loadBotFromApiKey, async (req: Request, res: Response) => {
+  try {
+    const bot = (req as any).bot;
+    
+    // Count unread inbound messages only
+    const [{ count }] = await db.select({ count: sql<number>`count(*)::int` })
+      .from(messages)
+      .where(and(
+        eq(messages.botId, bot.id),
+        eq(messages.direction, 'inbound'),
+        eq(messages.isRead, false)
+      ));
+    
+    // Get quota info
+    const today = new Date().toISOString().split('T')[0];
+    const [usage] = await db.select().from(quotaUsage)
+      .where(and(eq(quotaUsage.botId, bot.id), eq(quotaUsage.date, today)));
+    
+    const dailyLimit = bot.dailyEmailLimit || 3;
+    const used = usage?.emailsSent || 0;
+    
+    res.json({
+      unreadCount: count,
+      quota: {
+        used,
+        limit: dailyLimit,
+        remaining: Math.max(0, dailyLimit - used)
+      }
+    });
+  } catch (error) {
+    console.error('[SendClaw] Check error:', error);
+    res.status(500).json({ error: 'Failed to check messages' });
+  }
+});
+
+// GET /api/mail/messages - Gmail-style unified endpoint
+router.get('/mail/messages', apiKeyAuth, loadBotFromApiKey, async (req: Request, res: Response) => {
+  try {
+    const bot = (req as any).bot;
+    const limit = Math.min(parseInt(req.query.limit as string) || 20, 100);
+    const offset = parseInt(req.query.offset as string) || 0;
+    const unreadOnly = req.query.unread === 'true';
+    const direction = req.query.direction as 'inbound' | 'outbound' | undefined;
+    
+    // Build query conditions
+    const conditions = [eq(messages.botId, bot.id)];
+    
+    if (unreadOnly) {
+      conditions.push(eq(messages.isRead, false));
+      conditions.push(eq(messages.direction, 'inbound')); // Only inbound can be "unread"
+    }
+    
+    if (direction && ['inbound', 'outbound'].includes(direction)) {
+      conditions.push(eq(messages.direction, direction));
+    }
+    
+    const botMessages = await db.select().from(messages)
+      .where(and(...conditions))
+      .orderBy(desc(messages.createdAt))
+      .limit(limit)
+      .offset(offset);
+    
+    // Auto-mark as read when fetching unread messages
+    if (unreadOnly && botMessages.length > 0) {
+      const ids = botMessages.map(m => m.id);
+      await db.update(messages)
+        .set({ isRead: true })
+        .where(inArray(messages.id, ids));
+    }
+    
+    // Check if there are more unread (for pagination)
+    let hasMore = false;
+    if (unreadOnly) {
+      const [{ remaining }] = await db.select({ remaining: sql<number>`count(*)::int` })
+        .from(messages)
+        .where(and(
+          eq(messages.botId, bot.id),
+          eq(messages.direction, 'inbound'),
+          eq(messages.isRead, false)
+        ));
+      hasMore = remaining > 0;
+    }
+    
+    res.json({
+      messages: botMessages,
+      ...(unreadOnly && { hasMore }),
+      pagination: { limit, offset }
+    });
+  } catch (error) {
+    console.error('[SendClaw] Messages error:', error);
+    res.status(500).json({ error: 'Failed to fetch messages' });
+  }
+});
+
+// GET /api/mail/messages/:id - Get single message by ID
+router.get('/mail/messages/:messageId', apiKeyAuth, loadBotFromApiKey, async (req: Request, res: Response) => {
+  try {
+    const bot = (req as any).bot;
+    const { messageId } = req.params;
+    
+    const [message] = await db.select().from(messages)
+      .where(and(
+        eq(messages.id, messageId),
+        eq(messages.botId, bot.id)
+      ))
+      .limit(1);
+    
+    if (!message) {
+      res.status(404).json({ error: 'Message not found' });
+      return;
+    }
+    
+    // Mark as read if inbound
+    if (message.direction === 'inbound' && !message.isRead) {
+      await db.update(messages)
+        .set({ isRead: true })
+        .where(eq(messages.id, messageId));
+    }
+    
+    res.json(message);
+  } catch (error) {
+    console.error('[SendClaw] Get message error:', error);
+    res.status(500).json({ error: 'Failed to fetch message' });
   }
 });
 
