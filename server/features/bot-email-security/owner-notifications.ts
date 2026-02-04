@@ -137,23 +137,9 @@ SendClaw Security Team
 export async function notifyBotOwner(notification: StatusChangeNotification): Promise<boolean> {
   try {
     const { html, text, subject } = buildNotificationEmail(notification);
-    let notifiedCount = 0;
+    const cc: string[] = [];
 
-    // Always notify the bot at its own address
-    try {
-      await sendEmail({
-        to: notification.botAddress,
-        content: { subject, html, text },
-        fromEmail: SECURITY_EMAIL,
-        fromName: 'SendClaw Security'
-      });
-      console.log(`[BotEmailSecurity] Sent status notification to bot ${notification.botAddress}`);
-      notifiedCount++;
-    } catch (err) {
-      console.error(`[BotEmailSecurity] Failed to notify bot ${notification.botAddress}:`, err);
-    }
-
-    // Also notify the human owner if bot is claimed
+    // Check if bot has a human owner to CC
     const [bot] = await db.select({
       userId: bots.userId
     }).from(bots).where(eq(bots.id, notification.botId)).limit(1);
@@ -164,24 +150,24 @@ export async function notifyBotOwner(notification: StatusChangeNotification): Pr
       }).from(users).where(eq(users.id, bot.userId)).limit(1);
 
       if (user?.email) {
-        try {
-          await sendEmail({
-            to: user.email,
-            content: { subject, html, text },
-            fromEmail: SECURITY_EMAIL,
-            fromName: 'SendClaw Security'
-          });
-          console.log(`[BotEmailSecurity] Sent status notification to owner ${user.email}`);
-          notifiedCount++;
-        } catch (err) {
-          console.error(`[BotEmailSecurity] Failed to notify owner ${user.email}:`, err);
-        }
+        cc.push(user.email);
       }
     }
 
-    return notifiedCount > 0;
+    // Send one email to bot, CC owner if claimed
+    await sendEmail({
+      to: notification.botAddress,
+      cc: cc.length > 0 ? cc : undefined,
+      content: { subject, html, text },
+      fromEmail: SECURITY_EMAIL,
+      fromName: 'SendClaw Security'
+    });
+
+    const recipients = [notification.botAddress, ...cc].join(', ');
+    console.log(`[BotEmailSecurity] Sent status notification to ${recipients}`);
+    return true;
   } catch (error) {
-    console.error('[BotEmailSecurity] Failed to send notifications:', error);
+    console.error('[BotEmailSecurity] Failed to send notification:', error);
     return false;
   }
 }
