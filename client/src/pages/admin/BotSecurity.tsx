@@ -68,7 +68,7 @@ export default function BotSecurity() {
     },
     onSuccess: (data: any) => {
       toast({ title: 'Bot Reinstated', description: data.message });
-      queryClient.invalidateQueries({ queryKey: ['/api/bot-security/flags'] });
+      queryClient.invalidateQueries({ predicate: (q) => q.queryKey[0]?.toString().startsWith('/api/bot-security/flags') ?? false });
     },
     onError: () => {
       toast({ title: 'Error', description: 'Failed to reinstate bot', variant: 'destructive' });
@@ -81,7 +81,7 @@ export default function BotSecurity() {
     },
     onSuccess: (data: any) => {
       toast({ title: 'Review Complete', description: data.message });
-      queryClient.invalidateQueries({ queryKey: ['/api/bot-security/flags'] });
+      queryClient.invalidateQueries({ predicate: (q) => q.queryKey[0]?.toString().startsWith('/api/bot-security/flags') ?? false });
       setReviewDateOpen(false);
       setSelectedReviewDate(undefined);
     },

@@ -69,18 +69,18 @@ class BotEmailSecurityEngine {
     let reportDate: string;
 
     if (targetDate) {
-      // Use provided date (format: YYYY-MM-DD)
-      reviewStart = new Date(targetDate + 'T00:00:00');
-      reviewEnd = new Date(targetDate + 'T23:59:59.999');
+      // Use provided date (format: YYYY-MM-DD) in UTC
+      reviewStart = new Date(targetDate + 'T00:00:00Z');
+      reviewEnd = new Date(targetDate + 'T23:59:59.999Z');
       reportDate = targetDate;
     } else {
-      // Default: yesterday
+      // Default: yesterday in UTC
       reviewStart = new Date();
-      reviewStart.setDate(reviewStart.getDate() - 1);
-      reviewStart.setHours(0, 0, 0, 0);
+      reviewStart.setUTCDate(reviewStart.getUTCDate() - 1);
+      reviewStart.setUTCHours(0, 0, 0, 0);
       
       reviewEnd = new Date();
-      reviewEnd.setHours(0, 0, 0, 0);
+      reviewEnd.setUTCHours(0, 0, 0, 0);
       
       reportDate = reviewStart.toISOString().split('T')[0];
     }
@@ -135,6 +135,13 @@ class BotEmailSecurityEngine {
     for (const flag of reviewResult.flagged) {
       const email = emailsForReview.find(e => e.id === flag.id);
       if (!email) continue;
+
+      // Skip if already flagged (prevents duplicates on re-runs)
+      const [existingFlag] = await db.select({ id: emailFlags.id })
+        .from(emailFlags)
+        .where(eq(emailFlags.messageId, email.id))
+        .limit(1);
+      if (existingFlag) continue;
 
       await db.insert(emailFlags).values({
         messageId: email.id,
