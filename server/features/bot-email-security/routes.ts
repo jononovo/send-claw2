@@ -152,16 +152,21 @@ router.get('/flags/:botId', requireAdmin, async (req: Request, res: Response) =>
 });
 
 router.post('/force-review', requireAdmin, async (req: Request, res: Response) => {
+  console.log('[BotEmailSecurity] FORCE-REVIEW ROUTE HIT');
   try {
+    console.log('[BotEmailSecurity] Engine exists:', !!botEmailSecurityEngine);
     const { date } = req.body;
     console.log(`[BotEmailSecurity] FORCE-REVIEW: Starting with date=${date || 'undefined (default yesterday)'}`);
     await botEmailSecurityEngine.forceRun(date);
     console.log(`[BotEmailSecurity] FORCE-REVIEW: Completed successfully`);
     res.json({ success: true, message: date ? `Review triggered for ${date}` : 'Daily review triggered' });
-  } catch (error) {
-    console.error('[BotEmailSecurity] FORCE-REVIEW ERROR:', error);
-    console.error('[BotEmailSecurity] Error stack:', error instanceof Error ? error.stack : 'No stack');
-    res.status(500).json({ error: 'Failed to run review' });
+  } catch (error: any) {
+    console.error('[BotEmailSecurity] FORCE-REVIEW ERROR TYPE:', typeof error);
+    console.error('[BotEmailSecurity] FORCE-REVIEW ERROR NAME:', error?.name);
+    console.error('[BotEmailSecurity] FORCE-REVIEW ERROR MSG:', error?.message);
+    console.error('[BotEmailSecurity] FORCE-REVIEW ERROR STACK:', error?.stack);
+    console.error('[BotEmailSecurity] FORCE-REVIEW FULL ERROR:', JSON.stringify(error, Object.getOwnPropertyNames(error || {})));
+    res.status(500).json({ error: 'Failed to run review', details: error?.message });
   }
 });
 
