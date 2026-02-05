@@ -64,6 +64,8 @@ class BotEmailSecurityEngine {
   }
 
   async runDailyReview(targetDate?: string) {
+    console.log(`[BotEmailSecurity] STEP-0: runDailyReview started, targetDate=${targetDate || 'undefined'}`);
+    
     let reviewStart: Date;
     let reviewEnd: Date;
     let reportDate: string;
@@ -85,7 +87,7 @@ class BotEmailSecurityEngine {
       reportDate = reviewStart.toISOString().split('T')[0];
     }
 
-    console.log(`[BotEmailSecurity] Reviewing emails from ${reportDate}`);
+    console.log(`[BotEmailSecurity] STEP-1: Date range: ${reviewStart.toISOString()} to ${reviewEnd.toISOString()}, reportDate=${reportDate}`);
 
     const outboundEmails = await db
       .select({
@@ -127,9 +129,11 @@ class BotEmailSecurityEngine {
         createdAt: e.createdAt!
       }));
 
-    console.log(`[BotEmailSecurity] Found ${emailsForReview.length} outbound emails to review`);
+    console.log(`[BotEmailSecurity] STEP-2: Found ${emailsForReview.length} outbound emails to review`);
 
+    console.log(`[BotEmailSecurity] STEP-3: Starting AI review...`);
     const reviewResult = await reviewEmails(emailsForReview);
+    console.log(`[BotEmailSecurity] STEP-3: AI review complete, flagged=${reviewResult.flagged.length}`);
     const flaggedEmails: FlaggedEmailReport[] = [];
 
     for (const flag of reviewResult.flagged) {
@@ -166,7 +170,10 @@ class BotEmailSecurityEngine {
       });
     }
 
+    console.log(`[BotEmailSecurity] STEP-4: Gathering stats...`);
     const stats = await this.gatherStats(reviewStart, reviewEnd);
+    console.log(`[BotEmailSecurity] STEP-4: Stats gathered`);
+    
     const allSubjectLines = outboundEmails
       .map(e => e.subject || '(no subject)')
       .slice(0, 100);
@@ -178,6 +185,7 @@ class BotEmailSecurityEngine {
       allSubjectLines
     };
 
+    console.log(`[BotEmailSecurity] STEP-5: Saving report to database...`);
     await db.insert(securityReports).values({
       reportDate,
       stats: stats as any,
@@ -190,8 +198,11 @@ class BotEmailSecurityEngine {
         flaggedEmails: flaggedEmails as any
       }
     });
+    console.log(`[BotEmailSecurity] STEP-5: Report saved to database`);
 
+    console.log(`[BotEmailSecurity] STEP-6: Sending admin report email...`);
     const sent = await sendDailyReport(reportData);
+    console.log(`[BotEmailSecurity] STEP-6: Admin report sent=${sent}`);
     
     if (sent) {
       await db.update(securityReports)
@@ -199,7 +210,7 @@ class BotEmailSecurityEngine {
         .where(eq(securityReports.reportDate, reportDate));
     }
 
-    console.log(`[BotEmailSecurity] Daily review complete. Flagged: ${flaggedEmails.length}, Report sent: ${sent}`);
+    console.log(`[BotEmailSecurity] COMPLETE: Flagged=${flaggedEmails.length}, Report sent=${sent}`);
   }
 
   private async updateBotStatus(
