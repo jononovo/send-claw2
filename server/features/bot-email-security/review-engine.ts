@@ -175,7 +175,11 @@ class BotEmailSecurityEngine {
     console.log(`[BotEmailSecurity] STEP-4: Stats gathered`);
     
     const allSubjectLines = outboundEmails
-      .map(e => e.subject || '(no subject)')
+      .map(e => {
+        const botAddress = e.botId ? (botMap.get(e.botId)?.address || 'unknown') : 'unknown';
+        const handle = botAddress.split('@')[0];
+        return `${handle} | ${e.subject || '(no subject)'}`;
+      })
       .slice(0, 100);
 
     const reportData: SecurityReportData = {
