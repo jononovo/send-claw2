@@ -8,9 +8,14 @@ export function MiniFooter() {
           <span className="text-xs text-slate-600 dark:text-slate-400 italic">
             Soli Deo Gloria
           </span>
-          <span className="text-xs text-slate-600 dark:text-slate-400">
-            Made with ♥️ in NYC
-          </span>
+          <a
+            href="https://secureclawhub.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-xs text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400"
+          >
+            Audited & Verified at SecureClawHub.com
+          </a>
           <a
             href="https://www.linkedin.com/company/5ducks/"
             target="_blank"
