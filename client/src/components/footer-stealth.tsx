@@ -84,6 +84,9 @@ export function FooterStealth() {
               Soli Deo Gloria
             </span>
           </div>
+          <div className="text-xs text-gray-500">
+            Audited & Verified at SecureClawHub.com
+          </div>
           <div className="flex items-center space-x-6">
             <a
               href="https://www.linkedin.com/company/5ducks/"
