@@ -1,0 +1,101 @@
+2026-02-04 19:30:43.06
+e61183d5
+User
+}
+2026-02-04 19:30:43.06
+e61183d5
+User
+email: 'jon@5ducks.ai',
+2026-02-04 19:30:43.06
+e61183d5
+User
+userId: 30,
+2026-02-04 19:30:43.06
+e61183d5
+User
+[BotEmailSecurity] STEP-0: runDailyReview started, targetDate=undefined
+2026-02-04 19:30:43.06
+e61183d5
+User
+[BotEmailSecurity] Engine exists: true
+2026-02-04 19:30:43.06
+e61183d5
+User
+[BotEmailSecurity] Force running review...
+2026-02-04 19:30:43.06
+e61183d5
+User
+[BotEmailSecurity] FORCE-REVIEW: Starting with date=undefined (default yesterday)
+2026-02-04 19:30:43.06
+e61183d5
+User
+[BotEmailSecurity] STEP-1: Date range: 2026-02-04T00:00:00.000Z to 2026-02-05T00:00:00.000Z, reportDate=2026-02-04
+2026-02-04 19:30:43.06
+e61183d5
+User
+[BotEmailSecurity] FORCE-REVIEW ROUTE HIT
+2026-02-04 19:30:43.18
+e61183d5
+User
+[BotEmailSecurity] FORCE-REVIEW ERROR NAME: error
+2026-02-04 19:30:43.18
+e61183d5
+User
+[BotEmailSecurity] FORCE-REVIEW FULL ERROR: {"stack":"error: op ANY/ALL (array) requires array on right side\n at file:///home/runner/workspace/node_modules/@neondatabase/serverless/index.mjs:1087:33\n at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n at async NeonPreparedQuery.execute (file:///home/runner/workspace/node_modules/drizzle-orm/neon-serverless/session.js:76:20)\n at async BotEmailSecurityEngine.runDailyReview (file:///home/runner/workspace/dist/index.js:27571:24)\n at async BotEmailSecurityEngine.forceRun (file:///home/runner/workspace/dist/index.js:27707:7)\n at async file:///home/runner/workspace/dist/index.js:27832:5","message":"op ANY/ALL (array) requires array on right side","length":120,"name":"error","severity":"ERROR","code":"42809","position":"62","file":"parse_oper.c","line":"814","routine":"make_scalar_array_op"}
+2026-02-04 19:30:43.18
+e61183d5
+User
+at async BotEmailSecurityEngine.runDailyReview (file:///home/runner/workspace/dist/index.js:27571:24)
+2026-02-04 19:30:43.18
+e61183d5
+User
+at async NeonPreparedQuery.execute (file:///home/runner/workspace/node_modules/drizzle-orm/neon-serverless/session.js:76:20)
+2026-02-04 19:30:43.18
+e61183d5
+User
+[BotEmailSecurity] FORCE-REVIEW ERROR TYPE: object
+2026-02-04 19:30:43.18
+e61183d5
+User
+[BotEmailSecurity] FORCE-REVIEW ERROR STACK: error: op ANY/ALL (array) requires array on right side
+2026-02-04 19:30:43.18
+e61183d5
+User
+[BotEmailSecurity] FORCE-REVIEW ERROR MSG: op ANY/ALL (array) requires array on right side
+2026-02-04 19:30:43.18
+e61183d5
+User
+at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2026-02-04 19:30:43.18
+e61183d5
+User
+at file:///home/runner/workspace/node_modules/@neondatabase/serverless/index.mjs:1087:33
+2026-02-04 19:30:43.18
+e61183d5
+User
+at async file:///home/runner/workspace/dist/index.js:27832:5
+2026-02-04 19:30:43.21
+e61183d5
+User
+12:30:43 AM [express] POST /api/bot-security/force-review 500 in 237ms :: {"error":"Failed to run rev…
+2026-02-04 19:30:43.21
+e61183d5
+User
+12:30:43 AM [express] POST /api/bot-security/force-review 500 in 237ms :: {"error":"Failed to run rev…
+2026-02-04 19:30:43.21
+e61183d5
+User
+12:30:43 AM [express] POST /api/bot-security/force-review 500 in 237ms :: {"error":"Failed to run rev…
+2026-02-04 19:30:56.95
+e61183d5
+User
+[CampaignScheduler] Checking for scheduled campaigns at 2026-02-05T00:30:56.949Z
+2026-02-04 19:30:57.87
+e61183d5
+User
+[CampaignScheduler] No campaigns ready to activate
+2026-02-04 19:30:58.57
+e61183d5
+User
+[EmailQueueProcessor] PROCESS-START: 1770251458578-g0kmt2sq0 at 2026-02-05T00:30:58.578Z
+Wrap

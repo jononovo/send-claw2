@@ -1,6 +1,6 @@
 import { db } from '../../db';
 import { bots, messages, emailFlags, securityReports } from '@shared/schema';
-import { eq, and, gte, lte, count, sql } from 'drizzle-orm';
+import { eq, and, gte, lte, count, sql, inArray } from 'drizzle-orm';
 import { reviewEmails } from './ai-reviewer';
 import { sendDailyReport } from './report-generator';
 import { notifyBotOwner } from './owner-notifications';
@@ -112,7 +112,7 @@ class BotEmailSecurityEngine {
       const botsData = await db
         .select({ id: bots.id, name: bots.name, address: bots.address })
         .from(bots)
-        .where(sql`${bots.id} = ANY(${botIds})`);
+        .where(inArray(bots.id, botIds));
       
       botsData.forEach(b => botMap.set(b.id, { name: b.name, address: b.address }));
     }
