@@ -1,0 +1,124 @@
+2026-02-04 19:11:29.85
+3d8adb42
+User
+{
+2026-02-04 19:11:29.85
+3d8adb42
+User
+],
+2026-02-04 19:11:29.85
+3d8adb42
+User
+}
+2026-02-04 19:11:29.85
+3d8adb42
+User
+[Credits Route] Received credits from service: {
+2026-02-04 19:11:29.85
+3d8adb42
+User
+timestamp: 1770059158415,
+2026-02-04 19:11:29.85
+3d8adb42
+User
+[CreditService] Loaded credits for user 30: balance=250
+2026-02-04 19:11:29.85
+3d8adb42
+User
+isBlocked: false,
+2026-02-04 19:11:29.85
+3d8adb42
+User
+subscriptionEndDate: undefined,
+2026-02-04 19:11:29.85
+3d8adb42
+User
+stripeCustomerId: undefined,
+2026-02-04 19:11:29.85
+3d8adb42
+User
+subscriptionStatus: undefined,
+2026-02-04 19:11:29.85
+3d8adb42
+User
+badges: []
+2026-02-04 19:11:29.85
+3d8adb42
+User
+createdAt: 1770250289858,
+2026-02-04 19:11:29.85
+3d8adb42
+User
+currentPlan: undefined,
+2026-02-04 19:11:29.85
+3d8adb42
+User
+lastTopUp: 1770059158415,
+2026-02-04 19:11:29.85
+3d8adb42
+User
+searchType: undefined,
+2026-02-04 19:11:29.85
+3d8adb42
+User
+totalUsed: 0,
+2026-02-04 19:11:29.85
+3d8adb42
+User
+[Credits Route] Sending response for user 30: {
+2026-02-04 19:11:29.85
+3d8adb42
+User
+updatedAt: 1770250289858,
+2026-02-04 19:11:29.85
+3d8adb42
+User
+}
+2026-02-04 19:11:29.85
+3d8adb42
+User
+}
+2026-02-04 19:11:29.85
+3d8adb42
+User
+success: undefined
+2026-02-04 19:11:29.85
+3d8adb42
+User
+totalUsed: 0,
+2026-02-04 19:11:29.86
+3d8adb42
+User
+[CreditService] Loaded credits for user 30: balance=250
+2026-02-04 19:11:29.89
+3d8adb42
+User
+sessionID: 'yENxFWPMcyBwSh5_2EpXbF0t2_iEqrT1',
+2026-02-04 19:11:29.89
+3d8adb42
+User
+requireAdmin middleware check: {
+2026-02-04 19:11:29.89
+3d8adb42
+User
+path: '/flags',
+2026-02-04 19:11:29.89
+3d8adb42
+User
+userId: 30,
+2026-02-04 19:11:38.31
+3d8adb42
+User
+[EmailQueueProcessor] No queued recipients found
+2026-02-04 19:11:38.81
+3d8adb42
+User
+[JobProcessor] No pending jobs found
+2026-02-04 19:11:48.81
+3d8adb42
+User
+[EmailQueueProcessor] PROCESS-START: 1770250308817-h66lmgwfh at 2026-02-05T00:11:48.817Z
+2026-02-04 19:11:48.81
+3d8adb42
+User
+[EmailQueueProcessor] PROCESS-START: 1770250308817-h66lmgwfh at 2026-02-05T00:11:48.817Z
