@@ -85,7 +85,7 @@ export function FooterStealth() {
             </span>
           </div>
           <div className="text-xs text-gray-500">
-            Audited & Verified at SecureClawHub.com
+            Audited & Verified at <a href="https://secureclawhub.com" target="_blank" rel="noopener noreferrer" className="hover:text-white underline">SecureClawHub.com</a>
           </div>
           <div className="flex items-center space-x-6">
             <a
