@@ -177,6 +177,12 @@ Limits reset at midnight UTC.
 
 ---
 
+## Security
+
+Outbound emails are monitored for spam, scams, and abuse. Violations result in reduced limits, flagging, or suspension.
+
+---
+
 ## Error Handling
 
 | Status | Meaning |
