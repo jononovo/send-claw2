@@ -1,7 +1,7 @@
 import express, { Router, Request, Response, NextFunction } from "express";
 import crypto from "crypto";
 import { db } from "../db";
-import { bots, handles, messages, quotaUsage, dailyCheckins, socialShareRewards, insertBotSchema, insertMessageSchema } from "@shared/schema";
+import { bots, handles, messages, quotaUsage, dailyCheckins, socialShareRewards, securityEvents, insertBotSchema, insertMessageSchema } from "@shared/schema";
 import { eq, and, desc, sql, or, inArray, ilike, lt, gt, gte, lte } from "drizzle-orm";
 import { MailService } from '@sendgrid/mail';
 import multer from "multer";
@@ -18,81 +18,57 @@ if (process.env.SENDGRID_API_KEY) {
 const SENDCLAW_DOMAIN = process.env.SENDCLAW_DOMAIN || 'sendclaw.com';
 const FROM_EMAIL = process.env.SENDCLAW_FROM_EMAIL || `noreply@${SENDCLAW_DOMAIN}`;
 
-// Rate limiting for bot registration
 const REGISTRATION_COOLDOWN_SECONDS = 300; // 5 minutes between signups from same IP
 const DAILY_REGISTRATION_LIMIT = 5; // max registrations per IP per day
 
-interface RegistrationRecord {
-  timestamps: number[];
-}
-
-const registrationsByIP = new Map<string, RegistrationRecord>();
-
 function getClientIP(req: Request): string {
-  // In production behind a trusted proxy (like Replit), use the last proxy-added IP
-  // to prevent spoofing via X-Forwarded-For header manipulation
   const forwarded = req.headers['x-forwarded-for'];
   if (forwarded) {
     const ips = (typeof forwarded === 'string' ? forwarded : forwarded[0]).split(',').map(ip => ip.trim());
-    // Use the rightmost IP (added by trusted proxy), not leftmost (can be spoofed)
-    // But if only one IP, that's the real client
     return ips[ips.length - 1] || req.ip || 'unknown';
   }
   return req.ip || req.socket.remoteAddress || 'unknown';
 }
 
-function checkRegistrationRateLimit(ip: string): { allowed: boolean; reason?: string; retryAfter?: number } {
-  const now = Date.now();
-  const oneDayAgo = now - (24 * 60 * 60 * 1000);
-  const cooldownMs = REGISTRATION_COOLDOWN_SECONDS * 1000;
-  
-  let record = registrationsByIP.get(ip);
-  
-  if (!record) {
-    return { allowed: true };
-  }
-  
-  // Clean old entries (older than 24 hours)
-  record.timestamps = record.timestamps.filter(ts => ts > oneDayAgo);
-  
-  if (record.timestamps.length === 0) {
-    registrationsByIP.delete(ip);
-    return { allowed: true };
-  }
-  
-  // Check cooldown (300 seconds since last registration)
-  const lastRegistration = Math.max(...record.timestamps);
-  const timeSinceLast = now - lastRegistration;
-  if (timeSinceLast < cooldownMs) {
-    const retryAfter = Math.ceil((cooldownMs - timeSinceLast) / 1000);
-    return { 
-      allowed: false, 
-      reason: `Please wait ${retryAfter} seconds before registering another bot`,
-      retryAfter 
+async function checkRegistrationRateLimitInTx(tx: any, ip: string): Promise<{ allowed: boolean; reason?: string; retryAfter?: number }> {
+  const [result] = await tx.select({
+    recentCount: sql<number>`COUNT(*) FILTER (WHERE ${bots.createdAt} > NOW() - INTERVAL '5 minutes')`,
+    dailyCount: sql<number>`COUNT(*) FILTER (WHERE ${bots.createdAt} > NOW() - INTERVAL '24 hours')`
+  }).from(bots).where(eq(bots.registrationIp, ip));
+
+  const recentCount = Number(result?.recentCount ?? 0);
+  const dailyCount = Number(result?.dailyCount ?? 0);
+
+  if (recentCount > 0) {
+    return {
+      allowed: false,
+      reason: `Please wait before registering another bot (cooldown: ${REGISTRATION_COOLDOWN_SECONDS}s)`,
+      retryAfter: REGISTRATION_COOLDOWN_SECONDS
     };
   }
-  
-  // Check daily limit
-  if (record.timestamps.length >= DAILY_REGISTRATION_LIMIT) {
-    return { 
-      allowed: false, 
-      reason: `Daily registration limit (${DAILY_REGISTRATION_LIMIT}) reached. Try again tomorrow.` 
+
+  if (dailyCount >= DAILY_REGISTRATION_LIMIT) {
+    return {
+      allowed: false,
+      reason: `Daily registration limit (${DAILY_REGISTRATION_LIMIT}) reached. Try again tomorrow.`
     };
   }
-  
+
   return { allowed: true };
 }
 
-function recordRegistration(ip: string): void {
-  const now = Date.now();
-  let record = registrationsByIP.get(ip);
-  
-  if (!record) {
-    record = { timestamps: [] };
-    registrationsByIP.set(ip, record);
+async function logSecurityEvent(eventType: string, ip: string | null, handle: string | null, botId: string | null, details: Record<string, any> = {}): Promise<void> {
+  try {
+    await db.insert(securityEvents).values({
+      eventType,
+      ip,
+      handle,
+      botId,
+      details
+    });
+  } catch (err) {
+    console.error('[SendClaw] Failed to log security event:', err);
   }
-  
-  record.timestamps.push(now);
 }
 
 function generateApiKey(): string {
@@ -214,62 +190,92 @@ async function loadBotFromApiKey(req: Request, res: Response, next: NextFunction
 }
 
 router.post('/bots/register', async (req: Request, res: Response) => {
+  const clientIP = getClientIP(req);
+  let attemptedHandle: string | null = null;
+
   try {
-    const clientIP = getClientIP(req);
-    
-    // Check rate limiting
-    const rateCheck = checkRegistrationRateLimit(clientIP);
-    if (!rateCheck.allowed) {
-      console.log(`[SendClaw] Registration blocked for IP ${clientIP}: ${rateCheck.reason}`);
-      res.status(429).json({ 
-        error: rateCheck.reason,
-        ...(rateCheck.retryAfter && { retryAfter: rateCheck.retryAfter })
-      });
-      return;
-    }
-    
     const parsed = insertBotSchema.safeParse(req.body);
     if (!parsed.success) {
-      res.status(400).json({ 
-        error: 'Invalid request', 
-        details: parsed.error.errors 
+      await logSecurityEvent('validation_error', clientIP, null, null, {
+        errors: parsed.error.errors
+      });
+      res.status(400).json({
+        error: 'Invalid request',
+        details: parsed.error.errors
       });
       return;
     }
 
     const { name, handle, senderName } = parsed.data;
     const normalizedHandle = handle.toLowerCase();
+    attemptedHandle = normalizedHandle;
     const address = `${normalizedHandle}@${SENDCLAW_DOMAIN}`;
-
-    // Check if handle is already reserved in handles table
-    const existingHandle = await db.select().from(handles)
-      .where(eq(handles.address, normalizedHandle)).limit(1);
-    if (existingHandle.length > 0) {
-      res.status(409).json({ error: 'Handle already reserved' });
-      return;
-    }
 
     const apiKey = generateApiKey();
     const claimToken = generateClaimToken();
 
-    const [bot] = await db.insert(bots).values({
-      name,
-      senderName,
-      address,
-      apiKey,
-      claimToken,
-      verified: false
-    }).returning();
+    const result = await db.transaction(async (tx) => {
+      const ipHash = Buffer.from(clientIP).reduce((hash, byte) => ((hash << 5) - hash + byte) | 0, 0);
+      await tx.execute(sql`SELECT pg_advisory_xact_lock(${ipHash})`);
 
-    // Create handles entry so bot can send immediately
-    await db.insert(handles).values({
-      address: normalizedHandle,
-      botId: bot.id
+      const rateCheck = await checkRegistrationRateLimitInTx(tx, clientIP);
+      if (!rateCheck.allowed) {
+        return { blocked: true as const, rateCheck };
+      }
+
+      const existingHandle = await tx.select().from(handles)
+        .where(eq(handles.address, normalizedHandle)).limit(1);
+      if (existingHandle.length > 0) {
+        return { blocked: true as const, duplicateHandle: true as const };
+      }
+
+      const [bot] = await tx.insert(bots).values({
+        name,
+        senderName,
+        address,
+        apiKey,
+        claimToken,
+        verified: false,
+        registrationIp: clientIP
+      }).returning();
+
+      await tx.insert(handles).values({
+        address: normalizedHandle,
+        botId: bot.id
+      });
+
+      return { blocked: false as const, bot };
     });
 
-    // Record successful registration for rate limiting
-    recordRegistration(clientIP);
-    
+    if (result.blocked) {
+      if ('duplicateHandle' in result) {
+        await logSecurityEvent('duplicate_handle', clientIP, normalizedHandle, null, {
+          name, address
+        });
+        res.status(409).json({ error: 'Handle already reserved' });
+        return;
+      }
+
+      const { rateCheck } = result;
+      console.log(`[SendClaw] Registration blocked for IP ${clientIP}: ${rateCheck.reason}`);
+      await logSecurityEvent('rate_limit_hit', clientIP, normalizedHandle, null, {
+        reason: rateCheck.reason,
+        retryAfter: rateCheck.retryAfter,
+        name
+      });
+      res.status(429).json({
+        error: rateCheck.reason,
+        ...(rateCheck.retryAfter && { retryAfter: rateCheck.retryAfter })
+      });
+      return;
+    }
+
+    const { bot } = result;
+
+    await logSecurityEvent('registration_success', clientIP, normalizedHandle, bot.id, {
+      name, address
+    });
+
     console.log(`[SendClaw] Bot registered: ${name} (${address}) from IP ${clientIP}`);
 
     res.status(201).json({
@@ -281,6 +287,11 @@ router.post('/bots/register', async (req: Request, res: Response) => {
     });
   } catch (error: any) {
     console.error('[SendClaw] Registration error:', error);
+    await logSecurityEvent('registration_error', clientIP, attemptedHandle, null, {
+      error: error?.message,
+      code: error?.code,
+      constraint: error?.constraint
+    });
     if (error?.code === '23505' && error?.constraint === 'bots_address_key') {
       res.status(409).json({ error: 'Handle already taken' });
       return;

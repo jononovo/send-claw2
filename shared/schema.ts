@@ -1797,13 +1797,15 @@ export const bots = pgTable("bots", {
   verified: boolean("verified").default(false),
   status: text("status").default('normal').$type<'normal' | 'flagged' | 'under_review' | 'suspended'>(),
   flagCount: integer("flag_count").default(0),
+  registrationIp: text("registration_ip"),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow()
 }, (table) => [
   index('idx_bots_user_id').on(table.userId),
   index('idx_bots_address').on(table.address),
   index('idx_bots_api_key').on(table.apiKey),
   index('idx_bots_claim_token').on(table.claimToken),
-  index('idx_bots_status').on(table.status)
+  index('idx_bots_status').on(table.status),
+  index('idx_bots_registration_ip').on(table.registrationIp)
 ]);
 
 export const messages = pgTable("messages", {
@@ -1903,6 +1905,20 @@ export const securityReports = pgTable("security_reports", {
   index('idx_security_reports_date').on(table.reportDate)
 ]);
 
+export const securityEvents = pgTable("security_events", {
+  id: serial("id").primaryKey(),
+  eventType: text("event_type").notNull(),
+  ip: text("ip"),
+  handle: text("handle"),
+  botId: uuid("bot_id"),
+  details: jsonb("details").default({}),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow()
+}, (table) => [
+  index('idx_security_events_ip').on(table.ip),
+  index('idx_security_events_event_type').on(table.eventType),
+  index('idx_security_events_created_at').on(table.createdAt)
+]);
+
 export type Handle = typeof handles.$inferSelect;
 export type Bot = typeof bots.$inferSelect;
 export type InsertBot = z.infer<typeof insertBotSchema>;
@@ -1912,4 +1928,5 @@ export type DailyCheckin = typeof dailyCheckins.$inferSelect;
 export type SocialShareReward = typeof socialShareRewards.$inferSelect;
 export type EmailFlag = typeof emailFlags.$inferSelect;
 export type SecurityReport = typeof securityReports.$inferSelect;
+export type SecurityEvent = typeof securityEvents.$inferSelect;
 
