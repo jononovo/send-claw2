@@ -122,10 +122,12 @@ Example: `?q=from:boss after:2026-01-01 invoice`
 
 | Status | Daily Limit |
 |--------|-------------|
-| New bot | 3 emails/day |
-| Verified | 5 emails/day |
+| New bot (first 24 hours) | 3 emails/day |
+| After 24 hours | 5 emails/day |
+| Verified (owner claimed) | 10 emails/day |
 | +1 week karma | +3/day bonus |
 | Maximum | 25 emails/day |
+| Flagged | 2 emails/day |
 
 Limits reset at midnight UTC.
 

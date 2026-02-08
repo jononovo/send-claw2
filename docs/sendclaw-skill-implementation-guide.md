@@ -146,9 +146,11 @@ After claiming, the human can see the bot's inbox, sent messages, and settings o
 The backend:
 1. Authenticates the bot via API key (middleware: `apiKeyAuth` + `loadBotFromApiKey`)
 2. Checks the bot's security status (suspended/under_review bots cannot send)
-3. Calculates the daily sending limit based on karma:
-   - Base: 3/day (unverified) or 5/day (verified)
-   - Karma bonus: +3/day per week of good behavior
+3. Calculates the daily sending limit via `calculateDailyLimit()` from `server/features/sendclaw-quota/`:
+   - New bot (first 24 hours): 3/day
+   - After 24 hours (unclaimed): 5/day
+   - Verified (owner claimed via `/bots/claim`): 10/day
+   - Karma bonus: +3/day per full week of good behavior
    - Maximum: 25/day
    - Flagged bots: capped at 2/day
 4. Sends via SendGrid

@@ -1,11 +1,12 @@
 import express, { Router, Request, Response, NextFunction } from "express";
 import crypto from "crypto";
 import { db } from "../db";
-import { bots, handles, messages, quotaUsage, dailyCheckins, socialShareRewards, securityEvents, insertBotSchema, insertMessageSchema } from "@shared/schema";
+import { bots, handles, messages, dailyCheckins, socialShareRewards, securityEvents, insertBotSchema, insertMessageSchema } from "@shared/schema";
 import { eq, and, desc, sql, or, inArray, ilike, lt, gt, gte, lte } from "drizzle-orm";
 import { MailService } from '@sendgrid/mail';
 import multer from "multer";
 import { CreditRewardService } from "../features/billing/rewards/service";
+import { calculateDailyLimit, getTodayDate, getQuotaUsage, incrementQuotaUsage } from "../features/sendclaw-quota";
 
 const router = Router();
 const upload = multer();
@@ -90,9 +91,6 @@ function generateThreadId(): string {
   return crypto.randomUUID();
 }
 
-function getTodayDate(): string {
-  return new Date().toISOString().split('T')[0];
-}
 
 function parseSearchQuery(q: string): { 
   from?: string; 
@@ -146,23 +144,6 @@ async function getHandleByUserId(userId: number) {
   return handle;
 }
 
-async function getQuotaUsage(botId: string, date: string): Promise<number> {
-  const [usage] = await db.select().from(quotaUsage).where(
-    and(eq(quotaUsage.botId, botId), eq(quotaUsage.date, date))
-  ).limit(1);
-  return usage?.emailsSent || 0;
-}
-
-async function incrementQuotaUsage(botId: string, date: string): Promise<void> {
-  const existing = await getQuotaUsage(botId, date);
-  if (existing > 0) {
-    await db.update(quotaUsage)
-      .set({ emailsSent: existing + 1 })
-      .where(and(eq(quotaUsage.botId, botId), eq(quotaUsage.date, date)));
-  } else {
-    await db.insert(quotaUsage).values({ botId, date, emailsSent: 1 });
-  }
-}
 
 function apiKeyAuth(req: Request, res: Response, next: NextFunction) {
   const apiKey = req.headers['x-api-key'] as string || req.headers.authorization?.replace('Bearer ', '');
@@ -389,7 +370,8 @@ router.post('/bots/claim', async (req: Request, res: Response) => {
     await db.update(bots).set({
       userId,
       claimToken: null,
-      claimedAt: new Date()
+      claimedAt: new Date(),
+      verified: true
     }).where(eq(bots.id, bot.id));
 
     const userHandle = await getHandleByUserId(userId);
@@ -722,20 +704,7 @@ router.post('/mail/send', apiKeyAuth, loadBotFromApiKey, async (req: Request, re
       return;
     }
     
-    // Base limit: 3 for unverified, 5 for verified
-    const baseLimit = bot.verified ? 5 : 3;
-    
-    // Karma: +3/day per week of good behavior (weeks since creation)
-    const weeksActive = bot.createdAt 
-      ? Math.floor((Date.now() - new Date(bot.createdAt).getTime()) / (7 * 24 * 60 * 60 * 1000))
-      : 0;
-    const karmaBonus = weeksActive * 3;
-    
-    // Cap at 25 emails/day max, or 2/day if flagged
-    let dailyLimit = Math.min(baseLimit + karmaBonus, 25);
-    if (botStatus === 'flagged') {
-      dailyLimit = Math.min(dailyLimit, 2);
-    }
+    const dailyLimit = calculateDailyLimit(bot);
 
     if (currentUsage >= dailyLimit) {
       res.status(429).json({ 
@@ -906,13 +875,9 @@ router.get('/mail/check', apiKeyAuth, loadBotFromApiKey, async (req: Request, re
         eq(messages.isRead, false)
       ));
     
-    // Get quota info
-    const today = new Date().toISOString().split('T')[0];
-    const [usage] = await db.select().from(quotaUsage)
-      .where(and(eq(quotaUsage.botId, bot.id), eq(quotaUsage.date, today)));
-    
-    const dailyLimit = bot.dailyEmailLimit || 3;
-    const used = usage?.emailsSent || 0;
+    const today = getTodayDate();
+    const used = await getQuotaUsage(bot.id, today);
+    const dailyLimit = calculateDailyLimit(bot);
     
     res.json({
       unreadCount: count,

@@ -167,9 +167,14 @@ Authorization: Bearer your-api-key
 
 ## Rate Limits & Karma
 
-- **Base limit:** 3 emails/day
-- **Karma bonus:** +3/day for each week of good behavior
-- **Max:** 25 emails/day
+| Status | Daily Limit |
+|--------|-------------|
+| New bot (first 24 hours) | 3 emails/day |
+| After 24 hours | 5 emails/day |
+| Verified (owner claimed) | 10 emails/day |
+| +1 week karma | +3/day bonus |
+| Maximum | 25 emails/day |
+| Flagged | 2 emails/day |
 
 Limits reset at midnight UTC.
 
