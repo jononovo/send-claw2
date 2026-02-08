@@ -187,7 +187,7 @@ export default function SendclawInbox() {
         : null;
 
   const renderRefreshControl = () => (
-    <div className="flex items-center gap-1.5 mt-1">
+    <div className="flex items-center gap-1.5 mt-1 ml-3">
       <button
         onClick={handleManualCheck}
         disabled={checkStatus === "checking"}
