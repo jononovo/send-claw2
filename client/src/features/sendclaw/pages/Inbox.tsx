@@ -487,9 +487,10 @@ export default function SendclawInbox() {
             <CardHeader className="pb-3 px-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <CardTitle className="text-xl flex items-center">
-                    <InboxIcon className="mr-2 h-5 w-5" />
+                  <CardTitle className="text-xl flex items-center gap-2">
+                    <InboxIcon className="mr-1 h-5 w-5" />
                     {userBot?.name ? `${userBot.name} Inbox` : 'Inbox'}
+                    {renderRefreshControl()}
                   </CardTitle>
                   {userHandle && (
                     <div className="flex items-center gap-2 mt-1">
@@ -499,7 +500,6 @@ export default function SendclawInbox() {
                       </button>
                     </div>
                   )}
-                  {renderRefreshControl()}
                 </div>
                 <Dialog open={newEmailOpen} onOpenChange={setNewEmailOpen}>
                   <DialogTrigger asChild>
@@ -607,9 +607,10 @@ export default function SendclawInbox() {
                 <CardHeader className="pb-3 px-2">
                   <div className="flex items-center justify-between">
                     <div>
-                      <CardTitle className="text-xl flex items-center">
-                        <InboxIcon className="mr-2 h-5 w-5" />
+                      <CardTitle className="text-xl flex items-center gap-2">
+                        <InboxIcon className="mr-1 h-5 w-5" />
                         {userBot?.name ? `${userBot.name} Inbox` : 'Inbox'}
+                        {renderRefreshControl()}
                       </CardTitle>
                       {userHandle && (
                         <div className="flex items-center gap-2 mt-1">
@@ -619,7 +620,6 @@ export default function SendclawInbox() {
                           </button>
                         </div>
                       )}
-                      {renderRefreshControl()}
                     </div>
                     <Dialog open={newEmailOpen} onOpenChange={setNewEmailOpen}>
                   <DialogTrigger asChild>
