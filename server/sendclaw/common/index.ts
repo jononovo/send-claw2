@@ -19,3 +19,5 @@ export {
   loadBotFromApiKey,
   checkRegistrationRateLimitInTx,
 } from './utils';
+
+export { notifyBotWebhook } from './webhook-notifier';

@@ -1,4 +1,5 @@
 import express, { Router, Request, Response } from "express";
+import { z } from "zod";
 import { db } from "../db";
 import { bots, handles, messages, insertBotSchema, insertMessageSchema } from "@shared/schema";
 import { eq, desc, sql, or } from "drizzle-orm";
@@ -17,6 +18,8 @@ import {
   generateThreadId,
   getHandleByAddress,
   getHandleByUserId,
+  apiKeyAuth,
+  loadBotFromApiKey,
 } from "./common";
 
 const router = Router();
@@ -38,7 +41,7 @@ router.post('/bots/register', async (req: Request, res: Response) => {
       return;
     }
 
-    const { name, handle, senderName } = parsed.data;
+    const { name, handle, senderName, webhookUrl } = parsed.data;
     const normalizedHandle = handle.toLowerCase();
     attemptedHandle = normalizedHandle;
     const address = `${normalizedHandle}@${SENDCLAW_DOMAIN}`;
@@ -68,7 +71,8 @@ router.post('/bots/register', async (req: Request, res: Response) => {
         apiKey,
         claimToken,
         verified: false,
-        registrationIp: clientIP
+        registrationIp: clientIP,
+        webhookUrl: webhookUrl || null
       }).returning();
 
       await tx.insert(handles).values({
@@ -129,6 +133,28 @@ router.post('/bots/register', async (req: Request, res: Response) => {
       return;
     }
     res.status(500).json({ error: 'Registration failed' });
+  }
+});
+
+const webhookUrlSchema = z.object({
+  webhookUrl: z.string().url("Must be a valid URL").max(500).startsWith("https://", "Webhook URL must use HTTPS").nullable()
+});
+
+router.patch('/bots/webhook', apiKeyAuth, loadBotFromApiKey, async (req: Request, res: Response) => {
+  try {
+    const bot = (req as any).bot;
+    const parsed = webhookUrlSchema.safeParse(req.body);
+    if (!parsed.success) {
+      res.status(400).json({ error: 'Invalid request', details: parsed.error.errors });
+      return;
+    }
+    const { webhookUrl } = parsed.data;
+    await db.update(bots).set({ webhookUrl: webhookUrl || null }).where(eq(bots.id, bot.id));
+    console.log(`[SendClaw] Webhook URL updated for bot ${bot.address}: ${webhookUrl || 'removed'}`);
+    res.json({ success: true, webhookUrl: webhookUrl || null });
+  } catch (error: any) {
+    console.error('[SendClaw] Webhook update error:', error);
+    res.status(500).json({ error: 'Failed to update webhook URL' });
   }
 });
 
