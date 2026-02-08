@@ -750,7 +750,7 @@ export default function SendclawInbox() {
   );
 
   const renderThreadListColumn = (widthClass: string, showBackButton: boolean) => (
-    <div className={cn(widthClass, "pl-4")} style={{ height: "100%" }}>
+    <div className={cn(widthClass, "pl-2")} style={{ height: "100%" }}>
       <Card className="h-full flex flex-col rounded-lg shadow">
         <CardHeader className="pb-3 flex flex-row items-center justify-between px-6">
           <div className="flex items-center">
@@ -811,7 +811,7 @@ export default function SendclawInbox() {
   const renderEmailDetailColumn = (widthClass: string) => {
     if (!selectedThread) return null;
     return (
-      <div className={cn(widthClass, "pl-4")} style={{ height: "100%" }}>
+      <div className={cn(widthClass, "pl-2")} style={{ height: "100%" }}>
         <Card className="h-full flex flex-col rounded-lg shadow-none border-0">
           <CardHeader className="pb-3 px-2">
             <div>
