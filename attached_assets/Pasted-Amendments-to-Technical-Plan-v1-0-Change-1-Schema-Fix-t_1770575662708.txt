@@ -1,0 +1,41 @@
+Amendments to Technical Plan v1.0
+Change 1 (Schema) — Fix two things:
+The insertBotSchema validation should be .url().max(500).optional() — remove the .startsWith("https://") constraint. Allow both http:// and https://. Bots behind Tailscale, local tunnels, or dev setups use HTTP. If the URL is unreachable, the webhook silently fails and polling covers it. No harm.
+The plan references registrationIp as an existing field — it doesn't exist on the bots table in shared/schema.ts. The current insert doesn't store IP. Either add the column or remove the reference. The webhook_url column itself goes after verified:
+webhookUrl: text("webhook_url"),
+Change 2 (Registration) — Correct, but note:
+The current code destructures from parsed.data at around line 41 of server/sendclaw/routes.ts. The actual insert does NOT use registrationIp — it uses: name, senderName, address, apiKey, claimToken, verified: false. So the insert becomes:
+tsconst [bot] = await db.insert(bots).values({
+  name,
+  senderName,
+  address,
+  apiKey,
+  claimToken,
+  verified: false,
+  webhookUrl: webhookUrl || null
+}).returning();
+Change 3 (Webhook notifier) — Correct as-is. No changes needed.
+Change 4 (Trigger on inbound) — Fix the file path.
+The inbound webhook handler is in server/sendclaw/routes.ts, not server/features/sendclaw-mail/routes.ts. The route router.post('/webhook/inbound', ...) lives in the same file as registration and send. The handle object from getHandleByAddress() already contains botId, so the lookup is straightforward. The code snippet is correct — just fix the file reference.
+Also: the handle variable already has botId on it, so you can skip re-querying the bots table if you add webhookUrl to the handle join. But the simpler approach (separate query) is fine for v1 and avoids touching the handle query.
+Change 5 (Docs) — Add one thing:
+The skill.md should show webhookUrl in the registration example:
+json{
+  "name": "YourBotName",
+  "handle": "yourbot",
+  "senderName": "Your Friendly Assistant",
+  "webhookUrl": "https://your-server.com/hooks/sendclaw"
+}
+And add a small "Advanced" section documenting PATCH /api/bots/webhook.
+New: Change 6 — Add PATCH /api/bots/webhook endpoint
+~15 lines in server/sendclaw/routes.ts. API key auth (same apiKeyAuth middleware). Accepts {"webhookUrl": "https://..."} or {"webhookUrl": null}. Updates the bot record. Returns {"success": true, "webhookUrl": "..."}. This is needed because bots that registered without a webhook URL (or whose tunnel URL changed) shouldn't have to re-register to get a new handle/apiKey. Put it in an "Advanced" section at the bottom of skill.md.
+tsrouter.patch('/bots/webhook', apiKeyAuth, loadBotFromApiKey, async (req, res) => {
+  const bot = (req as any).bot;
+  const { webhookUrl } = req.body;
+  // validate: null or valid URL string
+  await db.update(bots).set({ webhookUrl: webhookUrl || null }).where(eq(bots.id, bot.id));
+  res.json({ success: true, webhookUrl: webhookUrl || null });
+});
+
+Updated scope: ~105 lines total (original 88 + PATCH endpoint + adjusted validation).
+Everything else in the plan is correct — the notifier, the payload format, the fire-and-forget pattern, the testing plan, the deferred features list. Build it.
