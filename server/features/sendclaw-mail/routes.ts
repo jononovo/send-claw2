@@ -111,41 +111,16 @@ router.post('/mail/send', apiKeyAuth, loadBotFromApiKey, async (req: Request, re
       console.warn('[SendClaw] SENDGRID_API_KEY not configured, simulating send');
     }
 
-    const recipientLocal = to.split('@')[0]?.toLowerCase();
-    const recipientDomain = to.split('@')[1]?.toLowerCase();
-    let recipientHandle: Awaited<ReturnType<typeof getHandleByAddress>> | null = null;
-    if (recipientDomain === SENDCLAW_DOMAIN && recipientLocal) {
-      recipientHandle = await getHandleByAddress(recipientLocal);
-    }
-
-    await db.transaction(async (tx) => {
-      await tx.insert(messages).values({
-        botId: bot.id,
-        direction: 'outbound',
-        fromAddress,
-        toAddress: to,
-        subject: subject || null,
-        bodyText: body || null,
-        threadId,
-        messageId,
-        inReplyTo: inReplyTo || null
-      });
-
-      if (recipientHandle && recipientHandle.botId) {
-        await tx.insert(messages).values({
-          botId: recipientHandle.botId,
-          userId: recipientHandle.userId,
-          direction: 'inbound',
-          fromAddress,
-          toAddress: to,
-          subject: subject || null,
-          bodyText: body || null,
-          threadId,
-          messageId,
-          inReplyTo: inReplyTo || null
-        });
-        console.log(`[SendClaw] Internal delivery: ${fromAddress} -> ${to} (inbound record created)`);
-      }
+    await db.insert(messages).values({
+      botId: bot.id,
+      direction: 'outbound',
+      fromAddress,
+      toAddress: to,
+      subject: subject || null,
+      bodyText: body || null,
+      threadId,
+      messageId,
+      inReplyTo: inReplyTo || null
     });
 
     await incrementQuotaUsage(bot.id, today);
