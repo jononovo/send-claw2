@@ -98,6 +98,7 @@ export default function SendclawInbox() {
   const [newMessageCount, setNewMessageCount] = useState(0);
   const prevMessageCountRef = useRef<number | null>(null);
   const statusTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const userClearedSelectionRef = useRef(false);
   const { toast } = useToast();
 
   const { data, isLoading, refetch } = useQuery<MyInboxResponse>({
@@ -292,7 +293,14 @@ export default function SendclawInbox() {
   const selectedThread = threads.find(t => t.threadId === selectedThreadId);
   const selectedContact = contacts.find(c => c.email === selectedContactEmail);
 
+  useEffect(() => {
+    if (!isMobile && !selectedContactEmail && contacts.length > 0 && !userClearedSelectionRef.current) {
+      setSelectedContactEmail(contacts[0].email);
+    }
+  }, [isMobile, contacts, selectedContactEmail]);
+
   const handleSelectContact = (email: string) => {
+    userClearedSelectionRef.current = false;
     setSelectedContactEmail(email);
     setSelectedThreadId(null);
   };
@@ -305,6 +313,7 @@ export default function SendclawInbox() {
     if (selectedThreadId) {
       setSelectedThreadId(null);
     } else if (selectedContactEmail) {
+      userClearedSelectionRef.current = true;
       setSelectedContactEmail(null);
     }
   };
