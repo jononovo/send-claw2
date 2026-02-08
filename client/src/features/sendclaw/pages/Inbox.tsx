@@ -389,7 +389,7 @@ export default function SendclawInbox() {
             <CardContent className="flex-1 flex flex-col overflow-hidden p-3">
               <ScrollArea className="flex-1 pr-2 mb-4">
                 <div className="space-y-4">
-                  {selectedThread.messages.map(message => (
+                  {[...selectedThread.messages].reverse().map(message => (
                     <div
                       key={message.id}
                       className={cn(
@@ -822,7 +822,7 @@ export default function SendclawInbox() {
           <CardContent className="flex-1 flex flex-col overflow-hidden px-2 py-2">
             <ScrollArea className="flex-1 pr-4 mb-4">
               <div className="space-y-6">
-                {selectedThread.messages.map(message => (
+                {[...selectedThread.messages].reverse().map(message => (
                   <div
                     key={message.id}
                     className={cn(
