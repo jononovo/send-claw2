@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -6,7 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/hooks/use-toast";
-import { Mail, Send, Plus, ArrowLeft, Clock, Inbox as InboxIcon, Copy, Check } from "lucide-react";
+import { Mail, Send, Plus, ArrowLeft, Clock, Inbox as InboxIcon, Copy, Check, RefreshCw } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
@@ -82,10 +82,16 @@ export default function SendclawInbox() {
   const [newEmailTo, setNewEmailTo] = useState("");
   const [newEmailSubject, setNewEmailSubject] = useState("");
   const [newEmailBody, setNewEmailBody] = useState("");
+  const [checkStatus, setCheckStatus] = useState<"idle" | "checking" | "updated" | "new">("idle");
+  const [newMessageCount, setNewMessageCount] = useState(0);
+  const prevMessageCountRef = useRef<number | null>(null);
+  const statusTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const { toast } = useToast();
 
-  const { data, isLoading } = useQuery<MyInboxResponse>({
+  const { data, isLoading, refetch } = useQuery<MyInboxResponse>({
     queryKey: ["/api/my-inbox"],
+    refetchInterval: 30000,
+    refetchIntervalInBackground: false,
   });
 
   const sendMutation = useMutation({
@@ -118,6 +124,88 @@ export default function SendclawInbox() {
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
+
+  useEffect(() => {
+    const currentCount = data?.messages?.length ?? 0;
+    if (prevMessageCountRef.current !== null && currentCount > prevMessageCountRef.current) {
+      const diff = currentCount - prevMessageCountRef.current;
+      setNewMessageCount(diff);
+      setCheckStatus("new");
+      if (statusTimeoutRef.current) clearTimeout(statusTimeoutRef.current);
+      statusTimeoutRef.current = setTimeout(() => setCheckStatus("idle"), 4000);
+    }
+    prevMessageCountRef.current = currentCount;
+  }, [data?.messages?.length]);
+
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "visible") {
+        const countBefore = prevMessageCountRef.current ?? 0;
+        setCheckStatus("checking");
+        refetch().then((result) => {
+          const countAfter = result.data?.messages?.length ?? 0;
+          if (statusTimeoutRef.current) clearTimeout(statusTimeoutRef.current);
+          if (countAfter > countBefore) {
+            setNewMessageCount(countAfter - countBefore);
+            setCheckStatus("new");
+          } else {
+            setCheckStatus("updated");
+          }
+          statusTimeoutRef.current = setTimeout(() => setCheckStatus("idle"), 3000);
+        });
+      }
+    };
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      if (statusTimeoutRef.current) clearTimeout(statusTimeoutRef.current);
+    };
+  }, [refetch]);
+
+  const handleManualCheck = useCallback(() => {
+    const countBefore = prevMessageCountRef.current ?? 0;
+    setCheckStatus("checking");
+    refetch().then((result) => {
+      const countAfter = result.data?.messages?.length ?? 0;
+      if (statusTimeoutRef.current) clearTimeout(statusTimeoutRef.current);
+      if (countAfter > countBefore) {
+        setNewMessageCount(countAfter - countBefore);
+        setCheckStatus("new");
+      } else {
+        setCheckStatus("updated");
+      }
+      statusTimeoutRef.current = setTimeout(() => setCheckStatus("idle"), 3000);
+    });
+  }, [refetch]);
+
+  const checkStatusText = checkStatus === "checking"
+    ? "Checking..."
+    : checkStatus === "new"
+      ? `${newMessageCount} new message${newMessageCount > 1 ? "s" : ""}`
+      : checkStatus === "updated"
+        ? "Up to date"
+        : null;
+
+  const renderRefreshControl = () => (
+    <div className="flex items-center gap-1.5 mt-1">
+      <button
+        onClick={handleManualCheck}
+        disabled={checkStatus === "checking"}
+        className="text-muted-foreground hover:text-primary disabled:opacity-50 transition-colors"
+        title="Check for new emails"
+      >
+        <RefreshCw className={cn("h-3.5 w-3.5", checkStatus === "checking" && "animate-spin")} />
+      </button>
+      {checkStatusText && (
+        <span className={cn(
+          "text-xs transition-opacity duration-300",
+          checkStatus === "new" ? "text-primary font-medium" : "text-muted-foreground"
+        )}>
+          {checkStatusText}
+        </span>
+      )}
+    </div>
+  );
 
   const userHandle = data?.handle;
   const userBot = data?.bot;
@@ -411,6 +499,7 @@ export default function SendclawInbox() {
                       </button>
                     </div>
                   )}
+                  {renderRefreshControl()}
                 </div>
                 <Dialog open={newEmailOpen} onOpenChange={setNewEmailOpen}>
                   <DialogTrigger asChild>
@@ -530,6 +619,7 @@ export default function SendclawInbox() {
                           </button>
                         </div>
                       )}
+                      {renderRefreshControl()}
                     </div>
                     <Dialog open={newEmailOpen} onOpenChange={setNewEmailOpen}>
                   <DialogTrigger asChild>
