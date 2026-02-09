@@ -1889,11 +1889,15 @@ export const emailFlags = pgTable("email_flags", {
   botId: uuid("bot_id").references(() => bots.id, { onDelete: 'cascade' }),
   suggestedStatus: text("suggested_status").notNull().$type<'flagged' | 'under_review' | 'suspended'>(),
   reason: text("reason"),
+  reviewStatus: text("review_status").notNull().default('pending').$type<'pending' | 'applied' | 'rejected'>(),
+  appliedStatus: text("applied_status").$type<'flagged' | 'under_review' | 'suspended' | null>(),
+  appliedAt: timestamp("applied_at", { withTimezone: true }),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow()
 }, (table) => [
   index('idx_email_flags_message_id').on(table.messageId),
   index('idx_email_flags_bot_id').on(table.botId),
-  index('idx_email_flags_created_at').on(table.createdAt)
+  index('idx_email_flags_created_at').on(table.createdAt),
+  index('idx_email_flags_review_status').on(table.reviewStatus)
 ]);
 
 export const securityReports = pgTable("security_reports", {
