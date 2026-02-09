@@ -5,6 +5,7 @@ import { fileURLToPath } from "url";
 import { db } from "../../db";
 import { companies, contacts } from "@shared/schema";
 import { eq } from "drizzle-orm";
+import { seoRateLimiter } from "../../middleware/seo-rate-limiter";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -208,8 +209,15 @@ async function getContactSEO(id: number): Promise<SEOData | null> {
   };
 }
 
+const PROJECT_ROOT = path.resolve(__dirname, "..", "..", "..");
+
+async function getTemplate(): Promise<string> {
+  const templatePath = path.resolve(PROJECT_ROOT, "client", "index.html");
+  return fs.promises.readFile(templatePath, "utf-8");
+}
+
 export function registerSEOSSRMiddleware(app: Express): void {
-  app.get("/company/:slug/:id", async (req: Request, res: Response, next: NextFunction) => {
+  app.get("/company/:slug/:id", seoRateLimiter, async (req: Request, res: Response, next: NextFunction) => {
     try {
       const id = parseInt(req.params.id, 10);
       if (isNaN(id)) return next();
@@ -224,8 +232,7 @@ export function registerSEOSSRMiddleware(app: Express): void {
       const seo = await getCompanySEO(id);
       if (!seo) return next();
 
-      const templatePath = path.resolve(__dirname, "..", "..", "client", "index.html");
-      let template = await fs.promises.readFile(templatePath, "utf-8");
+      const template = await getTemplate();
       const page = injectSEO(template, seo);
 
       seoCache.set(cacheKey, { html: page, expires: Date.now() + CACHE_TTL });
@@ -236,7 +243,7 @@ export function registerSEOSSRMiddleware(app: Express): void {
     }
   });
 
-  app.get("/p/:slug/:id", async (req: Request, res: Response, next: NextFunction) => {
+  app.get("/p/:slug/:id", seoRateLimiter, async (req: Request, res: Response, next: NextFunction) => {
     try {
       const id = parseInt(req.params.id, 10);
       if (isNaN(id)) return next();
@@ -251,8 +258,7 @@ export function registerSEOSSRMiddleware(app: Express): void {
       const seo = await getContactSEO(id);
       if (!seo) return next();
 
-      const templatePath = path.resolve(__dirname, "..", "..", "client", "index.html");
-      let template = await fs.promises.readFile(templatePath, "utf-8");
+      const template = await getTemplate();
       const page = injectSEO(template, seo);
 
       seoCache.set(cacheKey, { html: page, expires: Date.now() + CACHE_TTL });
