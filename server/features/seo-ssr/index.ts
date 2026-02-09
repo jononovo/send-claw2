@@ -12,7 +12,7 @@ const __dirname = dirname(__filename);
 const BASE_URL = "https://5ducks.ai";
 
 const seoCache = new Map<string, { html: string; expires: number }>();
-const CACHE_TTL = 60 * 60 * 1000;
+const CACHE_TTL = 30 * 24 * 60 * 60 * 1000;
 
 function generateSlug(text: string): string {
   return text
