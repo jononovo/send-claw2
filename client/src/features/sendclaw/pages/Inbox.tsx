@@ -971,8 +971,8 @@ export default function SendclawInbox() {
   };
 
   return (
-    <div className="h-[calc(100vh-4rem)] md:py-6 md:px-6">
-      <div className="flex h-full overflow-hidden md:space-x-4">
+    <div className="h-[calc(100vh-4rem)] md:py-2 md:px-3">
+      <div className="flex h-full overflow-hidden">
         {isMobile ? renderMobileView() : renderDesktopLayout()}
       </div>
     </div>
