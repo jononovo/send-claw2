@@ -11,7 +11,7 @@ import { getUserId, isAuthenticated } from "../utils/auth";
 import { searchContactDetails } from "./enrichment/contact-details";
 import { findKeyDecisionMakers } from "./contacts/finder";
 import { CreditService } from "../features/billing/credits/service";
-import { maskContactEmails, maskContactsEmails } from "../utils/email-masker";
+
 import { seoRateLimiter } from "../middleware/seo-rate-limiter";
 
 export function registerContactRoutes(app: Express, requireAuth: any) {
@@ -55,9 +55,7 @@ export function registerContactRoutes(app: Express, requireAuth: any) {
         return;
       }
       
-      // Mask emails for unauthenticated users (SEO bots can't scrape emails)
-      const responseContact = userIsAuthenticated ? contact : maskContactEmails(contact);
-      res.json(responseContact);
+      res.json(contact);
     } catch (error) {
       console.error('Error fetching contact:', error);
       res.status(500).json({
@@ -194,13 +192,18 @@ export function registerContactRoutes(app: Express, requireAuth: any) {
   app.get("/api/companies/:companyId/contacts", async (req: Request, res: Response) => {
     try {
       const userIsAuthenticated = isAuthenticated(req);
-      const userId = getUserId(req);
       const companyId = parseInt(req.params.companyId);
       
       // Handle cache invalidation for fresh data requests
       const cacheTimestamp = req.query.t;
       
-      const contacts = await storage.listContactsByCompany(companyId, userId);
+      let contactsList;
+      if (userIsAuthenticated) {
+        const userId = getUserId(req);
+        contactsList = await storage.listContactsByCompany(companyId, userId);
+      } else {
+        contactsList = await storage.listContactsByCompanyPublic(companyId);
+      }
       
       // Set no-cache headers for fresh data requests
       if (cacheTimestamp) {
@@ -211,9 +214,7 @@ export function registerContactRoutes(app: Express, requireAuth: any) {
         });
       }
       
-      // Mask emails for unauthenticated users (SEO bots can't scrape emails)
-      const responseContacts = userIsAuthenticated ? contacts : maskContactsEmails(contacts);
-      res.json(responseContacts);
+      res.json(contactsList);
     } catch (error) {
       console.error("Error fetching contacts by company:", error);
       res.status(500).json({ message: "Failed to fetch contacts" });
