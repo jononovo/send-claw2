@@ -9,6 +9,7 @@ import { CampaignScheduler } from "./features/campaigns/services/campaign-schedu
 import { emailQueueProcessor } from "./features/campaigns/email-queue-processor";
 import { dripEmailEngine } from "./email/drip-engine";
 import { initBotEmailSecurity } from "./features/bot-email-security";
+import { registerSEOSSRMiddleware } from "./features/seo-ssr";
 import { sql } from "drizzle-orm";
 import dotenv from "dotenv";
 
@@ -254,6 +255,8 @@ app.get('/api/health', async (_req, res) => {
 
     const server = registerRoutes(app);
     console.log('Routes registered');
+
+    registerSEOSSRMiddleware(app);
 
     if (app.get("env") === "development") {
       await setupVite(app, server);

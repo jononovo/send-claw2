@@ -67,6 +67,7 @@ export interface IStorage {
 
   // Contacts
   listContactsByCompany(companyId: number, userId: number): Promise<Contact[]>;
+  listContactsByCompanyPublic(companyId: number): Promise<Contact[]>;
   listContacts(userId: number): Promise<Contact[]>;
   listContactsWithCompanies(userId: number): Promise<(Contact & { companyName?: string })[]>;
   getContact(id: number, userId: number): Promise<Contact | undefined>;
@@ -435,6 +436,18 @@ class DatabaseStorage implements IStorage {
         .where(and(eq(contacts.companyId, companyId), eq(contacts.userId, userId)));
     } catch (error) {
       console.error('Error fetching contacts by company:', error);
+      return [];
+    }
+  }
+
+  async listContactsByCompanyPublic(companyId: number): Promise<Contact[]> {
+    try {
+      return await db
+        .select()
+        .from(contacts)
+        .where(eq(contacts.companyId, companyId));
+    } catch (error) {
+      console.error('Error fetching public contacts by company:', error);
       return [];
     }
   }

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -6,7 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/hooks/use-toast";
-import { Mail, Send, Plus, ArrowLeft, Clock, Inbox as InboxIcon, Copy, Check } from "lucide-react";
+import { Mail, Send, Plus, ArrowLeft, Clock, Inbox as InboxIcon, Copy, Check, RefreshCw } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
@@ -57,8 +57,19 @@ interface MyInboxResponse {
   error?: string;
 }
 
+const extractEmail = (str: string): string => {
+  const match = str.match(/<([^>]+)>/);
+  return match ? match[1] : str;
+};
+
+const extractDisplayName = (str: string): string | null => {
+  const match = str.match(/^"?([^"<]+)"?\s*<[^>]+>/);
+  return match ? match[1].trim() : null;
+};
+
 interface Contact {
   email: string;
+  displayName: string | null;
   lastMessage: string;
   lastMessageDate: Date;
   unreadCount: number;
@@ -77,15 +88,23 @@ export default function SendclawInbox() {
   const [selectedThreadId, setSelectedThreadId] = useState<string | null>(null);
   const [replyContent, setReplyContent] = useState("");
   const [isMobile, setIsMobile] = useState(false);
+  const [isWideScreen, setIsWideScreen] = useState(false);
   const [copied, setCopied] = useState(false);
   const [newEmailOpen, setNewEmailOpen] = useState(false);
   const [newEmailTo, setNewEmailTo] = useState("");
   const [newEmailSubject, setNewEmailSubject] = useState("");
   const [newEmailBody, setNewEmailBody] = useState("");
+  const [checkStatus, setCheckStatus] = useState<"idle" | "checking" | "updated" | "new">("idle");
+  const [newMessageCount, setNewMessageCount] = useState(0);
+  const prevMessageCountRef = useRef<number | null>(null);
+  const statusTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const userClearedSelectionRef = useRef(false);
   const { toast } = useToast();
 
-  const { data, isLoading } = useQuery<MyInboxResponse>({
+  const { data, isLoading, refetch } = useQuery<MyInboxResponse>({
     queryKey: ["/api/my-inbox"],
+    refetchInterval: 30000,
+    refetchIntervalInBackground: false,
   });
 
   const sendMutation = useMutation({
@@ -113,11 +132,94 @@ export default function SendclawInbox() {
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 768);
+      setIsWideScreen(window.innerWidth >= 1280);
     };
     handleResize();
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
+
+  useEffect(() => {
+    const currentCount = data?.messages?.length ?? 0;
+    if (prevMessageCountRef.current !== null && currentCount > prevMessageCountRef.current) {
+      const diff = currentCount - prevMessageCountRef.current;
+      setNewMessageCount(diff);
+      setCheckStatus("new");
+      if (statusTimeoutRef.current) clearTimeout(statusTimeoutRef.current);
+      statusTimeoutRef.current = setTimeout(() => setCheckStatus("idle"), 4000);
+    }
+    prevMessageCountRef.current = currentCount;
+  }, [data?.messages?.length]);
+
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "visible") {
+        const countBefore = prevMessageCountRef.current ?? 0;
+        setCheckStatus("checking");
+        refetch().then((result) => {
+          const countAfter = result.data?.messages?.length ?? 0;
+          if (statusTimeoutRef.current) clearTimeout(statusTimeoutRef.current);
+          if (countAfter > countBefore) {
+            setNewMessageCount(countAfter - countBefore);
+            setCheckStatus("new");
+          } else {
+            setCheckStatus("updated");
+          }
+          statusTimeoutRef.current = setTimeout(() => setCheckStatus("idle"), 3000);
+        });
+      }
+    };
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      if (statusTimeoutRef.current) clearTimeout(statusTimeoutRef.current);
+    };
+  }, [refetch]);
+
+  const handleManualCheck = useCallback(() => {
+    const countBefore = prevMessageCountRef.current ?? 0;
+    setCheckStatus("checking");
+    refetch().then((result) => {
+      const countAfter = result.data?.messages?.length ?? 0;
+      if (statusTimeoutRef.current) clearTimeout(statusTimeoutRef.current);
+      if (countAfter > countBefore) {
+        setNewMessageCount(countAfter - countBefore);
+        setCheckStatus("new");
+      } else {
+        setCheckStatus("updated");
+      }
+      statusTimeoutRef.current = setTimeout(() => setCheckStatus("idle"), 3000);
+    });
+  }, [refetch]);
+
+  const checkStatusText = checkStatus === "checking"
+    ? "Checking..."
+    : checkStatus === "new"
+      ? `${newMessageCount} new message${newMessageCount > 1 ? "s" : ""}`
+      : checkStatus === "updated"
+        ? "Up to date"
+        : null;
+
+  const renderRefreshControl = () => (
+    <div className="flex items-center gap-1.5 mt-1 ml-3">
+      <button
+        onClick={handleManualCheck}
+        disabled={checkStatus === "checking"}
+        className="text-muted-foreground hover:text-primary disabled:opacity-50 transition-colors"
+        title="Check for new emails"
+      >
+        <RefreshCw className={cn("h-3.5 w-3.5", checkStatus === "checking" && "animate-spin")} />
+      </button>
+      {checkStatusText && (
+        <span className={cn(
+          "text-xs transition-opacity duration-300",
+          checkStatus === "new" ? "text-primary font-medium" : "text-muted-foreground"
+        )}>
+          {checkStatusText}
+        </span>
+      )}
+    </div>
+  );
 
   const userHandle = data?.handle;
   const userBot = data?.bot;
@@ -127,17 +229,22 @@ export default function SendclawInbox() {
     const contactMap = new Map<string, Contact>();
     
     messages.forEach(msg => {
-      const counterparty = msg.direction === 'inbound' ? msg.fromAddress : msg.toAddress;
-      const existing = contactMap.get(counterparty);
+      const rawCounterparty = msg.direction === 'inbound' ? msg.fromAddress : msg.toAddress;
+      const normalizedEmail = extractEmail(rawCounterparty);
+      const richName = extractDisplayName(rawCounterparty);
+      const existing = contactMap.get(normalizedEmail);
       const msgDate = new Date(msg.createdAt);
       
       if (!existing || msgDate > existing.lastMessageDate) {
-        contactMap.set(counterparty, {
-          email: counterparty,
+        contactMap.set(normalizedEmail, {
+          email: normalizedEmail,
+          displayName: richName || (existing?.displayName ?? null),
           lastMessage: msg.bodyText?.substring(0, 100) || msg.subject || "(no content)",
           lastMessageDate: msgDate,
           unreadCount: 0,
         });
+      } else if (richName && !existing.displayName) {
+        existing.displayName = richName;
       }
     });
     
@@ -150,12 +257,13 @@ export default function SendclawInbox() {
     
     messages.forEach(msg => {
       const threadKey = msg.threadId || msg.id;
-      const counterparty = msg.direction === 'inbound' ? msg.fromAddress : msg.toAddress;
+      const rawCounterparty = msg.direction === 'inbound' ? msg.fromAddress : msg.toAddress;
+      const normalizedEmail = extractEmail(rawCounterparty);
       
       if (!threadMap.has(threadKey)) {
         threadMap.set(threadKey, {
           threadId: threadKey,
-          contactEmail: counterparty,
+          contactEmail: normalizedEmail,
           subject: msg.subject || "(no subject)",
           messages: [],
           lastMessageDate: new Date(msg.createdAt),
@@ -185,7 +293,14 @@ export default function SendclawInbox() {
   const selectedThread = threads.find(t => t.threadId === selectedThreadId);
   const selectedContact = contacts.find(c => c.email === selectedContactEmail);
 
+  useEffect(() => {
+    if (!isMobile && !selectedContactEmail && contacts.length > 0 && !userClearedSelectionRef.current) {
+      setSelectedContactEmail(contacts[0].email);
+    }
+  }, [isMobile, contacts, selectedContactEmail]);
+
   const handleSelectContact = (email: string) => {
+    userClearedSelectionRef.current = false;
     setSelectedContactEmail(email);
     setSelectedThreadId(null);
   };
@@ -198,6 +313,7 @@ export default function SendclawInbox() {
     if (selectedThreadId) {
       setSelectedThreadId(null);
     } else if (selectedContactEmail) {
+      userClearedSelectionRef.current = true;
       setSelectedContactEmail(null);
     }
   };
@@ -213,11 +329,6 @@ export default function SendclawInbox() {
     }
 
     if (!selectedThread) return;
-
-    const extractEmail = (str: string): string => {
-      const match = str.match(/<([^>]+)>/);
-      return match ? match[1] : str;
-    };
 
     const lastMessage = selectedThread.messages[selectedThread.messages.length - 1];
     const recipientEmail = extractEmail(selectedThread.contactEmail);
@@ -278,7 +389,7 @@ export default function SendclawInbox() {
             <CardContent className="flex-1 flex flex-col overflow-hidden p-3">
               <ScrollArea className="flex-1 pr-2 mb-4">
                 <div className="space-y-4">
-                  {selectedThread.messages.map(message => (
+                  {[...selectedThread.messages].reverse().map(message => (
                     <div
                       key={message.id}
                       className={cn(
@@ -399,9 +510,10 @@ export default function SendclawInbox() {
             <CardHeader className="pb-3 px-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <CardTitle className="text-xl flex items-center">
-                    <InboxIcon className="mr-2 h-5 w-5" />
+                  <CardTitle className="text-xl flex items-center gap-2">
+                    <InboxIcon className="mr-1 h-5 w-5" />
                     {userBot?.name ? `${userBot.name} Inbox` : 'Inbox'}
+                    {renderRefreshControl()}
                   </CardTitle>
                   {userHandle && (
                     <div className="flex items-center gap-2 mt-1">
@@ -470,12 +582,17 @@ export default function SendclawInbox() {
                         <div className="flex items-center space-x-3">
                           <Avatar>
                             <AvatarFallback className="bg-primary/10 text-primary">
-                              {contact.email.charAt(0).toUpperCase()}
+                              {(contact.displayName || contact.email).charAt(0).toUpperCase()}
                             </AvatarFallback>
                           </Avatar>
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center justify-between">
-                              <h4 className="font-medium truncate">{contact.email}</h4>
+                              <div className="flex items-center gap-1.5 min-w-0 mr-2">
+                                <h4 className="font-medium truncate">{contact.displayName || contact.email}</h4>
+                                {contact.displayName && (
+                                  <span className="text-xs text-muted-foreground truncate hidden sm:inline">{contact.email}</span>
+                                )}
+                              </div>
                               <span className="text-xs text-muted-foreground whitespace-nowrap">
                                 {format(contact.lastMessageDate, "MMM d")}
                               </span>
@@ -508,308 +625,354 @@ export default function SendclawInbox() {
     }
   };
 
+  const renderContactListColumn = (widthClass: string) => (
+    <div className={widthClass} style={{ height: "100%" }}>
+      <Card className="h-full flex flex-col rounded-lg shadow-none border-0">
+        <CardHeader className="pb-3 px-2">
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle className="text-xl flex items-center gap-2">
+                <InboxIcon className="mr-1 h-5 w-5" />
+                {userBot?.name ? `${userBot.name} Inbox` : 'Inbox'}
+                {renderRefreshControl()}
+              </CardTitle>
+              {userHandle && (
+                <div className="flex items-center gap-2 mt-1">
+                  <span className="text-sm text-muted-foreground">{userHandle.address}</span>
+                  <button onClick={() => copyToClipboard(userHandle.address)} className="text-muted-foreground hover:text-primary">
+                    {copied ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
+                  </button>
+                </div>
+              )}
+            </div>
+            <Dialog open={newEmailOpen} onOpenChange={setNewEmailOpen}>
+              <DialogTrigger asChild>
+                <Button size="sm">
+                  <Plus className="mr-2 h-4 w-4" />
+                  Compose
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[500px]">
+                <DialogHeader>
+                  <DialogTitle>New Email</DialogTitle>
+                </DialogHeader>
+                <div className="space-y-4 pt-4">
+                  <div>
+                    <Input
+                      placeholder="To: email@example.com"
+                      value={newEmailTo}
+                      onChange={(e) => setNewEmailTo(e.target.value)}
+                    />
+                  </div>
+                  <div>
+                    <Input
+                      placeholder="Subject"
+                      value={newEmailSubject}
+                      onChange={(e) => setNewEmailSubject(e.target.value)}
+                    />
+                  </div>
+                  <div>
+                    <Textarea
+                      placeholder="Write your message..."
+                      value={newEmailBody}
+                      onChange={(e) => setNewEmailBody(e.target.value)}
+                      className="min-h-[200px]"
+                    />
+                  </div>
+                  <div className="flex justify-end">
+                    <Button onClick={handleSendNewEmail} disabled={sendMutation.isPending}>
+                      <Send className="mr-2 h-4 w-4" />
+                      {sendMutation.isPending ? "Sending..." : "Send"}
+                    </Button>
+                  </div>
+                </div>
+              </DialogContent>
+            </Dialog>
+          </div>
+        </CardHeader>
+        <CardContent className="flex-1 overflow-hidden px-2 py-1">
+          <ScrollArea className="h-full pr-4">
+            {contacts.length > 0 ? (
+              <div className="space-y-2">
+                {contacts.map(contact => (
+                  <div
+                    key={contact.email}
+                    className={cn(
+                      "cursor-pointer p-3 rounded-lg transition-colors hover:bg-accent-hover",
+                      selectedContactEmail === contact.email
+                        ? "bg-accent-active"
+                        : "bg-card border border-border"
+                    )}
+                    onClick={() => handleSelectContact(contact.email)}
+                  >
+                    <div className="flex items-center space-x-3">
+                      <Avatar>
+                        <AvatarFallback className="bg-primary/10 text-primary">
+                          {(contact.displayName || contact.email).charAt(0).toUpperCase()}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-1.5 min-w-0 mr-2">
+                            <h4 className="font-medium truncate">{contact.displayName || contact.email}</h4>
+                            {contact.displayName && (
+                              <span className="text-xs text-muted-foreground truncate">{contact.email}</span>
+                            )}
+                          </div>
+                          <span className="text-xs text-muted-foreground whitespace-nowrap">
+                            {format(contact.lastMessageDate, "MMM d")}
+                          </span>
+                        </div>
+                        <p className="text-sm text-muted-foreground mt-1 truncate">
+                          {contact.lastMessage}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="flex flex-col items-center justify-center h-60 text-center">
+                <InboxIcon className="h-12 w-12 text-muted-foreground/50 mb-4" />
+                <h3 className="font-medium text-muted-foreground mb-2">Inbox is empty</h3>
+                <p className="text-sm text-muted-foreground max-w-sm">
+                  {userHandle 
+                    ? `Send your first email or receive messages at ${userHandle.address}`
+                    : "Reserve a handle to start sending and receiving emails."
+                  }
+                </p>
+              </div>
+            )}
+          </ScrollArea>
+        </CardContent>
+      </Card>
+    </div>
+  );
+
+  const renderThreadListColumn = (widthClass: string, showBackButton: boolean) => (
+    <div className={cn(widthClass, "pl-2")} style={{ height: "100%" }}>
+      <Card className="h-full flex flex-col rounded-lg shadow">
+        <CardHeader className="pb-3 flex flex-row items-center justify-between px-6">
+          <div className="flex items-center">
+            {showBackButton && (
+              <Button variant="ghost" size="icon" onClick={handleBack} className="mr-2 -ml-2">
+                <ArrowLeft className="h-5 w-5" />
+              </Button>
+            )}
+            <CardTitle className="text-xl truncate">{selectedContact?.displayName || selectedContactEmail}</CardTitle>
+          </div>
+        </CardHeader>
+        <CardContent className="flex-1 overflow-hidden px-2 py-2">
+          <ScrollArea className="h-full pr-4">
+            <div className="space-y-3">
+              {contactThreads.length > 0 ? (
+                contactThreads.map(thread => (
+                  <Card
+                    key={thread.threadId}
+                    className={cn(
+                      "cursor-pointer transition-colors hover:bg-accent/30",
+                      selectedThreadId === thread.threadId && "bg-accent/20"
+                    )}
+                    onClick={() => handleSelectThread(thread.threadId)}
+                  >
+                    <CardContent className="p-4">
+                      <div className="flex items-start justify-between mb-2">
+                        <h3 className="font-semibold truncate mr-2">{thread.subject}</h3>
+                        <span className="text-xs text-muted-foreground whitespace-nowrap">
+                          {format(thread.lastMessageDate, "MMM d, h:mm a")}
+                        </span>
+                      </div>
+                      <p className="text-sm text-muted-foreground line-clamp-2">
+                        {thread.messages[thread.messages.length - 1].bodyText || "(no content)"}
+                      </p>
+                      <div className="flex items-center mt-2 text-xs text-muted-foreground">
+                        <Mail className="mr-1 h-3 w-3" />
+                        <span>{thread.messages.length} message{thread.messages.length > 1 ? "s" : ""}</span>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))
+              ) : (
+                <div className="flex flex-col items-center justify-center h-60 text-center">
+                  <Mail className="h-12 w-12 text-muted-foreground/50 mb-4" />
+                  <h3 className="font-medium text-muted-foreground">No email threads</h3>
+                  <p className="text-sm text-muted-foreground/70 mt-1 max-w-sm">
+                    Start a new conversation with this contact
+                  </p>
+                </div>
+              )}
+            </div>
+          </ScrollArea>
+        </CardContent>
+      </Card>
+    </div>
+  );
+
+  const renderEmailDetailColumn = (widthClass: string) => {
+    if (!selectedThread) return null;
+    return (
+      <div className={cn(widthClass, "pl-2")} style={{ height: "100%" }}>
+        <Card className="h-full flex flex-col rounded-lg shadow-none border-0">
+          <CardHeader className="pb-3 px-2">
+            <div>
+              <CardTitle className="text-xl truncate">{selectedThread.subject}</CardTitle>
+              <p className="text-sm text-muted-foreground mt-1">With {selectedContact?.displayName || selectedContact?.email}</p>
+            </div>
+          </CardHeader>
+          <CardContent className="flex-1 flex flex-col overflow-hidden px-2 py-2">
+            <ScrollArea className="flex-1 pr-4 mb-4">
+              <div className="space-y-6">
+                {[...selectedThread.messages].reverse().map(message => (
+                  <div
+                    key={message.id}
+                    className={cn(
+                      "p-4 rounded-lg",
+                      message.direction === "outbound"
+                        ? "bg-primary/10 ml-12"
+                        : "bg-accent/50 mr-12 border border-border"
+                    )}
+                  >
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center">
+                        <Avatar className="h-8 w-8 mr-2">
+                          <AvatarFallback className={cn(
+                            message.direction === "outbound"
+                              ? "bg-primary text-primary-foreground"
+                              : "bg-muted text-muted-foreground"
+                          )}>
+                            {message.direction === "outbound" ? "ME" : message.fromAddress.charAt(0).toUpperCase()}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div>
+                          <p className="font-medium">
+                            {message.direction === "outbound" ? "Me" : message.fromAddress}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            {message.direction === "outbound" ? `to ${message.toAddress}` : `from ${message.fromAddress}`}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-center text-xs text-muted-foreground">
+                        <Clock className="mr-1 h-3 w-3" />
+                        {format(new Date(message.createdAt), "MMM d, h:mm a")}
+                      </div>
+                    </div>
+                    <div className="mt-2 text-sm whitespace-pre-line">
+                      {message.bodyText || "(empty message)"}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </ScrollArea>
+            
+            <div className="mt-auto">
+              <div className="border rounded-lg p-3">
+                <Textarea
+                  value={replyContent}
+                  onChange={(e) => setReplyContent(e.target.value)}
+                  placeholder="Type your reply here..."
+                  className="min-h-[100px] focus-visible:ring-0 border-0 focus-visible:ring-offset-0 p-0 placeholder:text-muted-foreground/50"
+                />
+                <div className="flex justify-end mt-3">
+                  <Button onClick={handleSendReply} disabled={sendMutation.isPending}>
+                    <Send className="mr-2 h-4 w-4" />
+                    {sendMutation.isPending ? "Sending..." : "Send Reply"}
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  };
+
   const renderDesktopLayout = () => {
+    if (isWideScreen && selectedContactEmail) {
+      if (selectedThreadId && selectedThread) {
+        return (
+          <>
+            {renderContactListColumn("w-1/4")}
+            {renderThreadListColumn("w-1/4", false)}
+            {renderEmailDetailColumn("w-1/2")}
+          </>
+        );
+      }
+      return (
+        <>
+          {renderContactListColumn("w-1/3")}
+          {renderThreadListColumn("w-2/3", true)}
+        </>
+      );
+    }
+
+    if (!selectedContactEmail) {
+      return renderContactListColumn("w-full");
+    }
+
+    if (!selectedThreadId) {
+      return (
+        <>
+          {renderContactListColumn("w-1/3")}
+          {renderThreadListColumn("w-2/3", true)}
+        </>
+      );
+    }
+
     return (
       <>
-        <div className={selectedThreadId ? "w-1/3" : (selectedContactEmail ? "w-1/3" : "w-full")} style={{ height: "100%" }}>
+        <div className="w-1/3" style={{ height: "100%" }}>
           <Card className="h-full flex flex-col rounded-lg shadow-none border-0">
-            {!selectedThreadId ? (
-              <>
-                <CardHeader className="pb-3 px-2">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <CardTitle className="text-xl flex items-center">
-                        <InboxIcon className="mr-2 h-5 w-5" />
-                        {userBot?.name ? `${userBot.name} Inbox` : 'Inbox'}
-                      </CardTitle>
-                      {userHandle && (
-                        <div className="flex items-center gap-2 mt-1">
-                          <span className="text-sm text-muted-foreground">{userHandle.address}</span>
-                          <button onClick={() => copyToClipboard(userHandle.address)} className="text-muted-foreground hover:text-primary">
-                            {copied ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
-                          </button>
-                        </div>
+            <CardHeader className="pb-3 flex flex-row items-center justify-between px-6">
+              <div className="flex items-center">
+                <Button variant="ghost" size="icon" onClick={handleBack} className="mr-2 -ml-2">
+                  <ArrowLeft className="h-5 w-5" />
+                </Button>
+                <CardTitle className="text-xl truncate">{selectedContact?.displayName || selectedContactEmail}</CardTitle>
+              </div>
+            </CardHeader>
+            <CardContent className="flex-1 overflow-hidden px-2 py-2">
+              <ScrollArea className="h-full pr-4">
+                <div className="space-y-3">
+                  {contactThreads.map(thread => (
+                    <Card
+                      key={thread.threadId}
+                      className={cn(
+                        "cursor-pointer transition-colors hover:bg-accent/30",
+                        selectedThreadId === thread.threadId && "bg-accent/20"
                       )}
-                    </div>
-                    <Dialog open={newEmailOpen} onOpenChange={setNewEmailOpen}>
-                  <DialogTrigger asChild>
-                    <Button size="sm">
-                      <Plus className="mr-2 h-4 w-4" />
-                      Compose
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent className="sm:max-w-[500px]">
-                    <DialogHeader>
-                      <DialogTitle>New Email</DialogTitle>
-                    </DialogHeader>
-                    <div className="space-y-4 pt-4">
-                      <div>
-                        <Input
-                          placeholder="To: email@example.com"
-                          value={newEmailTo}
-                          onChange={(e) => setNewEmailTo(e.target.value)}
-                        />
-                      </div>
-                      <div>
-                        <Input
-                          placeholder="Subject"
-                          value={newEmailSubject}
-                          onChange={(e) => setNewEmailSubject(e.target.value)}
-                        />
-                      </div>
-                      <div>
-                        <Textarea
-                          placeholder="Write your message..."
-                          value={newEmailBody}
-                          onChange={(e) => setNewEmailBody(e.target.value)}
-                          className="min-h-[200px]"
-                        />
-                      </div>
-                      <div className="flex justify-end">
-                        <Button onClick={handleSendNewEmail} disabled={sendMutation.isPending}>
-                          <Send className="mr-2 h-4 w-4" />
-                          {sendMutation.isPending ? "Sending..." : "Send"}
-                        </Button>
-                      </div>
-                    </div>
-                  </DialogContent>
-                </Dialog>
-                  </div>
-                </CardHeader>
-                <CardContent className="flex-1 overflow-hidden px-2 py-1">
-                  <ScrollArea className="h-full pr-4">
-                    {contacts.length > 0 ? (
-                      <div className="space-y-2">
-                        {contacts.map(contact => (
-                          <div
-                            key={contact.email}
-                            className={cn(
-                              "cursor-pointer p-3 rounded-lg transition-colors hover:bg-accent-hover",
-                              selectedContactEmail === contact.email
-                                ? "bg-accent-active"
-                                : "bg-card border border-border"
-                            )}
-                            onClick={() => handleSelectContact(contact.email)}
-                          >
-                            <div className="flex items-center space-x-3">
-                              <Avatar>
-                                <AvatarFallback className="bg-primary/10 text-primary">
-                                  {contact.email.charAt(0).toUpperCase()}
-                                </AvatarFallback>
-                              </Avatar>
-                              <div className="flex-1 min-w-0">
-                                <div className="flex items-center justify-between">
-                                  <h4 className="font-medium truncate">{contact.email}</h4>
-                                  <span className="text-xs text-muted-foreground whitespace-nowrap">
-                                    {format(contact.lastMessageDate, "MMM d")}
-                                  </span>
-                                </div>
-                                <p className="text-sm text-muted-foreground mt-1 truncate">
-                                  {contact.lastMessage}
-                                </p>
-                              </div>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    ) : (
-                      <div className="flex flex-col items-center justify-center h-60 text-center">
-                        <InboxIcon className="h-12 w-12 text-muted-foreground/50 mb-4" />
-                        <h3 className="font-medium text-muted-foreground mb-2">Inbox is empty</h3>
-                        <p className="text-sm text-muted-foreground max-w-sm">
-                          {userHandle 
-                            ? `Send your first email or receive messages at ${userHandle.address}`
-                            : "Reserve a handle to start sending and receiving emails."
-                          }
+                      onClick={() => handleSelectThread(thread.threadId)}
+                    >
+                      <CardContent className="p-4">
+                        <div className="flex items-start justify-between mb-2">
+                          <h3 className="font-semibold truncate mr-2">{thread.subject}</h3>
+                          <span className="text-xs text-muted-foreground whitespace-nowrap">
+                            {format(thread.lastMessageDate, "MMM d, h:mm a")}
+                          </span>
+                        </div>
+                        <p className="text-sm text-muted-foreground line-clamp-2">
+                          {thread.messages[thread.messages.length - 1].bodyText || "(no content)"}
                         </p>
-                      </div>
-                    )}
-                  </ScrollArea>
-                </CardContent>
-              </>
-            ) : (
-              <>
-                <CardHeader className="pb-3 flex flex-row items-center justify-between px-6">
-                  <div className="flex items-center">
-                    <Button variant="ghost" size="icon" onClick={handleBack} className="mr-2 -ml-2">
-                      <ArrowLeft className="h-5 w-5" />
-                    </Button>
-                    <CardTitle className="text-xl truncate">{selectedContactEmail}</CardTitle>
-                  </div>
-                </CardHeader>
-                <CardContent className="flex-1 overflow-hidden px-2 py-2">
-                  <ScrollArea className="h-full pr-4">
-                    <div className="space-y-3">
-                      {contactThreads.map(thread => (
-                        <Card
-                          key={thread.threadId}
-                          className={cn(
-                            "cursor-pointer transition-colors hover:bg-accent/30",
-                            selectedThreadId === thread.threadId && "bg-accent/20"
-                          )}
-                          onClick={() => handleSelectThread(thread.threadId)}
-                        >
-                          <CardContent className="p-4">
-                            <div className="flex items-start justify-between mb-2">
-                              <h3 className="font-semibold truncate mr-2">{thread.subject}</h3>
-                              <span className="text-xs text-muted-foreground whitespace-nowrap">
-                                {format(thread.lastMessageDate, "MMM d, h:mm a")}
-                              </span>
-                            </div>
-                            <p className="text-sm text-muted-foreground line-clamp-2">
-                              {thread.messages[thread.messages.length - 1].bodyText || "(no content)"}
-                            </p>
-                            <div className="flex items-center mt-2 text-xs text-muted-foreground">
-                              <Mail className="mr-1 h-3 w-3" />
-                              <span>{thread.messages.length} message{thread.messages.length > 1 ? "s" : ""}</span>
-                            </div>
-                          </CardContent>
-                        </Card>
-                      ))}
-                    </div>
-                  </ScrollArea>
-                </CardContent>
-              </>
-            )}
+                        <div className="flex items-center mt-2 text-xs text-muted-foreground">
+                          <Mail className="mr-1 h-3 w-3" />
+                          <span>{thread.messages.length} message{thread.messages.length > 1 ? "s" : ""}</span>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </ScrollArea>
+            </CardContent>
           </Card>
         </div>
-
-        {selectedContactEmail && !selectedThreadId && (
-          <div className="w-2/3 pl-4" style={{ height: "100%" }}>
-            <Card className="h-full flex flex-col rounded-lg shadow">
-              <CardHeader className="pb-3 flex flex-row items-center justify-between px-6">
-                <div className="flex items-center">
-                  <Button variant="ghost" size="icon" onClick={handleBack} className="mr-2 -ml-2">
-                    <ArrowLeft className="h-5 w-5" />
-                  </Button>
-                  <CardTitle className="text-xl truncate">{selectedContactEmail}</CardTitle>
-                </div>
-              </CardHeader>
-              <CardContent className="flex-1 overflow-hidden px-2 py-2">
-                <ScrollArea className="h-full pr-4">
-                  <div className="space-y-3">
-                    {contactThreads.length > 0 ? (
-                      contactThreads.map(thread => (
-                        <Card
-                          key={thread.threadId}
-                          className="cursor-pointer transition-colors hover:bg-accent/30"
-                          onClick={() => handleSelectThread(thread.threadId)}
-                        >
-                          <CardContent className="p-4">
-                            <div className="flex items-start justify-between mb-2">
-                              <h3 className="font-semibold truncate mr-2">{thread.subject}</h3>
-                              <span className="text-xs text-muted-foreground whitespace-nowrap">
-                                {format(thread.lastMessageDate, "MMM d, h:mm a")}
-                              </span>
-                            </div>
-                            <p className="text-sm text-muted-foreground line-clamp-2">
-                              {thread.messages[thread.messages.length - 1].bodyText || "(no content)"}
-                            </p>
-                            <div className="flex items-center mt-2 text-xs text-muted-foreground">
-                              <Mail className="mr-1 h-3 w-3" />
-                              <span>{thread.messages.length} message{thread.messages.length > 1 ? "s" : ""}</span>
-                            </div>
-                          </CardContent>
-                        </Card>
-                      ))
-                    ) : (
-                      <div className="flex flex-col items-center justify-center h-60 text-center">
-                        <Mail className="h-12 w-12 text-muted-foreground/50 mb-4" />
-                        <h3 className="font-medium text-muted-foreground">No email threads</h3>
-                        <p className="text-sm text-muted-foreground/70 mt-1 max-w-sm">
-                          Start a new conversation with this contact
-                        </p>
-                      </div>
-                    )}
-                  </div>
-                </ScrollArea>
-              </CardContent>
-            </Card>
-          </div>
-        )}
-
-        {selectedThreadId && selectedThread && (
-          <div className="w-2/3 pl-4" style={{ height: "100%" }}>
-            <Card className="h-full flex flex-col rounded-lg shadow-none border-0">
-              <CardHeader className="pb-3 px-2">
-                <div>
-                  <CardTitle className="text-xl truncate">{selectedThread.subject}</CardTitle>
-                  <p className="text-sm text-muted-foreground mt-1">With {selectedContact?.email}</p>
-                </div>
-              </CardHeader>
-              <CardContent className="flex-1 flex flex-col overflow-hidden px-2 py-2">
-                <ScrollArea className="flex-1 pr-4 mb-4">
-                  <div className="space-y-6">
-                    {selectedThread.messages.map(message => (
-                      <div
-                        key={message.id}
-                        className={cn(
-                          "p-4 rounded-lg",
-                          message.direction === "outbound"
-                            ? "bg-primary/10 ml-12"
-                            : "bg-accent/50 mr-12 border border-border"
-                        )}
-                      >
-                        <div className="flex items-center justify-between mb-3">
-                          <div className="flex items-center">
-                            <Avatar className="h-8 w-8 mr-2">
-                              <AvatarFallback className={cn(
-                                message.direction === "outbound"
-                                  ? "bg-primary text-primary-foreground"
-                                  : "bg-muted text-muted-foreground"
-                              )}>
-                                {message.direction === "outbound" ? "ME" : message.fromAddress.charAt(0).toUpperCase()}
-                              </AvatarFallback>
-                            </Avatar>
-                            <div>
-                              <p className="font-medium">
-                                {message.direction === "outbound" ? "Me" : message.fromAddress}
-                              </p>
-                              <p className="text-xs text-muted-foreground">
-                                {message.direction === "outbound" ? `to ${message.toAddress}` : `from ${message.fromAddress}`}
-                              </p>
-                            </div>
-                          </div>
-                          <div className="flex items-center text-xs text-muted-foreground">
-                            <Clock className="mr-1 h-3 w-3" />
-                            {format(new Date(message.createdAt), "MMM d, h:mm a")}
-                          </div>
-                        </div>
-                        <div className="mt-2 text-sm whitespace-pre-line">
-                          {message.bodyText || "(empty message)"}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </ScrollArea>
-                
-                <div className="mt-auto">
-                  <div className="border rounded-lg p-3">
-                    <Textarea
-                      value={replyContent}
-                      onChange={(e) => setReplyContent(e.target.value)}
-                      placeholder="Type your reply here..."
-                      className="min-h-[100px] focus-visible:ring-0 border-0 focus-visible:ring-offset-0 p-0 placeholder:text-muted-foreground/50"
-                    />
-                    <div className="flex justify-end mt-3">
-                      <Button onClick={handleSendReply} disabled={sendMutation.isPending}>
-                        <Send className="mr-2 h-4 w-4" />
-                        {sendMutation.isPending ? "Sending..." : "Send Reply"}
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        )}
+        {renderEmailDetailColumn("w-2/3")}
       </>
     );
   };
 
   return (
-    <div className="h-[calc(100vh-4rem)] md:py-6 md:px-6">
-      <div className="flex h-full overflow-hidden md:space-x-4">
+    <div className="h-[calc(100vh-4rem)] md:py-2 md:px-3">
+      <div className="flex h-full overflow-hidden">
         {isMobile ? renderMobileView() : renderDesktopLayout()}
       </div>
     </div>

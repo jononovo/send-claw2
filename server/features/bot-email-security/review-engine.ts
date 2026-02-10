@@ -3,7 +3,6 @@ import { bots, messages, emailFlags, securityReports } from '@shared/schema';
 import { eq, and, gte, lte, count, sql, inArray } from 'drizzle-orm';
 import { reviewEmails } from './ai-reviewer';
 import { sendDailyReport } from './report-generator';
-import { notifyBotOwner } from './owner-notifications';
 import { EmailForReview, SecurityReportData, FlaggedEmailReport, DailyStats, BotStatus } from './types';
 
 const POLL_INTERVAL_MS = 60 * 60 * 1000; // Check every hour
@@ -159,7 +158,6 @@ class BotEmailSecurityEngine {
       });
 
       const bot = botMap.get(email.botId);
-      await this.updateBotStatus(email.botId, bot?.name || 'Unknown', bot?.address || 'unknown', flag.status, flag.reason);
       flaggedEmails.push({
         messageId: email.id,
         botId: email.botId,
@@ -219,60 +217,6 @@ class BotEmailSecurityEngine {
     }
 
     console.log(`[BotEmailSecurity] COMPLETE: Flagged=${flaggedEmails.length}, Report sent=${sent}`);
-  }
-
-  private async updateBotStatus(
-    botId: string, 
-    botName: string,
-    botAddress: string,
-    suggestedStatus: 'flagged' | 'under_review' | 'suspended',
-    reason: string
-  ) {
-    const [bot] = await db
-      .select({ status: bots.status, flagCount: bots.flagCount })
-      .from(bots)
-      .where(eq(bots.id, botId));
-
-    if (!bot) return;
-
-    const currentStatus = (bot.status || 'normal') as BotStatus;
-    const currentFlagCount = bot.flagCount || 0;
-    const newFlagCount = currentFlagCount + 1;
-
-    let newStatus: BotStatus = currentStatus;
-
-    if (suggestedStatus === 'suspended') {
-      newStatus = 'suspended';
-    } else if (suggestedStatus === 'under_review') {
-      newStatus = 'under_review';
-    } else if (suggestedStatus === 'flagged') {
-      if (currentStatus === 'normal' && newFlagCount >= 2) {
-        newStatus = 'flagged';
-      } else if (currentStatus === 'flagged' && newFlagCount >= 3) {
-        newStatus = 'under_review';
-      }
-    }
-
-    await db.update(bots)
-      .set({ 
-        status: newStatus,
-        flagCount: newFlagCount
-      })
-      .where(eq(bots.id, botId));
-
-    console.log(`[BotEmailSecurity] Bot ${botId} updated: status=${newStatus}, flagCount=${newFlagCount}`);
-
-    if (newStatus !== currentStatus && newStatus !== 'normal') {
-      await notifyBotOwner({
-        botId,
-        botName,
-        botAddress,
-        oldStatus: currentStatus,
-        newStatus,
-        flagCount: newFlagCount,
-        reason
-      });
-    }
   }
 
   private async gatherStats(start: Date, end: Date): Promise<DailyStats> {

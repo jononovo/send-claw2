@@ -4,6 +4,8 @@ import { db } from '../../db';
 import { bots, messages, emailFlags, securityReports } from '@shared/schema';
 import { eq, desc, and, gte, lte, sql, count } from 'drizzle-orm';
 import { botEmailSecurityEngine } from './review-engine';
+import { notifyBotOwner } from './owner-notifications';
+import { BotStatus } from './types';
 
 function getDateRange(preset: string): { from: Date | null; to: Date | null } {
   const now = new Date();
@@ -208,6 +210,9 @@ router.get('/flags', requireAdmin, async (req: Request, res: Response) => {
         totalBotFlags: bots.flagCount,
         suggestedStatus: emailFlags.suggestedStatus,
         reason: emailFlags.reason,
+        reviewStatus: emailFlags.reviewStatus,
+        appliedStatus: emailFlags.appliedStatus,
+        appliedAt: emailFlags.appliedAt,
         flaggedAt: emailFlags.createdAt,
         emailSubject: messages.subject
       })
@@ -260,6 +265,128 @@ router.post('/bots/:botId/reinstate', requireAdmin, async (req: Request, res: Re
   } catch (error) {
     console.error('[BotEmailSecurity] Reinstate error:', error);
     res.status(500).json({ error: 'Failed to reinstate bot' });
+  }
+});
+
+router.post('/flags/:flagId/reject', requireAdmin, async (req: Request, res: Response) => {
+  try {
+    const { flagId } = req.params;
+
+    const [flag] = await db
+      .select({ id: emailFlags.id, reviewStatus: emailFlags.reviewStatus })
+      .from(emailFlags)
+      .where(eq(emailFlags.id, flagId))
+      .limit(1);
+
+    if (!flag) {
+      res.status(404).json({ error: 'Flag not found' });
+      return;
+    }
+
+    if (flag.reviewStatus && flag.reviewStatus !== 'pending') {
+      res.status(400).json({ error: `Flag already ${flag.reviewStatus}` });
+      return;
+    }
+
+    await db.update(emailFlags)
+      .set({ reviewStatus: 'rejected', appliedAt: new Date() })
+      .where(eq(emailFlags.id, flagId));
+
+    console.log(`[BotEmailSecurity] Flag ${flagId} rejected by admin`);
+
+    res.json({ success: true, message: 'Flag rejected' });
+  } catch (error) {
+    console.error('[BotEmailSecurity] Reject flag error:', error);
+    res.status(500).json({ error: 'Failed to reject flag' });
+  }
+});
+
+router.post('/flags/:flagId/apply', requireAdmin, async (req: Request, res: Response) => {
+  try {
+    const { flagId } = req.params;
+    const { status } = req.body;
+
+    const validStatuses: BotStatus[] = ['flagged', 'under_review', 'suspended'];
+    if (!status || !validStatuses.includes(status)) {
+      res.status(400).json({ error: 'Invalid status. Must be one of: flagged, under_review, suspended' });
+      return;
+    }
+
+    const [flag] = await db
+      .select({ 
+        id: emailFlags.id, 
+        reviewStatus: emailFlags.reviewStatus,
+        botId: emailFlags.botId,
+        reason: emailFlags.reason
+      })
+      .from(emailFlags)
+      .where(eq(emailFlags.id, flagId))
+      .limit(1);
+
+    if (!flag) {
+      res.status(404).json({ error: 'Flag not found' });
+      return;
+    }
+
+    if (flag.reviewStatus && flag.reviewStatus !== 'pending') {
+      res.status(400).json({ error: `Flag already ${flag.reviewStatus}` });
+      return;
+    }
+
+    if (!flag.botId) {
+      res.status(400).json({ error: 'Flag has no associated bot' });
+      return;
+    }
+
+    const [bot] = await db
+      .select({ id: bots.id, name: bots.name, address: bots.address, status: bots.status, flagCount: bots.flagCount })
+      .from(bots)
+      .where(eq(bots.id, flag.botId))
+      .limit(1);
+
+    if (!bot) {
+      res.status(404).json({ error: 'Bot not found' });
+      return;
+    }
+
+    const oldStatus = (bot.status || 'normal') as BotStatus;
+    const newFlagCount = (bot.flagCount || 0) + 1;
+
+    await db.update(bots)
+      .set({ status: status, flagCount: newFlagCount })
+      .where(eq(bots.id, flag.botId));
+
+    await db.update(emailFlags)
+      .set({ 
+        reviewStatus: 'applied', 
+        appliedStatus: status,
+        appliedAt: new Date() 
+      })
+      .where(eq(emailFlags.id, flagId));
+
+    if (status !== oldStatus) {
+      await notifyBotOwner({
+        botId: flag.botId,
+        botName: bot.name,
+        botAddress: bot.address || 'unknown',
+        oldStatus,
+        newStatus: status,
+        flagCount: newFlagCount,
+        reason: flag.reason || 'Admin applied status change'
+      });
+    }
+
+    console.log(`[BotEmailSecurity] Flag ${flagId} applied: bot ${bot.name} status changed to ${status} by admin`);
+
+    res.json({ 
+      success: true, 
+      message: `Bot "${bot.name}" status changed to ${status}`,
+      previousStatus: oldStatus,
+      newStatus: status
+    });
+  } catch (error) {
+    console.error('[BotEmailSecurity] Apply flag error:', error);
+    res.status(500).json({ error: 'Failed to apply flag' });
   }
 });
 
