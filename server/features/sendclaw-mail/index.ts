@@ -1,0 +1,1 @@
+export { mailRouter } from './routes';

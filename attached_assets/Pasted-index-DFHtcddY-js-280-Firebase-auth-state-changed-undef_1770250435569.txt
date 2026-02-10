@@ -1,0 +1,151 @@
+index-DFHtcddY.js:280 Firebase auth state changed: undefined
+index-DFHtcddY.js:280 Starting Google sign-in process {environment: 'production', domain: 'sendclaw.com', origin: 'https://sendclaw.com'}
+index-DFHtcddY.js:280 Calling signInWithPopup...
+bot-security:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+bot-security:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+bot-security:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+bot-security:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+bot-security:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+bot-security:1 Unchecked runtime.lastError: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+bot-security:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+about:blank:1 Unchecked runtime.lastError: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+sw_iframe.html?origin=https%3A%2F%2Fsendclaw.com:1 Unchecked runtime.lastError: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+index.esm-7naFD85M.js:1051 Cross-Origin-Opener-Policy policy would block the window.closed call.
+e @ index.esm-7naFD85M.js:1051
+setTimeout
+e @ index.esm-7naFD85M.js:1051
+pollUserCancellation @ index.esm-7naFD85M.js:1051
+onExecution @ index.esm-7naFD85M.js:1051
+await in onExecution
+(anonymous) @ index.esm-7naFD85M.js:1036
+await in (anonymous)
+execute @ index.esm-7naFD85M.js:1036
+executeNotNull @ index.esm-7naFD85M.js:1051
+Jr @ index.esm-7naFD85M.js:1051
+N @ index-DFHtcddY.js:280
+await in N
+j @ index-DFHtcddY.js:280
+hC @ index-DFHtcddY.js:38
+gC @ index-DFHtcddY.js:38
+vC @ index-DFHtcddY.js:38
+Lm @ index-DFHtcddY.js:38
+Qy @ index-DFHtcddY.js:38
+(anonymous) @ index-DFHtcddY.js:38
+Op @ index-DFHtcddY.js:41
+yy @ index-DFHtcddY.js:38
+Su @ index-DFHtcddY.js:38
+ap @ index-DFHtcddY.js:38
+OC @ index-DFHtcddY.js:38
+index.esm-7naFD85M.js:1051 Cross-Origin-Opener-Policy policy would block the window.closed call.
+e @ index.esm-7naFD85M.js:1051
+setTimeout
+e @ index.esm-7naFD85M.js:1051
+pollUserCancellation @ index.esm-7naFD85M.js:1051
+onExecution @ index.esm-7naFD85M.js:1051
+await in onExecution
+(anonymous) @ index.esm-7naFD85M.js:1036
+await in (anonymous)
+execute @ index.esm-7naFD85M.js:1036
+executeNotNull @ index.esm-7naFD85M.js:1051
+Jr @ index.esm-7naFD85M.js:1051
+N @ index-DFHtcddY.js:280
+await in N
+j @ index-DFHtcddY.js:280
+hC @ index-DFHtcddY.js:38
+gC @ index-DFHtcddY.js:38
+vC @ index-DFHtcddY.js:38
+Lm @ index-DFHtcddY.js:38
+Qy @ index-DFHtcddY.js:38
+(anonymous) @ index-DFHtcddY.js:38
+Op @ index-DFHtcddY.js:41
+yy @ index-DFHtcddY.js:38
+Su @ index-DFHtcddY.js:38
+ap @ index-DFHtcddY.js:38
+OC @ index-DFHtcddY.js:38
+index-DFHtcddY.js:280 Firebase auth state changed: jon@5ducks.ai
+index.esm-7naFD85M.js:1156 Cross-Origin-Opener-Policy policy would block the window.close call.
+close @ index.esm-7naFD85M.js:1156
+cleanUp @ index.esm-7naFD85M.js:1051
+unregisterAndCleanUp @ index.esm-7naFD85M.js:1036
+resolve @ index.esm-7naFD85M.js:1036
+onAuthEvent @ index.esm-7naFD85M.js:1036
+await in onAuthEvent
+sendToConsumer @ index.esm-7naFD85M.js:1081
+(anonymous) @ index.esm-7naFD85M.js:1081
+onEvent @ index.esm-7naFD85M.js:1081
+(anonymous) @ index.esm-7naFD85M.js:1186
+Vm @ cb=gapi.loaded_0?le=scs:195
+(anonymous) @ cb=gapi.loaded_0?le=scs:195
+ll @ cb=gapi.loaded_0?le=scs:174
+ul @ cb=gapi.loaded_0?le=scs:174
+Pk @ cb=gapi.loaded_0?le=scs:175
+Vk.ZH @ cb=gapi.loaded_0?le=scs:168
+index.esm-7naFD85M.js:1156 Cross-Origin-Opener-Policy policy would block the window.close call.
+close @ index.esm-7naFD85M.js:1156
+cleanUp @ index.esm-7naFD85M.js:1051
+unregisterAndCleanUp @ index.esm-7naFD85M.js:1036
+resolve @ index.esm-7naFD85M.js:1036
+onAuthEvent @ index.esm-7naFD85M.js:1036
+await in onAuthEvent
+sendToConsumer @ index.esm-7naFD85M.js:1081
+(anonymous) @ index.esm-7naFD85M.js:1081
+onEvent @ index.esm-7naFD85M.js:1081
+(anonymous) @ index.esm-7naFD85M.js:1186
+Vm @ cb=gapi.loaded_0?le=scs:195
+(anonymous) @ cb=gapi.loaded_0?le=scs:195
+ll @ cb=gapi.loaded_0?le=scs:174
+ul @ cb=gapi.loaded_0?le=scs:174
+Pk @ cb=gapi.loaded_0?le=scs:175
+Vk.ZH @ cb=gapi.loaded_0?le=scs:168
+index-DFHtcddY.js:280 Google sign-in successful, syncing with backend {email: 'jon@...', displayName: 'Jon Hamilton', isNewUser: false}
+index-DFHtcddY.js:280 Making backend sync request {endpoint: '/api/google-auth', domain: 'sendclaw.com', username: 'Jon Hamilton', selectedPlan: null, planSource: null, …}
+index-DFHtcddY.js:280 Sync already in progress, waiting for it to complete
+index-DFHtcddY.js:280 Successfully synced with backend
+index-DFHtcddY.js:49 API Request: POST /api/bot-security/force-review {hasData: true, timestamp: '2026-02-05T00:13:43.096Z'}
+index-DFHtcddY.js:49  POST https://sendclaw.com/api/bot-security/force-review 500 (Internal Server Error)
+Br @ index-DFHtcddY.js:49
+mutationFn @ BotSecurity-CdGx5R5c.js:1
+fn @ index-DFHtcddY.js:49
+x @ index-DFHtcddY.js:49
+start @ index-DFHtcddY.js:49
+execute @ index-DFHtcddY.js:49
+await in execute
+mutate @ index-DFHtcddY.js:49
+(anonymous) @ index-DFHtcddY.js:49
+w @ BotSecurity-CdGx5R5c.js:1
+onClick @ BotSecurity-CdGx5R5c.js:1
+hC @ index-DFHtcddY.js:38
+gC @ index-DFHtcddY.js:38
+vC @ index-DFHtcddY.js:38
+Lm @ index-DFHtcddY.js:38
+Qy @ index-DFHtcddY.js:38
+(anonymous) @ index-DFHtcddY.js:38
+Op @ index-DFHtcddY.js:41
+yy @ index-DFHtcddY.js:38
+Su @ index-DFHtcddY.js:38
+ap @ index-DFHtcddY.js:38
+OC @ index-DFHtcddY.js:38
+index-DFHtcddY.js:49 API Request Error: POST /api/bot-security/force-review {error: '500: {"error":"Failed to run review"}', timestamp: '2026-02-05T00:13:43.403Z'}
+Br @ index-DFHtcddY.js:49
+await in Br
+mutationFn @ BotSecurity-CdGx5R5c.js:1
+fn @ index-DFHtcddY.js:49
+x @ index-DFHtcddY.js:49
+start @ index-DFHtcddY.js:49
+execute @ index-DFHtcddY.js:49
+await in execute
+mutate @ index-DFHtcddY.js:49
+(anonymous) @ index-DFHtcddY.js:49
+w @ BotSecurity-CdGx5R5c.js:1
+onClick @ BotSecurity-CdGx5R5c.js:1
+hC @ index-DFHtcddY.js:38
+gC @ index-DFHtcddY.js:38
+vC @ index-DFHtcddY.js:38
+Lm @ index-DFHtcddY.js:38
+Qy @ index-DFHtcddY.js:38
+(anonymous) @ index-DFHtcddY.js:38
+Op @ index-DFHtcddY.js:41
+yy @ index-DFHtcddY.js:38
+Su @ index-DFHtcddY.js:38
+ap @ index-DFHtcddY.js:38
+OC @ index-DFHtcddY.js:38

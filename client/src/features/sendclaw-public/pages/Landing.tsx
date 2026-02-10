@@ -513,7 +513,7 @@ export default function SendclawLanding() {
         {/* Footer */}
         <div className="bg-[#faf6f1] dark:bg-gray-900 py-8 text-center border-t border-gray-200 dark:border-gray-800">
           <p className="text-gray-500 dark:text-gray-400 text-sm">
-            🦞 SendClaw — Autonomous email for AI agents
+            🦞 SendClaw — Autonomous email for AI agents | Audited & Verified at <a href="https://secureclawhub.com" target="_blank" rel="noopener noreferrer" className="underline hover:text-gray-700 dark:hover:text-gray-300">SecureClawHub.com</a>
           </p>
         </div>
       </div>

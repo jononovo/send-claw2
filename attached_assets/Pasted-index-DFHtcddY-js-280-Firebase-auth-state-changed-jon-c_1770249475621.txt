@@ -1,0 +1,223 @@
+index-DFHtcddY.js:280 Firebase auth state changed: jon@codetribe.com
+index-DFHtcddY.js:49 API Request: POST /api/bot-security/force-review Object
+/api/bot-security/force-review:1  Failed to load resource: the server responded with a status of 500 ()
+index-DFHtcddY.js:49 API Request Error: POST /api/bot-security/force-review Object
+Br @ index-DFHtcddY.js:49
+about:blank:1 Unchecked runtime.lastError: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+bot-security:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+bot-security:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+bot-security:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+bot-security:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+bot-security:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+bot-security:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+bot-security:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+bot-security:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+bot-security:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+bot-security:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+bot-security:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+sw_iframe.html?origin=https%3A%2F%2Ffiveducks.ai:1 Unchecked runtime.lastError: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+bot-security:1 Unchecked runtime.lastError: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+bot-security:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+bot-security:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+index-DFHtcddY.js:49 API Request: POST /api/bot-security/force-review {hasData: true, timestamp: '2026-02-04T23:54:28.989Z'}
+index-DFHtcddY.js:49  POST https://fiveducks.ai/api/bot-security/force-review 500 (Internal Server Error)
+Br @ index-DFHtcddY.js:49
+mutationFn @ BotSecurity-CdGx5R5c.js:1
+fn @ index-DFHtcddY.js:49
+x @ index-DFHtcddY.js:49
+start @ index-DFHtcddY.js:49
+execute @ index-DFHtcddY.js:49
+await in execute
+mutate @ index-DFHtcddY.js:49
+(anonymous) @ index-DFHtcddY.js:49
+w @ BotSecurity-CdGx5R5c.js:1
+onClick @ BotSecurity-CdGx5R5c.js:1
+hC @ index-DFHtcddY.js:38
+gC @ index-DFHtcddY.js:38
+vC @ index-DFHtcddY.js:38
+Lm @ index-DFHtcddY.js:38
+Qy @ index-DFHtcddY.js:38
+(anonymous) @ index-DFHtcddY.js:38
+Op @ index-DFHtcddY.js:41
+yy @ index-DFHtcddY.js:38
+Su @ index-DFHtcddY.js:38
+ap @ index-DFHtcddY.js:38
+OC @ index-DFHtcddY.js:38
+index-DFHtcddY.js:49 API Request Error: POST /api/bot-security/force-review {error: '500: {"error":"Failed to run review"}', timestamp: '2026-02-04T23:54:29.400Z'}
+Br @ index-DFHtcddY.js:49
+await in Br
+mutationFn @ BotSecurity-CdGx5R5c.js:1
+fn @ index-DFHtcddY.js:49
+x @ index-DFHtcddY.js:49
+start @ index-DFHtcddY.js:49
+execute @ index-DFHtcddY.js:49
+await in execute
+mutate @ index-DFHtcddY.js:49
+(anonymous) @ index-DFHtcddY.js:49
+w @ BotSecurity-CdGx5R5c.js:1
+onClick @ BotSecurity-CdGx5R5c.js:1
+hC @ index-DFHtcddY.js:38
+gC @ index-DFHtcddY.js:38
+vC @ index-DFHtcddY.js:38
+Lm @ index-DFHtcddY.js:38
+Qy @ index-DFHtcddY.js:38
+(anonymous) @ index-DFHtcddY.js:38
+Op @ index-DFHtcddY.js:41
+yy @ index-DFHtcddY.js:38
+Su @ index-DFHtcddY.js:38
+ap @ index-DFHtcddY.js:38
+OC @ index-DFHtcddY.js:38
+index-DFHtcddY.js:49 API Request: POST /api/bot-security/force-review {hasData: true, timestamp: '2026-02-04T23:54:34.507Z'}
+index-DFHtcddY.js:49  POST https://fiveducks.ai/api/bot-security/force-review 500 (Internal Server Error)
+Br @ index-DFHtcddY.js:49
+mutationFn @ BotSecurity-CdGx5R5c.js:1
+fn @ index-DFHtcddY.js:49
+x @ index-DFHtcddY.js:49
+start @ index-DFHtcddY.js:49
+execute @ index-DFHtcddY.js:49
+await in execute
+mutate @ index-DFHtcddY.js:49
+(anonymous) @ index-DFHtcddY.js:49
+w @ BotSecurity-CdGx5R5c.js:1
+onClick @ BotSecurity-CdGx5R5c.js:1
+hC @ index-DFHtcddY.js:38
+gC @ index-DFHtcddY.js:38
+vC @ index-DFHtcddY.js:38
+Lm @ index-DFHtcddY.js:38
+Qy @ index-DFHtcddY.js:38
+(anonymous) @ index-DFHtcddY.js:38
+Op @ index-DFHtcddY.js:41
+yy @ index-DFHtcddY.js:38
+Su @ index-DFHtcddY.js:38
+ap @ index-DFHtcddY.js:38
+OC @ index-DFHtcddY.js:38
+index-DFHtcddY.js:49 API Request Error: POST /api/bot-security/force-review {error: '500: {"error":"Failed to run review"}', timestamp: '2026-02-04T23:54:34.890Z'}
+Br @ index-DFHtcddY.js:49
+await in Br
+mutationFn @ BotSecurity-CdGx5R5c.js:1
+fn @ index-DFHtcddY.js:49
+x @ index-DFHtcddY.js:49
+start @ index-DFHtcddY.js:49
+execute @ index-DFHtcddY.js:49
+await in execute
+mutate @ index-DFHtcddY.js:49
+(anonymous) @ index-DFHtcddY.js:49
+w @ BotSecurity-CdGx5R5c.js:1
+onClick @ BotSecurity-CdGx5R5c.js:1
+hC @ index-DFHtcddY.js:38
+gC @ index-DFHtcddY.js:38
+vC @ index-DFHtcddY.js:38
+Lm @ index-DFHtcddY.js:38
+Qy @ index-DFHtcddY.js:38
+(anonymous) @ index-DFHtcddY.js:38
+Op @ index-DFHtcddY.js:41
+yy @ index-DFHtcddY.js:38
+Su @ index-DFHtcddY.js:38
+ap @ index-DFHtcddY.js:38
+OC @ index-DFHtcddY.js:38
+bot-security:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+bot-security:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+index-DFHtcddY.js:49 API Request: POST /api/bot-security/force-review {hasData: true, timestamp: '2026-02-04T23:57:34.467Z'}
+index-DFHtcddY.js:49  POST https://fiveducks.ai/api/bot-security/force-review 500 (Internal Server Error)
+Br @ index-DFHtcddY.js:49
+mutationFn @ BotSecurity-CdGx5R5c.js:1
+fn @ index-DFHtcddY.js:49
+x @ index-DFHtcddY.js:49
+start @ index-DFHtcddY.js:49
+execute @ index-DFHtcddY.js:49
+await in execute
+mutate @ index-DFHtcddY.js:49
+(anonymous) @ index-DFHtcddY.js:49
+w @ BotSecurity-CdGx5R5c.js:1
+onSelect @ BotSecurity-CdGx5R5c.js:1
+r @ popover-BoW-gfvM.js:1
+E @ popover-BoW-gfvM.js:1
+hC @ index-DFHtcddY.js:38
+gC @ index-DFHtcddY.js:38
+vC @ index-DFHtcddY.js:38
+Lm @ index-DFHtcddY.js:38
+Qy @ index-DFHtcddY.js:38
+(anonymous) @ index-DFHtcddY.js:38
+Op @ index-DFHtcddY.js:41
+yy @ index-DFHtcddY.js:38
+Su @ index-DFHtcddY.js:38
+ap @ index-DFHtcddY.js:38
+OC @ index-DFHtcddY.js:38
+index-DFHtcddY.js:49 API Request Error: POST /api/bot-security/force-review {error: '500: {"error":"Failed to run review"}', timestamp: '2026-02-04T23:57:34.803Z'}
+Br @ index-DFHtcddY.js:49
+await in Br
+mutationFn @ BotSecurity-CdGx5R5c.js:1
+fn @ index-DFHtcddY.js:49
+x @ index-DFHtcddY.js:49
+start @ index-DFHtcddY.js:49
+execute @ index-DFHtcddY.js:49
+await in execute
+mutate @ index-DFHtcddY.js:49
+(anonymous) @ index-DFHtcddY.js:49
+w @ BotSecurity-CdGx5R5c.js:1
+onSelect @ BotSecurity-CdGx5R5c.js:1
+r @ popover-BoW-gfvM.js:1
+E @ popover-BoW-gfvM.js:1
+hC @ index-DFHtcddY.js:38
+gC @ index-DFHtcddY.js:38
+vC @ index-DFHtcddY.js:38
+Lm @ index-DFHtcddY.js:38
+Qy @ index-DFHtcddY.js:38
+(anonymous) @ index-DFHtcddY.js:38
+Op @ index-DFHtcddY.js:41
+yy @ index-DFHtcddY.js:38
+Su @ index-DFHtcddY.js:38
+ap @ index-DFHtcddY.js:38
+OC @ index-DFHtcddY.js:38
+index-DFHtcddY.js:49 API Request: POST /api/bot-security/force-review {hasData: true, timestamp: '2026-02-04T23:57:38.093Z'}
+index-DFHtcddY.js:49  POST https://fiveducks.ai/api/bot-security/force-review 500 (Internal Server Error)
+Br @ index-DFHtcddY.js:49
+mutationFn @ BotSecurity-CdGx5R5c.js:1
+fn @ index-DFHtcddY.js:49
+x @ index-DFHtcddY.js:49
+start @ index-DFHtcddY.js:49
+execute @ index-DFHtcddY.js:49
+await in execute
+mutate @ index-DFHtcddY.js:49
+(anonymous) @ index-DFHtcddY.js:49
+w @ BotSecurity-CdGx5R5c.js:1
+onSelect @ BotSecurity-CdGx5R5c.js:1
+r @ popover-BoW-gfvM.js:1
+E @ popover-BoW-gfvM.js:1
+hC @ index-DFHtcddY.js:38
+gC @ index-DFHtcddY.js:38
+vC @ index-DFHtcddY.js:38
+Lm @ index-DFHtcddY.js:38
+Qy @ index-DFHtcddY.js:38
+(anonymous) @ index-DFHtcddY.js:38
+Op @ index-DFHtcddY.js:41
+yy @ index-DFHtcddY.js:38
+Su @ index-DFHtcddY.js:38
+ap @ index-DFHtcddY.js:38
+OC @ index-DFHtcddY.js:38
+index-DFHtcddY.js:49 API Request Error: POST /api/bot-security/force-review {error: '500: {"error":"Failed to run review"}', timestamp: '2026-02-04T23:57:38.364Z'}
+Br @ index-DFHtcddY.js:49
+await in Br
+mutationFn @ BotSecurity-CdGx5R5c.js:1
+fn @ index-DFHtcddY.js:49
+x @ index-DFHtcddY.js:49
+start @ index-DFHtcddY.js:49
+execute @ index-DFHtcddY.js:49
+await in execute
+mutate @ index-DFHtcddY.js:49
+(anonymous) @ index-DFHtcddY.js:49
+w @ BotSecurity-CdGx5R5c.js:1
+onSelect @ BotSecurity-CdGx5R5c.js:1
+r @ popover-BoW-gfvM.js:1
+E @ popover-BoW-gfvM.js:1
+hC @ index-DFHtcddY.js:38
+gC @ index-DFHtcddY.js:38
+vC @ index-DFHtcddY.js:38
+Lm @ index-DFHtcddY.js:38
+Qy @ index-DFHtcddY.js:38
+(anonymous) @ index-DFHtcddY.js:38
+Op @ index-DFHtcddY.js:41
+yy @ index-DFHtcddY.js:38
+Su @ index-DFHtcddY.js:38
+ap @ index-DFHtcddY.js:38
+OC @ index-DFHtcddY.js:38
