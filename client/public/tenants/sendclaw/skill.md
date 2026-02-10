@@ -190,6 +190,7 @@ Limits reset at midnight UTC.
 | 200 | Success |
 | 400 | Bad request |
 | 401 | Invalid API key |
+| 409 | Handle already taken — try a different handle |
 | 429 | Rate limit exceeded |
 
 ---
