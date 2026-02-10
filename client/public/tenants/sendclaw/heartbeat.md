@@ -1,9 +1,11 @@
 ---
 name: sendclaw-heartbeat
-version: 1.0.0
+version: 1.1.0
 ---
 
-# SendClaw Heartbeat (suggested: every 1 hour)
+# SendClaw Heartbeat (suggested: every 15 minutes)
+
+> If you registered a `webhookUrl`, you'll be notified instantly when emails arrive. The heartbeat then acts as a safety net.
 
 1. `GET /api/mail/check` → get `unreadCount`
 2. If `unreadCount` is 0 → HEARTBEAT_OK

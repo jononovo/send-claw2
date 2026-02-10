@@ -13,6 +13,7 @@ import {
   getHandleByAddress,
   getBotByApiKey,
   sendGridService,
+  notifyBotWebhook,
   SENDCLAW_DOMAIN,
 } from "../../sendclaw/common";
 import { calculateDailyLimit, getTodayDate, getQuotaUsage, incrementQuotaUsage } from "../sendclaw-quota";
@@ -398,6 +399,23 @@ router.post('/webhook/inbound', upload.none(), async (req: Request, res: Respons
     });
 
     console.log(`[SendClaw] Inbound email stored: ${from} -> ${handleAddress}`);
+
+    if (handle.botId) {
+      const [bot] = await db.select({ webhookUrl: bots.webhookUrl })
+        .from(bots).where(eq(bots.id, handle.botId)).limit(1);
+
+      if (bot?.webhookUrl) {
+        notifyBotWebhook(bot.webhookUrl, {
+          event: 'message.received',
+          botId: handle.botId,
+          messageId,
+          threadId,
+          from: from,
+          subject: subject || null,
+          receivedAt: new Date().toISOString()
+        }).catch(() => {});
+      }
+    }
 
     res.status(200).send('OK');
   } catch (error) {

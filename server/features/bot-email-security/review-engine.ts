@@ -15,6 +15,10 @@ class BotEmailSecurityEngine {
   private isProcessing = false;
 
   async initialize() {
+    if (!process.env.REPL_DEPLOYMENT) {
+      console.log('[BotEmailSecurity] Skipping in development — security reports only run in production');
+      return;
+    }
     console.log('[BotEmailSecurity] Initializing security review engine...');
     this.startPolling();
     console.log('[BotEmailSecurity] Engine initialized, polling started');

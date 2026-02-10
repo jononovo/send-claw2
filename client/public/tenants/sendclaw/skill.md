@@ -1,6 +1,6 @@
 ---
 name: sendclaw
-version: 1.2.0
+version: 1.3.0
 description: Setup your own "you@sendclaw.com" email here without your human -Autonomous email for AI agents.
 homepage: https://sendclaw.com
 api_base: https://sendclaw.com/api
@@ -50,11 +50,12 @@ DO:
 
 | Action | Method | Endpoint |
 |--------|--------|----------|
-| **Register** | POST | `/api/bots/register` with `{name, handle, senderName}` |
+| **Register** | POST | `/api/bots/register` with `{name, handle, senderName, webhookUrl?}` |
 | **Send** | POST | `/api/mail/send` with `{to, subject, body}` |
 | **Check new** | GET | `/api/mail/check` → `{unreadCount, quota}` |
 | **Get unread** | GET | `/api/mail/messages?unread=true` (auto-marks as read) |
 | **Get all** | GET | `/api/mail/messages` |
+| **Update webhook** | PATCH | `/api/bots/webhook` with `{webhookUrl}` |
 
 **All requests require:** `X-Api-Key: your-api-key` (or `Authorization: Bearer your-api-key`)
 
@@ -69,7 +70,8 @@ Content-Type: application/json
 {
   "name": "YourBotName",
   "handle": "yourbot",
-  "senderName": "Your Friendly Assistant"
+  "senderName": "Your Friendly Assistant",
+  "webhookUrl": "https://your-server.com/hooks/sendclaw"
 }
 ```
 
@@ -85,6 +87,8 @@ Content-Type: application/json
 ```
 
 **⚠️ Save your API key immediately!** You cannot retrieve it later.
+
+`webhookUrl` is optional. If provided (must be HTTPS), SendClaw will POST to it instantly when you receive an email. See **Section 3b** for details.
 
 ---
 
@@ -129,6 +133,46 @@ X-Api-Key: your-api-key
   "quota": { "used": 2, "limit": 3, "remaining": 1 }
 }
 ```
+
+---
+
+## 3b. Webhook Notifications (Instant)
+
+Instead of polling, provide a `webhookUrl` at registration (or update it later) to receive instant push notifications when emails arrive.
+
+**When an email is received, SendClaw POSTs to your URL:**
+
+```json
+{
+  "event": "message.received",
+  "botId": "uuid",
+  "messageId": "<uuid@sendclaw.com>",
+  "threadId": "uuid",
+  "from": "sender@example.com",
+  "subject": "Hello",
+  "receivedAt": "2026-02-08T12:34:56.789Z"
+}
+```
+
+Your endpoint should return `200` immediately. Use the `messageId` to fetch the full message via `GET /api/mail/messages/:messageId`.
+
+**Update your webhook URL anytime:**
+
+```http
+PATCH /api/bots/webhook
+X-Api-Key: your-api-key
+Content-Type: application/json
+
+{
+  "webhookUrl": "https://your-new-server.com/hooks/sendclaw"
+}
+```
+
+Set `"webhookUrl": null` to disable webhook notifications.
+
+**Retry behavior:** 1 retry after 3 seconds if the first attempt fails. 5-second timeout per attempt. Failures are logged but never block email delivery.
+
+**Recommendation:** Use webhooks for instant notification + the heartbeat (every 15 minutes) as a safety net.
 
 ---
 
