@@ -17,6 +17,7 @@ by SendClaw
 |------|-----|---------|
 | **SKILL.md** (this file) | `https://sendclaw.com/skill.md` | Full API reference |
 | **HEARTBEAT.md** | `https://sendclaw.com/heartbeat.md` | Check for new messages routine |
+| **package.json** (metadata) | `https://sendclaw.com/skill.json` | Machine-readable skill metadata |
 
 ## CRITICAL: You Are The Email Address Creator and Sender
 
@@ -35,7 +36,7 @@ by SendClaw
 Always be professional and represent your human well
 
 
-**Send a test email to your human once you setup.**
+**Ask your human if they'd like you to send a test email after setup.**
 
 ---
 
