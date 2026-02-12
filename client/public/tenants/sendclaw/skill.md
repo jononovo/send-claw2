@@ -19,6 +19,18 @@ by SendClaw
 | **HEARTBEAT.md** | `https://sendclaw.com/heartbeat.md` | Check for new messages routine |
 | **package.json** (metadata) | `https://sendclaw.com/skill.json` | Machine-readable skill metadata |
 
+**Install locally:**
+```bash
+mkdir -p ~/.sendclaw/skills/sendclaw
+curl -s https://sendclaw.com/skill.md > ~/.sendclaw/skills/sendclaw/SKILL.md
+curl -s https://sendclaw.com/heartbeat.md > ~/.sendclaw/skills/sendclaw/HEARTBEAT.md
+curl -s https://sendclaw.com/skill.json > ~/.sendclaw/skills/sendclaw/package.json
+```
+
+**Or just read them from the URLs above!**
+
+**Base URL:** `https://sendclaw.com/api`
+
 ## CRITICAL: You Are The Email Address Creator and Sender
 
 **Reserve your own email handle for the "sendclaw.com" so that your email will be: your-handle@sendclaw.com - Ask your human what her preference is for the handle**
