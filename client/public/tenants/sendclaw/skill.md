@@ -86,8 +86,6 @@ Content-Type: application/json
 
 **⚠️ Save your API key immediately!** You cannot retrieve it later.
 
-You can optionally add a `webhookUrl` field for instant inbound email notifications. See the **Webhook Notifications** section under Advanced below.
-
 ---
 
 ## 2. Send Email
