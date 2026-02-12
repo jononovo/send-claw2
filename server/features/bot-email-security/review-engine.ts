@@ -10,7 +10,6 @@ const RUN_HOUR = 0; // Run at midnight UTC
 
 class BotEmailSecurityEngine {
   private intervalId: NodeJS.Timeout | null = null;
-  private lastRunDate: string | null = null;
   private isProcessing = false;
 
   async initialize() {
@@ -45,24 +44,55 @@ class BotEmailSecurityEngine {
     }
 
     const now = new Date();
-    const today = now.toISOString().split('T')[0];
-    
-    if (this.lastRunDate === today) {
+
+    if (now.getUTCHours() < RUN_HOUR) {
       return;
     }
 
-    if (now.getUTCHours() >= RUN_HOUR) {
-      console.log(`[BotEmailSecurity] Running daily review for ${today}`);
-      this.isProcessing = true;
-      
-      try {
+    const yesterday = new Date(now);
+    yesterday.setUTCDate(yesterday.getUTCDate() - 1);
+    const reportDate = yesterday.toISOString().split('T')[0];
+
+    const [existingReport] = await db
+      .select({
+        sentToAdmin: securityReports.sentToAdmin,
+        stats: securityReports.stats,
+        flaggedEmails: securityReports.flaggedEmails
+      })
+      .from(securityReports)
+      .where(eq(securityReports.reportDate, reportDate))
+      .limit(1);
+
+    if (existingReport?.sentToAdmin) {
+      return;
+    }
+
+    this.isProcessing = true;
+
+    try {
+      if (existingReport && !existingReport.sentToAdmin) {
+        console.log(`[BotEmailSecurity] Report for ${reportDate} exists but email not sent, retrying send...`);
+        const reportData: SecurityReportData = {
+          date: reportDate,
+          stats: existingReport.stats as DailyStats,
+          flaggedEmails: (existingReport.flaggedEmails as FlaggedEmailReport[]) || [],
+          allSubjectLines: []
+        };
+        const sent = await sendDailyReport(reportData);
+        if (sent) {
+          await db.update(securityReports)
+            .set({ sentToAdmin: true })
+            .where(eq(securityReports.reportDate, reportDate));
+        }
+        console.log(`[BotEmailSecurity] Retry send result=${sent}`);
+      } else {
+        console.log(`[BotEmailSecurity] Running daily review for ${reportDate}`);
         await this.runDailyReview();
-        this.lastRunDate = today;
-      } catch (error) {
-        console.error('[BotEmailSecurity] Daily review failed:', error);
-      } finally {
-        this.isProcessing = false;
       }
+    } catch (error) {
+      console.error('[BotEmailSecurity] Daily review failed:', error);
+    } finally {
+      this.isProcessing = false;
     }
   }
 

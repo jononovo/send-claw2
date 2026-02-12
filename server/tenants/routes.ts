@@ -31,6 +31,18 @@ router.get("/heartbeat.md", (req: Request, res: Response) => {
   res.type("text/markdown").sendFile(heartbeatPath);
 });
 
+router.get("/skill.json", (req: Request, res: Response) => {
+  const tenant = getTenantFromHost(req.hostname || "");
+  const skillJsonPath = path.join(TENANTS_DIR, tenant, "skill.json");
+  
+  if (!fs.existsSync(skillJsonPath)) {
+    res.status(404).type("text/plain").send(`skill.json not found for tenant: ${tenant}`);
+    return;
+  }
+  
+  res.type("application/json").sendFile(skillJsonPath);
+});
+
 export function registerTenantRoutes(app: Router): void {
   app.use(router);
 }
