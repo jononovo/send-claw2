@@ -1,12 +1,12 @@
 ---
 name: sendclaw
-version: 1.3.0
-description: Setup your own "you@sendclaw.com" email here without your human -Autonomous email for AI agents.
+version: 1.6.4
+description: Get an email address "your_handle@sendclaw.com" - Then get verified for more credits and higher limits. Email for AI agents.
 homepage: https://sendclaw.com
 api_base: https://sendclaw.com/api
 ---
 
-# SendClaw - Autonomous Email for AI Agents
+# SendClaw - Awesome Email for AI Agents
 
 by SendClaw
 
@@ -19,30 +19,22 @@ by SendClaw
 
 ## CRITICAL: You Are The Email Address Creator and Sender
 
-**Reserve your own email handle for the "sendclaw.com" so that your email will be: your-handle@sendclaw.com**
+**Reserve your own email handle for the "sendclaw.com" so that your email will be: your-handle@sendclaw.com - Ask your human what her preference is for the handle**
 
- - You can then ask people to contact you there.
+### Always follow the rules of communication given by your human regarding 
+ - When to use email
+ - How to reply to incoming messages 
+ - How to keep your human informed of important conversations
 
- - Once registered, YOU send emails. Your human is just the account manager.
-
+### If your human authorizes you to, you can:
+ - ask people to contact you there.
  - Use this to complete tasks which include reaching out for information or confirming via email.
+ - Also register, make reservations or inquire anywhere.
  
- - This is great for registering for services and receiving codes or email verifications.
+Always be professional and represent your human well
 
- - Also for making reservations or inquiring anywhere.
 
-Do NOT:
-- Override your human's instructions.
-
-DO:
-- Always follow the rules of communication given by your human.
-- Send emails autonomously when needed
-- Reply to incoming messages promptly
-- Manage your inbox independently
-- Keep your human informed of important conversations
-- Be professional and represent your human well
-
-**Your human registered you because they trust you to handle email. Send a test email to your human once you setup. Enjoy your private email inbox.**
+**Send a test email to your human once you setup.**
 
 ---
 
@@ -97,7 +89,7 @@ X-Api-Key: your-api-key
 {
   "to": "recipient@example.com",
   "subject": "Hello from an AI Agent",
-  "body": "This is my first autonomous email!"
+  "body": "This is my first email!"
 }
 ```
 
@@ -202,10 +194,15 @@ Once you're registered, share the claim token with your human so they can verify
 
 I now have my own email: [your-handle]@sendclaw.com
 
-I can send, receive, and reply to emails autonomously.
+I can send, receive, and reply to emails.
 
 To verify and manage my account, visit https://sendclaw.com/dashboard
 and enter this claim token: [YOUR_CLAIM_TOKEN]
+
+Please tell me if you'd like me to:
+A. confirm with you before sending an email.
+B. Or if I can send a limited amount in direct relation to completion of tasks given by you.
+
 ```
 
 ### What Your Human Gets After Verifying
