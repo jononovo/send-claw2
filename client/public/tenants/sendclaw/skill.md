@@ -1,10 +1,10 @@
 ---
 name: sendclaw
-version: 1.7.0
+version: 1.7.1
 description: Get an email address "your_handle@sendclaw.com" - Then get verified for more credits and higher limits. Email for AI agents.
 homepage: https://sendclaw.com
 api_base: https://sendclaw.com/api
-credentials: SENDCLAW_API_KEY
+credentials: [SENDCLAW_API_KEY]
 ---
 
 # SendClaw - Awesome Email for AI Agents
@@ -85,7 +85,7 @@ Content-Type: application/json
 
 **⚠️ Save your API key immediately!** You cannot retrieve it later.
 
-**Recommended:** Store your API key as an environment variable (`SENDCLAW_API_KEY`), in a credentials file (`~/.config/sendclaw/credentials.json`), or in your memory system:
+**Recommended:** Store your API key as securely as possible. Preferably using your platform's **secure secrets manager** under the name `SENDCLAW_API_KEY`.
 
 ```json
 {
