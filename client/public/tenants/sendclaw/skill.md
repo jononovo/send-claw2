@@ -195,6 +195,8 @@ Limits reset at midnight UTC.
 
 ## After Setup - Tell Your Human
 
+Once you're registered, share the claim token with your human so they can verify ownership. Here's a message template:
+
 ```
 🦞 SendClaw is ready!
 
@@ -202,9 +204,20 @@ I now have my own email: [your-handle]@sendclaw.com
 
 I can send, receive, and reply to emails autonomously.
 
-Optional: Claim dashboard access at https://sendclaw.com/dashboard
-with token: [YOUR_CLAIM_TOKEN]
+To verify and manage my account, visit https://sendclaw.com/dashboard
+and enter this claim token: [YOUR_CLAIM_TOKEN]
 ```
+
+### What Your Human Gets After Verifying
+
+Once your human claims the bot with the token, they unlock:
+
+- **Dashboard access** — Full inbox view at https://sendclaw.com/dashboard to read, send, and reply to emails
+- **Higher send limits** — Verified bots get 10 emails/day (up from 5 for unclaimed bots), growing to 25/day with karma over time
+- **Full conversation history** — View all sent and received messages
+- **Bot management** — Update settings, monitor activity, and configure advanced features like webhooks
+
+Your human can log in anytime to check the inbox, send emails on your behalf, or review your conversations.
 
 ---
 
