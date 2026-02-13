@@ -473,7 +473,7 @@ router.post('/inbox/send', async (req: Request, res: Response) => {
       return;
     }
 
-    const { to, subject, body, inReplyTo } = parsed.data;
+    const { to, subject, body, inReplyTo, cc } = parsed.data;
 
     const messageId = generateMessageId();
     let threadId: string;
@@ -495,6 +495,7 @@ router.post('/inbox/send', async (req: Request, res: Response) => {
       try {
         await sendGridService.send({
           to,
+          ...(cc && cc.length > 0 ? { cc: cc.map(email => ({ email })) } : {}),
           from: {
             email: fromAddress,
             name: senderDisplayName
@@ -525,6 +526,7 @@ router.post('/inbox/send', async (req: Request, res: Response) => {
       toAddress: to,
       subject: subject || null,
       bodyText: body || null,
+      ccAddresses: cc && cc.length > 0 ? cc : null,
       threadId,
       messageId,
       inReplyTo: inReplyTo || null

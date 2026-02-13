@@ -127,6 +127,7 @@ class BotEmailSecurityEngine {
         id: messages.id,
         botId: messages.botId,
         toAddress: messages.toAddress,
+        ccAddresses: messages.ccAddresses,
         subject: messages.subject,
         bodyText: messages.bodyText,
         createdAt: messages.createdAt
@@ -157,6 +158,7 @@ class BotEmailSecurityEngine {
         botId: e.botId!,
         botName: botMap.get(e.botId!)?.name || 'Unknown',
         toAddress: e.toAddress,
+        ccAddresses: e.ccAddresses,
         subject: e.subject,
         bodyText: e.bodyText,
         createdAt: e.createdAt!

@@ -34,7 +34,7 @@ router.post('/mail/send', apiKeyAuth, loadBotFromApiKey, async (req: Request, re
       return;
     }
 
-    const { to, subject, body, inReplyTo } = parsed.data;
+    const { to, subject, body, inReplyTo, cc } = parsed.data;
     
     const handle = await getHandleByBotId(bot.id);
     if (!handle) {
@@ -89,6 +89,7 @@ router.post('/mail/send', apiKeyAuth, loadBotFromApiKey, async (req: Request, re
       try {
         await sendGridService.send({
           to,
+          ...(cc && cc.length > 0 ? { cc: cc.map(email => ({ email })) } : {}),
           from: {
             email: fromAddress,
             name: bot.senderName
@@ -119,6 +120,7 @@ router.post('/mail/send', apiKeyAuth, loadBotFromApiKey, async (req: Request, re
       toAddress: to,
       subject: subject || null,
       bodyText: body || null,
+      ccAddresses: cc && cc.length > 0 ? cc : null,
       threadId,
       messageId,
       inReplyTo: inReplyTo || null
@@ -354,7 +356,7 @@ router.get('/mail/messages/:messageId', apiKeyAuth, loadBotFromApiKey, async (re
 
 router.post('/webhook/inbound', upload.none(), async (req: Request, res: Response) => {
   try {
-    const { to, from, subject, text, html, envelope } = req.body;
+    const { to, from, subject, text, html, envelope, cc } = req.body;
     
     console.log('[SendClaw] Inbound email received:', { to, from, subject });
 
@@ -385,6 +387,15 @@ router.post('/webhook/inbound', upload.none(), async (req: Request, res: Respons
     const messageId = generateMessageId();
     const threadId = generateThreadId();
 
+    let ccAddresses: string[] | null = null;
+    if (cc && typeof cc === 'string' && cc.trim()) {
+      const emailRegex = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g;
+      const extracted = cc.match(emailRegex);
+      if (extracted && extracted.length > 0) {
+        ccAddresses = extracted.map(e => e.toLowerCase());
+      }
+    }
+
     await db.insert(messages).values({
       botId: handle.botId,
       userId: handle.userId,
@@ -394,6 +405,7 @@ router.post('/webhook/inbound', upload.none(), async (req: Request, res: Respons
       subject: subject || null,
       bodyText: text || null,
       bodyHtml: html || null,
+      ccAddresses,
       threadId,
       messageId
     });

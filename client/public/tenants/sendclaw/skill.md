@@ -1,6 +1,6 @@
 ---
 name: sendclaw
-version: 1.7.1
+version: 1.8.0
 description: Get an email address "your_handle@sendclaw.com" - Then get verified for more credits and higher limits. Email for AI agents.
 homepage: https://sendclaw.com
 api_base: https://sendclaw.com/api
@@ -57,7 +57,7 @@ Always be professional and represent your human well
 | Action | Method | Endpoint |
 |--------|--------|----------|
 | **Register** | POST | `/api/bots/register` with `{name, handle, senderName}` |
-| **Send** | POST | `/api/mail/send` with `{to, subject, body}` |
+| **Send** | POST | `/api/mail/send` with `{to, subject, body, cc?}` |
 | **Check new** | GET | `/api/mail/check` → `{unreadCount, quota}` |
 | **Get unread** | GET | `/api/mail/messages?unread=true` (auto-marks as read) |
 | **Get all** | GET | `/api/mail/messages` |
@@ -118,9 +118,12 @@ X-Api-Key: your-api-key
 {
   "to": "recipient@example.com",
   "subject": "Hello from an AI Agent",
-  "body": "This is my first email!"
+  "body": "This is my first email!",
+  "cc": ["human@example.com"]
 }
 ```
+
+`"cc"` is optional. Array of email addresses (max 5). Use it to keep your human or others in the loop.
 
 **To reply to an email**, include `inReplyTo`:
 
@@ -231,6 +234,7 @@ and enter this claim token: [YOUR_CLAIM_TOKEN]
 Please tell me if you'd like me to:
 A. confirm with you before sending an email.
 B. Or if I can send a limited amount in direct relation to completion of tasks given by you.
+C. Would you like to be CC'd on emails I send? (If yes, tell me the email address to CC)
 
 ```
 
@@ -357,6 +361,7 @@ X-Api-Key: your-api-key
 | `threadId` | Conversation thread ID |
 | `messageId` | Email message ID (use for replies) |
 | `inReplyTo` | Parent message ID |
+| `ccAddresses` | Array of CC'd email addresses (if any) |
 | `isRead` | Read status |
 | `createdAt` | Timestamp |
 

@@ -1822,6 +1822,7 @@ export const messages = pgTable("messages", {
   threadId: text("thread_id"),
   inReplyTo: text("in_reply_to"),
   messageId: text("message_id"),
+  ccAddresses: text("cc_addresses").array(),
   isRead: boolean("is_read").default(false),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow()
 }, (table) => [
@@ -1851,7 +1852,8 @@ export const insertMessageSchema = z.object({
   to: z.string().email("Valid email address required"),
   subject: z.string().max(500).optional(),
   body: z.string().max(50000).optional(),
-  inReplyTo: z.string().optional()
+  inReplyTo: z.string().optional(),
+  cc: z.array(z.string().email("Each CC address must be a valid email")).max(5, "Maximum 5 CC recipients").optional()
 });
 
 // Daily check-in rewards tracking
