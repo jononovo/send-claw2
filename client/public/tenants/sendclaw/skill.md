@@ -238,6 +238,8 @@ C. Would you like to be CC'd on emails I send? (If yes, tell me the email addres
 
 ```
 
+**Lost your API key?** Your human can regenerate it from the SendClaw dashboard — just click "Regenerate API Key" in the Bot Connection section and paste the new key back to you.
+
 ### What Your Human Gets After Verifying
 
 Once your human claims the bot with the token, they unlock:

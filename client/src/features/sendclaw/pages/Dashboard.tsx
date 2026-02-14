@@ -7,8 +7,9 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { useToast } from "@/hooks/use-toast";
-import { Mail, Key, Copy, Check, Inbox, Send, Eye, EyeOff, ArrowRight, Pencil, Save, Bot, Shield, Link2 } from "lucide-react";
+import { Mail, Key, Copy, Check, Inbox, Send, Eye, EyeOff, ArrowRight, Pencil, Save, Bot, Shield, Link2, RefreshCw } from "lucide-react";
 
 interface HandleData {
   id: string;
@@ -45,6 +46,7 @@ export default function Dashboard() {
   const [isEditingHandleSenderName, setIsEditingHandleSenderName] = useState(false);
   const [claimToken, setClaimToken] = useState("");
   const [copied, setCopied] = useState<string | null>(null);
+  const [regeneratedKey, setRegeneratedKey] = useState<{ apiKey: string; pasteMessage: string; botName: string } | null>(null);
 
   const { data, isLoading, refetch } = useQuery<MyInboxResponse>({
     queryKey: ["/api/my-inbox"],
@@ -144,6 +146,31 @@ export default function Dashboard() {
       toast({
         title: "Update failed",
         description: error.message || "Could not update sender name",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const regenerateKeyMutation = useMutation({
+    mutationFn: async () => {
+      const res = await apiRequest("POST", "/api/bots/regenerate-key");
+      return res.json();
+    },
+    onSuccess: (data) => {
+      setRegeneratedKey({
+        apiKey: data.apiKey,
+        pasteMessage: data.pasteMessage,
+        botName: data.botName
+      });
+      toast({
+        title: "API key regenerated",
+        description: `New key generated for ${data.botName}. Copy it now — it won't be shown again.`,
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Regeneration failed",
+        description: error.message || "Could not regenerate API key",
         variant: "destructive",
       });
     },
@@ -385,6 +412,62 @@ export default function Dashboard() {
                     <p className="text-sm text-amber-600 bg-amber-50 p-2 rounded">
                       Bot is claimed but not linked to your handle. This may happen if you reserved the handle after claiming.
                     </p>
+                  )}
+
+                  {regeneratedKey ? (
+                    <div className="space-y-3 p-3 bg-green-50 border border-green-200 rounded-lg">
+                      <p className="text-sm font-medium text-green-800">
+                        Paste this message into your chat with your bot:
+                      </p>
+                      <div className="relative">
+                        <pre className="text-xs bg-white p-3 rounded border border-green-200 whitespace-pre-wrap break-all text-foreground">
+                          {regeneratedKey.pasteMessage}
+                        </pre>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="absolute top-2 right-2"
+                          onClick={() => copyToClipboard(regeneratedKey.pasteMessage, "pasteMessage")}
+                        >
+                          {copied === "pasteMessage" ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
+                        </Button>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => copyToClipboard(regeneratedKey.apiKey, "regeneratedApiKey")}
+                        >
+                          {copied === "regeneratedApiKey" ? <Check className="w-3 h-3 mr-1" /> : <Key className="w-3 h-3 mr-1" />}
+                          Copy key only
+                        </Button>
+                        <p className="text-xs text-muted-foreground">This key won't be shown again after you leave this page.</p>
+                      </div>
+                    </div>
+                  ) : (
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button variant="outline" size="sm" className="w-full" disabled={regenerateKeyMutation.isPending}>
+                          <RefreshCw className={`w-3 h-3 mr-1 ${regenerateKeyMutation.isPending ? 'animate-spin' : ''}`} />
+                          {regenerateKeyMutation.isPending ? "Regenerating..." : "Regenerate API Key"}
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Regenerate API Key?</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            This will create a new API key for {userBot.name}. The old key will stop working immediately.
+                            Only do this if your bot lost its key or you suspect it was compromised.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+                          <AlertDialogAction onClick={() => regenerateKeyMutation.mutate()}>
+                            Regenerate Key
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
                   )}
                 </div>
               ) : (
