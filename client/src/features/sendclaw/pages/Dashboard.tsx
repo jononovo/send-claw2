@@ -452,30 +452,34 @@ export default function Dashboard() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {userBot?.apiKey && (
-                    <div>
-                      <p className="text-xs text-muted-foreground mb-1">API Key</p>
-                      <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
-                        <code className="text-sm font-mono text-foreground">
-                          {showApiKey ? userBot.apiKey : `${userBot.apiKey.slice(0, 8)}${'•'.repeat(24)}`}
-                        </code>
-                        <div className="flex items-center gap-1">
-                          <button
-                            onClick={() => setShowApiKey(!showApiKey)}
-                            className="text-muted-foreground hover:text-primary p-2"
-                          >
-                            {showApiKey ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                          </button>
-                          <button
-                            onClick={() => copyToClipboard(userBot.apiKey!, 'apiKey')}
-                            className="text-muted-foreground hover:text-primary p-2"
-                          >
-                            {copied === 'apiKey' ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-                          </button>
-                        </div>
-                      </div>
+                  <div>
+                    <p className="text-xs text-muted-foreground mb-1">API Key</p>
+                    <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
+                      {userBot?.apiKey ? (
+                        <>
+                          <code className="text-sm font-mono text-foreground">
+                            {showApiKey ? userBot.apiKey : `${userBot.apiKey.slice(0, 8)}${'•'.repeat(24)}`}
+                          </code>
+                          <div className="flex items-center gap-1">
+                            <button
+                              onClick={() => setShowApiKey(!showApiKey)}
+                              className="text-muted-foreground hover:text-primary p-2"
+                            >
+                              {showApiKey ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                            </button>
+                            <button
+                              onClick={() => copyToClipboard(userBot.apiKey!, 'apiKey')}
+                              className="text-muted-foreground hover:text-primary p-2"
+                            >
+                              {copied === 'apiKey' ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                            </button>
+                          </div>
+                        </>
+                      ) : (
+                        <span className="text-sm text-muted-foreground italic">No API key — connect a bot to generate one</span>
+                      )}
                     </div>
-                  )}
+                  </div>
 
                   {regeneratedKey ? (
                     <div className="space-y-3 p-3 bg-green-50 border border-green-200 rounded-lg">
@@ -510,7 +514,7 @@ export default function Dashboard() {
                   ) : (
                     <AlertDialog>
                       <AlertDialogTrigger asChild>
-                        <Button variant="outline" size="sm" className="w-full" disabled={regenerateKeyMutation.isPending}>
+                        <Button variant="outline" size="sm" className="w-full" disabled={!hasBot || regenerateKeyMutation.isPending}>
                           <RefreshCw className={`w-3 h-3 mr-1 ${regenerateKeyMutation.isPending ? 'animate-spin' : ''}`} />
                           {regenerateKeyMutation.isPending ? "Regenerating..." : "Regenerate API Key"}
                         </Button>
@@ -519,7 +523,7 @@ export default function Dashboard() {
                         <AlertDialogHeader>
                           <AlertDialogTitle>Regenerate API Key?</AlertDialogTitle>
                           <AlertDialogDescription>
-                            This will create a new API key for {userBot?.name}. The old key will stop working immediately.
+                            This will create a new API key for {userBot?.name || 'your bot'}. The old key will stop working immediately.
                             Only do this if your bot lost its key or you suspect it was compromised.
                           </AlertDialogDescription>
                         </AlertDialogHeader>
