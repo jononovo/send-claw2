@@ -15,6 +15,7 @@ export interface EmailForReview {
   botId: string;
   botName: string;
   toAddress: string;
+  ccAddresses: string[] | null;
   subject: string | null;
   bodyText: string | null;
   createdAt: Date;

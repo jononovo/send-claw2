@@ -66,6 +66,7 @@ export async function reviewEmails(emails: EmailForReview[]): Promise<AIReviewRe
   const emailsForReview = emails.map(e => ({
     id: e.id,
     to: e.toAddress,
+    ...(e.ccAddresses && e.ccAddresses.length > 0 ? { cc: e.ccAddresses } : {}),
     subject: e.subject || '(no subject)',
     body: (e.bodyText || '').slice(0, 1000)
   }));
