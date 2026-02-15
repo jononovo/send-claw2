@@ -26,6 +26,7 @@ interface BotData {
   verified: boolean;
   claimedAt: string | null;
   createdAt: string;
+  apiKey: string | null;
 }
 
 interface MyInboxResponse {
@@ -47,6 +48,7 @@ export default function Dashboard() {
   const [claimToken, setClaimToken] = useState("");
   const [copied, setCopied] = useState<string | null>(null);
   const [regeneratedKey, setRegeneratedKey] = useState<{ apiKey: string; pasteMessage: string; botName: string } | null>(null);
+  const [showApiKey, setShowApiKey] = useState(false);
 
   const { data, isLoading, refetch } = useQuery<MyInboxResponse>({
     queryKey: ["/api/my-inbox"],
@@ -162,6 +164,7 @@ export default function Dashboard() {
         pasteMessage: data.pasteMessage,
         botName: data.botName
       });
+      refetch();
       toast({
         title: "API key regenerated",
         description: `New key generated for ${data.botName}. Copy it now — it won't be shown again.`,
@@ -413,11 +416,72 @@ export default function Dashboard() {
                       Bot is claimed but not linked to your handle. This may happen if you reserved the handle after claiming.
                     </p>
                   )}
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  <Input
+                    value={claimToken}
+                    onChange={(e) => setClaimToken(e.target.value)}
+                    placeholder="Enter claim token (e.g. reef-X4B2)"
+                    onKeyDown={(e) => e.key === "Enter" && handleClaim()}
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Your AI bot provides this token when it registers via the API.
+                  </p>
+                  <Button 
+                    onClick={handleClaim}
+                    disabled={!claimToken.trim() || claimMutation.isPending}
+                    className="w-full"
+                  >
+                    {claimMutation.isPending ? "Claiming..." : "Claim Bot"}
+                  </Button>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {hasBot && (
+            <Card>
+              <CardHeader className="pb-3">
+                <div className="flex items-center gap-2">
+                  <Key className="w-5 h-5 text-primary" />
+                  <CardTitle className="text-lg">API for Agents / Bots</CardTitle>
+                </div>
+                <CardDescription>
+                  Your bot uses this key to authenticate with the SendClaw API
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {userBot?.apiKey && (
+                    <div>
+                      <p className="text-xs text-muted-foreground mb-1">API Key</p>
+                      <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
+                        <code className="text-sm font-mono text-foreground">
+                          {showApiKey ? userBot.apiKey : `${userBot.apiKey.slice(0, 8)}${'•'.repeat(24)}`}
+                        </code>
+                        <div className="flex items-center gap-1">
+                          <button
+                            onClick={() => setShowApiKey(!showApiKey)}
+                            className="text-muted-foreground hover:text-primary p-2"
+                          >
+                            {showApiKey ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                          </button>
+                          <button
+                            onClick={() => copyToClipboard(userBot.apiKey!, 'apiKey')}
+                            className="text-muted-foreground hover:text-primary p-2"
+                          >
+                            {copied === 'apiKey' ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
 
                   {regeneratedKey ? (
                     <div className="space-y-3 p-3 bg-green-50 border border-green-200 rounded-lg">
                       <p className="text-sm font-medium text-green-800">
-                        Paste this message into your chat with your bot:
+                        New key generated — paste this message into your chat with your bot:
                       </p>
                       <div className="relative">
                         <pre className="text-xs bg-white p-3 rounded border border-green-200 whitespace-pre-wrap break-all text-foreground">
@@ -456,7 +520,7 @@ export default function Dashboard() {
                         <AlertDialogHeader>
                           <AlertDialogTitle>Regenerate API Key?</AlertDialogTitle>
                           <AlertDialogDescription>
-                            This will create a new API key for {userBot.name}. The old key will stop working immediately.
+                            This will create a new API key for {userBot?.name}. The old key will stop working immediately.
                             Only do this if your bot lost its key or you suspect it was compromised.
                           </AlertDialogDescription>
                         </AlertDialogHeader>
@@ -470,28 +534,9 @@ export default function Dashboard() {
                     </AlertDialog>
                   )}
                 </div>
-              ) : (
-                <div className="space-y-3">
-                  <Input
-                    value={claimToken}
-                    onChange={(e) => setClaimToken(e.target.value)}
-                    placeholder="Enter claim token (e.g. reef-X4B2)"
-                    onKeyDown={(e) => e.key === "Enter" && handleClaim()}
-                  />
-                  <p className="text-xs text-muted-foreground">
-                    Your AI bot provides this token when it registers via the API.
-                  </p>
-                  <Button 
-                    onClick={handleClaim}
-                    disabled={!claimToken.trim() || claimMutation.isPending}
-                    className="w-full"
-                  >
-                    {claimMutation.isPending ? "Claiming..." : "Claim Bot"}
-                  </Button>
-                </div>
-              )}
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          )}
 
           <Card>
             <CardHeader className="pb-3">

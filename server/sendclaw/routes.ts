@@ -445,7 +445,8 @@ router.get('/my-inbox', async (req: Request, res: Response) => {
         senderName: userBot.senderName,
         verified: userBot.verified,
         claimedAt: userBot.claimedAt,
-        createdAt: userBot.createdAt
+        createdAt: userBot.createdAt,
+        apiKey: userBot.apiKey || null
       } : null,
       messages: userMessages
     });
