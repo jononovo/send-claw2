@@ -2,8 +2,8 @@ import crypto from "crypto";
 import { Request, Response, NextFunction } from "express";
 import { MailService } from '@sendgrid/mail';
 import { db } from "../../db";
-import { bots, handles, securityEvents } from "@shared/schema";
-import { eq, sql } from "drizzle-orm";
+import { bots, handles, securityEvents, securityIpBlocks } from "@shared/schema";
+import { eq, sql, and, gte } from "drizzle-orm";
 
 export const SENDCLAW_DOMAIN = process.env.SENDCLAW_DOMAIN || 'sendclaw.com';
 export const FROM_EMAIL = process.env.SENDCLAW_FROM_EMAIL || `noreply@${SENDCLAW_DOMAIN}`;
@@ -26,6 +26,24 @@ export function getClientIP(req: Request): string {
 }
 
 export async function checkRegistrationRateLimitInTx(tx: any, ip: string): Promise<{ allowed: boolean; reason?: string; retryAfter?: number }> {
+  const [ipBlock] = await db
+    .select({ id: securityIpBlocks.id, blockedUntil: securityIpBlocks.blockedUntil })
+    .from(securityIpBlocks)
+    .where(and(
+      eq(securityIpBlocks.ip, ip),
+      gte(securityIpBlocks.blockedUntil, new Date())
+    ))
+    .limit(1);
+
+  if (ipBlock) {
+    const remainingMs = ipBlock.blockedUntil.getTime() - Date.now();
+    const remainingHours = Math.ceil(remainingMs / (1000 * 60 * 60));
+    return {
+      allowed: false,
+      reason: `This IP address has been blocked due to suspicious activity. Block expires in ${remainingHours} hours.`
+    };
+  }
+
   const [result] = await tx.select({
     recentCount: sql<number>`COUNT(*) FILTER (WHERE ${bots.createdAt} > NOW() - INTERVAL '5 minutes')`,
     dailyCount: sql<number>`COUNT(*) FILTER (WHERE ${bots.createdAt} > NOW() - INTERVAL '24 hours')`

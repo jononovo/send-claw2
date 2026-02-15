@@ -67,6 +67,8 @@ const AdminApiTesting = lazy(() => import("@/pages/admin/ApiTesting"));
 const AdminTemplates = lazy(() => import("@/pages/admin/Templates"));
 const AdminAttribution = lazy(() => import("@/pages/admin/Attribution"));
 const AdminBotSecurity = lazy(() => import("@/pages/admin/BotSecurity"));
+const AdminBulkSignups = lazy(() => import("@/pages/admin/bulk-signups/BulkSignups"));
+const AdminBulkSignupDetail = lazy(() => import("@/pages/admin/bulk-signups/BulkSignupDetail"));
 
 // Lazy imports for marketing pages
 const Terms = lazy(() => import("@/pages/terms"));
@@ -537,6 +539,16 @@ function Router() {
                 <ProtectedRoute path="/admin/bot-security" component={() => 
                   <Suspense fallback={null}>
                     <AdminBotSecurity />
+                  </Suspense>
+                } />
+                <ProtectedRoute path="/admin/bulk-signups/:id" component={() => 
+                  <Suspense fallback={null}>
+                    <AdminBulkSignupDetail />
+                  </Suspense>
+                } />
+                <ProtectedRoute path="/admin/bulk-signups" component={() => 
+                  <Suspense fallback={null}>
+                    <AdminBulkSignups />
                   </Suspense>
                 } />
                 
