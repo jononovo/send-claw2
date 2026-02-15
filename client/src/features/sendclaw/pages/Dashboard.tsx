@@ -232,8 +232,8 @@ export default function Dashboard() {
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8 max-w-2xl">
         <div className="mb-8">
-          <h1 className="text-2xl font-bold text-foreground mb-1">Dashboard</h1>
-          <p className="text-muted-foreground">Manage your SendClaw email</p>
+          <h1 className="text-2xl font-bold text-foreground mb-1">Agentic Email - Dashboard</h1>
+          <p className="text-muted-foreground">Manage your agent/bot's SendClaw email address</p>
         </div>
 
         <div className="space-y-6">
