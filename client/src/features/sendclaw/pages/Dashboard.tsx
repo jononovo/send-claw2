@@ -7,8 +7,9 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { useToast } from "@/hooks/use-toast";
-import { Mail, Key, Copy, Check, Inbox, Send, Eye, EyeOff, ArrowRight, Pencil, Save, Bot, Shield, Link2 } from "lucide-react";
+import { Mail, Key, Copy, Check, Inbox, Send, Eye, EyeOff, ArrowRight, Pencil, Save, Bot, Shield, Link2, RefreshCw } from "lucide-react";
 
 interface HandleData {
   id: string;
@@ -25,6 +26,7 @@ interface BotData {
   verified: boolean;
   claimedAt: string | null;
   createdAt: string;
+  apiKey: string | null;
 }
 
 interface MyInboxResponse {
@@ -45,6 +47,8 @@ export default function Dashboard() {
   const [isEditingHandleSenderName, setIsEditingHandleSenderName] = useState(false);
   const [claimToken, setClaimToken] = useState("");
   const [copied, setCopied] = useState<string | null>(null);
+  const [regeneratedKey, setRegeneratedKey] = useState<{ apiKey: string; pasteMessage: string; botName: string } | null>(null);
+  const [showApiKey, setShowApiKey] = useState(false);
 
   const { data, isLoading, refetch } = useQuery<MyInboxResponse>({
     queryKey: ["/api/my-inbox"],
@@ -149,6 +153,32 @@ export default function Dashboard() {
     },
   });
 
+  const regenerateKeyMutation = useMutation({
+    mutationFn: async () => {
+      const res = await apiRequest("POST", "/api/bots/regenerate-key");
+      return res.json();
+    },
+    onSuccess: (data) => {
+      setRegeneratedKey({
+        apiKey: data.apiKey,
+        pasteMessage: data.pasteMessage,
+        botName: data.botName
+      });
+      refetch();
+      toast({
+        title: "API key regenerated",
+        description: `New key generated for ${data.botName}. Copy it now — it won't be shown again.`,
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Regeneration failed",
+        description: error.message || "Could not regenerate API key",
+        variant: "destructive",
+      });
+    },
+  });
+
   const handleReserve = () => {
     if (handle.trim()) {
       reserveMutation.mutate(handle.trim());
@@ -202,8 +232,8 @@ export default function Dashboard() {
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8 max-w-2xl">
         <div className="mb-8">
-          <h1 className="text-2xl font-bold text-foreground mb-1">Dashboard</h1>
-          <p className="text-muted-foreground">Manage your SendClaw email</p>
+          <h1 className="text-2xl font-bold text-foreground mb-1">Agentic Email - Dashboard</h1>
+          <p className="text-muted-foreground">Manage your agent/bot's SendClaw email address</p>
         </div>
 
         <div className="space-y-6">
@@ -409,6 +439,106 @@ export default function Dashboard() {
               )}
             </CardContent>
           </Card>
+
+          <Card>
+            <CardHeader className="pb-3">
+              <div className="flex items-center gap-2">
+                <Key className="w-5 h-5 text-primary" />
+                <CardTitle className="text-lg">API for Agents / Bots</CardTitle>
+              </div>
+                <CardDescription>
+                  Your bot uses this key to authenticate with the SendClaw API
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div>
+                    <p className="text-xs text-muted-foreground mb-1">API Key</p>
+                    <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
+                      {userBot?.apiKey ? (
+                        <>
+                          <code className="text-sm font-mono text-foreground">
+                            {showApiKey ? userBot.apiKey : `${userBot.apiKey.slice(0, 8)}${'•'.repeat(24)}`}
+                          </code>
+                          <div className="flex items-center gap-1">
+                            <button
+                              onClick={() => setShowApiKey(!showApiKey)}
+                              className="text-muted-foreground hover:text-primary p-2"
+                            >
+                              {showApiKey ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                            </button>
+                            <button
+                              onClick={() => copyToClipboard(userBot.apiKey!, 'apiKey')}
+                              className="text-muted-foreground hover:text-primary p-2"
+                            >
+                              {copied === 'apiKey' ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                            </button>
+                          </div>
+                        </>
+                      ) : (
+                        <span className="text-sm text-muted-foreground italic">No API key — connect a bot to generate one</span>
+                      )}
+                    </div>
+                  </div>
+
+                  {regeneratedKey ? (
+                    <div className="space-y-3 p-3 bg-green-50 border border-green-200 rounded-lg">
+                      <p className="text-sm font-medium text-green-800">
+                        New key generated — paste this message into your chat with your bot:
+                      </p>
+                      <div className="relative">
+                        <pre className="text-xs bg-white p-3 rounded border border-green-200 whitespace-pre-wrap break-all text-foreground">
+                          {regeneratedKey.pasteMessage}
+                        </pre>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="absolute top-2 right-2"
+                          onClick={() => copyToClipboard(regeneratedKey.pasteMessage, "pasteMessage")}
+                        >
+                          {copied === "pasteMessage" ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
+                        </Button>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => copyToClipboard(regeneratedKey.apiKey, "regeneratedApiKey")}
+                        >
+                          {copied === "regeneratedApiKey" ? <Check className="w-3 h-3 mr-1" /> : <Key className="w-3 h-3 mr-1" />}
+                          Copy key only
+                        </Button>
+                        <p className="text-xs text-muted-foreground">This key won't be shown again after you leave this page.</p>
+                      </div>
+                    </div>
+                  ) : (
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button variant="outline" size="sm" className="w-full" disabled={!hasBot || regenerateKeyMutation.isPending}>
+                          <RefreshCw className={`w-3 h-3 mr-1 ${regenerateKeyMutation.isPending ? 'animate-spin' : ''}`} />
+                          {regenerateKeyMutation.isPending ? "Regenerating..." : "Regenerate API Key"}
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Regenerate API Key?</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            This will create a new API key for {userBot?.name || 'your bot'}. The old key will stop working immediately.
+                            Only do this if your bot lost its key or you suspect it was compromised.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+                          <AlertDialogAction onClick={() => regenerateKeyMutation.mutate()}>
+                            Regenerate Key
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
 
           <Card>
             <CardHeader className="pb-3">

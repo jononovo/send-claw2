@@ -273,6 +273,53 @@ router.post('/bots/claim', async (req: Request, res: Response) => {
   }
 });
 
+router.post('/bots/regenerate-key', async (req: Request, res: Response) => {
+  try {
+    if (!req.isAuthenticated || !req.isAuthenticated()) {
+      res.status(401).json({ error: 'Authentication required' });
+      return;
+    }
+
+    const userId = (req.user as any)?.id;
+    if (!userId) {
+      res.status(401).json({ error: 'User ID not found' });
+      return;
+    }
+
+    const userHandle = await getHandleByUserId(userId);
+    let userBot = null;
+    if (userHandle?.botId) {
+      const [bot] = await db.select().from(bots).where(eq(bots.id, userHandle.botId)).limit(1);
+      userBot = bot;
+    } else {
+      const [bot] = await db.select().from(bots).where(eq(bots.userId, userId)).limit(1);
+      userBot = bot;
+    }
+
+    if (!userBot) {
+      res.status(404).json({ error: 'No bot found for your account' });
+      return;
+    }
+
+    const newApiKey = generateApiKey();
+    await db.update(bots).set({ apiKey: newApiKey }).where(eq(bots.id, userBot.id));
+
+    console.log(`[SendClaw] API key regenerated for bot "${userBot.name}" by user ${userId}`);
+
+    const pasteMessage = `Your SendClaw API key has been regenerated. Please update your stored key immediately.\n\nNew API Key: ${newApiKey}\n\nYour old key no longer works. Use this key in your X-Api-Key header for all API requests.`;
+
+    res.json({
+      success: true,
+      apiKey: newApiKey,
+      botName: userBot.name,
+      pasteMessage
+    });
+  } catch (error) {
+    console.error('[SendClaw] Regenerate key error:', error);
+    res.status(500).json({ error: 'Failed to regenerate API key' });
+  }
+});
+
 router.patch('/bots/:botId/sender-name', async (req: Request, res: Response) => {
   try {
     if (!req.isAuthenticated || !req.isAuthenticated()) {
@@ -398,7 +445,8 @@ router.get('/my-inbox', async (req: Request, res: Response) => {
         senderName: userBot.senderName,
         verified: userBot.verified,
         claimedAt: userBot.claimedAt,
-        createdAt: userBot.createdAt
+        createdAt: userBot.createdAt,
+        apiKey: userBot.apiKey || null
       } : null,
       messages: userMessages
     });
