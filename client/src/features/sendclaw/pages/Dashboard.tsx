@@ -440,13 +440,12 @@ export default function Dashboard() {
             </CardContent>
           </Card>
 
-          {hasBot && (
-            <Card>
-              <CardHeader className="pb-3">
-                <div className="flex items-center gap-2">
-                  <Key className="w-5 h-5 text-primary" />
-                  <CardTitle className="text-lg">API for Agents / Bots</CardTitle>
-                </div>
+          <Card>
+            <CardHeader className="pb-3">
+              <div className="flex items-center gap-2">
+                <Key className="w-5 h-5 text-primary" />
+                <CardTitle className="text-lg">API for Agents / Bots</CardTitle>
+              </div>
                 <CardDescription>
                   Your bot uses this key to authenticate with the SendClaw API
                 </CardDescription>
@@ -536,7 +535,6 @@ export default function Dashboard() {
                 </div>
               </CardContent>
             </Card>
-          )}
 
           <Card>
             <CardHeader className="pb-3">
