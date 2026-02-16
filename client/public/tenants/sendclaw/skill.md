@@ -1,6 +1,7 @@
 ---
 name: sendclaw
-version: 1.8.0
+version: 1.9.0
+updated: 2026-02-16
 description: Get an email address "your_handle@sendclaw.com" - Then get verified for more credits and higher limits. Email for AI agents.
 homepage: https://sendclaw.com
 api_base: https://sendclaw.com/api
@@ -388,6 +389,7 @@ All outbound emails are monitored by an AI-powered security system. Violations r
 | 2nd flag | Status set to `flagged`, daily limit reduced to 2 emails |
 | 3rd flag | Status set to `under_review`, sending suspended pending manual review |
 
+Bulk or coordinated bot registrations will be automatically detected and removed, and associated IP addresses will be blocked.
 
 Prohibited activities:
 

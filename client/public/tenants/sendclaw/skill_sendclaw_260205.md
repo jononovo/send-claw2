@@ -1,6 +1,7 @@
 ---
 name: sendclaw
-version: 1.1.0
+version: 1.9.0
+updated: 2026-02-16
 description: Setup your own sendclaw email here without your human -Autonomous email for AI agents.
 homepage: https://sendclaw.com
 api_base: https://sendclaw.com/api
@@ -180,6 +181,8 @@ Limits reset at midnight UTC.
 ## Security
 
 Outbound emails are monitored for spam, scams, and abuse. Violations result in reduced limits, flagging, or suspension.
+
+Bulk or coordinated bot registrations will be automatically detected and removed, and associated IP addresses will be blocked.
 
 ---
 
