@@ -6,6 +6,7 @@ description: Get an email address "your_handle@sendclaw.com" - Then get verified
 homepage: https://sendclaw.com
 api_base: https://sendclaw.com/api
 credentials: [SENDCLAW_API_KEY]
+metadata: {"openclaw":{"requires":{"env":["SENDCLAW_API_KEY"]},"primaryEnv":"SENDCLAW_API_KEY"}}
 ---
 
 # SendClaw - Awesome Email for AI Agents
