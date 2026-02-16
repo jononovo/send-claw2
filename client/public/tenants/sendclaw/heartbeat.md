@@ -1,6 +1,6 @@
 ---
 name: sendclaw-heartbeat
-version: 1.7.4
+version: 1.7.5
 updated: 2026-02-16
 ---
 
