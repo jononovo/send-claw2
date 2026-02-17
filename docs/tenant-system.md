@@ -98,7 +98,7 @@ Configs are JSON files served as static assets from `/tenants/{id}/config.json`.
 
 ```ts
 const TENANT_IDS = ['5ducks', 'sendclaw'] as const;
-const DEFAULT_TENANT_ID = 'sendclaw';
+const DEFAULT_TENANT_ID = '5ducks';
 
 async function loadAllTenants(): Promise<TenantConfig[]> {
   if (tenantsCache) return tenantsCache;
@@ -171,6 +171,7 @@ interface TenantConfig {
     logoEmoji: string;   // "🐥" | "🦞"
     favicon: string;
     supportEmail: string;
+    mascot: string;      // path to mascot image
   };
 
   meta: { title, description, ogImage, twitterImage, url };
@@ -190,6 +191,15 @@ interface TenantConfig {
     showSendClaw: boolean;
     showProspecting: boolean;
     showCredits: boolean;
+  };
+
+  pricing?: {                          // optional — falls back to default tenant
+    headline: string;
+    subheadline: string;
+    creditsLabel: string;
+    creditsExplanation?: { title, subtitle, items[] };
+    ctaSection?: { title, subtitle, buttonText, buttonLink };
+    plans: TenantPlanConfig[];         // display-only plan data (no Stripe IDs)
   };
 }
 ```
@@ -289,6 +299,38 @@ This is set once at user creation and never updated. It records which brand doma
 
 ---
 
+## 8. Per-Tenant Pricing
+
+The pricing system follows the same default-with-override pattern as the rest of the tenant system.
+
+### How it works
+
+1. **Tenant config** (`client/public/tenants/{id}/config.json`) can include an optional `pricing` section with display-only plan data (names, prices, features, descriptions). No Stripe price IDs go in the client config.
+
+2. **Server-side resolution** (`server/tenants/index.ts`) loads full tenant configs and exposes `getTenantPricing(tenantId)` and `getTenantPricingFromHost(hostname)`. If a tenant doesn't define pricing, it falls back to the default tenant's pricing.
+
+3. **Stripe price ID mapping** (`server/features/billing/stripe/types.ts`) maps plan IDs to Stripe price IDs via `getStripePriceId(planId)`. This uses environment variables (`STRIPE_DUCKLING_PRICE_ID`, `STRIPE_MAMA_DUCK_PRICE_ID`, `STRIPE_FLOCK_PRICE_ID`) with a fallback to the existing hardcoded default.
+
+4. **Pricing API** (`/api/pricing/config`) resolves the tenant from the request hostname, gets that tenant's base plans, then applies any active promo overrides on top.
+
+5. **Checkout route** (`/api/stripe/create-checkout-session`) validates the `planId` against the requesting tenant's available plans, checks it's not free or coming-soon, then looks up the Stripe price ID server-side.
+
+6. **Pricing page** (`client/src/pages/pricing-new.tsx`) uses tenant context for branding (logo emoji, support email, headline, credits explanation, CTA section) while plan data comes from the API response.
+
+7. **Success page** (`client/src/pages/subscription-success.tsx`) dynamically displays the subscribed plan's name, price, and features from the tenant's pricing config.
+
+### Adding per-tenant pricing
+
+To give a tenant its own pricing:
+
+1. Add a `pricing` section to `client/public/tenants/{id}/config.json` with the plan array.
+2. Add the Stripe price ID mapping via environment variables or in `getStripePriceId()` in `server/features/billing/stripe/types.ts`.
+3. That's it — the API, checkout, pricing page, and success page all pick it up automatically.
+
+If a tenant has no `pricing` section, it inherits the default tenant's pricing.
+
+---
+
 ## Adding a New Tenant
 
 To add a new tenant:
@@ -297,4 +339,5 @@ To add a new tenant:
 2. **Register the tenant ID:** Add the tenant ID to `TENANT_IDS` in both `client/src/lib/tenants/index.ts` and `server/tenants/index.ts`.
 3. **Static assets:** Create `client/public/tenants/{id}/images/` with logo, favicon, og-image, and mascot assets.
 4. **Landing page:** Either reuse an existing landing component or create a new one and map it in `TenantGuestLanding` in `client/src/App.tsx`.
-5. **Tenant documents (optional):** Add `skill.md`, `skill.json`, `heartbeat.md` under the tenant's public directory if needed for the tenant asset routes.
+5. **Pricing (optional):** Add a `pricing` section to the config with plans. If omitted, the default tenant's pricing is used. Add Stripe price ID mappings for any new plan IDs.
+6. **Tenant documents (optional):** Add `skill.md`, `skill.json`, `heartbeat.md` under the tenant's public directory if needed for the tenant asset routes.

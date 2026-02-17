@@ -1,7 +1,8 @@
 import express, { Request, Response } from "express";
 import Stripe from "stripe";
 import { CreditService } from "../credits/service";
-import { STRIPE_CONFIG } from "./types";
+import { STRIPE_CONFIG, getStripePriceId } from "./types";
+import { getTenantPricingFromHost } from "../../../tenants";
 
 // Environment detection logic - temporarily forcing production mode for real payment testing
 const isTestMode = false; // Temporarily disabled to test real payments in development
@@ -70,8 +71,26 @@ export function registerStripeRoutes(app: express.Express) {
       const userId = (req.user as any).id;
       const { planId } = req.body;
 
-      if (planId !== 'ugly-duckling') {
+      const hostname = req.hostname || req.get('host') || '';
+      const tenantPricing = getTenantPricingFromHost(hostname);
+      const tenantPlans = tenantPricing?.plans || [];
+
+      const matchedPlan = tenantPlans.find(p => p.id === planId);
+      if (!matchedPlan) {
         return res.status(400).json({ message: "Invalid plan ID" });
+      }
+
+      if (matchedPlan.comingSoon) {
+        return res.status(400).json({ message: "This plan is not yet available" });
+      }
+
+      if (matchedPlan.price === 0) {
+        return res.status(400).json({ message: "Free plans do not require checkout" });
+      }
+
+      const priceId = getStripePriceId(planId);
+      if (!priceId) {
+        return res.status(400).json({ message: "No payment configuration for this plan" });
       }
 
       const user = req.user as any;
@@ -97,9 +116,6 @@ export function registerStripeRoutes(app: express.Express) {
         // Update user credits with customer ID
         await CreditService.updateStripeCustomerId(userId, customer.id);
       }
-
-      // Use the same price ID for both test and production
-      const priceId = STRIPE_CONFIG.UGLY_DUCKLING_PRICE_ID;
 
       const successUrl = `${req.get('origin')}/subscription-success?session_id={CHECKOUT_SESSION_ID}`;
       const cancelUrl = `${req.get('origin')}`;
@@ -253,7 +269,7 @@ export function registerStripeRoutes(app: express.Express) {
           const userId = parseInt(subscription.metadata.userId);
           const planId = subscription.metadata.planId;
 
-          if (userId && planId === 'ugly-duckling') {
+          if (userId && planId) {
             console.log(`Processing subscription ${event.type} for user ${userId}`);
             
             await CreditService.updateSubscription(userId, {
@@ -264,7 +280,6 @@ export function registerStripeRoutes(app: express.Express) {
               subscriptionEndDate: subscription.current_period_end * 1000
             });
 
-            // Award subscription credits if active
             if (subscription.status === 'active') {
               await CreditService.awardSubscriptionCredits(userId, planId as 'ugly-duckling');
               console.log(`Awarded subscription credits to user ${userId} for plan ${planId}`);

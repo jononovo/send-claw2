@@ -35,5 +35,97 @@
     "showSendClaw": true,
     "showProspecting": true,
     "showCredits": true
+  },
+
+  "pricing": {
+    "headline": "Pick Your Adventure",
+    "subheadline": "",
+    "creditsLabel": "credits",
+    "creditsExplanation": {
+      "title": "What Are Credits?",
+      "subtitle": "Credits power every action in 5Ducks",
+      "items": [
+        { "value": "~5", "label": "Credits per company search" },
+        { "value": "~3", "label": "Credits per contact found" },
+        { "value": "~2", "label": "Credits per email search" }
+      ]
+    },
+    "ctaSection": {
+      "title": "Ready to find customers?",
+      "subtitle": "Start with 190 free credits. No credit card required.",
+      "buttonText": "Start Free Today",
+      "buttonLink": "/app"
+    },
+    "plans": [
+      {
+        "id": "free",
+        "name": "Free Trial",
+        "credits": 190,
+        "bonus": 0,
+        "price": 0,
+        "description": "Perfect for testing the waters",
+        "features": [
+          "AI-powered company search",
+          "Contact discovery",
+          "Email composition",
+          "No credit card required"
+        ],
+        "highlight": false,
+        "cta": "Start Free"
+      },
+      {
+        "id": "ugly-duckling",
+        "name": "The Ugly Duckling",
+        "credits": 6000,
+        "bonus": 3000,
+        "price": 82,
+        "description": "For serious prospectors",
+        "features": [
+          "Everything in Free",
+          "6,000 credits/month",
+          "+3,000 bonus credits",
+          "Priority email search",
+          "Saved search lists"
+        ],
+        "highlight": true,
+        "cta": "Start Selling More"
+      },
+      {
+        "id": "duckin-awesome",
+        "name": "Mama Duck",
+        "credits": 12000,
+        "bonus": 10000,
+        "price": 174,
+        "description": "For power users",
+        "features": [
+          "Everything in Ugly Duckling",
+          "12,000 credits/month",
+          "+10,000 bonus credits",
+          "Advanced analytics",
+          "Priority support"
+        ],
+        "highlight": false,
+        "cta": "Join Waitlist",
+        "comingSoon": true
+      },
+      {
+        "id": "the-flock",
+        "name": "The Flock",
+        "credits": 65000,
+        "bonus": 0,
+        "price": 585,
+        "description": "For teams and businesses",
+        "features": [
+          "Everything in Mama Duck",
+          "10 team seats",
+          "65,000 credits/month",
+          "Team collaboration",
+          "Dedicated support"
+        ],
+        "highlight": false,
+        "cta": "Join Waitlist",
+        "comingSoon": true
+      }
+    ]
   }
 }
