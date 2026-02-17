@@ -1927,6 +1927,39 @@ export const securityEvents = pgTable("security_events", {
   index('idx_security_events_created_at').on(table.createdAt)
 ]);
 
+export const securityBulkSignupAlerts = pgTable("security_bulk_signup_alerts", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  signature: text("signature").notNull().unique(),
+  status: text("status").notNull().default('pending').$type<'pending' | 'approved' | 'ignored'>(),
+  namePrefix: text("name_prefix"),
+  senderPrefix: text("sender_prefix"),
+  botIds: jsonb("bot_ids").notNull().$type<string[]>(),
+  ipList: jsonb("ip_list").notNull().$type<string[]>(),
+  botCount: integer("bot_count").notNull(),
+  claimedCount: integer("claimed_count").notNull().default(0),
+  windowStart: timestamp("window_start", { withTimezone: true }).notNull(),
+  windowEnd: timestamp("window_end", { withTimezone: true }).notNull(),
+  approvalToken: text("approval_token").notNull().unique(),
+  resolvedAt: timestamp("resolved_at", { withTimezone: true }),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow()
+}, (table) => [
+  index('idx_security_bulk_signup_alerts_status').on(table.status),
+  index('idx_security_bulk_signup_alerts_signature').on(table.signature),
+  index('idx_security_bulk_signup_alerts_created_at').on(table.createdAt)
+]);
+
+export const securityIpBlocks = pgTable("security_ip_blocks", {
+  id: serial("id").primaryKey(),
+  ip: text("ip").notNull(),
+  blockedUntil: timestamp("blocked_until", { withTimezone: true }).notNull(),
+  reason: text("reason"),
+  alertId: uuid("alert_id").references(() => securityBulkSignupAlerts.id, { onDelete: 'set null' }),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow()
+}, (table) => [
+  index('idx_security_ip_blocks_ip').on(table.ip),
+  index('idx_security_ip_blocks_blocked_until').on(table.blockedUntil)
+]);
+
 export type Handle = typeof handles.$inferSelect;
 export type Bot = typeof bots.$inferSelect;
 export type InsertBot = z.infer<typeof insertBotSchema>;
@@ -1937,4 +1970,6 @@ export type SocialShareReward = typeof socialShareRewards.$inferSelect;
 export type EmailFlag = typeof emailFlags.$inferSelect;
 export type SecurityReport = typeof securityReports.$inferSelect;
 export type SecurityEvent = typeof securityEvents.$inferSelect;
+export type SecurityBulkSignupAlert = typeof securityBulkSignupAlerts.$inferSelect;
+export type SecurityIpBlock = typeof securityIpBlocks.$inferSelect;
 

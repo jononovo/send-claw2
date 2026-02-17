@@ -1,6 +1,7 @@
 import { Application } from 'express';
 import routes from './routes';
 import { botEmailSecurityEngine } from './review-engine';
+import { bulkSignupDetector, bulkSignupRoutes } from './bulk-signup';
 import { db } from '../../db';
 import { handles, bots } from '@shared/schema';
 import { eq } from 'drizzle-orm';
@@ -46,11 +47,13 @@ async function ensureSecurityHandle() {
 
 export function initBotEmailSecurity(app: Application) {
   app.use('/api/bot-security', routes);
+  app.use('/api/bot-security', bulkSignupRoutes);
   
   ensureSecurityHandle();
   botEmailSecurityEngine.initialize();
+  bulkSignupDetector.initialize();
   
-  console.log('[BotEmailSecurity] Module initialized');
+  console.log('[BotEmailSecurity] Module initialized (including bulk signup detection)');
 }
 
-export { botEmailSecurityEngine };
+export { botEmailSecurityEngine, bulkSignupDetector };

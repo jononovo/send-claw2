@@ -1,3 +1,34 @@
+export interface TenantPlanConfig {
+  id: string;
+  name: string;
+  credits: number;
+  bonus: number;
+  price: number;
+  description: string;
+  features: string[];
+  highlight: boolean;
+  cta: string;
+  comingSoon?: boolean;
+}
+
+export interface TenantPricingConfig {
+  headline: string;
+  subheadline: string;
+  creditsLabel: string;
+  creditsExplanation?: {
+    title: string;
+    subtitle: string;
+    items: { value: string; label: string }[];
+  };
+  ctaSection?: {
+    title: string;
+    subtitle: string;
+    buttonText: string;
+    buttonLink: string;
+  };
+  plans: TenantPlanConfig[];
+}
+
 export interface TenantConfig {
   id: string;
   domains: string[];
@@ -9,6 +40,7 @@ export interface TenantConfig {
     logoEmoji: string;
     favicon: string;
     supportEmail: string;
+    mascot: string;
   };
   
   meta: {
@@ -35,10 +67,12 @@ export interface TenantConfig {
     showProspecting: boolean;
     showCredits: boolean;
   };
+  
+  pricing?: TenantPricingConfig;
 }
 
 const TENANT_IDS = ['5ducks', 'sendclaw'] as const;
-const DEFAULT_TENANT_ID = 'sendclaw';
+const DEFAULT_TENANT_ID = '5ducks';
 
 let tenantsCache: TenantConfig[] | null = null;
 let loadingPromise: Promise<TenantConfig[]> | null = null;

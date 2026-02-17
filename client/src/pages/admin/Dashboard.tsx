@@ -334,6 +334,14 @@ export default function AdminDashboard() {
                     <Shield className="h-4 w-4 mr-2" />
                     Bot Security
                   </Button>
+                  <Button 
+                    onClick={() => setLocation('/admin/bulk-signups')}
+                    variant="outline"
+                    size="sm"
+                  >
+                    <AlertTriangle className="h-4 w-4 mr-2" />
+                    Bulk Signups
+                  </Button>
                 </div>
               </CardContent>
             </Card>

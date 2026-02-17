@@ -8,6 +8,7 @@ import { apiRequest } from "@/lib/queryClient";
 import { FooterStealth } from "@/components/footer-stealth";
 import { Link } from "wouter";
 import { usePricingConfig, getPromoCodeFromUrl } from "@/features/pricing-promos";
+import { useTenant } from "@/lib/tenant-context";
 
 const WAITLIST_STORAGE_KEY = '5ducks_waitlist_plans';
 
@@ -30,6 +31,7 @@ export default function PricingPage() {
   const { openModal, openModalForLogin, setRegistrationSuccessCallback } = useRegistrationModal();
   const { user } = useAuth();
   const { toast } = useToast();
+  const { tenant } = useTenant();
   const [isDarkMode, setIsDarkMode] = useState(true);
   const [waitlistPlans, setWaitlistPlans] = useState<string[]>(() => getStoredWaitlistPlans());
   const [isLoading, setIsLoading] = useState<string | null>(null);
@@ -38,6 +40,7 @@ export default function PricingPage() {
   const promoCode = useMemo(() => getPromoCodeFromUrl(), []);
   const { data: pricingConfig, isLoading: isConfigLoading } = usePricingConfig(promoCode);
   const plans = pricingConfig?.plans || [];
+  const tenantPricing = tenant.pricing;
 
   useEffect(() => {
     const root = document.documentElement;
@@ -71,34 +74,35 @@ export default function PricingPage() {
   };
 
   const handlePlanSelect = async (planId: string) => {
-    if (planId === 'free') {
-      window.location.href = '/app';
+    const plan = plans.find(p => p.id === planId);
+    if (!plan) return;
+
+    if (plan.price === 0) {
+      window.location.href = tenant.routes.authLanding || '/app';
       return;
     }
 
-    if (planId === 'duckin-awesome') {
+    if (plan.comingSoon) {
       if (!waitlistPlans.includes(planId)) {
         const newWaitlistPlans = [...waitlistPlans, planId];
         setWaitlistPlans(newWaitlistPlans);
         saveWaitlistPlans(newWaitlistPlans);
         toast({
           title: "Added to Waitlist",
-          description: "We'll notify you when Mama Duck becomes available!",
+          description: `We'll notify you when ${plan.name} becomes available!`,
         });
       }
       return;
     }
 
-    if (planId === 'ugly-duckling') {
-      if (!user) {
-        setRegistrationSuccessCallback(() => {
-          handleCheckout(planId);
-        });
-        openModal();
-        return;
-      }
-      await handleCheckout(planId);
+    if (!user) {
+      setRegistrationSuccessCallback(() => {
+        handleCheckout(planId);
+      });
+      openModal();
+      return;
     }
+    await handleCheckout(planId);
   };
 
   const handleCheckout = async (planId: string) => {
@@ -135,8 +139,7 @@ export default function PricingPage() {
           <Link href="/">
             <div className="font-bold flex items-center text-3xl cursor-pointer">
               <div className="flex items-end ml-3">
-                <span className="text-3xl opacity-80">🐥</span>
-                <span className="text-2xl md:inline hidden opacity-60">🥚🥚🥚🥚</span>
+                <span className="text-3xl opacity-80">{tenant.branding.logoEmoji}</span>
               </div>
             </div>
           </Link>
@@ -168,10 +171,13 @@ export default function PricingPage() {
           <div className="container mx-auto px-6 relative z-10">
             <div className="text-center mb-16">
               <h1 className="text-5xl lg:text-7xl font-bold leading-[0.9] tracking-normal text-gray-800 dark:text-gray-200 font-serif mb-6">
-                Pick Your
-                <span className="block text-transparent bg-clip-text bg-gradient-to-r from-yellow-500 to-yellow-600 dark:from-yellow-400 dark:to-yellow-100 drop-shadow-[0_0_30px_rgba(250,204,21,0.3)]">
-                  Adventure
-                </span>
+                {(tenantPricing?.headline || 'Pick Your Adventure').split('\n').map((line, i, arr) => (
+                  i === arr.length - 1 ? (
+                    <span key={i} className="block text-transparent bg-clip-text bg-gradient-to-r from-yellow-500 to-yellow-600 dark:from-yellow-400 dark:to-yellow-100 drop-shadow-[0_0_30px_rgba(250,204,21,0.3)]">
+                      {line}
+                    </span>
+                  ) : line
+                ))}
               </h1>
             </div>
 
@@ -285,44 +291,42 @@ export default function PricingPage() {
                 All plans auto-renew monthly. Cancel anytime.
               </p>
               <p className="text-gray-400 text-xs">
-                Questions? <a href="mailto:support@5ducks.com" className="text-yellow-500 hover:text-yellow-400 underline">Contact us</a>
+                Questions? <a href={`mailto:${tenant.branding.supportEmail}`} className="text-yellow-500 hover:text-yellow-400 underline">Contact us</a>
               </p>
             </div>
           </div>
         </div>
 
+        {tenantPricing?.creditsExplanation && (
         <div className="relative z-20 bg-gray-50 dark:bg-[#0A0A10] py-24 border-t border-gray-200 dark:border-white/5">
           <div className="absolute inset-0 opacity-5 dark:opacity-10" style={{ backgroundImage: "radial-gradient(#64748b 1px, transparent 1px)", backgroundSize: "40px 40px" }} />
           
           <div className="container mx-auto px-6 relative z-10">
             <div className="text-center mb-12">
               <h2 className="text-3xl md:text-5xl font-serif text-gray-800 dark:text-white mb-4">
-                What Are Credits?
+                {tenantPricing.creditsExplanation.title}
               </h2>
               <p className="text-xl text-gray-500 max-w-2xl mx-auto">
-                Credits power every action in 5Ducks
+                {tenantPricing.creditsExplanation.subtitle}
               </p>
             </div>
             
-            <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
-              <div className="bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl p-6 text-center">
-                <div className="text-3xl font-bold text-yellow-500 mb-2">~5</div>
-                <div className="text-gray-600 dark:text-gray-400 text-sm">Credits per company search</div>
-              </div>
-              
-              <div className="bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl p-6 text-center">
-                <div className="text-3xl font-bold text-yellow-500 mb-2">~3</div>
-                <div className="text-gray-600 dark:text-gray-400 text-sm">Credits per contact found</div>
-              </div>
-              
-              <div className="bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl p-6 text-center">
-                <div className="text-3xl font-bold text-yellow-500 mb-2">~2</div>
-                <div className="text-gray-600 dark:text-gray-400 text-sm">Credits per email search</div>
-              </div>
+            <div className={`grid gap-6 max-w-4xl mx-auto ${
+              tenantPricing.creditsExplanation.items.length === 1 ? 'md:grid-cols-1' :
+              tenantPricing.creditsExplanation.items.length === 2 ? 'md:grid-cols-2' : 'md:grid-cols-3'
+            }`}>
+              {tenantPricing.creditsExplanation.items.map((item, idx) => (
+                <div key={idx} className="bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl p-6 text-center">
+                  <div className="text-3xl font-bold text-yellow-500 mb-2">{item.value}</div>
+                  <div className="text-gray-600 dark:text-gray-400 text-sm">{item.label}</div>
+                </div>
+              ))}
             </div>
           </div>
         </div>
+        )}
 
+        {tenantPricing?.ctaSection && (
         <div className="relative z-20 py-24">
           <div className="absolute inset-0 bg-gradient-to-b from-gray-100 via-amber-50 to-amber-100 dark:from-[#0A0A10] dark:via-[#1a1612] dark:to-[#1f1915]" />
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-amber-200/20 to-amber-200/30 dark:via-amber-900/15 dark:to-amber-900/25" />
@@ -330,21 +334,22 @@ export default function PricingPage() {
           <div className="container mx-auto px-6 relative z-10">
             <div className="max-w-3xl mx-auto text-center">
               <h2 className="text-3xl md:text-5xl font-serif text-gray-800 dark:text-white mb-6">
-                Ready to find customers?
+                {tenantPricing.ctaSection.title}
               </h2>
               <p className="text-xl text-gray-600 dark:text-gray-400 mb-10">
-                Start with 190 free credits. No credit card required.
+                {tenantPricing.ctaSection.subtitle}
               </p>
               
               <Button 
-                onClick={() => window.location.href = '/app'}
+                onClick={() => window.location.href = tenantPricing.ctaSection!.buttonLink}
                 className="bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-black font-bold px-8 py-6 rounded-full text-lg transition-all duration-300 hover:scale-105"
               >
-                Start Free Today <ArrowRight className="ml-2 w-5 h-5" />
+                {tenantPricing.ctaSection.buttonText} <ArrowRight className="ml-2 w-5 h-5" />
               </Button>
             </div>
           </div>
         </div>
+        )}
 
         <FooterStealth />
       </div>

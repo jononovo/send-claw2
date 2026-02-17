@@ -41,3 +41,13 @@ export const STRIPE_CONFIG = {
     'free': 250 // Default free credits
   }
 } as const;
+
+export function getStripePriceId(planId: string): string | null {
+  const priceMap: Record<string, string | undefined> = {
+    'ugly-duckling': process.env.STRIPE_DUCKLING_PRICE_ID || STRIPE_CONFIG.UGLY_DUCKLING_PRICE_ID,
+    'duckin-awesome': process.env.STRIPE_MAMA_DUCK_PRICE_ID,
+    'the-flock': process.env.STRIPE_FLOCK_PRICE_ID,
+  };
+
+  return priceMap[planId] || null;
+}

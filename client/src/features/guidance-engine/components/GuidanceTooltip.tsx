@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import type { GuidanceTooltipProps } from "../types";
 import { findElement } from "../utils/elementSelector";
-const ducklingMascot = "/tenants/5ducks/duckling-mascot.png";
+import { useTenant } from "@/lib/tenant-context";
 
 export function GuidanceTooltip({
   targetSelector,
@@ -21,6 +21,7 @@ export function GuidanceTooltip({
   onModeToggle,
   hasVideo,
 }: GuidanceTooltipProps) {
+  const { tenant } = useTenant();
   const [coords, setCoords] = useState<{ top: number; left: number; arrowPosition: string } | null>(null);
   const animationRef = useRef<number>();
 
@@ -194,7 +195,7 @@ export function GuidanceTooltip({
           <div style={arrowStyles[coords.arrowPosition]} />
           
           <img 
-            src={ducklingMascot} 
+            src={tenant.branding.mascot} 
             alt="Duckling guide" 
             className="absolute -left-12 -top-2 w-10 h-10 mascot-wiggle object-contain drop-shadow-[0_2px_4px_rgba(0,0,0,0.15)]"
           />

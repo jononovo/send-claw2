@@ -2,6 +2,7 @@ import { db } from "../../db";
 import { pricingPromos, PricingPromo } from "@shared/schema";
 import { eq, and, lte, gte, desc } from "drizzle-orm";
 import { DEFAULT_PLANS, applyPromoToPlans, ResolvedPricingConfig, PlanConfig } from "./types";
+import { getTenantPricingFromHost } from "../../tenants";
 
 const HARDCODED_PROMOS: Record<string, Partial<PricingPromo>> = {
   'egg': {
@@ -94,7 +95,21 @@ export class PricingPromoService {
     }
   }
 
-  static async resolvePricingConfig(promoCode?: string): Promise<ResolvedPricingConfig> {
+  static getBasePlansForTenant(hostname?: string): PlanConfig[] {
+    if (hostname) {
+      const tenantPricing = getTenantPricingFromHost(hostname);
+      if (tenantPricing?.plans && tenantPricing.plans.length > 0) {
+        return tenantPricing.plans.map(p => ({
+          ...p,
+          stripePriceId: undefined,
+        }));
+      }
+    }
+    return DEFAULT_PLANS;
+  }
+
+  static async resolvePricingConfig(promoCode?: string, hostname?: string): Promise<ResolvedPricingConfig> {
+    const basePlans = this.getBasePlansForTenant(hostname);
     let promo: PricingPromo | null = null;
 
     if (promoCode) {
@@ -106,7 +121,7 @@ export class PricingPromoService {
     }
 
     if (promo) {
-      const plans = applyPromoToPlans(promo, DEFAULT_PLANS);
+      const plans = applyPromoToPlans(promo, basePlans);
       return {
         promoCode: promo.code,
         promoName: promo.name,
@@ -118,7 +133,7 @@ export class PricingPromoService {
     return {
       promoCode: null,
       promoName: null,
-      plans: DEFAULT_PLANS.filter(p => p.id !== 'free'),
+      plans: basePlans.filter(p => p.id !== 'free'),
       isPromoActive: false,
     };
   }

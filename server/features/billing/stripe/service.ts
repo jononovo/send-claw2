@@ -1,6 +1,6 @@
 import Stripe from "stripe";
 import { CreditService } from "../credits/service";
-import { StripeCustomerData, CheckoutSessionData, SubscriptionStatus, STRIPE_CONFIG } from "./types";
+import { StripeCustomerData, CheckoutSessionData, SubscriptionStatus, STRIPE_CONFIG, getStripePriceId } from "./types";
 
 // Lazy initialization to prevent crashes during module loading in production
 let stripe: Stripe | null = null;
@@ -78,15 +78,13 @@ export class StripeService {
     planId: string,
     origin: string
   ): Promise<CheckoutSessionData> {
-    if (planId !== 'ugly-duckling') {
-      throw new Error("Invalid plan ID");
+    const priceId = getStripePriceId(planId);
+    if (!priceId) {
+      throw new Error("Invalid plan ID or no payment configuration");
     }
 
     // Get or create customer
     const customer = await this.getOrCreateCustomer(userId, userEmail);
-
-    // Use the same price ID for both test and production
-    const priceId = STRIPE_CONFIG.UGLY_DUCKLING_PRICE_ID;
 
     const successUrl = `${origin}/subscription-success?session_id={CHECKOUT_SESSION_ID}`;
     const cancelUrl = origin;
@@ -181,8 +179,7 @@ export class StripeService {
       subscriptionEndDate: subscription.current_period_end * 1000
     });
 
-    // Award subscription credits if active
-    if (subscription.status === 'active' && planId === 'ugly-duckling') {
+    if (subscription.status === 'active') {
       await CreditService.awardSubscriptionCredits(userId, planId as 'ugly-duckling');
       console.log(`Awarded subscription credits to user ${userId} for plan ${planId}`);
     }
