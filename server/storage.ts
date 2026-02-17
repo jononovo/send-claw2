@@ -39,7 +39,7 @@ export interface IStorage {
   // User Auth
   getUserByEmail(email: string): Promise<User | undefined>;
   getUserById(id: number): Promise<User | undefined>;
-  createUser(data: { email: string; password: string; username?: string }): Promise<User>;
+  createUser(data: { email: string; password: string; username?: string; signupTenant?: string }): Promise<User>;
   updateUser(id: number, data: Partial<User>): Promise<User | undefined>;
 
   // User Preferences
@@ -67,6 +67,7 @@ export interface IStorage {
 
   // Contacts
   listContactsByCompany(companyId: number, userId: number): Promise<Contact[]>;
+  listContactsByCompanyPublic(companyId: number): Promise<Contact[]>;
   listContacts(userId: number): Promise<Contact[]>;
   listContactsWithCompanies(userId: number): Promise<(Contact & { companyName?: string })[]>;
   getContact(id: number, userId: number): Promise<Contact | undefined>;
@@ -232,13 +233,14 @@ class DatabaseStorage implements IStorage {
     return user;
   }
 
-  async createUser(data: { email: string; password: string; username?: string }): Promise<User> {
+  async createUser(data: { email: string; password: string; username?: string; signupTenant?: string }): Promise<User> {
     const [user] = await db
       .insert(users)
       .values({
         email: data.email,
         username: data.username || data.email.split('@')[0],
-        password: data.password
+        password: data.password,
+        signupTenant: data.signupTenant
       })
       .returning();
 
@@ -434,6 +436,18 @@ class DatabaseStorage implements IStorage {
         .where(and(eq(contacts.companyId, companyId), eq(contacts.userId, userId)));
     } catch (error) {
       console.error('Error fetching contacts by company:', error);
+      return [];
+    }
+  }
+
+  async listContactsByCompanyPublic(companyId: number): Promise<Contact[]> {
+    try {
+      return await db
+        .select()
+        .from(contacts)
+        .where(eq(contacts.companyId, companyId));
+    } catch (error) {
+      console.error('Error fetching public contacts by company:', error);
       return [];
     }
   }

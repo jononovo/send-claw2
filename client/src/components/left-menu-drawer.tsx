@@ -16,7 +16,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { PanelLeft, Plus, Users, Send, Zap, Pencil, Sparkles } from "lucide-react";
+import { PanelLeft, Plus, Users, Send, Zap, Pencil, Sparkles, Inbox } from "lucide-react";
 import type { SearchList } from "@shared/schema";
 import { generateListPromptOnly } from "@/lib/list-utils";
 import { generateSearchUrl } from "@/lib/url-utils";
@@ -93,6 +93,20 @@ export function LeftMenuDrawer({ open, onOpenChange, onLoadSearch, onNewSearch, 
               </button>
             </div>
           )}
+          
+          {/* Inbox Link */}
+          <div className="px-3 pb-1">
+            <Link href="/inbox">
+              <button
+                onClick={() => onOpenChange(false)}
+                className="w-full flex items-center gap-3 px-3 py-2 text-left rounded-lg hover:shadow-md hover:bg-secondary-hover hover:-translate-y-0.5 transition-all duration-200 group"
+                data-testid="drawer-nav-inbox"
+              >
+                <Inbox className="h-5 w-5 text-muted-foreground group-hover:text-orange-500" />
+                <span className="text-sm font-medium text-muted-foreground group-hover:text-foreground">Inbox</span>
+              </button>
+            </Link>
+          </div>
           
           {/* Streak Link */}
           <div className="px-3 pb-1">

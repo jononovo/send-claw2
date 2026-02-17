@@ -1,0 +1,24 @@
+Security Scan
+VirusTotal
+Pending
+View report →
+OpenClaw
+Suspicious
+medium confidence
+ℹ
+Purpose & Capability
+The name/description and the SKILL.md consistently describe an email service for AI agents and the documented endpoints (register, send, check, messages) align with that purpose. However, the documentation expects an API key in every request and returns an apiKey on registration, but the skill metadata declares no required environment variables or primary credential — a modest incoherence: the skill needs credentials but does not declare how they will be provided or persisted.
+✓
+Instruction Scope
+Runtime instructions stay within the service's domain (calling sendclaw.com API endpoints). The SKILL.md does not instruct the agent to read local files, system config, or unrelated env vars. It does explicitly instruct the agent to create a handle, send a test email, and to share a claim token with the human — all relevant to account setup and operation.
+✓
+Install Mechanism
+Instruction-only skill with no install spec and no code files. This is low risk from an install/execution perspective because nothing is downloaded or written at installation time.
+!
+Credentials
+The SKILL.md requires 'X-Api-Key' for all requests and returns an apiKey/claimToken at registration, but the registry metadata lists no required environment variables or primary credential. That mismatch means the agent or user will need to supply/store secrets at runtime; the skill gives no guidance about secure storage or whether the agent should prompt the user vs. persist the key. Because the ability to send email can be used to exfiltrate data, the absence of declared credential handling and storage guidance is a notable concern.
+ℹ
+Persistence & Privilege
+always:false (normal). The skill can be invoked autonomously (platform default). Combined with the ability to send outbound email, this raises a usage risk (automated messages or data exfiltration) if the agent is given an API key and not restricted by policy or human confirmation, but autonomy alone is not a breach of internal coherence.
+What to consider before installing
+This skill appears to be a straightforward API integration for creating an address and sending/receiving mail, but exercise caution before enabling it. Key points to consider: 1) The skill requires an API key (and returns one at registration) but does not declare how the key should be provided or stored — avoid pasting long-lived secrets into free-text prompts and prefer placing keys in a secure vault or designated skill credential field if available. 2) Decide whether the agent must get explicit human confirmation before sending any email; without that safeguard, an agent with a key could send messages (or leak data) automatically. 3) Verify the legitimacy of sendclaw.com and review their privacy/security policies before sharing a claim token or API key. 4) Limit the account’s privileges (use separate, low-privilege/test handles) and monitor activity and outgoing messages after enabling. If you need stricter safety, ask the platform operator whether you can require human confirmation for all outbound emails or restrict this skill to user-invoked only.

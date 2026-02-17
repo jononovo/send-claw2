@@ -1,0 +1,87 @@
+I just had an idea maybe we should should've tried to model this around how the Gmail API works.
+Can you have a look into that?
+
+Maybe we can just kinda use the same structure.
+
+11:54 PM
+Great idea. Let me look at how Gmail structures their API.
+
+
+Searched the web
+Now I have a clear picture of the Gmail API structure. Here's what I found:
+
+Gmail API Structure
+Gmail uses a unified messages endpoint with labels (not separate inbox/sent endpoints):
+
+Core Resources
+Resource	Description
+users.messages	All messages (inbox, sent, drafts, etc.)
+users.labels	Labels like INBOX, SENT, UNREAD, etc.
+users.threads	Conversation threads
+users.drafts	Draft messages
+Key Endpoints
+GET  /users/{userId}/messages          # List messages (with filters)
+GET  /users/{userId}/messages/{id}     # Get single message
+POST /users/{userId}/messages/send     # Send message
+POST /users/{userId}/messages/{id}/modify  # Modify labels (mark read, etc.)
+How Gmail Handles "Inbox" vs "Sent"
+Gmail doesn't have separate endpoints. Instead, it uses labels:
+
+GET /users/me/messages?labelIds=INBOX      # Inbox messages
+GET /users/me/messages?labelIds=SENT       # Sent messages
+GET /users/me/messages?labelIds=UNREAD     # Unread messages
+GET /users/me/messages?q=from:boss@co.com  # Search by sender
+The q parameter supports Gmail search syntax: is:unread, from:, to:, subject:, keywords, etc.
+
+SendClaw: Gmail-Style API
+If we model after Gmail, here's what it would look like:
+
+Single Messages Endpoint
+GET  /api/mail/messages                    # List all messages
+GET  /api/mail/messages?label=inbox        # Inbox only
+GET  /api/mail/messages?label=sent         # Sent only
+GET  /api/mail/messages?label=unread       # Unread only
+GET  /api/mail/messages?q=invoice          # Keyword search
+GET  /api/mail/messages?q=from:boss@co.com # Search by sender
+GET  /api/mail/messages/{id}               # Get single message
+POST /api/mail/messages/send               # Send message
+Combining Filters
+GET /api/mail/messages?label=inbox&label=unread           # Unread inbox
+GET /api/mail/messages?label=inbox&q=from:boss@company.com  # Inbox from boss
+GET /api/mail/messages?q=invoice&q=from:accounting@co.com   # Invoice from accounting
+Labels for SendClaw
+Label	Meaning
+inbox	Inbound messages
+sent	Outbound messages
+unread	Not yet fetched by bot
+all	Everything (default)
+Comparison
+Approach	Endpoints	Flexibility
+Current (separate)	/inbox, /sent, /search	Simple but rigid
+Gmail-style (unified)	/messages with filters	Flexible, industry standard
+My Recommendation
+Go with Gmail-style unified endpoint. It's:
+
+Industry standard - Developers already know this pattern
+Simpler backend - One endpoint with query params instead of three
+More flexible - Easy to add new labels or filters later
+Familiar to bots - OpenClaw agents likely already understand Gmail-style queries
+Final SendClaw API (Gmail-Style)
+# Check for new messages
+GET /api/mail/check
+→ { unreadCount: 3, quota: {...} }
+
+# List/search messages
+GET /api/mail/messages
+GET /api/mail/messages?label=inbox
+GET /api/mail/messages?label=sent
+GET /api/mail/messages?label=unread
+GET /api/mail/messages?q=invoice
+GET /api/mail/messages?label=inbox&q=from:boss@company.com
+
+# Get single message
+GET /api/mail/messages/{id}
+
+# Send message
+POST /api/mail/messages/send
+This is cleaner, more professional, and follows the de facto standard. What do you think?

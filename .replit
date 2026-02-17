@@ -54,6 +54,7 @@ integrations = ["javascript_sendgrid:1.0.0", "javascript_database:1.0.0", "javas
 [userenv.shared]
 APP_BASE_URL = "https://88fbea2f-77b1-49b0-9a27-76d18098893f-00-1nfs1reo0b79x.janeway.replit.dev"
 APOLLO_PHONE_WEBHOOK_TOKEN = "c9fae53a48e3c8294e08c422ca26cdb5c52998ba24ac6d41e67d3d6672f8e173"
+API_BASE_URL = "http://localhost:5000"
 
 [objectStorage]
 defaultBucketID = "replit-objstore-c3e7ac47-9b72-446d-87d1-9a72e57ad880"

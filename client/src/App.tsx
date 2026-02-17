@@ -7,13 +7,14 @@ import { AppLayout, Layout } from "@/components/layout";
 import { MainNav } from "@/components/main-nav";
 import { ProtectedRoute } from "@/lib/protected-route";
 import { SemiProtectedRoute } from "@/lib/semi-protected-route";
-import { AuthProvider } from "@/hooks/use-auth";
+import { AuthProvider, useAuth } from "@/hooks/use-auth";
 import { RegistrationModalProvider } from "@/hooks/use-registration-modal";
 import { RegistrationModalContainer } from "@/components/registration-modal-container";
 import { StrategyOverlayProvider } from "@/features/strategy-chat";
 import { TopNavAdProvider, PasswordSetupModal } from "@/features/top-nav-bar-ad-message";
 import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from "@/hooks/use-theme";
+import { TenantProvider, useTenant } from "@/lib/tenant-context";
 import { InsufficientCreditsProvider } from "@/contexts/insufficient-credits-context";
 import { InsufficientCreditsModal } from "@/components/insufficient-credits-modal";
 import { InsufficientCreditsHandlerSetup } from "@/components/insufficient-credits-handler-setup";
@@ -31,6 +32,7 @@ const LandingSimple = lazy(() => import("@/pages/landing-simple"));
 const LandingSimple2 = lazy(() => import("@/pages/landing-simple2"));
 const LandingSimple3 = lazy(() => import("@/pages/landing-simple3"));
 const LandingStealth = lazy(() => import("@/features/landing-stealth"));
+const SendclawLanding = lazy(() => import("@/features/sendclaw-public/pages/Landing"));
 const Planning = lazy(() => import("@/pages/planning"));
 
 // Lazy imports for app pages that can be loaded on demand
@@ -44,6 +46,7 @@ const SubscriptionSuccess = lazy(() => import("@/pages/subscription-success"));
 const NotFound = lazy(() => import("@/pages/not-found"));
 const StrategyDashboard = lazy(() => import("@/features/strategy-chat").then(module => ({ default: module.StrategyDashboard })));
 const DailyOutreach = lazy(() => import("@/pages/DailyOutreach"));
+const Outreach = lazy(() => import("@/pages/outreach"));
 const Streak = lazy(() => import("@/pages/Streak"));
 const AuthComplete = lazy(() => import("@/pages/auth-complete"));
 const Contacts = lazy(() => import("@/pages/Contacts"));
@@ -52,6 +55,10 @@ const AllContacts = lazy(() => import("@/pages/AllContacts"));
 const Campaigns = lazy(() => import("@/features/campaigns").then(module => ({ default: module.CampaignsPage })));
 const CampaignDetail = lazy(() => import("@/pages/CampaignDetail"));
 
+// Lazy imports for SendClaw feature pages
+const SendclawInbox = lazy(() => import("@/features/sendclaw/pages/Inbox"));
+const SendclawDashboard = lazy(() => import("@/features/sendclaw/pages/Dashboard"));
+
 // Lazy imports for admin pages
 const AdminDashboard = lazy(() => import("@/pages/admin/Dashboard"));
 const AdminUsers = lazy(() => import("@/pages/admin/Users"));
@@ -59,6 +66,9 @@ const AdminEmailTesting = lazy(() => import("@/pages/admin/EmailTesting"));
 const AdminApiTesting = lazy(() => import("@/pages/admin/ApiTesting"));
 const AdminTemplates = lazy(() => import("@/pages/admin/Templates"));
 const AdminAttribution = lazy(() => import("@/pages/admin/Attribution"));
+const AdminBotSecurity = lazy(() => import("@/pages/admin/BotSecurity"));
+const AdminBulkSignups = lazy(() => import("@/pages/admin/bulk-signups/BulkSignups"));
+const AdminBulkSignupDetail = lazy(() => import("@/pages/admin/bulk-signups/BulkSignupDetail"));
 
 // Lazy imports for marketing pages
 const Terms = lazy(() => import("@/pages/terms"));
@@ -141,6 +151,44 @@ function useHomePreload() {
   }, [location]);
 }
 
+function RootRoute() {
+  const { user, isLoading } = useAuth();
+  const { tenant } = useTenant();
+  const [, setLocation] = useLocation();
+  
+  useEffect(() => {
+    if (!isLoading && user) {
+      setLocation(tenant.routes.authLanding);
+    }
+  }, [user, isLoading, setLocation, tenant.routes.authLanding]);
+  
+  if (isLoading) return null;
+  if (user) return null;
+  
+  return <TenantGuestLanding />;
+}
+
+function TenantGuestLanding() {
+  const { tenant } = useTenant();
+  
+  const landingComponents: Record<string, React.LazyExoticComponent<() => JSX.Element>> = {
+    '/lobster': SendclawLanding,
+    '/landing-simple3': LandingSimple3,
+    '/landing-simple2': LandingSimple2,
+    '/landing-simple': LandingSimple,
+    '/landing2': Landing2,
+    '/react-landing': Landing,
+  };
+  
+  const LandingComponent = landingComponents[tenant.routes.guestLanding] || SendclawLanding;
+  
+  return (
+    <Suspense fallback={null}>
+      <LandingComponent />
+    </Suspense>
+  );
+}
+
 function Router() {
   // Track page views when routes change
   useAnalytics();
@@ -157,17 +205,8 @@ function Router() {
   return (
     <>
       <Switch>
-        {/* Default landing page - Home/App page */}
-        <Route path="/" component={() => 
-          <AppLayout>
-            <MainNav />
-            <div className="flex-1">
-              <Suspense fallback={<AppSkeleton />}>
-                <Home />
-              </Suspense>
-            </div>
-          </AppLayout>
-        } />
+        {/* Default landing page - show Lobster for unauth, redirect to dashboard for auth */}
+        <Route path="/" component={RootRoute} />
         
         {/* React version of landing page for comparison */}
         <Route path="/react-landing" component={() => 
@@ -236,10 +275,23 @@ function Router() {
           </Suspense>
         } />
         
+        <Route path="/lobster" component={() => 
+          <Suspense fallback={null}>
+            <SendclawLanding />
+          </Suspense>
+        } />
+        
         {/* Strategic Planning Page (no nav) */}
         <Route path="/planning" component={() => 
           <Suspense fallback={null}>
             <Planning />
+          </Suspense>
+        } />
+        
+        {/* Outreach redirect page */}
+        <Route path="/outreach" component={() => 
+          <Suspense fallback={null}>
+            <Outreach />
           </Suspense>
         } />
         
@@ -427,6 +479,16 @@ function Router() {
                     <Replies />
                   </Suspense>
                 } />
+                <ProtectedRoute path="/dashboard" component={() => 
+                  <Suspense fallback={null}>
+                    <SendclawDashboard />
+                  </Suspense>
+                } />
+                <ProtectedRoute path="/inbox" component={() => 
+                  <Suspense fallback={null}>
+                    <SendclawInbox />
+                  </Suspense>
+                } />
                 <SemiProtectedRoute path="/p/:slug/:id" component={() => 
                   <Suspense fallback={null}>
                     <ContactDetails />
@@ -474,6 +536,21 @@ function Router() {
                     <AdminAttribution />
                   </Suspense>
                 } />
+                <ProtectedRoute path="/admin/bot-security" component={() => 
+                  <Suspense fallback={null}>
+                    <AdminBotSecurity />
+                  </Suspense>
+                } />
+                <ProtectedRoute path="/admin/bulk-signups/:id" component={() => 
+                  <Suspense fallback={null}>
+                    <AdminBulkSignupDetail />
+                  </Suspense>
+                } />
+                <ProtectedRoute path="/admin/bulk-signups" component={() => 
+                  <Suspense fallback={null}>
+                    <AdminBulkSignups />
+                  </Suspense>
+                } />
                 
                 {/* Subscription Success Page */}
                 <Route path="/subscription-success" component={() => 
@@ -499,30 +576,29 @@ function Router() {
 }
 
 function App() {
-  // Google Analytics is initialized in index.html with requestIdleCallback deferral
-  // No need to call initGA() here - it would cause duplicate script loading
-  
   return (
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider>
-        <InsufficientCreditsProvider>
-          <AuthProvider>
-            <RegistrationModalProvider>
-              <StrategyOverlayProvider>
-                <TopNavAdProvider>
-                  <Router />
-                  <DeferredGuidance />
-                  <RegistrationModalContainer />
-                  <PasswordSetupModal />
-                </TopNavAdProvider>
-              </StrategyOverlayProvider>
-              <Toaster />
-            </RegistrationModalProvider>
-            <InsufficientCreditsModal />
-            <InsufficientCreditsHandlerSetup />
-          </AuthProvider>
-        </InsufficientCreditsProvider>
-      </ThemeProvider>
+      <TenantProvider>
+        <ThemeProvider>
+          <InsufficientCreditsProvider>
+            <AuthProvider>
+              <RegistrationModalProvider>
+                <StrategyOverlayProvider>
+                  <TopNavAdProvider>
+                    <Router />
+                    <DeferredGuidance />
+                    <RegistrationModalContainer />
+                    <PasswordSetupModal />
+                  </TopNavAdProvider>
+                </StrategyOverlayProvider>
+                <Toaster />
+              </RegistrationModalProvider>
+              <InsufficientCreditsModal />
+              <InsufficientCreditsHandlerSetup />
+            </AuthProvider>
+          </InsufficientCreditsProvider>
+        </ThemeProvider>
+      </TenantProvider>
     </QueryClientProvider>
   );
 }

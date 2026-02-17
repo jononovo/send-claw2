@@ -7,6 +7,7 @@ export const users = pgTable("users", {
   password: text("password").notNull(),
   email: text("email").notNull(),
   firebaseUid: text("firebase_uid"), // Firebase UID for mapping
+  signupTenant: text("signup_tenant"), // Tenant domain where user signed up (e.g., 'sendclaw', '5ducks')
   createdAt: timestamp("created_at").defaultNow(),
   isGuest: boolean("is_guest").default(false),
   isAdmin: boolean("is_admin").default(false)
@@ -1765,4 +1766,210 @@ export const insertPricingPromoSchema = z.object({
 
 export type PricingPromo = typeof pricingPromos.$inferSelect;
 export type InsertPricingPromo = z.infer<typeof insertPricingPromoSchema>;
+
+// ============================================
+// SendClaw: Email Service for AI Bots
+// ============================================
+
+export const handles = pgTable("handles", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  address: text("address").notNull().unique(),
+  userId: integer("user_id").references(() => users.id, { onDelete: 'set null' }),
+  botId: uuid("bot_id"),
+  senderName: text("sender_name"),
+  reservedAt: timestamp("reserved_at", { withTimezone: true }).defaultNow(),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow()
+}, (table) => [
+  index('idx_handles_user_id').on(table.userId),
+  index('idx_handles_address').on(table.address),
+  index('idx_handles_bot_id').on(table.botId)
+]);
+
+export const bots = pgTable("bots", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  userId: integer("user_id").references(() => users.id, { onDelete: 'set null' }),
+  address: text("address").unique(),
+  name: text("name").notNull(),
+  senderName: text("sender_name").notNull(),
+  apiKey: text("api_key").notNull().unique(),
+  claimToken: text("claim_token").unique(),
+  claimedAt: timestamp("claimed_at", { withTimezone: true }),
+  verified: boolean("verified").default(false),
+  status: text("status").default('normal').$type<'normal' | 'flagged' | 'under_review' | 'suspended'>(),
+  flagCount: integer("flag_count").default(0),
+  registrationIp: text("registration_ip"),
+  webhookUrl: text("webhook_url"),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow()
+}, (table) => [
+  index('idx_bots_user_id').on(table.userId),
+  index('idx_bots_address').on(table.address),
+  index('idx_bots_api_key').on(table.apiKey),
+  index('idx_bots_claim_token').on(table.claimToken),
+  index('idx_bots_status').on(table.status),
+  index('idx_bots_registration_ip').on(table.registrationIp)
+]);
+
+export const messages = pgTable("messages", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  botId: uuid("bot_id").references(() => bots.id, { onDelete: 'cascade' }),
+  userId: integer("user_id").references(() => users.id, { onDelete: 'cascade' }),
+  direction: text("direction").notNull().$type<'inbound' | 'outbound'>(),
+  fromAddress: text("from_address").notNull(),
+  toAddress: text("to_address").notNull(),
+  subject: text("subject"),
+  bodyText: text("body_text"),
+  bodyHtml: text("body_html"),
+  threadId: text("thread_id"),
+  inReplyTo: text("in_reply_to"),
+  messageId: text("message_id"),
+  ccAddresses: text("cc_addresses").array(),
+  isRead: boolean("is_read").default(false),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow()
+}, (table) => [
+  index('idx_messages_bot_id').on(table.botId),
+  index('idx_messages_user_id').on(table.userId),
+  index('idx_messages_thread_id').on(table.threadId),
+  index('idx_messages_created_at').on(table.createdAt),
+  index('idx_messages_is_read').on(table.isRead)
+]);
+
+export const quotaUsage = pgTable("quota_usage", {
+  botId: uuid("bot_id").notNull().references(() => bots.id, { onDelete: 'cascade' }),
+  date: text("date").notNull(),
+  emailsSent: integer("emails_sent").notNull().default(0)
+}, (table) => [
+  index('idx_quota_usage_bot_date').on(table.botId, table.date)
+]);
+
+export const insertBotSchema = z.object({
+  name: z.string().min(1, "Bot name is required").max(100),
+  handle: z.string().min(3, "Handle must be at least 3 characters").max(20, "Handle must be 20 characters or less").regex(/^[a-z0-9_]+$/, "Handle can only contain lowercase letters, numbers, and underscores"),
+  senderName: z.string().min(1, "Sender name is required").max(100, "Sender name must be 100 characters or less"),
+  webhookUrl: z.string().url("Must be a valid URL").max(500).startsWith("https://", "Webhook URL must use HTTPS").optional()
+});
+
+export const insertMessageSchema = z.object({
+  to: z.string().email("Valid email address required"),
+  subject: z.string().max(500).optional(),
+  body: z.string().max(50000).optional(),
+  inReplyTo: z.string().optional(),
+  cc: z.array(z.string().email("Each CC address must be a valid email")).max(5, "Maximum 5 CC recipients").optional()
+});
+
+// Daily check-in rewards tracking
+export const dailyCheckins = pgTable("daily_checkins", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  userId: integer("user_id").notNull().references(() => users.id, { onDelete: 'cascade' }),
+  date: text("date").notNull(), // YYYY-MM-DD format
+  creditsAwarded: integer("credits_awarded").notNull(),
+  streakCount: integer("streak_count").notNull().default(1),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow()
+}, (table) => [
+  uniqueIndex('idx_daily_checkins_user_date').on(table.userId, table.date),
+  index('idx_daily_checkins_user_id').on(table.userId)
+]);
+
+// Social sharing rewards tracking
+export const socialShareRewards = pgTable("social_share_rewards", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  userId: integer("user_id").notNull().references(() => users.id, { onDelete: 'cascade' }),
+  platform: text("platform").notNull().$type<'twitter' | 'linkedin' | 'facebook'>(),
+  postUrl: text("post_url").notNull(),
+  status: text("status").notNull().default('pending').$type<'pending' | 'approved' | 'rejected'>(),
+  creditsAwarded: integer("credits_awarded").notNull().default(0),
+  reviewedAt: timestamp("reviewed_at", { withTimezone: true }),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow()
+}, (table) => [
+  uniqueIndex('idx_social_share_rewards_user_platform').on(table.userId, table.platform),
+  index('idx_social_share_rewards_user_id').on(table.userId),
+  index('idx_social_share_rewards_status').on(table.status)
+]);
+
+export const emailFlags = pgTable("email_flags", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  messageId: uuid("message_id").references(() => messages.id, { onDelete: 'cascade' }),
+  botId: uuid("bot_id").references(() => bots.id, { onDelete: 'cascade' }),
+  suggestedStatus: text("suggested_status").notNull().$type<'flagged' | 'under_review' | 'suspended'>(),
+  reason: text("reason"),
+  reviewStatus: text("review_status").notNull().default('pending').$type<'pending' | 'applied' | 'rejected'>(),
+  appliedStatus: text("applied_status").$type<'flagged' | 'under_review' | 'suspended' | null>(),
+  appliedAt: timestamp("applied_at", { withTimezone: true }),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow()
+}, (table) => [
+  index('idx_email_flags_message_id').on(table.messageId),
+  index('idx_email_flags_bot_id').on(table.botId),
+  index('idx_email_flags_created_at').on(table.createdAt),
+  index('idx_email_flags_review_status').on(table.reviewStatus)
+]);
+
+export const securityReports = pgTable("security_reports", {
+  id: serial("id").primaryKey(),
+  reportDate: text("report_date").notNull().unique(),
+  stats: jsonb("stats").default({}),
+  flaggedEmails: jsonb("flagged_emails").default([]),
+  sentToAdmin: boolean("sent_to_admin").default(false),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow()
+}, (table) => [
+  index('idx_security_reports_date').on(table.reportDate)
+]);
+
+export const securityEvents = pgTable("security_events", {
+  id: serial("id").primaryKey(),
+  eventType: text("event_type").notNull(),
+  ip: text("ip"),
+  handle: text("handle"),
+  botId: uuid("bot_id"),
+  details: jsonb("details").default({}),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow()
+}, (table) => [
+  index('idx_security_events_ip').on(table.ip),
+  index('idx_security_events_event_type').on(table.eventType),
+  index('idx_security_events_created_at').on(table.createdAt)
+]);
+
+export const securityBulkSignupAlerts = pgTable("security_bulk_signup_alerts", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  signature: text("signature").notNull().unique(),
+  status: text("status").notNull().default('pending').$type<'pending' | 'approved' | 'ignored'>(),
+  namePrefix: text("name_prefix"),
+  senderPrefix: text("sender_prefix"),
+  botIds: jsonb("bot_ids").notNull().$type<string[]>(),
+  ipList: jsonb("ip_list").notNull().$type<string[]>(),
+  botCount: integer("bot_count").notNull(),
+  claimedCount: integer("claimed_count").notNull().default(0),
+  windowStart: timestamp("window_start", { withTimezone: true }).notNull(),
+  windowEnd: timestamp("window_end", { withTimezone: true }).notNull(),
+  approvalToken: text("approval_token").notNull().unique(),
+  resolvedAt: timestamp("resolved_at", { withTimezone: true }),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow()
+}, (table) => [
+  index('idx_security_bulk_signup_alerts_status').on(table.status),
+  index('idx_security_bulk_signup_alerts_signature').on(table.signature),
+  index('idx_security_bulk_signup_alerts_created_at').on(table.createdAt)
+]);
+
+export const securityIpBlocks = pgTable("security_ip_blocks", {
+  id: serial("id").primaryKey(),
+  ip: text("ip").notNull(),
+  blockedUntil: timestamp("blocked_until", { withTimezone: true }).notNull(),
+  reason: text("reason"),
+  alertId: uuid("alert_id").references(() => securityBulkSignupAlerts.id, { onDelete: 'set null' }),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow()
+}, (table) => [
+  index('idx_security_ip_blocks_ip').on(table.ip),
+  index('idx_security_ip_blocks_blocked_until').on(table.blockedUntil)
+]);
+
+export type Handle = typeof handles.$inferSelect;
+export type Bot = typeof bots.$inferSelect;
+export type InsertBot = z.infer<typeof insertBotSchema>;
+export type Message = typeof messages.$inferSelect;
+export type InsertMessage = z.infer<typeof insertMessageSchema>;
+export type DailyCheckin = typeof dailyCheckins.$inferSelect;
+export type SocialShareReward = typeof socialShareRewards.$inferSelect;
+export type EmailFlag = typeof emailFlags.$inferSelect;
+export type SecurityReport = typeof securityReports.$inferSelect;
+export type SecurityEvent = typeof securityEvents.$inferSelect;
+export type SecurityBulkSignupAlert = typeof securityBulkSignupAlerts.$inferSelect;
+export type SecurityIpBlock = typeof securityIpBlocks.$inferSelect;
 

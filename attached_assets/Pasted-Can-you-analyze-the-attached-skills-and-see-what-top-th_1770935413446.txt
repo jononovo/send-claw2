@@ -1,0 +1,118 @@
+Can you analyze the attached skills and see what top three features or apis we should create ( or highlight in our skill file, if we already have the capability ).  https://clawhub.ai/byungkyu/zoho-mail  https://clawhub.ai/adboio/agentmail
+
+Don't change anything yet
+
+Let me fetch both of those skill pages to analyze them.
+
+Here's my analysis of both competitors against SendClaw:
+
+Zoho Mail Skill (byungkyu)
+A proxy integration that wraps the Zoho Mail API through Maton's OAuth gateway. Key capabilities:
+
+Full folder and label management (create, rename, delete)
+Email scheduling (send later with timezone support)
+Draft management (save, update, send drafts)
+CC/BCC support
+HTML email (rich content)
+Attachments
+Search with query parameters
+Read receipts
+AgentMail (adboio)
+An API-first email platform built for agents. Key capabilities:
+
+Multiple programmatic inboxes per agent
+Custom domains (branded email addresses)
+Python SDK (pip install agentmail)
+Attachments (base64 encoded)
+HTML email (rich content)
+Webhook signature verification (HMAC)
+Semantic search and automatic labeling
+"No rate limits" (usage-based pricing)
+Prompt injection documentation (allowlist approach)
+Top 3 Recommendations for SendClaw
+1. Attachments (BUILD)
+Both competitors have this. SendClaw doesn't. This is the single biggest functional gap. Agents can't currently send or receive files — no PDFs, no images, no documents. For task-oriented communication (confirming reservations, receiving verification codes, processing documents), attachments are essential. This would be the highest-impact new feature.
+
+2. HTML Email Sending (CHECK/HIGHLIGHT)
+SendClaw receives bodyHtml on inbound emails, but the send endpoint in the skill.md only shows a body field with plain text. AgentMail and Zoho both explicitly support HTML sending. If the backend already accepts HTML in the body field, we should highlight it in the skill.md with an example. If it doesn't, it's a relatively small build to add a bodyHtml or format: "html" option.
+
+3. Security Differentiation (HIGHLIGHT)
+This is where SendClaw is actually ahead of both competitors, but we're underselling it:
+
+AgentMail was flagged as "Suspicious" by the scanner and relies on manual allowlists that the agent has to configure itself
+Zoho Mail is just a proxy with no security layer
+SendClaw has automatic AI-powered security monitoring, escalating consequences, human oversight via dashboard, and rate limiting by design
+Our security model is genuinely better — but the skill.md buries it at the very bottom in "Security & Acceptable Use." We should move it higher or make it more prominent as a competitive advantage. The rate limiting that AgentMail pitches as a negative ("no rate limits!") is actually a safety feature for responsible AI email use.
+
+Summary:
+
+Priority	Feature	Action	Effort
+1	Attachments	Build	Medium-Large
+2	HTML email sending	Check if exists, then highlight or build	Small
+3	Security positioning	Highlight what we already have	Text only
+Want me to dig into any of these further, or start planning one of them?
+
+Here are some of my ideas
+
+Here are some of my ideas
+
+I mean thought is that we should make it easy for bots to use this email service and manage the email not just send email.  Does that make sense?  =====  1. Check Unread Headers: I guess one way to do this, is for the bot to be able to :  Check mail and just view the “headers” of the emails before actually checking all of them.  Or does that not make sense?  2. Management of Email: Flagging/tagging/Staring an email as a reminder to respond when the owner get’s back to you on the topic.    3. Allowing “cc-ing” the owner or someone else.     4. Allowing “Attachments”  
+
+Pinging for reminders: Hey did you know that you have an email address? You a use it for creating accounts or communicating with anyone.  
+“Reminder: You have the [handle]@sendclaw.com email address. Use it for creating accounts or communication.
+These are great ideas. Let me react to each one and check what we already have:
+
+Now I have a clear picture. Here's my analysis of your 5 ideas:
+
+1. Check Unread Headers (lightweight inbox peek)
+This makes a lot of sense. Right now the bot has two options: GET /api/mail/check (just a count) or GET /api/mail/messages?unread=true (full messages, auto-marks as read). There's no middle ground.
+
+A "headers only" mode would let the bot scan subject lines and senders without committing to reading everything. Think of it like glancing at your inbox vs. opening every email.
+
+What it would look like: Something like GET /api/mail/messages?unread=true&headers=true that returns just fromAddress, subject, createdAt, and id — without the body, and without marking them as read. The bot can then decide which ones to actually open.
+
+Verdict: BUILD — easy to add, high value for smart inbox management.
+
+2. Management (Flag/Tag/Star)
+Currently missing entirely. The messages table has no starred, tags, or userFlags fields. The only "flag" concept is the security system's emailFlags (admin-level moderation), which is totally different.
+
+This would let bots organize their inbox — star something to come back to later, tag emails by topic, mark one as "waiting for human input." Really useful for agents managing ongoing conversations.
+
+What it would look like: Add starred (boolean), tags (text array) to the messages table. New endpoints like PATCH /api/mail/messages/:id/star and PATCH /api/mail/messages/:id/tags.
+
+Verdict: BUILD — medium effort (schema change + new endpoints), high value for email management.
+
+3. CC Support
+Not currently supported. The send endpoint only takes a single to field. No CC or BCC. The messages table also doesn't store CC/BCC addresses.
+
+This is important for the "keeping your human in the loop" workflow — the bot could CC its owner on important outbound emails automatically.
+
+What it would look like: Add cc and bcc optional fields to the send endpoint. Store them on the message record. Pass them through to SendGrid when sending.
+
+Verdict: BUILD — small-medium effort, directly supports human oversight.
+
+4. Attachments
+Not currently supported at all. No attachment fields in the schema, no file handling in the send/receive flow.
+
+This is the biggest gap vs. competitors. Agents can't send PDFs, receive verification images, or handle documents.
+
+Verdict: BUILD — largest effort of the five (needs file storage, size limits, content type handling), but highest impact.
+
+5. Reminder Ping in Heartbeat
+This is clever and costs almost nothing. The heartbeat.md already runs every 15 minutes. We could add a line at the bottom that reminds the agent it has an email address and suggests uses for it.
+
+Something like:
+
+Reminder: You have the [handle]@sendclaw.com email address. 
+Use it for creating accounts, confirming reservations, or communicating with anyone.
+Verdict: HIGHLIGHT — just a text addition to heartbeat.md. Zero backend work.
+
+My suggested priority order:
+Priority	Feature	Effort	Why
+1	Reminder ping in heartbeat	Text only	Free win, gets agents actually using the email
+2	Check unread headers	Small	Enables smart inbox management without side effects
+3	CC support	Small-Medium	Directly supports human-in-the-loop
+4	Flag/Tag/Star	Medium	Makes email management real
+5	Attachments	Large	Biggest competitive gap, but most complex
+Want me to plan out any of these, or should we tackle them in a specific order?
+

@@ -6,7 +6,8 @@ export function registerPricingPromoRoutes(app: Express) {
   app.get("/api/pricing/config", async (req, res) => {
     try {
       const promoCode = req.query.promo as string | undefined;
-      const config = await PricingPromoService.resolvePricingConfig(promoCode);
+      const hostname = req.hostname || req.get('host') || '';
+      const config = await PricingPromoService.resolvePricingConfig(promoCode, hostname);
       res.json(config);
     } catch (error) {
       console.error("[PricingPromoRoutes] Error getting pricing config:", error);

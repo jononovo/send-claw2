@@ -1,0 +1,120 @@
+What is this offset command for?
+
+Pagination (limit=, offset=)
+12:29 AM
+offset is for pagination - it tells the API how many messages to skip before returning results.
+
+For example:
+
+?limit=20&offset=0 → messages 1-20
+?limit=20&offset=20 → messages 21-40
+?limit=20&offset=40 → messages 41-60
+But... Do We Actually Need It?
+For SendClaw, probably not. Here's why:
+
+The main use case is fetching unread messages. When a bot calls ?unread=true, we return messages and mark them as read. Next call returns the next batch of unread. No offset needed - the isRead flag acts as the cursor.
+
+For browsing old messages, bots would more likely use:
+
+?before=2026-02-04T10:00:00Z (cursor-based, like Gmail's pageToken)
+Or just ?limit=50 and call it done
+offset has problems at scale:
+
+offset=10000 is slow (database has to count through 10,000 rows)
+If new messages arrive mid-pagination, results shift
+My Suggestion
+Remove offset for now. Keep it simple:
+
+?limit=20 for how many to return
+?unread=true handles its own pagination via the read flag
+Add ?before= timestamp cursor later if needed for browsing history
+What do you think?
+
+How does Gmail do that? Do they use a before timestamp or offset or what?
+
+12:30 AM
+
+Searched the web
+Gmail (and all Google APIs) use opaque page tokens, not offset or timestamps.
+
+How Gmail Pagination Works
+"In order to retrieve the next page, perform the exact same request as previously and append a pageToken field with the value of nextPageToken from the previous page." 
+Google
+
+Example:
+
+GET /messages?maxResults=10
+→ { messages: [...], nextPageToken: "CiAKGjBpNDd2Nmp2Zml2cXRwYjBpOXA" }
+
+GET /messages?maxResults=10&pageToken=CiAKGjBpNDd2Nmp2Zml2cXRwYjBpOXA
+→ { messages: [...], nextPageToken: "xyz123..." }
+"Page tokens provided by APIs must be opaque (but URL-safe) strings, and must not be user-parseable. This is because if users are able to deconstruct these, they will do so." 
+Aip
+
+Why Google Uses Opaque Tokens (Not Offset)
+"If the end of the collection has been reached, the next_page_token field must be empty. This is the only way to communicate 'end-of-collection' to users." 
+Aip
+
+Benefits:
+
+Stable pagination - New messages arriving don't shift results
+Efficient - Database can use cursor, not count offset
+Flexible - Token can encode anything (timestamp, ID, etc.)
+For SendClaw
+We have three options:
+
+Approach	Pros	Cons
+Opaque token (Gmail-style)	Industry standard, efficient	More complex to implement
+?before=timestamp	Simple, readable	Relies on unique timestamps
+?after_id=msg_123	Simple, stable	Exposes internal IDs
+My recommendation: For SendClaw's scale, ?before= timestamp is fine. It's simple and bots can understand it. We're not Google-scale.
+
+But if you want to follow Gmail exactly, use an opaque nextPageToken that encodes the last message's timestamp + ID internally.
+
+What's your preference?
+
+I mean it's not a big deal to expose internal IDs.
+
+I think that's fine.
+
+But timestamp is also fine. What do you think is best
+
+12:31 AM
+I think ?after_id=msg_123 (cursor by ID) is better. Here's why:
+
+Timestamp Problem
+Two messages could arrive at the exact same timestamp (same second). If you paginate with ?before=2026-02-04T10:30:00Z, you might:
+
+Skip a message that shares that timestamp
+Or get duplicates
+Yes, it's rare. But it's a real bug waiting to happen.
+
+ID Cursor is Bulletproof
+Every message has a unique ID. If you say "give me messages after msg_abc123", there's no ambiguity.
+
+GET /api/mail/messages?limit=5
+→ { messages: [...], nextCursor: "msg_xyz789" }
+
+GET /api/mail/messages?limit=5&after=msg_xyz789
+→ { messages: [...], nextCursor: "msg_def456" }
+Implementation
+Just add to the WHERE clause:
+
+sql
+WHERE id > :after_id
+ORDER BY id DESC
+LIMIT 5
+Simple, efficient (ID is indexed), no edge cases.
+
+Final Recommendation
+Use ?after=msg_id for cursor-based pagination
+Return nextCursor in response (or null if no more)
+Remove offset entirely
+json
+{
+  "messages": [...],
+  "hasMore": true,
+  "nextCursor": "msg_xyz789"
+}
+Bot just passes nextCursor back as ?after= on next request. Clean and foolproof.
+

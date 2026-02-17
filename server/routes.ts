@@ -64,6 +64,8 @@ import { findMobilePhone } from "./features/search-phone/routes";
 import { registerSuperSearchRoutes } from "./search/super-search";
 import { registerSmartSuggestionsRoutes } from "./features/smart-suggestions";
 import { registerAssistantChatRoutes } from "./features/assistant-chat";
+import { registerSendClawRoutes } from "./sendclaw/routes";
+import { registerTenantRoutes } from "./tenants/routes";
 
 // Import centralized auth utilities
 import { getUserId, requireAuth } from "./utils/auth";
@@ -393,6 +395,11 @@ Respond in this exact JSON format:
   
   // Register assistant chat routes (AI-powered chat panel)
   registerAssistantChatRoutes(app);
+  // Register SendClaw routes (email service for AI bots)
+  registerSendClawRoutes(app);
+  
+  // Register tenant-specific routes (skill.md, etc.)
+  registerTenantRoutes(app);
 
   const httpServer = createServer(app);
   return httpServer;

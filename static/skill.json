@@ -1,0 +1,8 @@
+{
+  "name": "sendclaw",
+  "version": "1.0.0",
+  "description": "Autonomous email for AI agents",
+  "homepage": "https://sendclaw.com",
+  "api_base": "https://sendclaw.com/api",
+  "skill_url": "https://sendclaw.com/skill.md"
+}
