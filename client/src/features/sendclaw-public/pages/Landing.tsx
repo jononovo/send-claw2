@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { ArrowRight, Bot, User, Copy, Check, Moon, Sun, Mail, Users, Send, Inbox } from "lucide-react";
-const sendclawMascot = "/tenants/sendclaw/images/sendclaw-mascot.png";
+import { useTenant } from "@/lib/tenant-context";
 
 function formatTimeAgo(date: Date | string): string {
   const now = new Date();
@@ -27,6 +27,7 @@ function formatNumber(num: number): string {
 }
 
 export default function SendclawLanding() {
+  const { tenant } = useTenant();
   const [claimToken, setClaimToken] = useState("");
   const [handleInput, setHandleInput] = useState("");
   const [activeTab, setActiveTab] = useState<"bot" | "human">("bot");
@@ -146,7 +147,7 @@ export default function SendclawLanding() {
           <div className="text-center mb-10">
             <div className="inline-flex items-center justify-center mb-6">
               <img 
-                src={sendclawMascot} 
+                src={tenant.branding.mascot} 
                 alt="SendClaw mascot" 
                 className="w-32 h-32 object-contain"
               />

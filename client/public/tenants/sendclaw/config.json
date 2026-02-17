@@ -8,7 +8,8 @@
     "logo": "/tenants/sendclaw/images/og-image.png",
     "logoEmoji": "🦞",
     "favicon": "/tenants/sendclaw/images/favicon.png",
-    "supportEmail": "support@sendclaw.com"
+    "supportEmail": "support@sendclaw.com",
+    "mascot": "/tenants/sendclaw/images/sendclaw-mascot.png"
   },
   
   "meta": {

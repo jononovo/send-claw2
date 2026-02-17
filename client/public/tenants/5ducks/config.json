@@ -8,7 +8,8 @@
     "logo": "/tenants/5ducks/images/logo.png",
     "logoEmoji": "🐥",
     "favicon": "/tenants/5ducks/images/favicon.ico",
-    "supportEmail": "support@fiveducks.ai"
+    "supportEmail": "support@fiveducks.ai",
+    "mascot": "/tenants/5ducks/images/duckling-mascot.png"
   },
   
   "meta": {

@@ -9,6 +9,7 @@ export interface TenantConfig {
     logoEmoji: string;
     favicon: string;
     supportEmail: string;
+    mascot: string;
   };
   
   meta: {
