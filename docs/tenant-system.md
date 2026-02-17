@@ -38,20 +38,32 @@ The system is split into three layers: **server-side resolution**, **client-side
 
 **File:** `server/tenants/index.ts`
 
-```ts
-const TENANT_DOMAINS: Record<string, string[]> = {
-  'sendclaw': ['sendclaw.com', 'sendclaw'],
-  '5ducks': ['fiveducks.ai', 'fiveducks', '5ducks'],
-};
+The server reads tenant domain lists directly from the same `config.json` files used by the client (`client/public/tenants/{id}/config.json`). This ensures a single source of truth for domain-to-tenant mapping.
 
+```ts
+const TENANTS_DIR = path.join(process.cwd(), "client", "public", "tenants");
+const TENANT_IDS = ['5ducks', 'sendclaw'] as const;
 const DEFAULT_TENANT = '5ducks';
 
+function loadTenantConfigs(): TenantConfig[] {
+  if (tenantConfigs) return tenantConfigs;
+  tenantConfigs = TENANT_IDS.map(id => {
+    const configPath = path.join(TENANTS_DIR, id, "config.json");
+    const raw = fs.readFileSync(configPath, "utf-8");
+    const config = JSON.parse(raw);
+    return { id: config.id, domains: config.domains };
+  });
+  return tenantConfigs;
+}
+
 export function getTenantFromHost(hostname: string): string {
-  const normalizedHost = hostname.toLowerCase();
-  for (const [tenantId, patterns] of Object.entries(TENANT_DOMAINS)) {
-    for (const pattern of patterns) {
-      if (normalizedHost.includes(pattern)) {
-        return tenantId;
+  const configs = loadTenantConfigs();
+  const normalizedHost = hostname.toLowerCase().replace(/^www\./, '');
+  for (const tenant of configs) {
+    for (const domain of tenant.domains) {
+      const normalizedDomain = domain.toLowerCase().replace(/^www\./, '');
+      if (normalizedHost === normalizedDomain || normalizedHost.endsWith('.' + normalizedDomain)) {
+        return tenant.id;
       }
     }
   }
@@ -59,7 +71,7 @@ export function getTenantFromHost(hostname: string): string {
 }
 ```
 
-Pattern matching uses `includes()` — substring match, not exact domain match. This means `app.fiveducks.ai` and `staging.fiveducks.ai` both resolve to `5ducks`.
+Domain matching uses exact match or subdomain suffix match (e.g., `app.fiveducks.ai` matches the `fiveducks.ai` domain entry). Configs are loaded lazily on first call and cached in-memory.
 
 **Where it's used server-side:**
 
@@ -281,9 +293,8 @@ This is set once at user creation and never updated. It records which brand doma
 
 To add a new tenant:
 
-1. **Server:** Add an entry to `TENANT_DOMAINS` in `server/tenants/index.ts` with hostname patterns.
-2. **Client config:** Create `client/public/tenants/{id}/config.json` with the full `TenantConfig` shape.
-3. **Client loader:** Add the tenant ID to the `TENANT_IDS` array in `client/src/lib/tenants/index.ts`.
-4. **Static assets:** Create `client/public/tenants/{id}/images/` with logo, favicon, og-image, and mascot assets.
-5. **Landing page:** Either reuse an existing landing component or create a new one and map it in `TenantGuestLanding` in `client/src/App.tsx`.
-6. **Tenant documents (optional):** Add `skill.md`, `skill.json`, `heartbeat.md` under the tenant's public directory if needed for the tenant asset routes.
+1. **Client config (single source of truth):** Create `client/public/tenants/{id}/config.json` with the full `TenantConfig` shape, including the `domains` array. Both the server and client read from this file.
+2. **Register the tenant ID:** Add the tenant ID to `TENANT_IDS` in both `client/src/lib/tenants/index.ts` and `server/tenants/index.ts`.
+3. **Static assets:** Create `client/public/tenants/{id}/images/` with logo, favicon, og-image, and mascot assets.
+4. **Landing page:** Either reuse an existing landing component or create a new one and map it in `TenantGuestLanding` in `client/src/App.tsx`.
+5. **Tenant documents (optional):** Add `skill.md`, `skill.json`, `heartbeat.md` under the tenant's public directory if needed for the tenant asset routes.
