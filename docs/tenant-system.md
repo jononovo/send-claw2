@@ -238,7 +238,16 @@ Components consume tenants via `useTenant()`:
 
 - **Logo component** (`client/src/components/logo.tsx`): renders `tenant.branding.logoEmoji` and `tenant.branding.name`, links to `tenant.routes.authLanding`.
 - **Meta/SEO:** set dynamically in `TenantProvider` via DOM manipulation (not SSR).
-- **Feature gating:** components can check `tenant.features.showProspecting`, etc.
+- **Feature flags (unused):** `tenant.features.showSendClaw`, `showProspecting`, and `showCredits` are defined in the config type and set differently per tenant, but **no component currently reads them**. They exist as config-only — feature gating is not yet implemented in any UI code.
+
+### Hardcoded tenant asset paths
+
+Some components bypass the config system and reference tenant assets directly by path:
+
+- `client/src/features/guidance-engine/components/GuidanceTooltip.tsx` hardcodes `/tenants/5ducks/duckling-mascot.png`
+- `client/src/features/sendclaw-public/pages/Landing.tsx` hardcodes `/tenants/sendclaw/images/sendclaw-mascot.png`
+
+These won't adapt if tenants change or new tenants are added.
 
 ---
 
@@ -289,3 +298,7 @@ This is set once at user creation and never updated. It records which brand doma
 4. **Theme applied via DOM:** CSS custom properties and meta tags are set imperatively in `useEffect`, not via SSR or build-time injection. This means a brief flash of default styling is possible before the tenant resolves.
 
 5. **No tenant isolation for data:** Users, companies, contacts, and all other entities are not scoped by tenant. The `signupTenant` field is purely informational. A user who signs up on sendclaw.com can later access fiveducks.ai with the same account.
+
+6. **Unused export — `getTenantIds()`:** `server/tenants/index.ts` exports `getTenantIds()` which returns `Object.keys(TENANT_DOMAINS)`. As of this writing, it is not called anywhere in the codebase.
+
+7. **Domain list divergence between server and client configs:** The server `TENANT_DOMAINS` lists patterns like `'fiveducks'` and `'5ducks'` (bare keywords for substring matching), while the client `config.json` lists actual domains (`fiveducks.ai`, `www.fiveducks.ai`, `app.fiveducks.ai`). These two lists must be kept in sync manually — there is no single source of truth.
