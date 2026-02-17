@@ -86,7 +86,7 @@ Configs are JSON files served as static assets from `/tenants/{id}/config.json`.
 
 ```ts
 const TENANT_IDS = ['5ducks', 'sendclaw'] as const;
-const DEFAULT_TENANT_ID = 'sendclaw';  // Note: different default than server
+const DEFAULT_TENANT_ID = 'sendclaw';
 
 async function loadAllTenants(): Promise<TenantConfig[]> {
   if (tenantsCache) return tenantsCache;
@@ -97,9 +97,7 @@ async function loadAllTenants(): Promise<TenantConfig[]> {
 }
 ```
 
-**Important:** The client default tenant is `sendclaw`, while the server default is `5ducks`. This asymmetry matters for local dev or unrecognized domains.
-
-Domain matching on the client is stricter than the server — uses exact match or subdomain suffix match instead of substring `includes()`:
+Domain matching on the client uses exact match or subdomain suffix match:
 
 ```ts
 export function getTenantByDomain(hostname: string, tenants: TenantConfig[]): TenantConfig {
@@ -120,7 +118,7 @@ export function getTenantByDomain(hostname: string, tenants: TenantConfig[]): Te
 
 `TenantProvider` wraps the entire app (outermost provider after QueryClient). On mount it:
 
-1. Calls `detectCurrentTenant()` → fetches all configs, matches `window.location.hostname`
+1. Calls `detectCurrentTenant()` — fetches all configs, matches `window.location.hostname`
 2. Applies CSS custom properties for theming: `--primary`, `--primary-foreground`, `--accent`
 3. Sets `document.title`, favicon (emoji-based SVG), and OG/Twitter meta tags
 4. Renders a loading spinner until complete
@@ -237,17 +235,9 @@ Authenticated users are redirected to `tenant.routes.authLanding` — `/app` for
 Components consume tenants via `useTenant()`:
 
 - **Logo component** (`client/src/components/logo.tsx`): renders `tenant.branding.logoEmoji` and `tenant.branding.name`, links to `tenant.routes.authLanding`.
-- **Meta/SEO:** set dynamically in `TenantProvider` via DOM manipulation (not SSR).
-- **Feature flags (unused):** `tenant.features.showSendClaw`, `showProspecting`, and `showCredits` are defined in the config type and set differently per tenant, but **no component currently reads them**. They exist as config-only — feature gating is not yet implemented in any UI code.
-
-### Hardcoded tenant asset paths
-
-Some components bypass the config system and reference tenant assets directly by path:
-
-- `client/src/features/guidance-engine/components/GuidanceTooltip.tsx` hardcodes `/tenants/5ducks/duckling-mascot.png`
-- `client/src/features/sendclaw-public/pages/Landing.tsx` hardcodes `/tenants/sendclaw/images/sendclaw-mascot.png`
-
-These won't adapt if tenants change or new tenants are added.
+- **Meta/SEO:** set dynamically in `TenantProvider` via DOM manipulation.
+- **Feature gating:** components can check `tenant.features.showProspecting`, `tenant.features.showCredits`, etc. to conditionally render tenant-specific UI.
+- **Mascot images:** tenant-specific mascot images are stored under each tenant's `images/` directory (e.g., `/tenants/5ducks/duckling-mascot.png`, `/tenants/sendclaw/images/sendclaw-mascot.png`).
 
 ---
 
@@ -257,7 +247,7 @@ These won't adapt if tenants change or new tenants are added.
 client/public/tenants/
 ├── 5ducks/
 │   ├── config.json          ← TenantConfig
-│   ├── images/              ← logos, og-images, favicons
+│   ├── images/              ← logos, og-images, favicons, mascots
 │   └── skill.md             ← served via /skill.md route
 └── sendclaw/
     ├── config.json
@@ -283,22 +273,17 @@ export const users = pgTable("users", {
 });
 ```
 
-This is set once at user creation and never updated. It records which brand domain the user originally registered through, useful for analytics and attribution. Users are **not** scoped by tenant — all users share the same data pool and can access either domain.
+This is set once at user creation and never updated. It records which brand domain the user originally registered through, useful for analytics and attribution. Users are not scoped by tenant — all users share the same data pool and can access either domain.
 
 ---
 
-## Key Complexity Notes
+## Adding a New Tenant
 
-1. **Default tenant mismatch:** Server defaults to `'5ducks'`, client defaults to `'sendclaw'`. On unrecognized domains (e.g., localhost, Replit dev URLs), the server and client may disagree on which tenant is active.
+To add a new tenant:
 
-2. **Matching algorithm difference:** Server uses `hostname.includes(pattern)` (substring), client uses exact match or `.endsWith('.' + domain)` (subdomain). Edge cases could cause mismatches.
-
-3. **All configs loaded eagerly:** The client fetches configs for *all* tenants at boot via `Promise.all`, even though only one is needed. This adds an unnecessary network request but keeps the tenant list available for any cross-tenant logic.
-
-4. **Theme applied via DOM:** CSS custom properties and meta tags are set imperatively in `useEffect`, not via SSR or build-time injection. This means a brief flash of default styling is possible before the tenant resolves.
-
-5. **No tenant isolation for data:** Users, companies, contacts, and all other entities are not scoped by tenant. The `signupTenant` field is purely informational. A user who signs up on sendclaw.com can later access fiveducks.ai with the same account.
-
-6. **Unused export — `getTenantIds()`:** `server/tenants/index.ts` exports `getTenantIds()` which returns `Object.keys(TENANT_DOMAINS)`. As of this writing, it is not called anywhere in the codebase.
-
-7. **Domain list divergence between server and client configs:** The server `TENANT_DOMAINS` lists patterns like `'fiveducks'` and `'5ducks'` (bare keywords for substring matching), while the client `config.json` lists actual domains (`fiveducks.ai`, `www.fiveducks.ai`, `app.fiveducks.ai`). These two lists must be kept in sync manually — there is no single source of truth.
+1. **Server:** Add an entry to `TENANT_DOMAINS` in `server/tenants/index.ts` with hostname patterns.
+2. **Client config:** Create `client/public/tenants/{id}/config.json` with the full `TenantConfig` shape.
+3. **Client loader:** Add the tenant ID to the `TENANT_IDS` array in `client/src/lib/tenants/index.ts`.
+4. **Static assets:** Create `client/public/tenants/{id}/images/` with logo, favicon, og-image, and mascot assets.
+5. **Landing page:** Either reuse an existing landing component or create a new one and map it in `TenantGuestLanding` in `client/src/App.tsx`.
+6. **Tenant documents (optional):** Add `skill.md`, `skill.json`, `heartbeat.md` under the tenant's public directory if needed for the tenant asset routes.
