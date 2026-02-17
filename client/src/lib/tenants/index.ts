@@ -38,7 +38,7 @@ export interface TenantConfig {
 }
 
 const TENANT_IDS = ['5ducks', 'sendclaw'] as const;
-const DEFAULT_TENANT_ID = 'sendclaw';
+const DEFAULT_TENANT_ID = '5ducks';
 
 let tenantsCache: TenantConfig[] | null = null;
 let loadingPromise: Promise<TenantConfig[]> | null = null;
