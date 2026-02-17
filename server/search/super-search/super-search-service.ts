@@ -2,11 +2,25 @@ import { storage } from '../../storage';
 import { CreditService } from '../../features/billing/credits/service';
 import { getVariant, getDefaultVariant } from './search-variants';
 import type { SearchPlan, SuperSearchResult, CompanyResult, ContactResult, StreamEvent } from './types';
+import type { ExpandSearchParams } from './search-variants/types';
 
 export interface SuperSearchContext {
   userId: number;
   listId?: number;
   query: string;
+  variantId?: string;
+}
+
+export interface ExpandContext {
+  userId: number;
+  originalQuery: string;
+  existingResults: Array<{ name: string; website?: string }>;
+  additionalCount: number;
+  plan: {
+    queryType: 'company' | 'contact';
+    standardFields: string[];
+    customFields: Array<{ key: string; label: string }>;
+  };
   variantId?: string;
 }
 
@@ -84,6 +98,57 @@ export class SuperSearchService {
       yield {
         type: 'error',
         data: error instanceof Error ? error.message : 'Search failed'
+      };
+    }
+  }
+
+  static async* executeExpandSearch(context: ExpandContext): AsyncGenerator<StreamEvent, void, unknown> {
+    const { userId, originalQuery, existingResults, additionalCount, plan, variantId } = context;
+
+    const variant = variantId ? getVariant(variantId) : getDefaultVariant();
+    if (!variant) {
+      yield { type: 'error', data: `Unknown search variant: ${variantId}` };
+      return;
+    }
+
+    if (!variant.executeExpandSearch) {
+      yield { type: 'error', data: `Variant "${variant.id}" does not support expand search` };
+      return;
+    }
+
+    console.log(`[SuperSearchService] Expanding search for user ${userId}, adding ${additionalCount} to ${existingResults.length} existing`);
+
+    // No credit check for expand - it's part of the original search session
+
+    const collectedResults: SuperSearchResult[] = [];
+
+    try {
+      for await (const event of variant.executeExpandSearch({
+        originalQuery,
+        existingResults,
+        additionalCount,
+        plan
+      })) {
+        if (event.type === 'result') {
+          collectedResults.push(event.data);
+        }
+        yield event;
+      }
+
+      yield {
+        type: 'complete',
+        data: {
+          totalResults: collectedResults.length,
+          companiesSaved: 0,
+          contactsSaved: 0
+        }
+      };
+
+    } catch (error) {
+      console.error('[SuperSearchService] Error during expand search:', error);
+      yield {
+        type: 'error',
+        data: error instanceof Error ? error.message : 'Expand search failed'
       };
     }
   }

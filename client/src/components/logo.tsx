@@ -77,8 +77,8 @@ export function Logo({
   if (asLink) {
     return (
       <Link 
-        href={tenant.routes.authLanding} 
-        className="group hover:opacity-90 transition-opacity"
+        href="/app/new-search" 
+        className="group hover:opacity-90 transition-opacity cursor-pointer"
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >

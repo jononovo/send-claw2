@@ -11,6 +11,18 @@ interface SaveSuperSearchRequest {
   results: SuperSearchResult[];
 }
 
+interface ExpandSuperSearchRequest {
+  originalQuery: string;
+  existingResults: Array<{ name: string; website?: string }>;
+  additionalCount: number;
+  plan: {
+    queryType: 'company' | 'contact';
+    standardFields: string[];
+    customFields: Array<{ key: string; label: string }>;
+  };
+  variantId?: string;
+}
+
 export function registerSuperSearchRoutes(app: Express, requireAuth: any) {
   app.get('/api/super-search/variants', requireAuth, async (_req: Request, res: Response) => {
     try {
@@ -66,6 +78,54 @@ export function registerSuperSearchRoutes(app: Express, requireAuth: any) {
     } catch (error) {
       console.error('[SuperSearch] SSE error:', error);
       sendEvent('error', error instanceof Error ? error.message : 'Stream failed');
+    } finally {
+      res.end();
+    }
+  });
+
+  app.post('/api/super-search/expand', requireAuth, async (req: Request, res: Response) => {
+    const userId = getUserId(req);
+    const { originalQuery, existingResults, additionalCount, plan, variantId }: ExpandSuperSearchRequest = req.body;
+
+    if (!originalQuery || !existingResults || !additionalCount || !plan) {
+      res.status(400).json({ error: 'Missing required fields: originalQuery, existingResults, additionalCount, plan' });
+      return;
+    }
+
+    console.log(`[SuperSearch] Expand request from user ${userId}: adding ${additionalCount} to ${existingResults.length} existing`);
+
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Connection', 'keep-alive');
+    res.setHeader('X-Accel-Buffering', 'no');
+
+    res.flushHeaders();
+
+    const sendEvent = (event: string, data: any) => {
+      res.write(`event: ${event}\n`);
+      res.write(`data: ${JSON.stringify(data)}\n\n`);
+    };
+
+    try {
+      const expandGenerator = SuperSearchService.executeExpandSearch({
+        userId,
+        originalQuery,
+        existingResults,
+        additionalCount,
+        plan,
+        variantId
+      });
+
+      for await (const event of expandGenerator) {
+        sendEvent(event.type, event.data);
+
+        if (event.type === 'error' || event.type === 'complete') {
+          break;
+        }
+      }
+    } catch (error) {
+      console.error('[SuperSearch] Expand SSE error:', error);
+      sendEvent('error', error instanceof Error ? error.message : 'Expand failed');
     } finally {
       res.end();
     }

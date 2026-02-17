@@ -86,6 +86,9 @@ export function Footer() {
               Soli Deo Gloria
             </span>
           </div>
+          <div className="text-xs text-slate-500 dark:text-slate-500">
+            Audited & Verified at <a href="https://secureclawhub.com" target="_blank" rel="noopener noreferrer" className="hover:text-blue-600 dark:hover:text-blue-400 underline">SecureClawHub.com</a>
+          </div>
           <div className="flex items-center space-x-4">
             <a
               href="https://www.linkedin.com/company/5ducks/"

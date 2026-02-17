@@ -181,6 +181,135 @@ function parseStreamContent(state: ParseState, content: string, planEmitted: boo
   return events;
 }
 
+export interface ExpandSearchParams {
+  originalQuery: string;
+  existingResults: Array<{ name: string; website?: string }>;
+  additionalCount: number;
+  plan: {
+    queryType: 'company' | 'contact';
+    standardFields: string[];
+    customFields: Array<{ key: string; label: string }>;
+  };
+}
+
+export async function* executeExpandSearch(
+  params: ExpandSearchParams
+): AsyncGenerator<StreamEvent, void, unknown> {
+  const apiKey = process.env.PERPLEXITY_API_KEY;
+  if (!apiKey) {
+    yield { type: 'error', data: 'Perplexity API key is not configured' };
+    return;
+  }
+
+  const { originalQuery, existingResults, additionalCount, plan } = params;
+  
+  console.log('[v1_perplexity_one-shot] Expanding search, existing:', existingResults.length, 'adding:', additionalCount);
+  
+  const exclusionList = existingResults
+    .map(r => `- ${r.name}${r.website ? ` (${r.website})` : ''}`)
+    .join('\n');
+
+  const customFieldsDesc = plan.customFields.length > 0 
+    ? `\nCustom fields to include: ${plan.customFields.map(f => f.label).join(', ')}`
+    : '';
+
+  const expandPrompt = `Find ${additionalCount} MORE ${plan.queryType === 'company' ? 'companies' : 'contacts'} matching this query:
+
+"${originalQuery}"
+
+IMPORTANT: I already have these ${existingResults.length} results. Find DIFFERENT ones - do NOT include any from this list:
+${exclusionList}
+
+Use the same format as before. Include these standard fields: ${plan.standardFields.join(', ')}${customFieldsDesc}
+
+Output ONLY ###RESULT### blocks (no plan needed). Find ${additionalCount} NEW results.`;
+
+  const parseState = createParseState();
+
+  try {
+    const response = await fetch('https://api.perplexity.ai/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        model: 'sonar',
+        messages: [
+          { role: 'system', content: SYSTEM_PROMPT },
+          { role: 'user', content: expandPrompt }
+        ],
+        temperature: 0.1,
+        max_tokens: 4000,
+        stream: true
+      })
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('[v1_perplexity_one-shot] Expand API error:', response.status, errorText);
+      yield { type: 'error', data: `API error: ${response.status}` };
+      return;
+    }
+
+    const reader = response.body?.getReader();
+    if (!reader) {
+      yield { type: 'error', data: 'No response body' };
+      return;
+    }
+
+    const decoder = new TextDecoder();
+    let buffer = '';
+    let resultCount = 0;
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+
+      buffer += decoder.decode(value, { stream: true });
+
+      const lines = buffer.split('\n');
+      buffer = lines.pop() || '';
+
+      for (const line of lines) {
+        if (!line.startsWith('data: ')) continue;
+        const data = line.slice(6);
+        if (data === '[DONE]') continue;
+
+        try {
+          const chunk: PerplexityStreamChunk = JSON.parse(data);
+          const content = chunk.choices[0]?.delta?.content;
+          if (!content) continue;
+
+          const events = parseStreamContent(parseState, content, true); // planEmitted = true (skip plan parsing)
+          for (const event of events) {
+            if (event.type === 'result') {
+              resultCount++;
+            }
+            yield event;
+          }
+        } catch (e) {
+          // Skip unparseable chunks
+        }
+      }
+    }
+
+    if (buffer.trim()) {
+      const events = parseStreamContent(parseState, buffer, true);
+      for (const event of events) {
+        if (event.type === 'result') resultCount++;
+        yield event;
+      }
+    }
+
+    console.log(`[v1_perplexity_one-shot] Expand complete, ${resultCount} new results`);
+
+  } catch (error) {
+    console.error('[v1_perplexity_one-shot] Expand stream error:', error);
+    yield { type: 'error', data: error instanceof Error ? error.message : 'Stream failed' };
+  }
+}
+
 export async function* executeSearch(
   query: string
 ): AsyncGenerator<StreamEvent, void, unknown> {

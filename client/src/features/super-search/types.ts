@@ -61,4 +61,5 @@ export interface SuperSearchState {
     companiesSaved: number;
     contactsSaved: number;
   } | null;
+  isExpanding?: boolean;
 }

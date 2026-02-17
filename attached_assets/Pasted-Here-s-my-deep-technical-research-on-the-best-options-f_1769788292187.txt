@@ -1,0 +1,111 @@
+Here's my deep technical research on the best options for powering your chat feature:
+
+1. AI Backend Options
+Claude (Anthropic) - Already Integrated in Your App
+Your app already has the Anthropic integration installed (javascript_anthropic). Claude is excellent for this use case because:
+* Latest model: claude-sonnet-4-20250514 (newest, fastest)
+* Agentic patterns: Anthropic has 6 composable workflow patterns for building smart assistants
+* Tool calling: Can analyze current search results and suggest context-aware actions
+Anthropic's Agentic Patterns (Relevant for Your Feature)
+1. Routing - Dynamically decide what suggestion to show based on search context
+2. Evaluator-Optimizer - Analyze results and suggest refinements
+3. Orchestrator-Workers - Coordinate multiple small tasks (analyze results, generate suggestions, execute actions)
+
+2. Best React Components for AI Chat UI
+Top Pick: assistant-ui (Y Combinator backed)
+This is the #1 library for AI chat interfaces in 2025:
+Why it's perfect for your use case:
+* ChatGPT-style UX out of the box
+* Generative UI - Map tool calls to custom React components (perfect for action buttons like "Expand search" or "Add filter")
+* Human-in-the-loop approval workflows
+* Works with Vercel AI SDK and any LLM provider (including Anthropic)
+* Streaming responses with auto-scrolling
+* Message editing and regeneration
+* Built-in suggestion/action patterns
+Install:
+npm install @assistant-ui/react
+
+Alternative: shadcn/ui AI Components
+Since your app already uses shadcn/ui, there's now an shadcn/ui AI extension with 25+ AI-specific components:
+* Conversation, Message, Tool components
+* Collapsible reasoning blocks
+* Tool call displays
+* Streaming markdown
+Install:
+npx shadcn@latest add ai
+
+
+3. Vercel AI SDK 6 - Agent Orchestration
+The Vercel AI SDK (latest v6) provides excellent primitives for building conversational agents:
+Key Features:
+* useChat() hook for multi-turn conversations with streaming
+* ToolLoopAgent class - Production-ready multi-step tool execution
+* stopWhen to control agent loops
+* UIMessage for persistence
+Example for your feature:
+import { streamText, tool } from 'ai';
+import { anthropic } from '@ai-sdk/anthropic';
+
+const result = await streamText({
+model: anthropic('claude-sonnet-4-20250514'),
+tools: {
+expandSearch: tool({
+description: 'Expand search to include more results',
+parameters: z.object({
+strategy: z.enum(['broader_location', 'related_companies', 'similar_roles'])
+}),
+execute: async ({ strategy }) => { /* expand logic */ }
+}),
+addFilter: tool({
+description: 'Add a filter to narrow results',
+parameters: z.object({
+filterType: z.string(),
+value: z.string()
+}),
+execute: async ({ filterType, value }) => { /* filter logic */ }
+})
+},
+messages: [
+{ role: 'system', content: 'Analyze search results and suggest improvements...' },
+{ role: 'user', content: `Current search: "${query}", Results: ${resultCount}` }
+]
+});
+
+
+4. My Recommendation for Your Feature
+Architecture:
+┌─────────────────────────────────────────────────────────┐
+│ Left Panel Chat (assistant-ui or shadcn AI) │
+│ ┌─────────────────────────────────────────────────────┤
+│ │ AI: "I found 25 Tesla engineers in Germany. │
+│ │ Would you like to:" │
+│ │ │
+│ │ [🔍 Find more results] [📍 Expand location] │
+│ │ [📧 Add email filter] [👤 Filter by seniority] │
+│ │ │
+│ │ Or ask me anything about these results... │
+│ └─────────────────────────────────────────────────────┤
+│ ┌──────────────────────────────────────────┐ │
+│ │ Type a message... [↑] │ │
+│ └──────────────────────────────────────────┘ │
+└─────────────────────────────────────────────────────────┘
+
+Tech Stack:
+1. Backend: Claude (claude-sonnet-4-20250514) - already available
+2. Streaming: Vercel AI SDK's useChat() hook
+3. UI Components: assistant-ui for the chat interface with built-in suggestions
+4. Tool Calling: Claude tools for actions like "Expand Search", "Add Filter"
+Key Features to Build:
+* Contextual suggestions based on current search query and results
+* Quick action buttons (not just text chat)
+* Tool execution that modifies the search criteria in real-time
+* Streaming responses for natural conversation feel
+
+Summary
+Component	Recommendation	Why
+LLM Backend	Claude (Anthropic)	Already integrated, latest model, excellent tool calling
+Chat UI Library	assistant-ui	#1 for AI chat, built-in suggestions, Y Combinator backed
+Streaming/Hooks	Vercel AI SDK v6	useChat() hook, tool support, works with Claude
+UI Framework	Your existing shadcn/ui	Or use shadcn AI components for consistency
+Would you like me to proceed with implementing this? I can start with setting up the chat panel structure using assistant-ui and wiring it to Claude for contextual suggestions based on your search results.
+

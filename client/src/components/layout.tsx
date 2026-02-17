@@ -4,6 +4,7 @@ import { MiniFooter } from "@/components/mini-footer";
 import { LeftMenuDrawer } from "@/components/left-menu-drawer";
 import { useLocation } from "wouter";
 import { TopNavAdMessage } from "@/features/top-nav-bar-ad-message";
+import { useAuth } from "@/hooks/use-auth";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -26,9 +27,15 @@ export function AppLayout({ children }: LayoutProps) {
   const [location, setLocation] = useLocation();
   const [savedSearchesDrawerOpen, setSavedSearchesDrawerOpen] = useState(false);
   
+  // Get auth state to show full footer for unauthenticated users on landing
+  const { user } = useAuth();
+  
   // Hide MiniFooter on these specific pages
-  const hideFooterOnPaths = ['/app', '/streak'];
+  const hideFooterOnPaths = ['/', '/app', '/streak'];
   const shouldHideFooter = hideFooterOnPaths.includes(location);
+  
+  // Show full footer for unauthenticated users on landing page only
+  const shouldShowFullFooter = !user && location === '/';
   
   // Listen for drawer open events
   useEffect(() => {
@@ -86,7 +93,7 @@ export function AppLayout({ children }: LayoutProps) {
       <div className="flex-1">
         {children}
       </div>
-      {!shouldHideFooter && <MiniFooter />}
+      {shouldShowFullFooter ? <Footer /> : (!shouldHideFooter && <MiniFooter />)}
       
       {/* Global LeftMenuDrawer - available on all app pages */}
       <LeftMenuDrawer 

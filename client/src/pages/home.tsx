@@ -51,7 +51,7 @@ import { logConversionEvent } from "@/features/attribution";
 import { useRegistrationModal } from "@/hooks/use-registration-modal";
 import { useNotifications } from "@/hooks/use-notifications";
 import { NotificationToast } from "@/components/ui/notification-toast";
-import { Search, ChevronDown, ChevronUp, RefreshCw } from "lucide-react";
+import { Search, ChevronDown, ChevronUp, RefreshCw, Sparkles } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
@@ -83,6 +83,12 @@ import { SearchSessionManager } from "@/lib/search-session-manager";
 import { useComprehensiveEmailSearch } from "@/features/search-email";
 import { useSearchState, searchSessionStorage, type SavedSearchState, type CompanyWithContacts } from "@/features/search-state";
 import { useEmailSearchOrchestration } from "@/features/email-search-orchestration";
+import { useAssistantChat, type AssistantAction } from "@/features/assistant-chat";
+
+// Lazy load assistant chat panel
+const AssistantChatPanel = lazy(() => 
+  import("@/features/assistant-chat").then(m => ({ default: m.AssistantChatPanel }))
+);
 
 // Define SourceBreakdown interface to match EmailSearchSummary
 interface SourceBreakdown {
@@ -139,6 +145,11 @@ export default function Home({ isNewSearch = false }: HomeProps) {
   
   // Search Management drawer
   const searchManagementDrawer = useSearchManagementDrawer();
+  
+  // Assistant Chat panel state
+  const assistantChat = useAssistantChat({
+    onAction: (action) => handleAssistantAction(action),
+  });
   
   const [searchSectionCollapsed, setSearchSectionCollapsed] = useState(() => {
     // Guard for SSR/test contexts where window is undefined
@@ -269,6 +280,110 @@ export default function Home({ isNewSearch = false }: HomeProps) {
       }
     }
   }, [emailDrawer.isOpen, currentResults]);
+  
+  // Update assistant chat context when search results change
+  useEffect(() => {
+    if (currentResults && currentResults.length > 0 && currentQuery) {
+      const emailCount = currentResults.reduce((acc, company) => {
+        return acc + (company.contacts?.filter(c => c.email)?.length || 0);
+      }, 0);
+      const contactCount = currentResults.reduce((acc, company) => {
+        return acc + (company.contacts?.length || 0);
+      }, 0);
+      
+      const searchContext = {
+        query: currentQuery,
+        resultCount: contactCount,
+        emailCount,
+        companies: currentResults.map(c => ({
+          id: c.id,
+          name: c.name,
+          contactCount: c.contacts?.length || 0
+        }))
+      };
+      
+      // Update assistant chat with search context
+      assistantChat.updateSearchContext(searchContext);
+      
+      // Auto-open panel when results are available
+      if (!assistantChat.isOpen) {
+        assistantChat.openPanel();
+      }
+    }
+  }, [currentResults, currentQuery]);
+  
+  // Handler for assistant actions
+  const handleAssistantAction = (action: AssistantAction) => {
+    console.log('Executing assistant action:', action);
+    switch (action.type) {
+      case 'expandSearch':
+        if (action.modifiedQuery) {
+          setCurrentQuery(action.modifiedQuery);
+          setInputHasChanged(true);
+          setSearchSectionCollapsed(false);
+          toast({
+            title: "Query updated",
+            description: "Click Search to find more results",
+          });
+        } else {
+          setSearchSectionCollapsed(false);
+          toast({
+            title: "Expand your search",
+            description: `Strategy: ${action.strategy?.replace(/_/g, ' ')}`,
+          });
+        }
+        break;
+      case 'narrowSearch':
+        setSearchSectionCollapsed(false);
+        toast({
+          title: "Narrow your search",
+          description: `Apply filter: ${action.filterType}${action.filterValue ? ` = ${action.filterValue}` : ''}`,
+        });
+        break;
+      case 'findEmails':
+        emailOrchestration.runEmailSearch();
+        toast({
+          title: "Finding emails",
+          description: `Searching for emails (${action.scope})...`,
+        });
+        break;
+      case 'modifyQuery':
+        if (action.newQuery) {
+          setCurrentQuery(action.newQuery);
+          setInputHasChanged(true);
+          setSearchSectionCollapsed(false);
+          toast({
+            title: "New search query",
+            description: action.reason || "Click Search to execute",
+          });
+        }
+        break;
+      case 'filterByRole':
+        if (action.roles && action.roles.length > 0) {
+          const roleFilter = action.roles.join(", ");
+          const newQuery = currentQuery ? `${currentQuery} ${roleFilter}` : roleFilter;
+          setCurrentQuery(newQuery);
+          setInputHasChanged(true);
+          setSearchSectionCollapsed(false);
+          toast({
+            title: "Role filter applied",
+            description: `Filtering by: ${roleFilter}`,
+          });
+        }
+        break;
+      case 'analyzeResults':
+        toast({
+          title: "Analysis",
+          description: `Performing ${action.analysisType} analysis...`,
+        });
+        break;
+      default:
+        toast({
+          title: "Action noted",
+          description: "Processing your request...",
+        });
+    }
+  };
   
   const { 
     handleComprehensiveEmailSearch: comprehensiveSearchHook, 
@@ -1577,6 +1692,22 @@ export default function Home({ isNewSearch = false }: HomeProps) {
       )}
       
       <div className="flex h-[calc(100vh-3.5rem)] overflow-hidden relative">
+        {/* Assistant Chat Panel - Lazy loaded */}
+        {assistantChat.isOpen && (
+          <Suspense fallback={null}>
+            <AssistantChatPanel
+              open={assistantChat.isOpen}
+              messages={assistantChat.messages}
+              isLoading={assistantChat.isLoading}
+              searchContext={assistantChat.searchContext}
+              onClose={assistantChat.closePanel}
+              onSendMessage={assistantChat.sendMessage}
+              onStopGeneration={assistantChat.stopGeneration}
+              onActionExecute={handleAssistantAction}
+            />
+          </Suspense>
+        )}
+        
         {/* Backdrop for mobile */}
       {emailDrawer.isOpen && (
         <div 
@@ -1587,8 +1718,20 @@ export default function Home({ isNewSearch = false }: HomeProps) {
         />
       )}
       
+      {/* Floating button to toggle assistant chat when closed */}
+      {!assistantChat.isOpen && currentResults && currentResults.length > 0 && (
+        <button
+          onClick={assistantChat.openPanel}
+          className="fixed left-4 top-1/2 -translate-y-1/2 z-30 p-3 rounded-full bg-amber-500 hover:bg-amber-600 text-white shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105"
+          title="Open search assistant"
+          data-testid="button-open-assistant"
+        >
+          <Sparkles className="h-5 w-5" />
+        </button>
+      )}
+      
       {/* Main Content Container - will be compressed when drawer opens on desktop */}
-      <div className={`flex-1 overflow-y-auto main-content-compressed ${emailDrawer.isOpen && currentResults && currentResults.length > 0 ? 'compressed-view' : ''}`}>
+      <div className={`flex-1 overflow-y-auto main-content-compressed ${emailDrawer.isOpen && currentResults && currentResults.length > 0 ? 'compressed-view' : ''} ${assistantChat.isOpen ? 'ml-80' : ''}`}>
         <div className="container mx-auto py-6 px-0 md:px-6 max-w-4xl">
           {/* Intro tour modal has been removed */}
 
@@ -1971,6 +2114,11 @@ export default function Home({ isNewSearch = false }: HomeProps) {
                     onSaved={(listId) => {
                       console.log(`Super Search saved with list ID: ${listId}`);
                       setSuperSearchAlreadySaved(true);
+                    }}
+                    onExpandResults={(additionalCount) => {
+                      if (currentQuery) {
+                        superSearch.expandResults(currentQuery, additionalCount);
+                      }
                     }}
                   />
                 </Suspense>
