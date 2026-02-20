@@ -118,11 +118,12 @@ export class SuperSearchService {
 
     console.log(`[SuperSearchService] Expanding search for user ${userId}, adding ${additionalCount} to ${existingResults.length} existing`);
 
-    const creditCheck = await this.checkCredits(userId);
-    if (!creditCheck.hasCredits) {
+    const EXPAND_CREDIT_COST = 40;
+    const credits = await CreditService.getUserCredits(userId);
+    if (credits.currentBalance < EXPAND_CREDIT_COST) {
       yield {
         type: 'error',
-        data: `Insufficient credits. You have ${creditCheck.balance} credits but expanding search requires ${this.CREDIT_COST} credits.`
+        data: `Insufficient credits. You have ${credits.currentBalance} credits but expanding search requires ${EXPAND_CREDIT_COST} credits.`
       };
       return;
     }
@@ -142,8 +143,8 @@ export class SuperSearchService {
         yield event;
       }
 
-      await CreditService.deductCredits(userId, 'super_search', true);
-      console.log(`[SuperSearchService] Deducted ${this.CREDIT_COST} credits from user ${userId} for expand search`);
+      await CreditService.deductCredits(userId, 'super_search_expand', true, EXPAND_CREDIT_COST);
+      console.log(`[SuperSearchService] Deducted ${EXPAND_CREDIT_COST} credits from user ${userId} for expand search`);
 
       yield {
         type: 'complete',
