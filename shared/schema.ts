@@ -1405,6 +1405,19 @@ export const campaignRecipients = pgTable("campaign_recipients", {
   uniqueIndex('idx_campaign_recipient_unique').on(table.campaignId, table.recipientEmail)
 ]);
 
+// Email suppression table - global unsubscribe list
+export const emailSuppressions = pgTable("email_suppressions", {
+  id: serial("id").primaryKey(),
+  email: text("email").notNull(),
+  reason: text("reason").notNull().default('unsubscribed'),
+  campaignId: integer("campaign_id"),
+  createdAt: timestamp("created_at").defaultNow()
+}, (table) => [
+  uniqueIndex('idx_email_suppressions_email').on(table.email)
+]);
+
+export type EmailSuppression = typeof emailSuppressions.$inferSelect;
+
 // Search queue tables
 export const searchQueues = pgTable("search_queues", {
   id: serial("id").primaryKey(),

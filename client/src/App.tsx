@@ -44,6 +44,7 @@ const ContactDetails = lazy(() => import("@/pages/contact-details"));
 const Testing = lazy(() => import("@/pages/testing"));
 const SubscriptionSuccess = lazy(() => import("@/pages/subscription-success"));
 const NotFound = lazy(() => import("@/pages/not-found"));
+const Unsubscribe = lazy(() => import("@/pages/Unsubscribe"));
 const StrategyDashboard = lazy(() => import("@/features/strategy-chat").then(module => ({ default: module.StrategyDashboard })));
 const DailyOutreach = lazy(() => import("@/pages/DailyOutreach"));
 const Outreach = lazy(() => import("@/pages/outreach"));
@@ -299,6 +300,13 @@ function Router() {
         <Route path="/outreach/daily/:token" component={() => 
           <Suspense fallback={null}>
             <DailyOutreach />
+          </Suspense>
+        } />
+        
+        {/* Unsubscribe Page - Standalone without navigation */}
+        <Route path="/unsubscribe" component={() => 
+          <Suspense fallback={null}>
+            <Unsubscribe />
           </Suspense>
         } />
         
