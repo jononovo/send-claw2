@@ -550,7 +550,7 @@ export class PersistentDailyOutreachScheduler {
         // Send "need more contacts" email via drip engine
         statusUpdates.push('Step 5: Sending nudge email for more contacts');
         const appUrl = process.env.APP_URL || 'https://5ducks.ai';
-        const emailContent = buildNeedMoreContactsEmail(user, appUrl);
+        const emailContent = buildNeedMoreContactsEmail(user, appUrl, userId);
         await dripEmailEngine.sendImmediate(user.email, emailContent, '5Ducks Daily');
         
         // Update last nudge sent + start nudge streak if not already tracking
@@ -577,7 +577,7 @@ export class PersistentDailyOutreachScheduler {
         // Send notification email with batch details via drip engine
         statusUpdates.push('Step 6: Sending notification email');
         const appUrl = process.env.APP_URL || 'https://5ducks.ai';
-        const emailContent = buildContactsReadyEmail(batch, appUrl);
+        const emailContent = buildContactsReadyEmail(batch, appUrl, userId);
         await dripEmailEngine.sendImmediate(user.email, emailContent, '5Ducks Daily');
         statusUpdates.push('Step 6 ✓: Notification sent successfully');
         

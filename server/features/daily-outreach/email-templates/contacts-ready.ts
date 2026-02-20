@@ -1,7 +1,7 @@
 import { DailyBatch, EmailNotificationContent } from '../types';
 import { getRandomSubjectLine } from './subject-line-templates';
 
-export function buildContactsReadyEmail(batch: DailyBatch & { isSampleData?: boolean }, appUrl: string): EmailNotificationContent {
+export function buildContactsReadyEmail(batch: DailyBatch & { isSampleData?: boolean }, appUrl: string, userId?: number): EmailNotificationContent {
   const secureUrl = `${appUrl}/outreach/daily/${batch.secureToken}`;
   
   
@@ -84,6 +84,9 @@ export function buildContactsReadyEmail(batch: DailyBatch & { isSampleData?: boo
         <p class="footer">
           <strong>Pro tip:</strong> Send these before noon for 23% higher response rates.
         </p>
+        ${userId ? `<p style="text-align: center; margin-top: 40px; font-size: 12px; color: #999;">
+          <a href="${appUrl}/unsubscribe?type=outreach&token=${Buffer.from(String(userId)).toString('base64')}" style="color: #999; text-decoration: underline;">Unsubscribe from daily emails</a>
+        </p>` : ''}
       </div>
     </body>
     </html>
@@ -99,7 +102,8 @@ Your personalized outreach emails are waiting.${sampleDataText}
 ${contactsListText}
 Review and send them here: ${secureUrl}
 
-Pro tip: Send these before noon for 23% higher response rates.`;
+Pro tip: Send these before noon for 23% higher response rates.
+${userId ? `\nUnsubscribe from daily emails: ${appUrl}/unsubscribe?type=outreach&token=${Buffer.from(String(userId)).toString('base64')}` : ''}`;
   
   return {
     subject: getRandomSubjectLine(batch),

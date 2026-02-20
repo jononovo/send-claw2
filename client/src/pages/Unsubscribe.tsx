@@ -7,9 +7,12 @@ export default function Unsubscribe() {
   const search = useSearch();
   const params = new URLSearchParams(search);
   const token = params.get("token");
+  const type = params.get("type");
 
   const [status, setStatus] = useState<"loading" | "success" | "error">("loading");
   const [email, setEmail] = useState<string>("");
+
+  const isOutreach = type === "outreach";
 
   useEffect(() => {
     if (!token) {
@@ -17,7 +20,11 @@ export default function Unsubscribe() {
       return;
     }
 
-    fetch(`/api/unsubscribe?token=${encodeURIComponent(token)}`)
+    const endpoint = isOutreach
+      ? `/api/unsubscribe-outreach?token=${encodeURIComponent(token)}`
+      : `/api/unsubscribe?token=${encodeURIComponent(token)}`;
+
+    fetch(endpoint)
       .then(async (res) => {
         if (res.ok) {
           const data = await res.json();
@@ -28,7 +35,7 @@ export default function Unsubscribe() {
         }
       })
       .catch(() => setStatus("error"));
-  }, [token]);
+  }, [token, isOutreach]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
@@ -45,11 +52,15 @@ export default function Unsubscribe() {
             <>
               <CheckCircle className="h-12 w-12 mx-auto text-green-500" />
               <h2 className="text-xl font-semibold">You've been unsubscribed</h2>
-              {email && (
+              {isOutreach ? (
+                <p className="text-muted-foreground">
+                  You will no longer receive daily outreach emails. You can re-enable them from your dashboard settings anytime.
+                </p>
+              ) : email ? (
                 <p className="text-muted-foreground">
                   <span className="font-medium">{email}</span> will no longer receive emails from us.
                 </p>
-              )}
+              ) : null}
               <p className="text-sm text-muted-foreground">
                 This may take a few minutes to fully take effect.
               </p>
