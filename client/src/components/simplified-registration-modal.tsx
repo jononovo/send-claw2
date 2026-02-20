@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
 import { useRegistrationModal } from "@/hooks/use-registration-modal";
-import { ArrowLeft, X } from "lucide-react";
+import { ArrowLeft, X, Eye, EyeOff } from "lucide-react";
 import { loadFirebase } from "@/lib/firebase";
 import { useToast } from "@/hooks/use-toast";
 import { sendAttributionToServer, logConversionEvent } from "@/features/attribution";
@@ -17,6 +17,7 @@ export function SimplifiedRegistrationModal() {
   const [password, setPassword] = useState("");
   const [emailValid, setEmailValid] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const emailInputRef = useRef<HTMLInputElement>(null);
   const nameInputRef = useRef<HTMLInputElement>(null);
@@ -240,6 +241,7 @@ export function SimplifiedRegistrationModal() {
   const handleReturnToEmail = () => {
     setCurrentPage("email");
     setPassword("");
+    setShowPassword(false);
   };
 
   const isFormComplete = emailValid && name.trim().length > 0 && password.length >= 8;
@@ -293,20 +295,30 @@ export function SimplifiedRegistrationModal() {
                   
                   {/* Password field appears after name has content */}
                   {name.length > 0 && (
-                    <input
-                      ref={passwordInputRef}
-                      type="password"
-                      placeholder="Password (min 8 characters)"
-                      className="w-full p-4 bg-transparent border border-white/20 rounded-md text-white/70 placeholder-gray-500 focus:outline-none focus:bg-white/10 focus:border-white/50 focus:text-white transition-colors"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter" && isFormComplete) {
-                          e.preventDefault();
-                          handleRegister();
-                        }
-                      }}
-                    />
+                    <div className="relative">
+                      <input
+                        ref={passwordInputRef}
+                        type={showPassword ? "text" : "password"}
+                        placeholder="Password (min 8 characters)"
+                        className="w-full p-4 pr-12 bg-transparent border border-white/20 rounded-md text-white/70 placeholder-gray-500 focus:outline-none focus:bg-white/10 focus:border-white/50 focus:text-white transition-colors"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter" && isFormComplete) {
+                            e.preventDefault();
+                            handleRegister();
+                          }
+                        }}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white/70 transition-colors"
+                        tabIndex={-1}
+                      >
+                        {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                      </button>
+                    </div>
                   )}
                   
                   {email.length > 0 && (
@@ -388,19 +400,29 @@ export function SimplifiedRegistrationModal() {
                     onChange={handleEmailChange}
                   />
                   
-                  <input
-                    type="password"
-                    placeholder="Password"
-                    className="w-full p-4 bg-transparent border border-white/20 rounded-md text-white/70 placeholder-gray-500 focus:outline-none focus:bg-white/10 focus:border-white/50 focus:text-white transition-colors"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        e.preventDefault();
-                        handleLoginSubmit();
-                      }
-                    }}
-                  />
+                  <div className="relative">
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      placeholder="Password"
+                      className="w-full p-4 pr-12 bg-transparent border border-white/20 rounded-md text-white/70 placeholder-gray-500 focus:outline-none focus:bg-white/10 focus:border-white/50 focus:text-white transition-colors"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          e.preventDefault();
+                          handleLoginSubmit();
+                        }
+                      }}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white/70 transition-colors"
+                      tabIndex={-1}
+                    >
+                      {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
+                  </div>
                   
                   <div className="text-right">
                     <button 
