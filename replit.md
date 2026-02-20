@@ -50,7 +50,7 @@ The platform comprises a React SPA frontend (TypeScript, Vite, Tailwind, shadcn/
   - `images/` - Logo, favicon, og-image, and other tenant-specific assets
   
   Current tenants: `5ducks` (fiveducks.ai) and `sendclaw` (sendclaw.com). TenantProvider in `client/src/lib/tenant-context.tsx` fetches config at runtime, applies theme CSS variables, updates meta tags, and manages favicon. Signup tenant is tracked server-side via `signup_tenant` column in users table. Note: Tenant isolation is cosmetic/branding only; server-side enforcement would be needed for true data isolation.
-- **Per-Tenant Pricing**: Pricing display data lives in tenant `config.json` (optional); Stripe price IDs stay server-side via `getStripePriceId()` in `server/features/billing/stripe/types.ts`. The pricing API (`/api/pricing/config`) resolves tenant from hostname and applies promo overrides. Tenants without a pricing section fall back to the default tenant's pricing. Pricing page and success page use data-driven plan selection (price, comingSoon flags) rather than hardcoded plan IDs. See `docs/tenant-system.md` section 8 for full details.
+- **Per-Tenant Pricing**: Pricing display data lives in tenant `config.json` (optional); Stripe price IDs stay server-side via `getStripePriceId()` in `server/features/billing/stripe/types.ts`. The pricing API (`/api/pricing/config`) resolves tenant from hostname and applies promo overrides. Tenants without a pricing section fall back to the default tenant's pricing. Pricing page and success page use data-driven plan selection (price, comingSoon flags) rather than hardcoded plan IDs. See `docs/260216_tenant-system.md` section 8 for full details.
 
 ## External Dependencies
 - **Perplexity**: For company and contact discovery.
