@@ -294,6 +294,7 @@ export default function Dashboard() {
                     onChange={(e) => setClaimToken(e.target.value)}
                     placeholder="Enter claim token (e.g. reef-X4B2)"
                     onKeyDown={(e) => e.key === "Enter" && handleClaim()}
+                    className="bg-muted"
                   />
                   <p className="text-xs text-muted-foreground">
                     Your AI bot provides this token when it registers via the API.
