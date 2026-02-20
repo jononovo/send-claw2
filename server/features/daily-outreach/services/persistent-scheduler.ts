@@ -500,6 +500,29 @@ export class PersistentDailyOutreachScheduler {
       
       statusUpdates.push('Step 2 ✓: Outreach enabled, not on vacation');
       
+      // Check nudge streak — auto-disable after 10 consecutive days of nudges without engagement
+      if (preferences.nudgeStreakStartedAt) {
+        const streakDays = Math.floor((Date.now() - new Date(preferences.nudgeStreakStartedAt).getTime()) / (1000 * 60 * 60 * 24));
+        if (streakDays >= 10) {
+          statusUpdates.push(`Step 2b ⛔: Auto-disabling after ${streakDays} days of nudge emails without engagement`);
+          console.log(`User ${userId} auto-disabled: ${streakDays} consecutive nudge days`);
+          
+          await db
+            .update(userOutreachPreferences)
+            .set({ 
+              enabled: false,
+              autoDisabledAt: new Date(),
+              nudgeStreakStartedAt: null,
+              updatedAt: new Date()
+            })
+            .where(eq(userOutreachPreferences.userId, userId));
+          
+          await this.disableUserOutreach(userId);
+          await this.updateJobStatus(userId, statusUpdates.join(' | '));
+          return { batchId: null, contactsProcessed: 0 };
+        }
+      }
+      
       // Check for strategic profiles (products)
       statusUpdates.push('Step 3: Checking strategic profiles');
       const [profileCount] = await db
@@ -527,13 +550,17 @@ export class PersistentDailyOutreachScheduler {
         // Send "need more contacts" email via drip engine
         statusUpdates.push('Step 5: Sending nudge email for more contacts');
         const appUrl = process.env.APP_URL || 'https://5ducks.ai';
-        const emailContent = buildNeedMoreContactsEmail(user, appUrl);
+        const emailContent = buildNeedMoreContactsEmail(user, appUrl, userId);
         await dripEmailEngine.sendImmediate(user.email, emailContent, '5Ducks Daily');
         
-        // Update last nudge sent
+        // Update last nudge sent + start nudge streak if not already tracking
+        const nudgeUpdate: Record<string, any> = { lastNudgeSent: new Date() };
+        if (!preferences.nudgeStreakStartedAt) {
+          nudgeUpdate.nudgeStreakStartedAt = new Date();
+        }
         await db
           .update(userOutreachPreferences)
-          .set({ lastNudgeSent: new Date() })
+          .set(nudgeUpdate)
           .where(eq(userOutreachPreferences.userId, userId));
         
         return { batchId: null, contactsProcessed: 0 };
@@ -550,14 +577,18 @@ export class PersistentDailyOutreachScheduler {
         // Send notification email with batch details via drip engine
         statusUpdates.push('Step 6: Sending notification email');
         const appUrl = process.env.APP_URL || 'https://5ducks.ai';
-        const emailContent = buildContactsReadyEmail(batch, appUrl);
+        const emailContent = buildContactsReadyEmail(batch, appUrl, userId);
         await dripEmailEngine.sendImmediate(user.email, emailContent, '5Ducks Daily');
         statusUpdates.push('Step 6 ✓: Notification sent successfully');
         
-        // Update last nudge sent
+        // Update last nudge sent + start nudge streak if not already tracking
+        const batchNudgeUpdate: Record<string, any> = { lastNudgeSent: new Date() };
+        if (!preferences.nudgeStreakStartedAt) {
+          batchNudgeUpdate.nudgeStreakStartedAt = new Date();
+        }
         await db
           .update(userOutreachPreferences)
-          .set({ lastNudgeSent: new Date() })
+          .set(batchNudgeUpdate)
           .where(eq(userOutreachPreferences.userId, userId));
         
         // Success status is handled by the executeJob method after this returns

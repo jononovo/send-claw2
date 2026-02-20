@@ -897,6 +897,8 @@ export const userOutreachPreferences = pgTable("user_outreach_preferences", {
   vacationStartDate: timestamp("vacation_start_date", { withTimezone: true }),
   vacationEndDate: timestamp("vacation_end_date", { withTimezone: true }),
   lastNudgeSent: timestamp("last_nudge_sent", { withTimezone: true }),
+  nudgeStreakStartedAt: timestamp("nudge_streak_started_at", { withTimezone: true }),
+  autoDisabledAt: timestamp("auto_disabled_at", { withTimezone: true }),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow()
 }, (table) => [
@@ -1402,6 +1404,19 @@ export const campaignRecipients = pgTable("campaign_recipients", {
   index('idx_campaign_recipients_status').on(table.status),
   uniqueIndex('idx_campaign_recipient_unique').on(table.campaignId, table.recipientEmail)
 ]);
+
+// Email suppression table - global unsubscribe list
+export const emailSuppressions = pgTable("email_suppressions", {
+  id: serial("id").primaryKey(),
+  email: text("email").notNull(),
+  reason: text("reason").notNull().default('unsubscribed'),
+  campaignId: integer("campaign_id"),
+  createdAt: timestamp("created_at").defaultNow()
+}, (table) => [
+  uniqueIndex('idx_email_suppressions_email').on(table.email)
+]);
+
+export type EmailSuppression = typeof emailSuppressions.$inferSelect;
 
 // Search queue tables
 export const searchQueues = pgTable("search_queues", {

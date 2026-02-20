@@ -4,7 +4,8 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
 import { storage } from "./storage";
-import { pool } from "./db";
+import { pool, db } from "./db";
+import { eq, and } from "drizzle-orm";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -17,7 +18,11 @@ import {
   insertCompanySchema, 
   insertContactSchema, 
   insertSearchListSchema, 
-  insertEmailTemplateSchema
+  insertEmailTemplateSchema,
+  emailSuppressions,
+  campaignRecipients,
+  contacts,
+  userOutreachPreferences
 } from "@shared/schema";
  
 // import type { PerplexityMessage } from "./lib/perplexity"; // File doesn't exist
@@ -161,6 +166,89 @@ export function registerRoutes(app: Express) {
   // Register onboarding flow routes
   registerOnboardingRoutes(app, requireAuth);
   
+  // Unsubscribe endpoint (no auth - clicked from email)
+  app.get("/api/unsubscribe", async (req, res) => {
+    try {
+      const { token } = req.query;
+      if (!token || typeof token !== 'string') {
+        return res.status(400).json({ error: 'Missing token' });
+      }
+
+      const decoded = Buffer.from(token, 'base64').toString('utf-8');
+      const [contactIdStr, campaignIdStr] = decoded.split(':');
+      const contactId = parseInt(contactIdStr);
+      const campaignId = parseInt(campaignIdStr);
+
+      if (isNaN(contactId) || isNaN(campaignId)) {
+        return res.status(400).json({ error: 'Invalid token' });
+      }
+
+      const [contact] = await db
+        .select({ email: contacts.email })
+        .from(contacts)
+        .where(eq(contacts.id, contactId));
+
+      if (!contact?.email) {
+        return res.status(404).json({ error: 'Contact not found' });
+      }
+
+      await db
+        .insert(emailSuppressions)
+        .values({ email: contact.email, reason: 'unsubscribed', campaignId })
+        .onConflictDoNothing();
+
+      await db
+        .update(campaignRecipients)
+        .set({ unsubscribedAt: new Date() })
+        .where(
+          and(
+            eq(campaignRecipients.campaignId, campaignId),
+            eq(campaignRecipients.recipientEmail, contact.email)
+          )
+        );
+
+      res.json({ success: true, email: contact.email });
+    } catch (error) {
+      console.error('[Unsubscribe] Error:', error);
+      res.status(500).json({ error: 'Failed to process unsubscribe' });
+    }
+  });
+
+  // Unsubscribe from daily outreach emails (no auth - clicked from email)
+  app.get("/api/unsubscribe-outreach", async (req, res) => {
+    try {
+      const { token } = req.query;
+      if (!token || typeof token !== 'string') {
+        return res.status(400).json({ error: 'Missing token' });
+      }
+
+      const userId = parseInt(Buffer.from(token, 'base64').toString('utf-8'));
+      if (isNaN(userId)) {
+        return res.status(400).json({ error: 'Invalid token' });
+      }
+
+      const [prefs] = await db
+        .select()
+        .from(userOutreachPreferences)
+        .where(eq(userOutreachPreferences.userId, userId));
+
+      if (!prefs) {
+        return res.status(404).json({ error: 'Preferences not found' });
+      }
+
+      await db
+        .update(userOutreachPreferences)
+        .set({ enabled: false, updatedAt: new Date() })
+        .where(eq(userOutreachPreferences.userId, userId));
+
+      console.log(`[Unsubscribe] User ${userId} unsubscribed from daily outreach emails`);
+      res.json({ success: true });
+    } catch (error) {
+      console.error('[Unsubscribe-Outreach] Error:', error);
+      res.status(500).json({ error: 'Failed to process unsubscribe' });
+    }
+  });
+
   // Apollo phone webhook (no auth - external webhook from Apollo)
   app.post("/api/webhooks/apollo/phone", handleApolloPhoneWebhook);
   

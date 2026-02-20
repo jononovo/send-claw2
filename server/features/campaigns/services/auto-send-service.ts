@@ -6,7 +6,8 @@ import {
   contacts, 
   companies,
   communicationHistory,
-  users 
+  users,
+  emailSuppressions
 } from '@shared/schema';
 import { eq, and, inArray, sql } from 'drizzle-orm';
 import sgMail from '@sendgrid/mail';
@@ -180,6 +181,7 @@ class AutoSendCampaignService {
     limit: number
   ) {
     // Get contacts from the list who haven't been contacted in this campaign
+    // and whose email is not in the global suppression list
     const recipients = await db
       .select({
         contact: contacts,
@@ -195,11 +197,16 @@ class AutoSendCampaignService {
           eq(communicationHistory.campaignId, campaignId)
         )
       )
+      .leftJoin(
+        emailSuppressions,
+        eq(emailSuppressions.email, contacts.email)
+      )
       .where(
         and(
           eq(contactListMembers.listId, listId),
-          sql`${communicationHistory.id} IS NULL`, // No communication for this campaign
-          sql`${contacts.email} IS NOT NULL AND ${contacts.email} != ''`
+          sql`${communicationHistory.id} IS NULL`,
+          sql`${contacts.email} IS NOT NULL AND ${contacts.email} != ''`,
+          sql`${emailSuppressions.id} IS NULL`
         )
       )
       .limit(limit);

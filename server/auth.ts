@@ -11,12 +11,43 @@ import { TokenService } from "./features/billing/tokens/service";
 import { UserTokens } from "./features/billing/tokens/types";
 import { CreditRewardService } from "./features/billing/rewards/service";
 import connectPgSimple from "connect-pg-simple";
-import { pool } from "./db";
+import { pool, db } from "./db";
 import { dripEmailEngine } from "./email/drip-engine";
 import { welcomeRegistrationTemplate, magicLinkSignInTemplate } from "./email/templates/index";
 import { sendEmail } from "./email/send";
 import { z } from "zod";
 import { getTenantFromHost } from "./tenants";
+import { userOutreachPreferences } from "@shared/schema";
+import { eq } from "drizzle-orm";
+import { outreachScheduler } from "./features/daily-outreach";
+
+async function reactivateOutreachIfAutoDisabled(userId: number) {
+  try {
+    const [prefs] = await db
+      .select()
+      .from(userOutreachPreferences)
+      .where(eq(userOutreachPreferences.userId, userId));
+    
+    if (!prefs?.autoDisabledAt) return;
+    
+    console.log(`[Auth] Re-activating outreach for user ${userId} (was auto-disabled on ${prefs.autoDisabledAt})`);
+    
+    const [updatedPrefs] = await db
+      .update(userOutreachPreferences)
+      .set({
+        enabled: true,
+        autoDisabledAt: null,
+        nudgeStreakStartedAt: null,
+        updatedAt: new Date()
+      })
+      .where(eq(userOutreachPreferences.userId, userId))
+      .returning();
+    
+    await outreachScheduler.updateUserPreferences(userId, updatedPrefs);
+  } catch (err) {
+    console.error(`[Auth] Failed to re-activate outreach for user ${userId}:`, err);
+  }
+}
 
 // Extend the session type to include gmailToken
 declare module 'express-session' {
@@ -301,6 +332,7 @@ export function setupAuth(app: Express) {
             return next(err);
           }
           
+          reactivateOutreachIfAutoDisabled(firebaseUser.id);
           next(); // Only call next() after login completes
         });
         // Remove the return here - wait for req.login to complete
@@ -413,6 +445,7 @@ export function setupAuth(app: Express) {
       }
       req.login(user, (err: Error | null) => {
         if (err) return next(err);
+        reactivateOutreachIfAutoDisabled(user.id);
         res.json(user);
       });
     })(req, res, next);
@@ -708,6 +741,7 @@ export function setupAuth(app: Express) {
           });
         }
         console.log(`[/api/google-auth] Successfully authenticated user ${user.id}`);
+        reactivateOutreachIfAutoDisabled(user.id);
         res.json(user);
       });
     } catch (err) {

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useLocation } from "wouter";
 import { queryClient, apiRequest } from "@/lib/queryClient";
@@ -179,6 +179,15 @@ export default function Dashboard() {
     },
   });
 
+  useEffect(() => {
+    const pendingToken = localStorage.getItem("pendingClaimToken");
+    if (pendingToken && !data?.bot) {
+      localStorage.removeItem("pendingClaimToken");
+      setClaimToken(pendingToken);
+      claimMutation.mutate(pendingToken);
+    }
+  }, [data]);
+
   const handleReserve = () => {
     if (handle.trim()) {
       reserveMutation.mutate(handle.trim());
@@ -237,6 +246,71 @@ export default function Dashboard() {
         </div>
 
         <div className="space-y-6">
+          <Card>
+            <CardHeader className="pb-3">
+              <div className="flex items-center gap-2">
+                <Bot className="w-5 h-5 text-primary" />
+                <CardTitle className="text-lg">Bot Connection</CardTitle>
+              </div>
+              <CardDescription>
+                {hasBot ? "Your linked AI bot" : "Connect an AI bot to send emails"}
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {hasBot ? (
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
+                    <div>
+                      <p className="font-medium text-foreground">{userBot.name}</p>
+                      <p className="text-sm text-muted-foreground">
+                        Claimed {userBot.claimedAt ? new Date(userBot.claimedAt).toLocaleDateString() : 'recently'}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {isLinked && (
+                        <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
+                          <Link2 className="w-3 h-3 mr-1" />
+                          Linked
+                        </Badge>
+                      )}
+                      {userBot.verified && (
+                        <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+                          <Shield className="w-3 h-3 mr-1" />
+                          Verified
+                        </Badge>
+                      )}
+                    </div>
+                  </div>
+                  {!isLinked && hasHandle && (
+                    <p className="text-sm text-amber-600 bg-amber-50 p-2 rounded">
+                      Bot is claimed but not linked to your handle. This may happen if you reserved the handle after claiming.
+                    </p>
+                  )}
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  <Input
+                    value={claimToken}
+                    onChange={(e) => setClaimToken(e.target.value)}
+                    placeholder="Enter claim token (e.g. reef-X4B2)"
+                    onKeyDown={(e) => e.key === "Enter" && handleClaim()}
+                    className="bg-muted"
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Your AI bot provides this token when it registers via the API.
+                  </p>
+                  <Button 
+                    onClick={handleClaim}
+                    disabled={!claimToken.trim() || claimMutation.isPending}
+                    className="w-full"
+                  >
+                    {claimMutation.isPending ? "Claiming..." : "Claim Bot"}
+                  </Button>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
           <Card>
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
@@ -371,70 +445,6 @@ export default function Dashboard() {
                       </Button>
                     )}
                   </div>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="pb-3">
-              <div className="flex items-center gap-2">
-                <Bot className="w-5 h-5 text-primary" />
-                <CardTitle className="text-lg">Bot Connection</CardTitle>
-              </div>
-              <CardDescription>
-                {hasBot ? "Your linked AI bot" : "Connect an AI bot to send emails"}
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              {hasBot ? (
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
-                    <div>
-                      <p className="font-medium text-foreground">{userBot.name}</p>
-                      <p className="text-sm text-muted-foreground">
-                        Claimed {userBot.claimedAt ? new Date(userBot.claimedAt).toLocaleDateString() : 'recently'}
-                      </p>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      {isLinked && (
-                        <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
-                          <Link2 className="w-3 h-3 mr-1" />
-                          Linked
-                        </Badge>
-                      )}
-                      {userBot.verified && (
-                        <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
-                          <Shield className="w-3 h-3 mr-1" />
-                          Verified
-                        </Badge>
-                      )}
-                    </div>
-                  </div>
-                  {!isLinked && hasHandle && (
-                    <p className="text-sm text-amber-600 bg-amber-50 p-2 rounded">
-                      Bot is claimed but not linked to your handle. This may happen if you reserved the handle after claiming.
-                    </p>
-                  )}
-                </div>
-              ) : (
-                <div className="space-y-3">
-                  <Input
-                    value={claimToken}
-                    onChange={(e) => setClaimToken(e.target.value)}
-                    placeholder="Enter claim token (e.g. reef-X4B2)"
-                    onKeyDown={(e) => e.key === "Enter" && handleClaim()}
-                  />
-                  <p className="text-xs text-muted-foreground">
-                    Your AI bot provides this token when it registers via the API.
-                  </p>
-                  <Button 
-                    onClick={handleClaim}
-                    disabled={!claimToken.trim() || claimMutation.isPending}
-                    className="w-full"
-                  >
-                    {claimMutation.isPending ? "Claiming..." : "Claim Bot"}
-                  </Button>
                 </div>
               )}
             </CardContent>

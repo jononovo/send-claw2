@@ -17,6 +17,7 @@ import {
   generateMessageId,
   generateThreadId,
   getHandleByAddress,
+  getHandleByBotId,
   getHandleByUserId,
   apiKeyAuth,
   loadBotFromApiKey,
@@ -213,6 +214,28 @@ router.post('/bots/reserve', async (req: Request, res: Response) => {
   }
 });
 
+router.get('/bots/claim-preview', async (req: Request, res: Response) => {
+  try {
+    const token = req.query.token as string;
+    if (!token) {
+      res.json({ valid: false });
+      return;
+    }
+
+    const [bot] = await db.select().from(bots).where(eq(bots.claimToken, token)).limit(1);
+
+    if (!bot || bot.userId) {
+      res.json({ valid: false });
+      return;
+    }
+
+    res.json({ valid: true, botName: bot.name });
+  } catch (error) {
+    console.error('[SendClaw] Claim preview error:', error);
+    res.json({ valid: false });
+  }
+});
+
 router.post('/bots/claim', async (req: Request, res: Response) => {
   try {
     if (!req.isAuthenticated || !req.isAuthenticated()) {
@@ -256,6 +279,13 @@ router.post('/bots/claim', async (req: Request, res: Response) => {
       await db.update(handles).set({
         botId: bot.id
       }).where(eq(handles.id, userHandle.id));
+    } else if (!userHandle) {
+      const botHandle = await getHandleByBotId(bot.id);
+      if (botHandle) {
+        await db.update(handles).set({
+          userId
+        }).where(eq(handles.id, botHandle.id));
+      }
     }
 
     console.log(`[SendClaw] Bot claimed: ${bot.name} by user ${userId}`);

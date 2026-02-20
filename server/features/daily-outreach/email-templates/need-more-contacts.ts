@@ -1,7 +1,7 @@
 import { User } from '@shared/schema';
 import { EmailNotificationContent } from '../types';
 
-export function buildNeedMoreContactsEmail(user: User, appUrl: string): EmailNotificationContent {
+export function buildNeedMoreContactsEmail(user: User, appUrl: string, userId?: number): EmailNotificationContent {
   const searchUrl = `${appUrl}/app`;
   
   const html = `
@@ -53,6 +53,9 @@ export function buildNeedMoreContactsEmail(user: User, appUrl: string): EmailNot
           <strong>Remember:</strong> Consistent outreach is the key to predictable sales.<br>
           Aim to add new prospects weekly to keep your pipeline full.
         </p>
+        ${userId ? `<p style="text-align: center; margin-top: 40px; font-size: 12px; color: #999;">
+          <a href="${appUrl}/unsubscribe?type=outreach&token=${Buffer.from(String(userId)).toString('base64')}" style="color: #999; text-decoration: underline;">Unsubscribe from daily emails</a>
+        </p>` : ''}
       </div>
     </body>
     </html>
@@ -70,7 +73,8 @@ Quick tip: Search for 10-15 new companies to maintain a healthy pipeline.
 Each search typically yields 3-5 quality contacts per company.
 
 Remember: Consistent outreach is the key to predictable sales.
-Aim to add new prospects weekly to keep your pipeline full.`;
+Aim to add new prospects weekly to keep your pipeline full.
+${userId ? `\nUnsubscribe from daily emails: ${appUrl}/unsubscribe?type=outreach&token=${Buffer.from(String(userId)).toString('base64')}` : ''}`;
   
   return {
     subject: 'Time to refill your sales pipeline',

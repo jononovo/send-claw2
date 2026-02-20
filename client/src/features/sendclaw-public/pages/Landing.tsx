@@ -5,6 +5,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { ArrowRight, Bot, User, Copy, Check, Moon, Sun, Mail, Users, Send, Inbox } from "lucide-react";
 import { useTenant } from "@/lib/tenant-context";
+import { useAuth } from "@/hooks/use-auth";
+import { useRegistrationModal } from "@/hooks/use-registration-modal";
 
 function formatTimeAgo(date: Date | string): string {
   const now = new Date();
@@ -28,6 +30,8 @@ function formatNumber(num: number): string {
 
 export default function SendclawLanding() {
   const { tenant } = useTenant();
+  const { user } = useAuth();
+  const { openModal, setRegistrationSuccessCallback } = useRegistrationModal();
   const [claimToken, setClaimToken] = useState("");
   const [handleInput, setHandleInput] = useState("");
   const [activeTab, setActiveTab] = useState<"bot" | "human">("bot");
@@ -36,6 +40,7 @@ export default function SendclawLanding() {
   const [isDarkMode, setIsDarkMode] = useState(true);
   const [isClaimLoading, setIsClaimLoading] = useState(false);
   const [claimError, setClaimError] = useState("");
+  const [claimPreviewName, setClaimPreviewName] = useState("");
   const [newsletterEmail, setNewsletterEmail] = useState("");
   const [newsletterStatus, setNewsletterStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
 
@@ -77,22 +82,41 @@ export default function SendclawLanding() {
     if (!claimToken.trim()) return;
     setIsClaimLoading(true);
     setClaimError("");
+    setClaimPreviewName("");
     
     try {
-      const res = await fetch("/api/bots/claim", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({ claimToken: claimToken.trim() }),
-      });
-      
-      if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.error || "Invalid claim token");
+      const previewRes = await fetch(`/api/bots/claim-preview?token=${encodeURIComponent(claimToken.trim())}`);
+      const preview = await previewRes.json();
+
+      if (!preview.valid) {
+        setClaimError("Invalid or already-claimed token");
+        setIsClaimLoading(false);
+        return;
       }
-      
-      const data = await res.json();
-      window.location.href = `/sendclaw/${data.bot.id}`;
+
+      if (user) {
+        const res = await fetch("/api/bots/claim", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({ claimToken: claimToken.trim() }),
+        });
+
+        if (!res.ok) {
+          const data = await res.json();
+          throw new Error(data.error || "Claim failed");
+        }
+
+        const data = await res.json();
+        window.location.href = `/sendclaw/${data.bot.id}`;
+      } else {
+        localStorage.setItem("pendingClaimToken", claimToken.trim());
+        setClaimPreviewName(preview.botName);
+        setRegistrationSuccessCallback(() => {
+          window.location.href = tenant.routes.authLanding || "/dashboard";
+        });
+        openModal();
+      }
     } catch (error: any) {
       setClaimError(error.message || "Claim failed");
     } finally {
@@ -321,6 +345,11 @@ export default function SendclawLanding() {
                 
                 {claimError && (
                   <p className="text-red-500 text-sm mt-2 text-center">{claimError}</p>
+                )}
+                {claimPreviewName && (
+                  <p className="text-green-400 text-sm mt-2 text-center">
+                    Bot <strong>{claimPreviewName}</strong> found — sign up to claim it!
+                  </p>
                 )}
 
                 <div className="flex items-center gap-4 my-6">
