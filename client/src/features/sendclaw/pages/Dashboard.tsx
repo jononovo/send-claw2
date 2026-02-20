@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useLocation } from "wouter";
 import { queryClient, apiRequest } from "@/lib/queryClient";
@@ -178,6 +178,15 @@ export default function Dashboard() {
       });
     },
   });
+
+  useEffect(() => {
+    const pendingToken = localStorage.getItem("pendingClaimToken");
+    if (pendingToken && !data?.bot) {
+      localStorage.removeItem("pendingClaimToken");
+      setClaimToken(pendingToken);
+      claimMutation.mutate(pendingToken);
+    }
+  }, [data]);
 
   const handleReserve = () => {
     if (handle.trim()) {

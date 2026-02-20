@@ -213,6 +213,28 @@ router.post('/bots/reserve', async (req: Request, res: Response) => {
   }
 });
 
+router.get('/bots/claim-preview', async (req: Request, res: Response) => {
+  try {
+    const token = req.query.token as string;
+    if (!token) {
+      res.json({ valid: false });
+      return;
+    }
+
+    const [bot] = await db.select().from(bots).where(eq(bots.claimToken, token)).limit(1);
+
+    if (!bot || bot.userId) {
+      res.json({ valid: false });
+      return;
+    }
+
+    res.json({ valid: true, botName: bot.name });
+  } catch (error) {
+    console.error('[SendClaw] Claim preview error:', error);
+    res.json({ valid: false });
+  }
+});
+
 router.post('/bots/claim', async (req: Request, res: Response) => {
   try {
     if (!req.isAuthenticated || !req.isAuthenticated()) {
