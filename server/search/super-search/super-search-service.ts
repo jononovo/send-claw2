@@ -118,7 +118,14 @@ export class SuperSearchService {
 
     console.log(`[SuperSearchService] Expanding search for user ${userId}, adding ${additionalCount} to ${existingResults.length} existing`);
 
-    // No credit check for expand - it's part of the original search session
+    const creditCheck = await this.checkCredits(userId);
+    if (!creditCheck.hasCredits) {
+      yield {
+        type: 'error',
+        data: `Insufficient credits. You have ${creditCheck.balance} credits but expanding search requires ${this.CREDIT_COST} credits.`
+      };
+      return;
+    }
 
     const collectedResults: SuperSearchResult[] = [];
 
@@ -134,6 +141,9 @@ export class SuperSearchService {
         }
         yield event;
       }
+
+      await CreditService.deductCredits(userId, 'super_search', true);
+      console.log(`[SuperSearchService] Deducted ${this.CREDIT_COST} credits from user ${userId} for expand search`);
 
       yield {
         type: 'complete',

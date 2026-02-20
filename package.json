@@ -11,9 +11,7 @@
     "db:push": "drizzle-kit push"
   },
   "dependencies": {
-    "@ai-sdk/anthropic": "^3.0.31",
     "@anthropic-ai/sdk": "^0.71.1",
-    "@assistant-ui/react": "^0.12.3",
     "@firebase/auth": "^1.9.0",
     "@google-cloud/storage": "^7.18.0",
     "@hookform/resolvers": "^3.9.1",
@@ -68,7 +66,6 @@
     "@uppy/core": "^5.2.0",
     "@uppy/dashboard": "^5.1.0",
     "@uppy/react": "^5.1.1",
-    "ai": "^6.0.62",
     "axios": "^1.8.3",
     "canvas-confetti": "^1.9.3",
     "cheerio": "^1.0.0",
