@@ -17,6 +17,7 @@ import {
   generateMessageId,
   generateThreadId,
   getHandleByAddress,
+  getHandleByBotId,
   getHandleByUserId,
   apiKeyAuth,
   loadBotFromApiKey,
@@ -278,6 +279,13 @@ router.post('/bots/claim', async (req: Request, res: Response) => {
       await db.update(handles).set({
         botId: bot.id
       }).where(eq(handles.id, userHandle.id));
+    } else if (!userHandle) {
+      const botHandle = await getHandleByBotId(bot.id);
+      if (botHandle) {
+        await db.update(handles).set({
+          userId
+        }).where(eq(handles.id, botHandle.id));
+      }
     }
 
     console.log(`[SendClaw] Bot claimed: ${bot.name} by user ${userId}`);
