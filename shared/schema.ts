@@ -897,6 +897,8 @@ export const userOutreachPreferences = pgTable("user_outreach_preferences", {
   vacationStartDate: timestamp("vacation_start_date", { withTimezone: true }),
   vacationEndDate: timestamp("vacation_end_date", { withTimezone: true }),
   lastNudgeSent: timestamp("last_nudge_sent", { withTimezone: true }),
+  nudgeStreakStartedAt: timestamp("nudge_streak_started_at", { withTimezone: true }),
+  autoDisabledAt: timestamp("auto_disabled_at", { withTimezone: true }),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow()
 }, (table) => [
