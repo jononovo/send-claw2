@@ -1,0 +1,6 @@
+id,user_id,next_run_at,last_run_at,status,last_error,retry_count,next_retry_at,created_at,updated_at,nudge_streak_started_at,auto_disabled_at
+18,74,2026-02-23 14:00:00+00,2026-02-18 14:35:05.691+00,scheduled,✅ Last run successful: Generated batch null with 0 contacts,0,,2025-12-16 21:12:57.718677+00,2026-02-18 14:35:05.691+00,,
+13,22,2026-02-23 14:00:00+00,2026-02-18 14:35:05.694+00,scheduled,✅ Last run successful: Generated batch null with 0 contacts,0,,2025-09-15 03:43:31.114327+00,2026-02-18 14:35:05.694+00,,
+11,1,2026-02-23 14:00:00+00,2026-02-18 14:35:09.962+00,scheduled,✅ Last run successful: Generated batch 201 with 5 contacts,0,,2025-09-12 19:49:59.830176+00,2026-02-18 14:35:09.962+00,,
+17,50,2026-02-23 14:00:00+00,2026-02-18 14:35:10.969+00,scheduled,✅ Last run successful: Generated batch 203 with 5 contacts,0,,2025-12-05 22:07:18.533501+00,2026-02-18 14:35:10.969+00,,
+1,5,2026-02-23 14:00:00+00,2026-02-20 15:11:19.775+00,scheduled,✅ Last run successful: Generated batch 205 with 5 contacts,0,,2025-09-10 01:56:07.624216+00,2026-02-20 15:11:19.775+00,,

@@ -1,0 +1,248 @@
+id,user_id,contact_id,company_id,channel,direction,subject,content,content_preview,status,thread_id,parent_id,in_reply_to,references,scheduled_for,sent_at,delivered_at,opened_at,replied_at,campaign_id,batch_id,template_id,metadata,open_count,click_count,clicked_links,error_code,error_message,retry_count,created_at,updated_at
+4,5,428,62,email,outbound,Helping {{company_name}} Strengthen Fraud Protection with Car,"Hi there {{first_name}},
+
+I hope this message finds you well! I wanted to introduce you to Car, a solution designed to complement Abrigo’s powerful fraud management software by enhancing your team’s ability to detect and prevent fraud even more efficiently.
+
+Given Abrigo’s expertise in AI-powered fraud detection and real-time orchestration, Car can seamlessly integrate to provide additional layers of data insight and automation that help reduce manual reviews and accelerate decision-making. This means your analysts can focus on the highest-risk cases with confidence, improving both accuracy and speed in stopping fraud before it impacts your institution or customers.
+
+I’d love to explore how Car can support Abrigo’s mission to protect financial institutions like yours from increasingly sophisticated fraud threats while maintaining a smooth customer experience.
+
+Looking forward to connecting soon!
+
+Best regards,  
+
+{{sender_name}}","Hi there {{first_name}},
+
+I hope this message finds you well! I wanted to introduce you to Car, a solution designed to complement Abrigo’s powerful fraud management software by enhancing your team’s a",sent,,,,,,2025-09-10 18:52:49.835+00,,,,,,,"{""tone"": ""professional"", ""itemId"": 12, ""source"": ""daily_outreach"", ""batchId"": 7, ""sourceTable"": ""daily_outreach_backfill""}",0,0,[],,,0,2025-09-10 18:52:49.835+00,2025-09-11 03:05:56.54522+00
+5,5,451,59,email,outbound,Helping Rocket Dollar Expand Alternative Investment Opportunities,"Hi there {{first_name}},
+
+I hope this message finds you well! I’m reaching out to introduce Car, a solution designed to complement Rocket Dollar’s mission of empowering investors with self-directed retirement accounts.
+
+Car can help Rocket Dollar streamline and enhance how your users invest in alternative assets like real estate and startups by providing seamless integration, improved asset management tools, and increased operational efficiency. This means your clients can enjoy an even smoother, faster, and more secure experience while diversifying their retirement portfolios.
+
+I’d love to explore how Car can support Rocket Dollar’s growth and help you continue shaking up the retirement investing space with innovative solutions.
+
+Looking forward to connecting soon!
+
+Best regards,  
+
+{{sender_name}}","Hi there {{first_name}},
+
+I hope this message finds you well! I’m reaching out to introduce Car, a solution designed to complement Rocket Dollar’s mission of empowering investors with self-directed re",sent,,,,,,2025-09-10 18:56:37.329+00,,,,,,,"{""tone"": ""professional"", ""itemId"": 11, ""source"": ""daily_outreach"", ""batchId"": 7, ""sourceTable"": ""daily_outreach_backfill""}",0,0,[],,,0,2025-09-10 18:56:37.329+00,2025-09-11 03:05:56.54522+00
+6,5,388,55,email,outbound,Helping {{company_name}} Grow with Petal’s Credit Solutions,"Hi there {{first_name}},
+
+I hope this message finds you well! I wanted to introduce you to Petal, a credit card company that’s truly changing the game by offering credit access to individuals without traditional credit histories—something that could be a great fit for {{company_name}}’s mission and growth.
+
+Petal uses cash flow underwriting to provide responsible credit options, helping people build credit securely while avoiding fees like annual or late charges. With features like automatic credit reporting to major bureaus, fraud protection, and cash back rewards, Petal empowers users to improve their financial health and make smarter spending decisions. This approach not only supports your customers but also aligns with your goal of expanding credit access in a fair and innovative way.
+
+I’d love to explore how Petal’s solutions can complement {{company_name}}’s operations and help you reach even more people who need credit opportunities.
+
+Looking forward to hearing your thoughts, Ronald!
+
+Take care,  
+Jonathan Novotny  
+
+Warmly,  
+{{sender_name}}","Hi there {{first_name}},
+
+I hope this message finds you well! I wanted to introduce you to Petal, a credit card company that’s truly changing the game by offering credit access to individuals without ",sent,,,,,,2025-09-10 19:23:17.378+00,,,,,,,"{""tone"": ""professional"", ""itemId"": 13, ""source"": ""daily_outreach"", ""batchId"": 7, ""sourceTable"": ""daily_outreach_backfill""}",0,0,[],,,0,2025-09-10 19:23:17.378+00,2025-09-11 03:05:56.54522+00
+7,5,437,60,email,outbound,"Ben, how Car can boost Aquilan’s compliance and risk management","Hi there {{first_name}},
+
+I hope this message finds you well! I’m Jonathan, and I wanted to introduce you to Car — a solution designed to help companies like Aquilan enhance their compliance, risk, and fraud management capabilities.
+
+Given Aquilan’s impressive work supporting financial institutions and fintechs, Car can complement your software by streamlining data integration and automating key compliance workflows. This means your team can reduce manual effort, improve accuracy, and respond faster to emerging risks — all critical in today’s fast-paced regulatory environment.
+
+I’d love to share how Car can specifically support Aquilan’s goals and explore if there’s a fit. Would you be open to a brief call next week?
+
+Looking forward to connecting, {{contact_name}}.
+
+Take care,  
+Jonathan Novotny","Hi there {{first_name}},
+
+I hope this message finds you well! I’m Jonathan, and I wanted to introduce you to Car — a solution designed to help companies like Aquilan enhance their compliance, risk, an",sent,,,,,,2025-09-10 19:29:40.502+00,,,,,,,"{""tone"": ""professional"", ""itemId"": 14, ""source"": ""daily_outreach"", ""batchId"": 7, ""sourceTable"": ""daily_outreach_backfill""}",0,0,[],,,0,2025-09-10 19:29:40.502+00,2025-09-11 03:05:56.54522+00
+9,5,471,64,email,outbound,Helping Houston Fintech Accelerate Capital Access for Real Estate Investors,"Hi there {{first_name}},
+
+I hope this message finds you well! I’m Jonathan, and I wanted to introduce you to Car, a solution designed to complement Houston Fintech’s mission of fast, simple, and tech-driven capital access for real estate investors.
+
+Car can help streamline your deal evaluation and lender matchmaking processes even further by automating key workflows and providing real-time analytics tailored to short-term financing and rental property loans. This means your team can close deals faster, reduce manual effort, and enhance the borrower experience — all while maintaining the high standards Houston Fintech is known for.
+
+Given your focus on innovative financial technology and serving investors with flexible, rapid funding options, I believe Car could be a valuable asset to your operations and growth.
+
+Would you be open to a brief conversation to explore how Car might support Houston Fintech’s goals?
+
+Looking forward to hearing from you, {{first_name}}.
+
+Best regards,  
+
+{{sender_name}}","Hi there {{first_name}},
+
+I hope this message finds you well! I’m Jonathan, and I wanted to introduce you to Car, a solution designed to complement Houston Fintech’s mission of fast, simple, and tech-",sent,,,,,,2025-09-11 03:23:01.095+00,,,,,,,"{""tone"": ""professional"", ""itemId"": 16, ""source"": ""daily_outreach"", ""batchId"": 8}",0,0,[],,,0,2025-09-11 03:23:01.110869+00,2025-09-11 03:23:01.110869+00
+10,5,457,63,email,outbound,Helping FinTron Elevate Embedded Wealth Tech with Car,"Hi there {{first_name}},
+
+I hope this message finds you well! I’m reaching out to introduce **Car**, a solution designed to seamlessly enhance embedded wealth technology platforms like FinTron’s.
+
+Given FinTron’s impressive track record in delivering customizable SDKs and white-label investment experiences, Car can help streamline your integration process even further by boosting operational efficiency and enriching user engagement. Our technology complements your existing offerings by simplifying complex workflows and enabling faster deployment of self-directed and managed investing features—helping you stay ahead in the competitive fintech space.
+
+I’d love to explore how Car can support FinTron’s mission to empower investors and advisors with elegant, turnkey investment experiences.
+
+Looking forward to connecting soon!
+
+Best regards,  
+
+{{sender_name}}","Hi there {{first_name}},
+
+I hope this message finds you well! I’m reaching out to introduce **Car**, a solution designed to seamlessly enhance embedded wealth technology platforms like FinTron’s.
+
+Giv",sent,,,,,,2025-09-11 03:23:15.69+00,,,,,,,"{""tone"": ""professional"", ""itemId"": 18, ""source"": ""daily_outreach"", ""batchId"": 8}",0,0,[],,,0,2025-09-11 03:23:15.704679+00,2025-09-11 03:23:15.704679+00
+11,5,128,19,email,outbound,"{{first_name}}, a smart way to enhance Betterment’s investment platform","Hi there {{first_name}},
+
+I hope this message finds you well! I’m Jonathan Novotny, and I wanted to introduce you to Car—a solution designed to seamlessly support innovative companies like Betterment.
+
+Given Betterment’s leadership in online investment and robo-advisory services, Car can help streamline your client experience by enhancing automation and data insights, ultimately supporting smarter investment decisions and improving customer satisfaction.
+
+I’d love to share how Car can complement your platform and contribute to Betterment’s continued growth. Would you be open to a brief chat sometime soon?
+
+Looking forward to connecting!
+
+Warmly,  
+{{sender_name}}","Hi there {{first_name}},
+
+I hope this message finds you well! I’m Jonathan Novotny, and I wanted to introduce you to Car—a solution designed to seamlessly support innovative companies like Betterment.",sent,,,,,,2025-09-11 03:23:57.146+00,,,,,,,"{""tone"": ""professional"", ""itemId"": 20, ""source"": ""daily_outreach"", ""batchId"": 8}",0,0,[],,,0,2025-09-11 03:23:57.161074+00,2025-09-11 03:23:57.161074+00
+12,5,79,9,email,outbound,"Alexis, a new way to support Forward Financing’s growth","Hi there, {{first_name}}!
+
+I hope this message finds you well. I’m Jonathan Novotny, and I wanted to introduce you to Car, a solution designed to help fast-growing fintech companies like Forward Financing streamline operations and better serve under-served small businesses.
+
+Given Forward Financing’s impressive growth and commitment to alternative financing, Car can help by simplifying your client onboarding process, improving data accuracy, and accelerating loan approvals—all tailored to meet the unique needs of your industry.
+
+I’d love to share how Car can support your team’s goals and explore ways we might collaborate. Would you be open to a brief call next week?
+
+Looking forward to hearing from you!
+
+Warmly,  
+{{sender_name}}","Hi there, {{first_name}}!
+
+I hope this message finds you well. I’m Jonathan Novotny, and I wanted to introduce you to Car, a solution designed to help fast-growing fintech companies like Forward Finan",sent,,,,,,2025-09-11 03:24:19.05+00,,,,,,,"{""tone"": ""professional"", ""itemId"": 17, ""source"": ""daily_outreach"", ""batchId"": 8}",0,0,[],,,0,2025-09-11 03:24:19.064637+00,2025-09-11 03:24:19.064637+00
+13,5,501,66,email,outbound,Helping Prosperity Bancshares Drive Growth with Car Solutions,"Hi there {{first_name}},
+
+I hope this message finds you well! I’m reaching out to introduce Car, a solution designed to streamline and enhance business operations, which I believe could be a great fit for {{company_name}}’s innovative approach to banking and treasury management.
+
+Given Prosperity Bancshares’ strong commitment to integrating fintech innovations and supporting small to medium-sized businesses across Texas and Oklahoma, Car can help by simplifying your clients’ financial workflows, improving efficiency, and providing seamless digital experiences that align perfectly with your community banking philosophy.
+
+I’d love to explore how Car can support your team’s goals and contribute to {{company_name}}’s continued success in delivering exceptional banking solutions.
+
+Looking forward to the opportunity to connect!
+
+Best regards,  
+
+{{sender_name}}","Hi there {{first_name}},
+
+I hope this message finds you well! I’m reaching out to introduce Car, a solution designed to streamline and enhance business operations, which I believe could be a great fit",sent,,,,,,2025-09-11 03:24:40.761+00,,,,,,,"{""tone"": ""professional"", ""itemId"": 19, ""source"": ""daily_outreach"", ""batchId"": 8}",0,0,[],,,0,2025-09-11 03:24:40.775595+00,2025-09-11 03:24:40.775595+00
+14,1,853,155,email,outbound,Helping Glenmede Drive Efficiency and Client Excellence with Our Car Solutions,"Hi there {{first_name}},
+
+I hope this message finds you well and thriving at Glenmede. I wanted to introduce you to a car solution that could seamlessly support your team’s busy schedules and enhance the personalized service Glenmede is known for.
+
+Our vehicles are designed with comfort, reliability, and efficiency in mind—perfect for executives and advisors who need to move swiftly between client meetings, offices, and events. By integrating our car into your daily operations, Glenmede can further elevate the client experience through timely, stress-free transportation, allowing your team to focus fully on delivering those tailored financial strategies your clients value so deeply.
+
+I’d love to explore how we can partner to support Glenmede’s commitment to excellence and client-centric service. Please let me know a convenient time for you, {{first_name}}, and I’ll be happy to share more details.
+
+Take care,  
+
+{{sender_name}}","Hi there {{first_name}},
+
+I hope this message finds you well and thriving at Glenmede. I wanted to introduce you to a car solution that could seamlessly support your team’s busy schedules and enhance ",sent,,,,,,2025-09-11 19:52:34.3+00,,,,,,,"{""tone"": ""professional"", ""itemId"": 22, ""source"": ""daily_outreach"", ""batchId"": 9}",0,0,[],,,0,2025-09-11 19:52:34.315163+00,2025-09-11 19:52:34.315163+00
+15,1,862,159,email,outbound,Helping {{company_name}} Drive Investment Success with Our Car Solution,"Hi there {{first_name}},
+
+I hope this message finds you well! I wanted to introduce you to a unique car solution that could bring real value to {{company_name}}’s operations and support your team’s dynamic work in delivering integrated investment strategies.
+
+Our car is designed with efficiency, reliability, and comfort in mind—perfect for busy professionals like yourself and your team at New York Life Investments who often need to travel between meetings, client sites, or investment locations. By providing a dependable and smart transportation option, it can help save time, reduce stress, and enhance productivity, allowing you to focus more on what matters most: managing assets and creating long-term value for your clients.
+
+I’d love to explore how this could fit into your current workflow and support your goals as Senior Managing Director and Head of Fixed Income Investors. Please let me know if you’d be open to a brief conversation.
+
+Looking forward to connecting!
+
+Best regards,  
+
+{{sender_name}}","Hi there {{first_name}},
+
+I hope this message finds you well! I wanted to introduce you to a unique car solution that could bring real value to {{company_name}}’s operations and support your team’s dy",sent,,,,,,2025-09-11 19:52:47.39+00,,,,,,,"{""tone"": ""professional"", ""itemId"": 24, ""source"": ""daily_outreach"", ""batchId"": 9}",0,0,[],,,0,2025-09-11 19:52:47.405141+00,2025-09-11 19:52:47.405141+00
+16,1,860,159,email,outbound,Enhancing New York Life Investments’s Investment Solutions with Our Innovative Car,"Hi there Anthony,
+
+I hope this message finds you well! I’m reaching out to introduce a unique opportunity that could complement New York Life Investments’s commitment to delivering integrated, forward-thinking investment solutions.
+
+Our car is designed with cutting-edge technology and efficiency that can support your team’s mobility needs while reflecting the same values of reliability and long-term focus that New York Life Investments embodies in its asset management strategies. By integrating this vehicle into your operations, you could enhance your executives’ and specialists’ ability to connect seamlessly across your global boutiques and client meetings, ultimately supporting your mission to provide actionable expertise and powerful partnerships.
+
+I’d love to explore how this solution can align with New York Life Investments’s goals and contribute to your continued success. Please let me know a convenient time for a brief conversation.
+
+Warmly,  
+
+User  
+
+Take care,","Hi there Anthony,
+
+I hope this message finds you well! I’m reaching out to introduce a unique opportunity that could complement New York Life Investments’s commitment to delivering integrated, forward",sent,,,,,,2025-09-11 19:54:09.806+00,,,,,,,"{""tone"": ""professional"", ""itemId"": 21, ""source"": ""daily_outreach"", ""batchId"": 9}",0,0,[],,,0,2025-09-11 19:54:09.821334+00,2025-09-11 19:54:09.821334+00
+17,1,2335,570,email,outbound,Helping {{company_name}} Drive Growth with Our Innovative Car Solution,"Hi there {{first_name}},
+
+I hope this message finds you well! I’m reaching out to introduce a unique car solution that I believe could be a great fit for {{company_name}}’s mission of delivering privacy-focused, user-trusted services.
+
+Our car technology is designed to seamlessly integrate with businesses that prioritize user experience and security. Just as {{company_name}} champions privacy and trust in search, our solution offers enhanced connectivity and data protection features that can help streamline your operations, improve customer engagement, and support your commitment to safeguarding user information.
+
+I’d love to explore how we can tailor this to support {{company_name}}’s goals and help you continue standing out in the market.
+
+Looking forward to hearing your thoughts, Cristina!
+
+Best regards,  
+
+{{sender_name}}","Hi there {{first_name}},
+
+I hope this message finds you well! I’m reaching out to introduce a unique car solution that I believe could be a great fit for {{company_name}}’s mission of delivering priva",sent,,,,,,2025-09-11 19:54:31.905+00,,,,,,,"{""tone"": ""professional"", ""itemId"": 25, ""source"": ""daily_outreach"", ""batchId"": 9}",0,0,[],,,0,2025-09-11 19:54:31.919838+00,2025-09-11 19:54:31.919838+00
+18,1,855,155,email,outbound,Driving Glenmede’s Success with Tailored Automotive Solutions,"Hi there {{first_name}},
+
+I hope this message finds you well. I’m reaching out to introduce a car solution that I believe could complement Glenmede’s boutique approach to personalized service and help streamline your team’s mobility with style and efficiency.
+
+Understanding Glenmede’s commitment to delivering customized, client-centric financial planning, our vehicles offer not just reliable transportation but also advanced features that enhance productivity and comfort for busy executives like yourself and your team. Whether it’s for client visits, corporate events, or day-to-day travel, this car can support your business by providing a seamless, professional experience on the road.
+
+I’d love to share more about how this can align with Glenmede’s values of excellence and long-term partnership, helping you maintain that personal touch while optimizing your operational needs.
+
+Looking forward to the opportunity to connect, {{first_name}}.
+
+Take care,  
+{{sender_name}}","Hi there {{first_name}},
+
+I hope this message finds you well. I’m reaching out to introduce a car solution that I believe could complement Glenmede’s boutique approach to personalized service and help",sent,,,,,,2025-09-11 19:54:41.939+00,,,,,,,"{""tone"": ""professional"", ""itemId"": 23, ""source"": ""daily_outreach"", ""batchId"": 9}",0,0,[],,,0,2025-09-11 19:54:41.953524+00,2025-09-11 19:54:41.953524+00
+19,1,3489,770,email,outbound,Helping Incident IQ Boost Efficiency with Doggie,"Hi there, {{first_name}}!
+
+I hope this message finds you well. I wanted to introduce you to Doggie, a smart solution designed to complement platforms like Incident IQ by enhancing workflow automation and streamlining communication across your IT, facilities, and help desk teams.
+
+Doggie can help Incident IQ by automating routine tasks, improving ticket routing, and providing real-time insights that empower your teams to resolve issues faster and keep your school district operations running smoothly. With Incident IQ already unifying asset management, help desk ticketing, and facilities workflows, Doggie adds an extra layer of efficiency and responsiveness that supports your mission to focus on what matters most—students.
+
+I’d love to explore how Doggie can integrate seamlessly with your platform to help Incident IQ continue transforming K-12 district operations with ease and precision.
+
+Looking forward to connecting soon!
+
+Warmly,  
+{{full_sender_name}}","Hi there, {{first_name}}!
+
+I hope this message finds you well. I wanted to introduce you to Doggie, a smart solution designed to complement platforms like Incident IQ by enhancing workflow automation ",sent,,,,,,2025-09-16 05:33:09.595+00,,,,,,,"{""tone"": ""professional"", ""itemId"": 56, ""source"": ""daily_outreach"", ""batchId"": 16}",0,0,[],,,0,2025-09-16 05:33:09.609912+00,2025-09-16 05:33:09.609912+00
+20,1,27904,2285,email,outbound,Hi Test7,Campaign email sent,,sent,,,,,,2025-11-11 14:00:06.785+00,,,,59,,,{},0,0,[],,,0,2025-11-11 14:00:06.785+00,2025-11-11 14:00:06.785+00
+21,1,27907,2285,email,outbound,Hi Test7,Campaign email sent,,sent,,,,,,2025-11-11 14:00:14.649+00,,,,59,,,{},0,0,[],,,0,2025-11-11 14:00:14.649+00,2025-11-11 14:00:14.649+00
+22,1,27905,2285,email,outbound,Hi Test7,Campaign email sent,,sent,,,,,,2025-11-11 14:00:34.722+00,,,,59,,,{},0,0,[],,,0,2025-11-11 14:00:34.722+00,2025-11-11 14:00:34.722+00
+23,1,27879,2283,email,outbound,Freshen Up  with Premium Oranges,Campaign email sent,,sent,,,,,,2025-11-11 14:00:35.249+00,,,,65,,,{},0,0,[],,,0,2025-11-11 14:00:35.249+00,2025-11-11 14:00:35.249+00
+24,1,27905,2285,email,outbound,Hi Test7,Campaign email sent,,sent,,,,,,2025-11-11 14:02:19.313+00,,,,59,,,{},0,0,[],,,0,2025-11-11 14:02:19.313+00,2025-11-11 14:02:19.313+00
+25,1,27879,2283,email,outbound,Freshen Up  with Premium Oranges,Campaign email sent,,sent,,,,,,2025-11-11 14:02:21.713+00,,,,65,,,{},0,0,[],,,0,2025-11-11 14:02:21.713+00,2025-11-11 14:02:21.713+00
+26,1,27878,2283,email,outbound,Freshen Up  with Premium Oranges,Campaign email sent,,sent,,,,,,2025-11-11 14:09:29.391+00,,,,65,,,{},0,0,[],,,0,2025-11-11 14:09:29.391+00,2025-11-11 14:09:29.391+00
+27,1,27878,2283,email,outbound,Freshen Up  with Premium Oranges,Campaign email sent,,sent,,,,,,2025-11-11 14:11:26.613+00,,,,65,,,{},0,0,[],,,0,2025-11-11 14:11:26.613+00,2025-11-11 14:11:26.613+00
+28,1,27880,2283,email,outbound,Freshen Up  with Premium Oranges,Campaign email sent,,sent,,,,,,2025-11-11 14:18:30.529+00,,,,65,,,{},0,0,[],,,0,2025-11-11 14:18:30.529+00,2025-11-11 14:18:30.529+00
+29,1,27880,2283,email,outbound,Freshen Up  with Premium Oranges,Campaign email sent,,sent,,,,,,2025-11-11 14:20:32.413+00,,,,65,,,{},0,0,[],,,0,2025-11-11 14:20:32.413+00,2025-11-11 14:20:32.413+00
+410,5,28477,2419,email,outbound,Quick question for UrbanPro,"Hi Rakesh Kalra,
+
+I noticed UrbanPro and wanted to reach out about how we might be able to help with your business needs.
+
+Would you be open to a brief conversation?
+
+Best regards","Hi Rakesh Kalra,
+
+I noticed UrbanPro and wanted to reach out about how we might be able to help with your business needs.
+
+Would you be open to a brief conversation?
+
+Best regards",sent,,,,,,2025-12-05 21:12:00.285+00,,,,,,,"{""tone"": ""professional"", ""itemId"": 560, ""source"": ""daily_outreach"", ""batchId"": 116}",0,0,[],,,0,2025-12-05 21:12:00.30239+00,2025-12-05 21:12:00.30239+00

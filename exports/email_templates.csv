@@ -1,0 +1,316 @@
+id,user_id,name,subject,content,description,category,created_at,updated_at,is_default
+1,1,Cold Outreach,Quick question about {{company_name}},"Hi {{contact_name}},
+
+I hope this email finds you well. I came across {{company_name}} and was impressed by your work in the industry.
+
+[Your message here]
+
+Best regards,
+{{sender_name}}",,general,2025-07-31 18:40:31.641465,2025-07-31 18:40:31.641465,f
+3,1,Partnership Inquiry,Partnership opportunity with {{company_name}},"Dear {{contact_name}},
+
+I'm reaching out to explore potential partnership opportunities between our companies.
+
+[Partnership details]
+
+Would you be open to a brief conversation?
+
+Best regards,
+{{sender_name}}",,general,2025-07-31 18:40:31.641465,2025-07-31 18:40:31.641465,f
+4,1,Service Introduction,How we can help {{company_name}},"Hi {{contact_name}},
+
+I noticed that {{company_name}} might benefit from our services.
+
+[Service description]
+
+Would you be interested in learning more?
+
+Best,
+{{sender_name}}",,general,2025-07-31 18:40:31.641465,2025-07-31 18:40:31.641465,f
+7,5,251023 1$m CT Intro,Want to build a $1M edu-coding platform for your brand?,"Hi Kate,
+
+I'm Jonathan, founder of CodeTribe.
+I started Codetribe to help nonprofits in Africa teach kids and teens how to code.
+
+Overtime this grew into a full-scale Computer Science learning platform with easy to use course- and lesson-building for interactive, auto-graded and practical coding projects.
+
+Two Reasons This May Interest You:
+
+1. In 2024 we decided to white-label this and have built an admin dashboard where you add your own logo, catalog and domain name  - This means the ENTIRE PLATFORM on your domain.
+
+2. Ultra Powerful Display Engines:
+These are still being fine-tuned, but this means we can offer and easily build custom lesson environments. Think:
+ - Specialized block-based lessons
+ - Simplified & gamified ( DSL) Python lessons
+ - Simulations to teach about AI, SQL, Data Science, databases & much more.
+
+PRICING:
+
+You may be thinking “That sounds too good to be true” or “Probably too expensive.” 
+
+Well, you’ll be pleased to know our focus is on empowering other organizations - Helping YOU grow and serve YOUR customers better.
+
+Our pricing packages are built for flexibility and scale, as you’ll see from just 3 of our CORE packages below:
+
+Monthly CORE Platform:
+
+1,000 users  |  $200 ( $0.20 per user)
+3,000 users  |  $480 ( $0.16 per user)
+10,000 users  | $960 ( $0.096 per user)
+
+This means that if only 10 of your customers subscribe at $20 p.m. you already break even.
+
+But that’s not all…
+
+OUR ROADMAP - EMPOWERING YOU WITH A.I.
+
+You may recall that I mentioned right at the top our lesson-authoring tools?
+
+We’ve been experimenting with how to allow educators to build the CS and Coding Lessons they want in 10% of the time.
+Our initial iterations were bulky, over-complicated and sucked.
+
+To improve results we’ve focused on two things:
+1. Making it easier for the models by offering them simpler templates to build on.
+
+2. Creating pre-built lesson environments ( Display Engines) for those templates to plug into.
+
+The result is:
+ -  more flexibility and context for A.I. resulting in better, longer and accurate content.
+ - Incredibly fun and interactive lessons. ( I will add some examples with screenshots and links in my next email.)
+
+This structure allows teachers to iterate, instruct and tweak new courses with AI if they so desire. Including it as little or much as they want.
+
+IT ONLY GETS BETTER:
+
+A. On-boarding & LMS UI:
+Modeled after modern Edtech best practices, the on-boarding UI for Teachers and learners is designed to accommodate multiple classes, topics and teachers.
+
+B. Manage UNLIMITED Schools:
+This is by far the most insane part.
+We’ve built “Schools” into the white-label. This means you can sign-up dozens of schools and each school is segmented with it’s own name, roster and teachers.
+You won’t believe this, but it comes OOTB ( out-of-the-box) at NO EXTRA COST.
+
+So, say you sign-up 10 schools with each 100 students attending Coding Lessons, your cost would STILL be within the CORE 1000 ( $200 p.m.) package.
+
+C. 50% DISCOUNT FOR IMPACT:
+For non-profits ANYWHERE and businesses in 121* emerging economies (countries) we offer a no-questions-asked 50% discount on all CORE packages.
+
+*International Co-operative Alliance (ICA) List of developing countries 2024
+
+For national-level or large-scale roll-outs we also have special packages.
+
+
+I’m sure I’ve missed something, but if this sounds interest to you or someone you know, please forward it this to them & shoot me a reply. 
+I’ll be happy to send you our updated priceless and demo videos so you can see it in action.
+
+Have an awesome day.
+Jonathan","",general,2025-10-23 21:52:17.119,2025-10-23 21:52:17.119,f
+8,5,251023 CT Intro v2,Want to build a $1M edu-coding platform for your brand?,"Hi Paul,
+
+I'm Jonathan, founder of CodeTribe.
+I started Codetribe to help nonprofits in Africa teach kids and teens how to code.
+
+Overtime this grew into a full-scale Computer Science learning platform with easy to use course- and lesson-building for interactive, auto-graded and practical coding projects.
+
+Two Reasons This May Interest You:
+
+1. In 2024 we decided to white-label this and have built an admin dashboard where you add your own logo, catalog and domain name  - This means the ENTIRE PLATFORM on your domain.
+
+2. Ultra Powerful Display Engines:
+These are still being fine-tuned, but this means we can offer and easily build custom lesson environments. Think:
+ - Specialized block-based lessons
+ - Simplified & gamified ( DSL) Python lessons
+ - Simulations to teach about AI, SQL, Data Science, databases & much more.
+
+PRICING:
+
+You may be thinking “That sounds too good to be true” or “Probably too expensive.” 
+
+Well, you’ll be pleased to know our focus is on empowering other organizations - Helping YOU grow and serve YOUR customers better.
+
+Our pricing packages are built for flexibility and scale, as you’ll see from just 3 of our CORE packages below:
+
+Monthly CORE Platform:
+
+1,000 users  |  $200 ( $0.20 per user)
+3,000 users  |  $480 ( $0.16 per user)
+10,000 users  | $960 ( $0.096 per user)
+
+This means that if only 10 of your customers subscribe at $20 p.m. you already break even.
+
+But that’s not all…
+
+OUR ROADMAP - EMPOWERING YOU WITH A.I.
+
+You may recall that I mentioned right at the top our lesson-authoring tools?
+
+We’ve been experimenting with how to allow educators to build the CS and Coding Lessons they want in 10% of the time.
+Our initial iterations were bulky, over-complicated and sucked.
+
+To improve results we’ve focused on two things:
+1. Making it easier for the models by offering them simpler templates to build on.
+
+2. Creating pre-built lesson environments ( Display Engines) for those templates to plug into.
+
+The result is:
+ -  more flexibility and context for A.I. resulting in better, longer and accurate content.
+ - Incredibly fun and interactive lessons. ( I will add some examples with screenshots and links in my next email.)
+
+This structure allows teachers to iterate, instruct and tweak new courses with AI if they so desire. Including it as little or much as they want.
+
+IT ONLY GETS BETTER:
+
+A. On-boarding & LMS UI:
+Modeled after modern Edtech best practices, the on-boarding UI for Teachers and learners is designed to accommodate multiple classes, topics and teachers.
+
+B. Manage UNLIMITED Schools:
+This is by far the most insane part.
+We’ve built “Schools” into the white-label. This means you can sign-up dozens of schools and each school is segmented with it’s own name, roster and teachers.
+You won’t believe this, but it comes OOTB ( out-of-the-box) at NO EXTRA COST.
+
+So, say you sign-up 10 schools with each 100 students attending Coding Lessons, your cost would STILL be within the CORE 1000 ( $200 p.m.) package.
+
+C. 50% DISCOUNT FOR IMPACT:
+For non-profits ANYWHERE and businesses in 121* emerging economies (countries) we offer a no-questions-asked 50% discount on all CORE packages.
+
+*International Co-operative Alliance (ICA) List of developing countries 2024
+
+For national-level or large-scale roll-outs we also have special packages.
+
+
+I’m sure I’ve missed something, but if this sounds interest to you or someone you know, please forward it this to them & shoot me a reply. 
+I’ll be happy to send you our updated priceless and demo videos so you can see it in action.
+
+Have an awesome day.
+Jonathan
+
+","",general,2025-10-23 21:54:08.083,2025-10-23 21:54:08.083,f
+9,5,251024 CT Intro v3,Want to build a $1M edu-coding platform for your brand?,"Hi {{first_name}},
+
+I'm Jonathan, founder of CodeTribe.
+I started Codetribe to help nonprofits in Africa teach kids and teens how to code.
+
+Overtime this grew into a full-scale Computer Science learning platform with easy to use course- and lesson-building for interactive, auto-graded and practical coding projects.
+
+Two Reasons This May Interest You:
+
+1. In 2024 we decided to white-label this and have built an admin dashboard where you add your own logo, catalog and domain name  - This means the ENTIRE PLATFORM on your domain.
+
+2. Ultra Powerful Display Engines:
+These are still being fine-tuned, but this means we can offer and easily build custom lesson environments. Think:
+ - Specialized block-based lessons
+ - Simplified & gamified ( DSL) Python lessons
+ - Simulations to teach about AI, SQL, Data Science, databases & much more.
+
+PRICING:
+
+You may be thinking “That sounds too good to be true” or “Probably too expensive.” 
+
+Well, you’ll be pleased to know our focus is on empowering other organizations - Helping YOU grow and serve YOUR customers better.
+
+Our pricing packages are built for flexibility and scale, as you’ll see from just 3 of our CORE packages below:
+
+Monthly CORE Platform:
+
+1,000 users  |  $200 ( $0.20 per user)
+3,000 users  |  $480 ( $0.16 per user)
+10,000 users  | $960 ( $0.096 per user)
+
+This means that if only 10 of your customers subscribe at $20 p.m. you already break even.
+
+But that’s not all…
+
+OUR ROADMAP - EMPOWERING YOU WITH A.I.
+
+You may recall that I mentioned right at the top our lesson-authoring tools?
+
+We’ve been experimenting with how to allow educators to build the CS and Coding Lessons they want in 10% of the time.
+Our initial iterations were bulky, over-complicated and sucked.
+
+To improve results we’ve focused on two things:
+1. Making it easier for the models by offering them simpler templates to build on.
+
+2. Creating pre-built lesson environments ( Display Engines) for those templates to plug into.
+
+The result is:
+ -  more flexibility and context for A.I. resulting in better, longer and accurate content.
+ - Incredibly fun and interactive lessons. ( I will add some examples with screenshots and links in my next email.)
+
+This structure allows teachers to iterate, instruct and tweak new courses with AI if they so desire. Including it as little or much as they want.
+
+IT ONLY GETS BETTER:
+
+A. On-boarding & LMS UI:
+Modeled after modern Edtech best practices, the on-boarding UI for Teachers and learners is designed to accommodate multiple classes, topics and teachers.
+
+B. Manage UNLIMITED Schools:
+This is by far the most insane part.
+We’ve built “Schools” into the white-label. This means you can sign-up dozens of schools and each school is segmented with it’s own name, roster and teachers.
+You won’t believe this, but it comes OOTB ( out-of-the-box) at NO EXTRA COST.
+
+So, say you sign-up 10 schools with each 100 students attending Coding Lessons, your cost would STILL be within the CORE 1000 ( $200 p.m.) package.
+
+C. 50% DISCOUNT FOR IMPACT:
+For non-profits ANYWHERE and businesses in 121* emerging economies (countries) we offer a no-questions-asked 50% discount on all CORE packages.
+
+*International Co-operative Alliance (ICA) List of developing countries 2024
+
+For national-level or large-scale roll-outs we also have special packages.
+
+
+I’m sure I’ve missed something, but if this sounds interest to you or someone you know, please forward it this to them & shoot me a reply. 
+I’ll be happy to send you our updated priceless and demo videos so you can see it in action.
+
+Have an awesome day.
+Jonathan
+
+","",general,2025-10-24 14:50:31.516,2025-10-24 14:50:31.516,f
+10,1,Cold Outreach - Introduction,Quick Question About {companyName},"Hi {firstName},
+
+I noticed {companyName} is focused on [specific area]. We help similar companies achieve [specific benefit].
+
+Would you be open to a brief 15-minute call next week to explore if we can help {companyName} achieve similar results?
+
+Best regards,
+{senderName}",Professional cold outreach template for initial contact,outreach,2025-10-29 15:24:49.48104,2025-10-29 15:24:49.48104,t
+11,1,Follow-up Email,Following up on my previous message,"Hi {firstName},
+
+I wanted to follow up on my previous email about [topic]. I understand you're busy, so I'll keep this brief.
+
+We've helped companies like {companyName} achieve:
+- [Benefit 1]
+- [Benefit 2]
+- [Benefit 3]
+
+Would a quick 10-minute call this week work for you?
+
+Best,
+{senderName}",Polite follow-up template for second contact,follow-up,2025-10-29 15:24:49.48104,2025-10-29 15:24:49.48104,t
+12,1,Partnership Inquiry,Partnership Opportunity with {companyName},"Dear {firstName},
+
+I'm reaching out because I believe there's a strong synergy between our companies.
+
+We specialize in [your specialty], and I think partnering with {companyName} could create mutual value through:
+- [Partnership benefit 1]
+- [Partnership benefit 2]
+- [Partnership benefit 3]
+
+Would you be interested in exploring a potential partnership?
+
+Looking forward to your thoughts.
+
+Best regards,
+{senderName}",Template for proposing business partnerships,partnership,2025-10-29 15:24:49.48104,2025-10-29 15:24:49.48104,t
+13,1,Service Introduction,How We Can Help {companyName} [Achieve Goal],"Hi {firstName},
+
+I came across {companyName} and was impressed by [specific achievement or aspect].
+
+We've developed a solution that helps companies in your industry:
+- [Key benefit 1]
+- [Key benefit 2]
+- [Key benefit 3]
+
+I'd love to show you how we've helped similar companies achieve [specific result]. Do you have 20 minutes this week for a brief demo?
+
+Best,
+{senderName}",Template for introducing your services or product,introduction,2025-10-29 15:24:49.48104,2025-10-29 15:24:49.48104,t

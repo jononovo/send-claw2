@@ -1,0 +1,87 @@
+id,user_id,name,description,contact_count,created_at,updated_at,no_duplicates_with_other_lists,is_default
+1,1,asdf,"",0,2025-10-27 18:02:04.047731,2025-10-27 18:02:04.047731,f,f
+2,1,1234,"",0,2025-10-27 19:16:52.767277,2025-10-27 19:16:52.767277,f,f
+27,5,Campaign: 1 search lists,Combined contacts from 1 search lists,38,2025-10-30 13:48:38.675508,2025-10-30 13:48:38.675508,f,f
+28,1,Campaign: 4 search lists,Combined contacts from 4 search lists,160,2025-10-30 17:24:51.132074,2025-10-30 17:24:51.132074,f,f
+3,1,tryout,"",83,2025-10-27 20:35:49.043728,2025-10-27 20:35:49.043728,f,f
+4,1,Campaign: 3 search lists,Combined contacts from 3 search lists,107,2025-10-28 15:46:02.560251,2025-10-28 15:46:02.560251,f,f
+5,1,Campaign: 1 search lists,Combined contacts from 1 search lists,39,2025-10-29 06:01:04.746637,2025-10-29 06:01:04.746637,f,f
+6,1,Campaign: 1 search lists,Combined contacts from 1 search lists,39,2025-10-29 06:01:12.508726,2025-10-29 06:01:12.508726,f,f
+7,1,Campaign: 1 search lists,Combined contacts from 1 search lists,39,2025-10-29 06:01:17.488821,2025-10-29 06:01:17.488821,f,f
+8,1,Campaign: k12 stem edtech in new jersey and hoboken,"Contacts from search: ""k12 stem edtech in new jersey and hoboken""",36,2025-10-29 15:14:16.470157,2025-10-29 15:14:16.470157,f,f
+9,1,Campaign: k12 stem education providers in buffalo,"Contacts from search: ""k12 stem education providers in buffalo""",45,2025-10-29 16:09:27.070253,2025-10-29 16:09:27.070253,f,f
+10,1,Campaign: 1 search lists,Combined contacts from 1 search lists,36,2025-10-29 17:28:52.182834,2025-10-29 17:28:52.182834,f,f
+11,1,Campaign: 1 search lists,Combined contacts from 1 search lists,36,2025-10-29 17:30:01.432734,2025-10-29 17:30:01.432734,f,f
+12,1,Campaign: 1 search lists,Combined contacts from 1 search lists,36,2025-10-29 17:30:26.388326,2025-10-29 17:30:26.388326,f,f
+13,1,Campaign: 1 search lists,Combined contacts from 1 search lists,32,2025-10-29 17:34:50.585254,2025-10-29 17:34:50.585254,f,f
+14,1,Campaign: 1 search lists,Combined contacts from 1 search lists,32,2025-10-29 17:46:05.973841,2025-10-29 17:46:05.973841,f,f
+15,1,Campaign: 1 search lists,Combined contacts from 1 search lists,32,2025-10-29 17:46:13.77699,2025-10-29 17:46:13.77699,f,f
+16,1,Campaign: 1 search lists,Combined contacts from 1 search lists,45,2025-10-29 17:48:36.246125,2025-10-29 17:48:36.246125,f,f
+17,1,Campaign: k12 stem education providers in albany,"Contacts from search: ""k12 stem education providers in albany""",44,2025-10-29 18:35:07.162005,2025-10-29 18:35:07.162005,f,f
+18,1,Campaign: k12 stem edtech in new jersey and hoboken,"Contacts from search: ""k12 stem edtech in new jersey and hoboken""",36,2025-10-29 18:36:00.447681,2025-10-29 18:36:00.447681,f,f
+19,1,Campaign: k12 stem edtech in new jersey,"Contacts from search: ""k12 stem edtech in new jersey""",32,2025-10-29 18:38:10.659431,2025-10-29 18:38:10.659431,f,f
+20,1,Campaign: k12 stem education providers in albany,"Contacts from search: ""k12 stem education providers in albany""",44,2025-10-29 18:58:10.71114,2025-10-29 18:58:10.71114,f,f
+21,1,Campaign: k12 stem education providers in new jersey,"Contacts from search: ""k12 stem education providers in new jersey""",39,2025-10-29 19:00:16.847418,2025-10-29 19:00:16.847418,f,f
+22,5,Campaign: high-rated auto-repair chains in texas,"Contacts from search: ""high-rated auto-repair chains in texas""",38,2025-10-29 22:39:44.359636,2025-10-29 22:39:44.359636,f,f
+23,5,Campaign: stem education in san francisco,"Contacts from search: ""stem education in san francisco""",28,2025-10-29 22:40:08.756848,2025-10-29 22:40:08.756848,f,f
+24,5,Campaign: 2 search lists,Combined contacts from 2 search lists,38,2025-10-29 22:40:17.047311,2025-10-29 22:40:17.047311,f,f
+25,5,Campaign: high-rated auto-repair chains in north carolina,"Contacts from search: ""high-rated auto-repair chains in north carolina""",10,2025-10-30 13:48:20.783571,2025-10-30 13:48:20.783571,f,f
+26,5,Campaign: high-rated auto-repair chains in north carolina,"Contacts from search: ""high-rated auto-repair chains in north carolina""",10,2025-10-30 13:48:31.624538,2025-10-30 13:48:31.624538,f,f
+30,1,New list,"",0,2025-10-31 07:03:29.325534,2025-10-31 07:03:29.325534,f,f
+29,5,251030_Jon_Tryout,"",2,2025-10-31 07:02:11.752927,2025-10-31 07:02:11.752927,f,f
+31,1,qwer,"",0,2025-10-31 20:25:08.530347,2025-10-31 20:25:08.530347,f,f
+32,1,Campaign: edtech in austin,"Contacts from search: ""edtech in austin""",99,2025-10-31 20:47:50.64268,2025-10-31 20:47:50.64268,f,f
+33,1,Campaign: 1 search lists,Combined contacts from 1 search lists,95,2025-10-31 20:51:47.959336,2025-10-31 20:51:47.959336,f,f
+34,1,Campaign: 1 search lists,Combined contacts from 1 search lists,40,2025-11-01 05:33:56.072482,2025-11-01 05:33:56.072482,f,f
+35,1,CodeTribe Tryout,"",0,2025-11-02 15:32:27.757279,2025-11-02 15:32:27.757279,f,f
+37,1,Campaign: 1 search lists,Combined contacts from 1 search lists,81,2025-11-02 16:03:22.799607,2025-11-02 16:03:22.799607,f,f
+38,1,Campaign: edtech in san diego,"Contacts from search: ""edtech in san diego""",34,2025-11-02 16:17:19.370596,2025-11-02 16:17:19.370596,f,f
+39,1,Campaign: 1 search lists,Combined contacts from 1 search lists,81,2025-11-02 16:36:44.831966,2025-11-02 16:36:44.831966,f,f
+40,5,Campaign: 1 search lists,Combined contacts from 1 search lists,0,2025-11-02 16:37:36.270281,2025-11-02 16:37:36.270281,f,f
+41,1,Campaign: 1 search lists,Combined contacts from 1 search lists,34,2025-11-02 16:40:24.595945,2025-11-02 16:40:24.595945,f,f
+42,1,Campaign: 1 search lists,Combined contacts from 1 search lists,34,2025-11-02 17:32:26.863796,2025-11-02 17:32:26.863796,f,f
+43,1,Campaign: 1 search lists,Combined contacts from 1 search lists,0,2025-11-02 17:53:28.693883,2025-11-02 17:53:28.693883,f,f
+44,1,Campaign: 3 search lists,Combined contacts from 3 search lists,0,2025-11-02 17:58:09.346634,2025-11-02 17:58:09.346634,f,f
+45,1,ct3,"",85,2025-11-02 18:00:47.656263,2025-11-02 18:00:47.656263,f,f
+46,1,Campaign: 1 search lists,Combined contacts from 1 search lists,90,2025-11-02 18:14:23.195462,2025-11-02 18:14:23.195462,f,f
+54,5,251120-INDIA-Secondary-Edu,"",334,2025-11-19 18:15:52.820883,2025-11-19 18:15:52.820883,f,f
+51,5,251110-US-K12-Stem-Edu,"",119,2025-11-11 05:41:54.822681,2025-11-11 05:41:54.822681,f,f
+49,5,ct7,"",4,2025-11-02 22:38:44.007524,2025-11-02 22:38:44.007524,f,f
+55,5,251120-INDIA-Secondary-Edu-DELIVERABLE,"Cleaned with Emailable. Includes those marked as ""Delieverable"".",199,2025-11-19 22:12:22.04668,2025-11-19 22:12:22.04668,f,f
+47,1,ct4,"",11,2025-11-02 18:14:50.732455,2025-11-02 18:14:50.732455,f,f
+52,19,tryout,"",3,2025-11-11 20:12:49.092947,2025-11-11 20:12:49.092947,f,f
+48,1,ct6,"",4,2025-11-02 19:16:27.629629,2025-11-02 19:16:27.629629,f,f
+50,1,Campaign: commercial k12 stem education in austin,"Contacts from search: ""commercial k12 stem education in austin""",34,2025-11-03 01:12:50.213849,2025-12-03 19:30:05.619,f,f
+58,50,Boutique Ad Agency,"",6,2025-11-26 04:57:35.684772,2025-11-26 04:57:35.684772,f,f
+57,50,Comms Finance,"",25,2025-11-26 00:28:05.320656,2025-11-26 00:28:05.320656,f,f
+61,25,Pipeline,Your default contact list for prospects,0,2025-12-20 05:43:22.677778,2025-12-20 05:43:22.677778,f,t
+64,11,Pipeline,Your default contact list for prospects,0,2025-12-20 05:43:22.677778,2025-12-20 05:43:22.677778,f,t
+68,12,Pipeline,Your default contact list for prospects,0,2025-12-20 05:43:22.677778,2025-12-20 05:43:22.677778,f,t
+69,10,Pipeline,Your default contact list for prospects,0,2025-12-20 05:43:22.677778,2025-12-20 05:43:22.677778,f,t
+71,72,Pipeline,Your default contact list for prospects,0,2025-12-20 05:43:22.677778,2025-12-20 05:43:22.677778,f,t
+72,47,Pipeline,Your default contact list for prospects,0,2025-12-20 05:43:22.677778,2025-12-20 05:43:22.677778,f,t
+75,73,Pipeline,Your default contact list for prospects,0,2025-12-20 05:43:22.677778,2025-12-20 05:43:22.677778,f,t
+77,21,Pipeline,Your default contact list for prospects,0,2025-12-20 05:43:22.677778,2025-12-20 05:43:22.677778,f,t
+78,5,Pipeline,Your default contact list for prospects,0,2025-12-20 05:43:22.677778,2025-12-20 05:43:22.677778,f,t
+79,19,Pipeline,Your default contact list for prospects,0,2025-12-20 05:43:22.677778,2025-12-20 05:43:22.677778,f,t
+80,52,Pipeline,Your default contact list for prospects,0,2025-12-20 05:43:22.677778,2025-12-20 05:43:22.677778,f,t
+81,85,Pipeline,Your default contact list for prospects,0,2025-12-20 05:43:22.677778,2025-12-20 05:43:22.677778,f,t
+83,55,Pipeline,Your default contact list for prospects,0,2025-12-20 05:43:22.677778,2025-12-20 05:43:22.677778,f,t
+85,48,Pipeline,Your default contact list for prospects,0,2025-12-20 05:43:22.677778,2025-12-20 05:43:22.677778,f,t
+87,50,Pipeline,Your default contact list for prospects,0,2025-12-20 05:43:22.677778,2025-12-20 05:43:22.677778,f,t
+88,51,Pipeline,Your default contact list for prospects,0,2025-12-20 05:43:22.677778,2025-12-20 05:43:22.677778,f,t
+89,76,Pipeline,Your default contact list for prospects,0,2025-12-20 05:43:22.677778,2025-12-20 05:43:22.677778,f,t
+93,59,Pipeline,Your default contact list for prospects,0,2025-12-20 05:43:22.677778,2025-12-20 05:43:22.677778,f,t
+95,74,Pipeline,Your default contact list for prospects,0,2025-12-20 05:43:22.677778,2025-12-20 05:43:22.677778,f,t
+97,16,Pipeline,Your default contact list for prospects,0,2025-12-20 05:43:22.677778,2025-12-20 05:43:22.677778,f,t
+98,36,Pipeline,Your default contact list for prospects,0,2025-12-20 05:43:22.677778,2025-12-20 05:43:22.677778,f,t
+99,53,Pipeline,Your default contact list for prospects,0,2025-12-20 05:43:22.677778,2025-12-20 05:43:22.677778,f,t
+100,23,Pipeline,Your default contact list for prospects,0,2025-12-20 05:43:22.677778,2025-12-20 05:43:22.677778,f,t
+101,44,Pipeline,Your default contact list for prospects,0,2025-12-20 05:43:22.677778,2025-12-20 05:43:22.677778,f,t
+102,58,Pipeline,Your default contact list for prospects,0,2025-12-20 05:43:22.677778,2025-12-20 05:43:22.677778,f,t
+103,1,Pipeline,Your default contact list for prospects,0,2025-12-20 05:43:22.677778,2025-12-20 05:43:22.677778,f,t
+105,49,Pipeline,Your default contact list for prospects,0,2025-12-20 05:43:22.677778,2025-12-20 05:43:22.677778,f,t
+106,22,Pipeline,Your default contact list for prospects,0,2025-12-20 05:43:22.677778,2025-12-20 05:43:22.677778,f,t
+107,75,Pipeline,Your default contact list for prospects,0,2025-12-20 05:43:22.677778,2025-12-20 05:43:22.677778,f,t
+109,14,Pipeline,Your default contact list for prospects,0,2025-12-20 05:43:22.677778,2025-12-20 05:43:22.677778,f,t
+110,35,Pipeline,Your default contact list for prospects,0,2025-12-20 05:43:22.677778,2025-12-20 05:43:22.677778,f,t
