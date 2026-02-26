@@ -8,8 +8,8 @@ import { eq, sql, and, gte } from "drizzle-orm";
 export const SENDCLAW_DOMAIN = process.env.SENDCLAW_DOMAIN || 'sendclaw.com';
 export const FROM_EMAIL = process.env.SENDCLAW_FROM_EMAIL || `noreply@${SENDCLAW_DOMAIN}`;
 
-export const REGISTRATION_COOLDOWN_SECONDS = 300;
-export const DAILY_REGISTRATION_LIMIT = 5;
+export const REGISTRATION_COOLDOWN_SECONDS = 600;
+export const DAILY_REGISTRATION_LIMIT = 3;
 
 export const sendGridService = new MailService();
 if (process.env.SENDGRID_API_KEY) {

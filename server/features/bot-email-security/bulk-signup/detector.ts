@@ -8,7 +8,7 @@ import { logSecurityEvent } from '../../../sendclaw/common';
 
 const SCAN_INTERVAL_MS = 12 * 60 * 60 * 1000;
 const LOOKBACK_HOURS = 24;
-const MIN_CLUSTER_SIZE = 10;
+const MIN_CLUSTER_SIZE = 5;
 const MIN_DISTINCT_IPS = 3;
 const BATCH_SIZE = 100;
 const DEFAULT_MODEL = "claude-sonnet-4-20250514";
@@ -45,7 +45,7 @@ IDENTIFY COORDINATED GROUPS:
 
 DO NOT FLAG:
 - Bots that coincidentally share common words like "agent", "bot", "helper" in different positions or contexts
-- Small groups of 2-3 similar bots — only flag groups of 10+
+- Small groups of 2-3 similar bots — only flag groups of 5+
 - Legitimate bots that happen to register around the same time
 
 Only return groups you are confident represent coordinated signups.
@@ -104,8 +104,26 @@ async function reviewRegistrations(botRows: BotRow[]): Promise<DetectedGroup[]> 
       try {
         parsed = JSON.parse(jsonMatch[0]);
       } catch (parseError) {
-        console.error('[BulkSignupDetector] JSON parse error:', parseError);
-        continue;
+        console.warn('[BulkSignupDetector] JSON parse error on first attempt, retrying batch...');
+        try {
+          const retryResponse = await anthropic.messages.create({
+            model: DEFAULT_MODEL,
+            max_tokens: 2048,
+            system: SYSTEM_PROMPT,
+            messages: [{ role: 'user', content: userMessage }]
+          });
+          const retryContent = retryResponse.content[0];
+          if (retryContent.type === 'text') {
+            const retryJsonMatch = retryContent.text.match(/\{[\s\S]*\}/);
+            if (retryJsonMatch) {
+              parsed = JSON.parse(retryJsonMatch[0]);
+            }
+          }
+        } catch (retryError) {
+          console.error('[BulkSignupDetector] JSON parse failed on retry too:', retryError);
+          continue;
+        }
+        if (!parsed) continue;
       }
 
       if (parsed.groups && Array.isArray(parsed.groups)) {
@@ -115,6 +133,8 @@ async function reviewRegistrations(botRows: BotRow[]): Promise<DetectedGroup[]> 
             const filteredIds = group.botIds.filter((id: string) => validIds.has(id));
             if (filteredIds.length >= MIN_CLUSTER_SIZE) {
               allGroups.push({ botIds: filteredIds, pattern: group.pattern });
+            } else if (filteredIds.length > 0) {
+              console.log(`[BulkSignupDetector] Group "${group.pattern}" has ${filteredIds.length} bots, below min cluster size ${MIN_CLUSTER_SIZE}, skipping`);
             }
           }
         }
