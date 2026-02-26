@@ -238,8 +238,9 @@ router.post('/bulk-signups/:id/ignore', requireAdmin, async (req: Request, res: 
 
 router.post('/bulk-signups/force-scan', requireAdmin, async (req: Request, res: Response) => {
   try {
-    await bulkSignupDetector.forceRun();
-    res.json({ success: true, message: 'Bulk signup scan completed' });
+    const { date } = req.body || {};
+    await bulkSignupDetector.forceRun(date);
+    res.json({ success: true, message: date ? `Bulk signup scan completed for ${date}` : 'Bulk signup scan completed' });
   } catch (error) {
     console.error('[BulkSignup] Force scan error:', error);
     res.status(500).json({ error: 'Failed to run scan' });

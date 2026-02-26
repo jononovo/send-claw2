@@ -1,7 +1,7 @@
 import Anthropic from '@anthropic-ai/sdk';
 import { db } from '../../../db';
 import { bots, securityBulkSignupAlerts } from '@shared/schema';
-import { gte, eq } from 'drizzle-orm';
+import { gte, eq, and, lt } from 'drizzle-orm';
 import crypto from 'crypto';
 import { sendBulkSignupAlert } from './report';
 import { logSecurityEvent } from '../../../sendclaw/common';
@@ -156,10 +156,18 @@ function generateSignature(pattern: string, windowStart: Date, windowEnd: Date):
   return crypto.createHash('sha256').update(raw).digest('hex').slice(0, 32);
 }
 
-async function runDetection(): Promise<void> {
-  const lookbackStart = new Date(Date.now() - LOOKBACK_HOURS * 60 * 60 * 1000);
-
-  console.log(`[BulkSignupDetector] Scanning bots registered since ${lookbackStart.toISOString()}`);
+async function runDetection(targetDate?: string): Promise<void> {
+  let whereClause;
+  if (targetDate) {
+    const dayStart = new Date(targetDate + 'T00:00:00.000Z');
+    const dayEnd = new Date(targetDate + 'T23:59:59.999Z');
+    console.log(`[BulkSignupDetector] Scanning bots registered on ${targetDate} (${dayStart.toISOString()} to ${dayEnd.toISOString()})`);
+    whereClause = and(gte(bots.createdAt, dayStart), lt(bots.createdAt, new Date(dayEnd.getTime() + 1)));
+  } else {
+    const lookbackStart = new Date(Date.now() - LOOKBACK_HOURS * 60 * 60 * 1000);
+    console.log(`[BulkSignupDetector] Scanning bots registered since ${lookbackStart.toISOString()}`);
+    whereClause = gte(bots.createdAt, lookbackStart);
+  }
 
   const recentBots = await db
     .select({
@@ -176,7 +184,7 @@ async function runDetection(): Promise<void> {
       createdAt: bots.createdAt
     })
     .from(bots)
-    .where(gte(bots.createdAt, lookbackStart))
+    .where(whereClause)
     .orderBy(bots.createdAt);
 
   console.log(`[BulkSignupDetector] Found ${recentBots.length} recent bot registrations`);
@@ -282,9 +290,9 @@ class BulkSignupDetector {
     }, 30_000);
   }
 
-  async forceRun(): Promise<void> {
-    console.log('[BulkSignupDetector] Force running detection...');
-    await runDetection();
+  async forceRun(targetDate?: string): Promise<void> {
+    console.log(`[BulkSignupDetector] Force running detection${targetDate ? ` for ${targetDate}` : ''}...`);
+    await runDetection(targetDate);
   }
 
   stop() {

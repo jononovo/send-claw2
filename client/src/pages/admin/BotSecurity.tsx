@@ -6,9 +6,8 @@ import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Calendar } from '@/components/ui/calendar';
-import { Shield, RefreshCw, ChevronLeft, ChevronRight, RotateCcw, Play, ChevronDown, Check, X } from 'lucide-react';
+import { Shield, RefreshCw, ChevronLeft, ChevronRight, RotateCcw, Check, X } from 'lucide-react';
+import { TriggerReviewButton } from '@/components/admin/TriggerReviewButton';
 import { useToast } from '@/hooks/use-toast';
 import { queryClient, apiRequest } from '@/lib/queryClient';
 
@@ -65,8 +64,6 @@ export default function BotSecurity() {
   const [dateFilter, setDateFilter] = useState<string>('all');
   const [page, setPage] = useState(1);
   const pageSize = 20;
-  const [reviewDateOpen, setReviewDateOpen] = useState(false);
-  const [selectedReviewDate, setSelectedReviewDate] = useState<Date | undefined>(undefined);
   const [applyStatusSelections, setApplyStatusSelections] = useState<Record<string, string>>({});
 
   const buildQueryString = () => {
@@ -128,8 +125,6 @@ export default function BotSecurity() {
     onSuccess: (data: any) => {
       toast({ title: 'Review Complete', description: data.message });
       invalidateFlags();
-      setReviewDateOpen(false);
-      setSelectedReviewDate(undefined);
     },
     onError: () => {
       toast({ title: 'Error', description: 'Failed to trigger review', variant: 'destructive' });
@@ -172,49 +167,10 @@ export default function BotSecurity() {
           </div>
         </div>
         <div className="flex gap-2">
-          <div className="flex">
-            <Button 
-              size="sm" 
-              onClick={() => triggerReview()}
-              disabled={triggerReviewMutation.isPending}
-              className="rounded-r-none"
-            >
-              {triggerReviewMutation.isPending ? (
-                <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
-              ) : (
-                <Play className="h-4 w-4 mr-2" />
-              )}
-              Trigger Review
-            </Button>
-            <Popover open={reviewDateOpen} onOpenChange={setReviewDateOpen}>
-              <PopoverTrigger asChild>
-                <Button 
-                  size="sm" 
-                  variant="default"
-                  className="rounded-l-none border-l border-primary-foreground/20 px-2"
-                  disabled={triggerReviewMutation.isPending}
-                >
-                  <ChevronDown className="h-4 w-4" />
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="end">
-                <div className="p-2 border-b">
-                  <p className="text-sm font-medium">Select date to review</p>
-                  <p className="text-xs text-muted-foreground">Default reviews last 24 hours</p>
-                </div>
-                <Calendar
-                  mode="single"
-                  selected={selectedReviewDate}
-                  onSelect={(date) => {
-                    setSelectedReviewDate(date);
-                    if (date) triggerReview(date);
-                  }}
-                  disabled={(date) => date > new Date()}
-                  initialFocus
-                />
-              </PopoverContent>
-            </Popover>
-          </div>
+          <TriggerReviewButton
+            onTrigger={triggerReview}
+            isPending={triggerReviewMutation.isPending}
+          />
           <Button variant="outline" size="sm" onClick={() => refetch()}>
             <RefreshCw className="h-4 w-4 mr-2" />
             Refresh

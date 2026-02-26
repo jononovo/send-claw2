@@ -6,10 +6,11 @@ import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
-import { Shield, RefreshCw, ChevronLeft, ChevronRight, Check, X, Play, Eye } from 'lucide-react';
+import { Shield, RefreshCw, ChevronLeft, ChevronRight, Check, X, Eye } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { queryClient, apiRequest } from '@/lib/queryClient';
 import { useLocation } from 'wouter';
+import { TriggerReviewButton } from '@/components/admin/TriggerReviewButton';
 
 interface BulkSignupAlert {
   id: string;
@@ -90,8 +91,8 @@ export default function BulkSignups() {
   });
 
   const forceScanMutation = useMutation({
-    mutationFn: async () => {
-      return apiRequest('POST', '/api/bot-security/bulk-signups/force-scan');
+    mutationFn: async (date?: string) => {
+      return apiRequest('POST', '/api/bot-security/bulk-signups/force-scan', date ? { date } : {});
     },
     onSuccess: (data: any) => {
       toast({ title: 'Scan Complete', description: data.message });
@@ -101,6 +102,11 @@ export default function BulkSignups() {
       toast({ title: 'Error', description: 'Failed to run scan', variant: 'destructive' });
     }
   });
+
+  const triggerScan = (date?: Date) => {
+    const dateStr = date ? date.toISOString().split('T')[0] : undefined;
+    forceScanMutation.mutate(dateStr);
+  };
 
   const totalPages = data ? Math.ceil(data.total / pageSize) : 0;
 
@@ -126,18 +132,12 @@ export default function BulkSignups() {
           </div>
         </div>
         <div className="flex gap-2">
-          <Button
-            size="sm"
-            onClick={() => forceScanMutation.mutate()}
-            disabled={forceScanMutation.isPending}
-          >
-            {forceScanMutation.isPending ? (
-              <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
-            ) : (
-              <Play className="h-4 w-4 mr-2" />
-            )}
-            Run Scan
-          </Button>
+          <TriggerReviewButton
+            onTrigger={triggerScan}
+            isPending={forceScanMutation.isPending}
+            label="Run Scan"
+            description="Default scans last 24 hours"
+          />
           <Button variant="outline" size="sm" onClick={() => refetch()}>
             <RefreshCw className="h-4 w-4 mr-2" />
             Refresh
