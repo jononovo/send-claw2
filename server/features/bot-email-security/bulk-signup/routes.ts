@@ -1,7 +1,7 @@
 import { Router, Request, Response } from 'express';
 import { requireAdmin } from '../../../utils/admin-auth';
 import { db } from '../../../db';
-import { bots, handles, securityBulkSignupAlerts, securityIpBlocks } from '@shared/schema';
+import { bots, handles, securityBulkSignupAlerts, securityIpBlocks, securityRules, insertSecurityRuleSchema } from '@shared/schema';
 import { eq, desc, inArray, sql, and, gte } from 'drizzle-orm';
 import { bulkSignupDetector } from './detector';
 import { logSecurityEvent } from '../../../sendclaw/common';
@@ -244,6 +244,120 @@ router.post('/bulk-signups/force-scan', requireAdmin, async (req: Request, res: 
   } catch (error) {
     console.error('[BulkSignup] Force scan error:', error);
     res.status(500).json({ error: 'Failed to run scan' });
+  }
+});
+
+router.get('/bulk-signups/rules', requireAdmin, async (req: Request, res: Response) => {
+  try {
+    const rules = await db
+      .select()
+      .from(securityRules)
+      .orderBy(desc(securityRules.createdAt));
+
+    res.json({ items: rules });
+  } catch (error) {
+    console.error('[SecurityRules] List error:', error);
+    res.status(500).json({ error: 'Failed to fetch rules' });
+  }
+});
+
+router.post('/bulk-signups/rules', requireAdmin, async (req: Request, res: Response) => {
+  try {
+    const parsed = insertSecurityRuleSchema.safeParse(req.body);
+    if (!parsed.success) {
+      res.status(400).json({ error: 'Invalid rule data', details: parsed.error.errors });
+      return;
+    }
+
+    const [rule] = await db.insert(securityRules).values(parsed.data).returning();
+
+    await logSecurityEvent('security_rule_created', null, null, null, {
+      ruleId: rule.id,
+      type: rule.type,
+      value: rule.value,
+      label: rule.label
+    });
+
+    console.log(`[SecurityRules] Rule created: ${rule.label} (${rule.type}: ${rule.value})`);
+    res.status(201).json(rule);
+  } catch (error) {
+    console.error('[SecurityRules] Create error:', error);
+    res.status(500).json({ error: 'Failed to create rule' });
+  }
+});
+
+router.patch('/bulk-signups/rules/:id', requireAdmin, async (req: Request, res: Response) => {
+  try {
+    const id = parseInt(req.params.id);
+    if (isNaN(id)) {
+      res.status(400).json({ error: 'Invalid rule ID' });
+      return;
+    }
+
+    const { enabled, message, label } = req.body;
+    const updates: Record<string, any> = {};
+    if (typeof enabled === 'boolean') updates.enabled = enabled;
+    if (typeof message === 'string') updates.message = message;
+    if (typeof label === 'string') updates.label = label;
+
+    if (Object.keys(updates).length === 0) {
+      res.status(400).json({ error: 'No valid fields to update' });
+      return;
+    }
+
+    const [updated] = await db
+      .update(securityRules)
+      .set(updates)
+      .where(eq(securityRules.id, id))
+      .returning();
+
+    if (!updated) {
+      res.status(404).json({ error: 'Rule not found' });
+      return;
+    }
+
+    await logSecurityEvent('security_rule_updated', null, null, null, {
+      ruleId: id,
+      updates
+    });
+
+    res.json(updated);
+  } catch (error) {
+    console.error('[SecurityRules] Update error:', error);
+    res.status(500).json({ error: 'Failed to update rule' });
+  }
+});
+
+router.delete('/bulk-signups/rules/:id', requireAdmin, async (req: Request, res: Response) => {
+  try {
+    const id = parseInt(req.params.id);
+    if (isNaN(id)) {
+      res.status(400).json({ error: 'Invalid rule ID' });
+      return;
+    }
+
+    const [deleted] = await db
+      .delete(securityRules)
+      .where(eq(securityRules.id, id))
+      .returning();
+
+    if (!deleted) {
+      res.status(404).json({ error: 'Rule not found' });
+      return;
+    }
+
+    await logSecurityEvent('security_rule_deleted', null, null, null, {
+      ruleId: id,
+      type: deleted.type,
+      value: deleted.value,
+      label: deleted.label
+    });
+
+    console.log(`[SecurityRules] Rule deleted: ${deleted.label} (${deleted.type}: ${deleted.value})`);
+    res.json({ success: true });
+  } catch (error) {
+    console.error('[SecurityRules] Delete error:', error);
+    res.status(500).json({ error: 'Failed to delete rule' });
   }
 });
 

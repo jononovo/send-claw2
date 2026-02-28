@@ -1,8 +1,9 @@
 import crypto from "crypto";
 import { Request, Response, NextFunction } from "express";
 import { MailService } from '@sendgrid/mail';
+import geoip from "geoip-lite";
 import { db } from "../../db";
-import { bots, handles, securityEvents, securityIpBlocks } from "@shared/schema";
+import { bots, handles, securityEvents, securityIpBlocks, securityRules } from "@shared/schema";
 import { eq, sql, and, gte } from "drizzle-orm";
 
 export const SENDCLAW_DOMAIN = process.env.SENDCLAW_DOMAIN || 'sendclaw.com';
@@ -81,6 +82,31 @@ export async function logSecurityEvent(eventType: string, ip: string | null, han
     });
   } catch (err) {
     console.error('[SendClaw] Failed to log security event:', err);
+  }
+}
+
+export async function checkSecurityRules(ip: string): Promise<{ allowed: boolean; reason?: string; ruleId?: number; ruleType?: string }> {
+  try {
+    const rules = await db
+      .select()
+      .from(securityRules)
+      .where(eq(securityRules.enabled, true));
+
+    if (rules.length === 0) return { allowed: true };
+
+    for (const rule of rules) {
+      if (rule.type === 'country_block') {
+        const geo = geoip.lookup(ip);
+        if (geo && geo.country === rule.value.toUpperCase()) {
+          return { allowed: false, reason: rule.message, ruleId: rule.id, ruleType: rule.type };
+        }
+      }
+    }
+
+    return { allowed: true };
+  } catch (err) {
+    console.error('[SendClaw] Security rules check failed:', err);
+    return { allowed: true };
   }
 }
 

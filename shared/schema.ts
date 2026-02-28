@@ -1975,6 +1975,29 @@ export const securityIpBlocks = pgTable("security_ip_blocks", {
   index('idx_security_ip_blocks_blocked_until').on(table.blockedUntil)
 ]);
 
+export const securityRules = pgTable("security_rules", {
+  id: serial("id").primaryKey(),
+  type: text("type").notNull().$type<'country_block' | 'ip_range_block' | 'subnet_block'>(),
+  value: text("value").notNull(),
+  label: text("label").notNull(),
+  message: text("message").notNull(),
+  enabled: boolean("enabled").notNull().default(true),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow()
+}, (table) => [
+  index('idx_security_rules_type').on(table.type),
+  index('idx_security_rules_enabled').on(table.enabled)
+]);
+
+export const insertSecurityRuleSchema = z.object({
+  type: z.enum(['country_block', 'ip_range_block', 'subnet_block']),
+  value: z.string().min(1),
+  label: z.string().min(1),
+  message: z.string().min(1),
+  enabled: z.boolean().default(true)
+});
+export type InsertSecurityRule = z.infer<typeof insertSecurityRuleSchema>;
+export type SecurityRule = typeof securityRules.$inferSelect;
+
 export type Handle = typeof handles.$inferSelect;
 export type Bot = typeof bots.$inferSelect;
 export type InsertBot = z.infer<typeof insertBotSchema>;

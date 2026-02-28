@@ -6,7 +6,11 @@ import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
-import { Shield, RefreshCw, ChevronLeft, ChevronRight, Check, X, Eye } from 'lucide-react';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Switch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
+import { Shield, RefreshCw, ChevronLeft, ChevronRight, Check, X, Eye, Plus, Trash2, Globe } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { queryClient, apiRequest } from '@/lib/queryClient';
 import { useLocation } from 'wouter';
@@ -35,14 +39,46 @@ interface AlertsResponse {
   pageSize: number;
 }
 
+interface SecurityRule {
+  id: number;
+  type: string;
+  value: string;
+  label: string;
+  message: string;
+  enabled: boolean;
+  createdAt: string;
+}
+
 const STATUS_BADGES: Record<string, { label: string; variant: 'default' | 'secondary' | 'destructive' | 'outline' }> = {
   pending: { label: 'Pending', variant: 'destructive' },
   approved: { label: 'Approved', variant: 'default' },
   ignored: { label: 'Ignored', variant: 'secondary' }
 };
 
+const COUNTRY_OPTIONS = [
+  { code: 'CN', name: 'China' },
+  { code: 'RU', name: 'Russia' },
+  { code: 'IR', name: 'Iran' },
+  { code: 'KP', name: 'North Korea' },
+  { code: 'SY', name: 'Syria' },
+  { code: 'CU', name: 'Cuba' },
+  { code: 'VE', name: 'Venezuela' },
+  { code: 'BY', name: 'Belarus' },
+  { code: 'MM', name: 'Myanmar' },
+  { code: 'AF', name: 'Afghanistan' },
+  { code: 'IQ', name: 'Iraq' },
+  { code: 'LY', name: 'Libya' },
+  { code: 'SD', name: 'Sudan' },
+  { code: 'SO', name: 'Somalia' },
+  { code: 'YE', name: 'Yemen' },
+];
+
 function invalidateAlerts() {
   queryClient.invalidateQueries({ predicate: (q) => q.queryKey[0]?.toString().includes('/api/bot-security/bulk-signups') ?? false });
+}
+
+function invalidateRules() {
+  queryClient.invalidateQueries({ queryKey: ['/api/bot-security/bulk-signups/rules'] });
 }
 
 export default function BulkSignups() {
@@ -51,6 +87,11 @@ export default function BulkSignups() {
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [page, setPage] = useState(1);
   const pageSize = 20;
+
+  const [addRuleOpen, setAddRuleOpen] = useState(false);
+  const [ruleType, setRuleType] = useState('country_block');
+  const [ruleCountry, setRuleCountry] = useState('');
+  const [ruleMessage, setRuleMessage] = useState('At this time, SendClaw does not serve this region.');
 
   const buildQueryString = () => {
     const params = new URLSearchParams();
@@ -62,6 +103,10 @@ export default function BulkSignups() {
 
   const { data, isLoading, refetch } = useQuery<AlertsResponse>({
     queryKey: [`/api/bot-security/bulk-signups?${buildQueryString()}`]
+  });
+
+  const { data: rulesData, isLoading: rulesLoading } = useQuery<{ items: SecurityRule[] }>({
+    queryKey: ['/api/bot-security/bulk-signups/rules']
   });
 
   const approveMutation = useMutation({
@@ -103,9 +148,64 @@ export default function BulkSignups() {
     }
   });
 
+  const createRuleMutation = useMutation({
+    mutationFn: async (rule: { type: string; value: string; label: string; message: string }) => {
+      return apiRequest('POST', '/api/bot-security/bulk-signups/rules', rule);
+    },
+    onSuccess: () => {
+      toast({ title: 'Rule Created', description: 'Security rule has been added' });
+      invalidateRules();
+      setAddRuleOpen(false);
+      setRuleCountry('');
+      setRuleMessage('At this time, SendClaw does not serve this region.');
+    },
+    onError: () => {
+      toast({ title: 'Error', description: 'Failed to create rule', variant: 'destructive' });
+    }
+  });
+
+  const toggleRuleMutation = useMutation({
+    mutationFn: async ({ id, enabled }: { id: number; enabled: boolean }) => {
+      return apiRequest('PATCH', `/api/bot-security/bulk-signups/rules/${id}`, { enabled });
+    },
+    onSuccess: () => {
+      invalidateRules();
+    },
+    onError: () => {
+      toast({ title: 'Error', description: 'Failed to update rule', variant: 'destructive' });
+    }
+  });
+
+  const deleteRuleMutation = useMutation({
+    mutationFn: async (id: number) => {
+      return apiRequest('DELETE', `/api/bot-security/bulk-signups/rules/${id}`);
+    },
+    onSuccess: () => {
+      toast({ title: 'Rule Deleted', description: 'Security rule has been removed' });
+      invalidateRules();
+    },
+    onError: () => {
+      toast({ title: 'Error', description: 'Failed to delete rule', variant: 'destructive' });
+    }
+  });
+
   const triggerScan = (date?: Date) => {
     const dateStr = date ? date.toISOString().split('T')[0] : undefined;
     forceScanMutation.mutate(dateStr);
+  };
+
+  const handleCreateRule = () => {
+    if (!ruleCountry) {
+      toast({ title: 'Error', description: 'Please select a country', variant: 'destructive' });
+      return;
+    }
+    const country = COUNTRY_OPTIONS.find(c => c.code === ruleCountry);
+    createRuleMutation.mutate({
+      type: ruleType,
+      value: ruleCountry,
+      label: `Block ${country?.name || ruleCountry}`,
+      message: ruleMessage
+    });
   };
 
   const totalPages = data ? Math.ceil(data.total / pageSize) : 0;
@@ -121,6 +221,8 @@ export default function BulkSignups() {
     return Math.round((new Date(end).getTime() - new Date(start).getTime()) / 60000);
   };
 
+  const rules = rulesData?.items || [];
+
   return (
     <div className="container mx-auto py-8 px-4">
       <div className="flex items-center justify-between mb-6">
@@ -132,6 +234,64 @@ export default function BulkSignups() {
           </div>
         </div>
         <div className="flex gap-2">
+          <Dialog open={addRuleOpen} onOpenChange={setAddRuleOpen}>
+            <DialogTrigger asChild>
+              <Button variant="outline" size="sm">
+                <Plus className="h-4 w-4 mr-2" />
+                Add Rule
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Add Security Rule</DialogTitle>
+                <DialogDescription>
+                  Create a rule to automatically block bot registrations based on criteria.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-4 py-4">
+                <div className="space-y-2">
+                  <Label>Rule Type</Label>
+                  <Select value={ruleType} onValueChange={setRuleType}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="country_block">Country Block</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label>Country</Label>
+                  <Select value={ruleCountry} onValueChange={setRuleCountry}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a country" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {COUNTRY_OPTIONS.map(c => (
+                        <SelectItem key={c.code} value={c.code}>
+                          {c.name} ({c.code})
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label>Message shown to blocked users</Label>
+                  <Input
+                    value={ruleMessage}
+                    onChange={(e) => setRuleMessage(e.target.value)}
+                    placeholder="At this time, SendClaw does not serve this region."
+                  />
+                </div>
+              </div>
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setAddRuleOpen(false)}>Cancel</Button>
+                <Button onClick={handleCreateRule} disabled={createRuleMutation.isPending}>
+                  {createRuleMutation.isPending ? 'Creating...' : 'Create Rule'}
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
           <TriggerReviewButton
             onTrigger={triggerScan}
             isPending={forceScanMutation.isPending}
@@ -144,6 +304,93 @@ export default function BulkSignups() {
           </Button>
         </div>
       </div>
+
+      {(rules.length > 0 || rulesLoading) && (
+        <Card className="mb-6">
+          <CardHeader className="pb-4">
+            <CardTitle className="text-lg flex items-center gap-2">
+              <Globe className="h-5 w-5" />
+              Security Rules
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {rulesLoading ? (
+              <div className="flex justify-center py-6">
+                <RefreshCw className="h-6 w-6 animate-spin text-muted-foreground" />
+              </div>
+            ) : (
+              <div className="overflow-x-auto rounded-md border">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Rule</TableHead>
+                      <TableHead>Type</TableHead>
+                      <TableHead>Value</TableHead>
+                      <TableHead>Message</TableHead>
+                      <TableHead>Enabled</TableHead>
+                      <TableHead>Created</TableHead>
+                      <TableHead className="text-right">Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {rules.map((rule) => (
+                      <TableRow key={rule.id}>
+                        <TableCell className="font-medium">{rule.label}</TableCell>
+                        <TableCell>
+                          <Badge variant="outline">
+                            {rule.type === 'country_block' ? 'Country' : rule.type}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>
+                          <code className="bg-muted px-2 py-0.5 rounded text-sm">{rule.value}</code>
+                        </TableCell>
+                        <TableCell className="max-w-[300px] truncate text-sm text-muted-foreground">
+                          {rule.message}
+                        </TableCell>
+                        <TableCell>
+                          <Switch
+                            checked={rule.enabled}
+                            onCheckedChange={(checked) => toggleRuleMutation.mutate({ id: rule.id, enabled: checked })}
+                          />
+                        </TableCell>
+                        <TableCell className="whitespace-nowrap text-sm">
+                          {formatDate(rule.createdAt)}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                              <Button variant="ghost" size="sm" className="text-destructive hover:text-destructive">
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                              <AlertDialogHeader>
+                                <AlertDialogTitle>Delete Rule?</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                  This will permanently delete the rule "{rule.label}". Bot registrations from this source will no longer be blocked by this rule.
+                                </AlertDialogDescription>
+                              </AlertDialogHeader>
+                              <AlertDialogFooter>
+                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                <AlertDialogAction
+                                  className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                                  onClick={() => deleteRuleMutation.mutate(rule.id)}
+                                >
+                                  Delete
+                                </AlertDialogAction>
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialog>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      )}
 
       <Card>
         <CardHeader className="pb-4">
