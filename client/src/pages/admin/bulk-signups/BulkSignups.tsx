@@ -305,92 +305,94 @@ export default function BulkSignups() {
         </div>
       </div>
 
-      {(rules.length > 0 || rulesLoading) && (
-        <Card className="mb-6">
-          <CardHeader className="pb-4">
-            <CardTitle className="text-lg flex items-center gap-2">
-              <Globe className="h-5 w-5" />
-              Security Rules
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            {rulesLoading ? (
-              <div className="flex justify-center py-6">
-                <RefreshCw className="h-6 w-6 animate-spin text-muted-foreground" />
-              </div>
-            ) : (
-              <div className="overflow-x-auto rounded-md border">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Rule</TableHead>
-                      <TableHead>Type</TableHead>
-                      <TableHead>Value</TableHead>
-                      <TableHead>Message</TableHead>
-                      <TableHead>Enabled</TableHead>
-                      <TableHead>Created</TableHead>
-                      <TableHead className="text-right">Actions</TableHead>
+      <Card className="mb-6">
+        <CardHeader className="pb-4">
+          <CardTitle className="text-lg flex items-center gap-2">
+            <Globe className="h-5 w-5" />
+            Security Rules
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          {rulesLoading ? (
+            <div className="flex justify-center py-6">
+              <RefreshCw className="h-6 w-6 animate-spin text-muted-foreground" />
+            </div>
+          ) : rules.length === 0 ? (
+            <div className="text-center py-8 text-muted-foreground">
+              No security rules configured. Click "Add Rule" to create one.
+            </div>
+          ) : (
+            <div className="overflow-x-auto rounded-md border">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Rule</TableHead>
+                    <TableHead>Type</TableHead>
+                    <TableHead>Value</TableHead>
+                    <TableHead>Message</TableHead>
+                    <TableHead>Enabled</TableHead>
+                    <TableHead>Created</TableHead>
+                    <TableHead className="text-right">Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {rules.map((rule) => (
+                    <TableRow key={rule.id}>
+                      <TableCell className="font-medium">{rule.label}</TableCell>
+                      <TableCell>
+                        <Badge variant="outline">
+                          {rule.type === 'country_block' ? 'Country' : rule.type}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <code className="bg-muted px-2 py-0.5 rounded text-sm">{rule.value}</code>
+                      </TableCell>
+                      <TableCell className="max-w-[300px] truncate text-sm text-muted-foreground">
+                        {rule.message}
+                      </TableCell>
+                      <TableCell>
+                        <Switch
+                          checked={rule.enabled}
+                          onCheckedChange={(checked) => toggleRuleMutation.mutate({ id: rule.id, enabled: checked })}
+                        />
+                      </TableCell>
+                      <TableCell className="whitespace-nowrap text-sm">
+                        {formatDate(rule.createdAt)}
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <Button variant="ghost" size="sm" className="text-destructive hover:text-destructive">
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>Delete Rule?</AlertDialogTitle>
+                              <AlertDialogDescription>
+                                This will permanently delete the rule "{rule.label}". Bot registrations from this source will no longer be blocked by this rule.
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>Cancel</AlertDialogCancel>
+                              <AlertDialogAction
+                                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                                onClick={() => deleteRuleMutation.mutate(rule.id)}
+                              >
+                                Delete
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
+                      </TableCell>
                     </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {rules.map((rule) => (
-                      <TableRow key={rule.id}>
-                        <TableCell className="font-medium">{rule.label}</TableCell>
-                        <TableCell>
-                          <Badge variant="outline">
-                            {rule.type === 'country_block' ? 'Country' : rule.type}
-                          </Badge>
-                        </TableCell>
-                        <TableCell>
-                          <code className="bg-muted px-2 py-0.5 rounded text-sm">{rule.value}</code>
-                        </TableCell>
-                        <TableCell className="max-w-[300px] truncate text-sm text-muted-foreground">
-                          {rule.message}
-                        </TableCell>
-                        <TableCell>
-                          <Switch
-                            checked={rule.enabled}
-                            onCheckedChange={(checked) => toggleRuleMutation.mutate({ id: rule.id, enabled: checked })}
-                          />
-                        </TableCell>
-                        <TableCell className="whitespace-nowrap text-sm">
-                          {formatDate(rule.createdAt)}
-                        </TableCell>
-                        <TableCell className="text-right">
-                          <AlertDialog>
-                            <AlertDialogTrigger asChild>
-                              <Button variant="ghost" size="sm" className="text-destructive hover:text-destructive">
-                                <Trash2 className="h-4 w-4" />
-                              </Button>
-                            </AlertDialogTrigger>
-                            <AlertDialogContent>
-                              <AlertDialogHeader>
-                                <AlertDialogTitle>Delete Rule?</AlertDialogTitle>
-                                <AlertDialogDescription>
-                                  This will permanently delete the rule "{rule.label}". Bot registrations from this source will no longer be blocked by this rule.
-                                </AlertDialogDescription>
-                              </AlertDialogHeader>
-                              <AlertDialogFooter>
-                                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                <AlertDialogAction
-                                  className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                                  onClick={() => deleteRuleMutation.mutate(rule.id)}
-                                >
-                                  Delete
-                                </AlertDialogAction>
-                              </AlertDialogFooter>
-                            </AlertDialogContent>
-                          </AlertDialog>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-      )}
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          )}
+        </CardContent>
+      </Card>
 
       <Card>
         <CardHeader className="pb-4">
