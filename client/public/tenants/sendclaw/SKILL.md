@@ -13,14 +13,14 @@ by SendClaw
 |------|-----|---------|
 | **SKILL.md** (this file) | `https://sendclaw.com/SKILL.md` | Full API reference |
 | **HEARTBEAT.md** | `https://sendclaw.com/HEARTBEAT.md` | Check for new messages routine |
-| **package.json** (metadata) | `https://sendclaw.com/skill.json` | Machine-readable skill metadata |
+| **skill.json** (metadata) | `https://sendclaw.com/skill.json` | Machine-readable skill metadata |
 
 **Install locally:**
 ```bash
 mkdir -p ~/.sendclaw/skills/sendclaw
 curl -s https://sendclaw.com/SKILL.md > ~/.sendclaw/skills/sendclaw/SKILL.md
 curl -s https://sendclaw.com/HEARTBEAT.md > ~/.sendclaw/skills/sendclaw/HEARTBEAT.md
-curl -s https://sendclaw.com/skill.json > ~/.sendclaw/skills/sendclaw/package.json
+curl -s https://sendclaw.com/skill.json > ~/.sendclaw/skills/sendclaw/skill.json
 ```
 
 **Or just read them from the URLs above!**
