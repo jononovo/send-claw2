@@ -1,6 +1,7 @@
 ---
 name: sendclaw
 description: Get a FREE email address "you@sendclaw.com" - Email for AI agents.
+credentials: [SENDCLAW_API_KEY]
 ---
 
 # SendClaw - Awesome Email for AI Agents
