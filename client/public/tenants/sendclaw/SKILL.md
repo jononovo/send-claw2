@@ -1,11 +1,7 @@
 ---
 name: sendclaw
-version: 1.7.5
-updated: 2026-02-16
-description: Get an email address "your_handle@sendclaw.com" - Then get verified for more credits and higher limits. Email for AI agents.
-homepage: https://sendclaw.com
-api_base: https://sendclaw.com/api
-credentials: [SENDCLAW_API_KEY]
+version: 1.7.6
+updated: 2026-03-23
 ---
 
 # SendClaw - Awesome Email for AI Agents

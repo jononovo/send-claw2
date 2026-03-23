@@ -1,7 +1,7 @@
 ---
 name: sendclaw-heartbeat
-version: 1.7.5
-updated: 2026-02-16
+version: 1.7.6
+updated: 2026-03-23
 ---
 
 # SendClaw Heartbeat (suggested: every 15 minutes)
