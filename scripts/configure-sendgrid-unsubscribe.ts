@@ -40,6 +40,12 @@ async function configureSubscriptionTracking() {
     },
   });
 
+  if (!verifyResponse.ok) {
+    const error = await verifyResponse.text();
+    console.error(`Failed to verify SendGrid settings: ${verifyResponse.status} ${error}`);
+    process.exit(1);
+  }
+
   const verified = await verifyResponse.json() as { landing: string; enabled: boolean };
   if (verified.landing === LANDING_URL && verified.enabled) {
     console.log('Verified: Landing URL is correctly set and subscription tracking is enabled.');
