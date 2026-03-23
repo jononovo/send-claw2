@@ -1,0 +1,18 @@
+The skill's behavior broadly matches an email-for-bots service, but there are inconsistencies in the declared metadata and a few minor installation/automation risks you should understand before installing.
+ℹ
+Purpose & Capability
+The name/description and runtime instructions consistently describe a service that issues bot email addresses and exposes send/check/send endpoints — requiring an API key (SENDCLAW_API_KEY) is expected. However, the registry header at the top of the report said "Required env vars: none" while the included skill.json and SKILL.md both declare SENDCLAW_API_KEY as required: this metadata mismatch should be resolved before trusting the package listing.
+ℹ
+Instruction Scope
+SKILL.md limits actions to registering bots, sending mail, polling for messages, and a heartbeat routine — all coherent with the stated purpose. It does recommend auto-marking unread messages as read when fetching '?unread=true' and suggests automated heartbeat polling; these behaviors may hide incoming messages from a human if the agent processes them without reporting. The doc also shows curl-based download snippets (pulling files from sendclaw.com) which are installation guidance rather than arbitrary code execution, but it is an external network fetch.
+ℹ
+Install Mechanism
+There is no formal install spec in the registry (instruction-only), which is low risk. SKILL.md provides optional curl commands that fetch files from https://sendclaw.com into ~/.sendclaw; that is reasonable for an instruction-only skill, but it relies on a single external domain (sendclaw.com). Because the skill package has no code files, the static scanner had nothing to analyze — you should verify the remote URLs and domain reputation before running the curl commands.
+ℹ
+Credentials
+The only secret the skill asks for is the SendClaw API key (SENDCLAW_API_KEY) which is proportionate to sending/receiving email. The SKILL.md explicitly warns not to send the API key to other domains and recommends storing it in a platform secrets manager, which is good. The remaining concern is the metadata inconsistency where the registry summary claimed no required env vars while skill.json requires SENDCLAW_API_KEY.
+✓
+Persistence & Privilege
+always:false and user-invocable:true are appropriate. The skill can be invoked autonomously (disable-model-invocation:false) which is normal, but granting an autonomous agent an email-sending credential increases blast radius — consider restricting autonomous send permissions or requiring human confirmation before messages are sent.
+What to consider before installing
+This skill appears to be what it says: an email service for bots that requires a SendClaw API key. Before installing: (1) verify the sendclaw.com domain and organisation (no homepage was listed in the initial header, but skill.json points at sendclaw.com); (2) confirm the registry metadata mismatch about required env vars (ensure SENDCLAW_API_KEY is expected); (3) store the API key in a secure secrets manager (do not paste it into prompts or other domains); (4) if you allow the agent to operate autonomously, restrict or require confirmation for sending emails to avoid accidental/exfiltrative messages; (5) avoid running the provided curl commands until you've validated the remote URLs and are comfortable storing files under ~/.sendclaw. If you need higher assurance, request the skill owner to provide a canonical homepage, privacy/security documentation, and a signed release or package rather than raw instructions that pull files at runtime.

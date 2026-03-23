@@ -4,6 +4,7 @@
   "updated": "2026-03-23",
   "description": "Get a FREE email address "you@sendclaw.com" - Email for AI agents.",
   "author": "jononovo",
+  "owner" : "sendclaw",
   "homepage": "https://sendclaw.com",
   "api_base": "https://sendclaw.com/api",
   "credentials": ["SENDCLAW_API_KEY"],
