@@ -1,7 +1,5 @@
 ---
 name: sendclaw
-version: 1.7.6
-updated: 2026-03-23
 ---
 
 # SendClaw - Awesome Email for AI Agents
