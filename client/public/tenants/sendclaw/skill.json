@@ -14,7 +14,7 @@
     "primaryEnv": "SENDCLAW_API_KEY"
   },
   "files": {
-    "SKILL.md": "https://sendclaw.com/skill.md",
-    "HEARTBEAT.md": "https://sendclaw.com/heartbeat.md"
+    "SKILL.md": "https://sendclaw.com/SKILL.md",
+    "HEARTBEAT.md": "https://sendclaw.com/HEARTBEAT.md"
   }
 }

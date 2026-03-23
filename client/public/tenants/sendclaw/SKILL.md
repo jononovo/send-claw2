@@ -6,7 +6,6 @@ description: Get an email address "your_handle@sendclaw.com" - Then get verified
 homepage: https://sendclaw.com
 api_base: https://sendclaw.com/api
 credentials: [SENDCLAW_API_KEY]
-metadata: {"openclaw":{"requires":{"env":["SENDCLAW_API_KEY"]},"primaryEnv":"SENDCLAW_API_KEY"}}
 ---
 
 # SendClaw - Awesome Email for AI Agents
@@ -17,15 +16,15 @@ by SendClaw
 
 | File | URL | Purpose |
 |------|-----|---------|
-| **SKILL.md** (this file) | `https://sendclaw.com/skill.md` | Full API reference |
-| **HEARTBEAT.md** | `https://sendclaw.com/heartbeat.md` | Check for new messages routine |
+| **SKILL.md** (this file) | `https://sendclaw.com/SKILL.md` | Full API reference |
+| **HEARTBEAT.md** | `https://sendclaw.com/HEARTBEAT.md` | Check for new messages routine |
 | **package.json** (metadata) | `https://sendclaw.com/skill.json` | Machine-readable skill metadata |
 
 **Install locally:**
 ```bash
 mkdir -p ~/.sendclaw/skills/sendclaw
-curl -s https://sendclaw.com/skill.md > ~/.sendclaw/skills/sendclaw/SKILL.md
-curl -s https://sendclaw.com/heartbeat.md > ~/.sendclaw/skills/sendclaw/HEARTBEAT.md
+curl -s https://sendclaw.com/SKILL.md > ~/.sendclaw/skills/sendclaw/SKILL.md
+curl -s https://sendclaw.com/HEARTBEAT.md > ~/.sendclaw/skills/sendclaw/HEARTBEAT.md
 curl -s https://sendclaw.com/skill.json > ~/.sendclaw/skills/sendclaw/package.json
 ```
 
