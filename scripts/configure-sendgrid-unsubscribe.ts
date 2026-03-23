@@ -1,5 +1,3 @@
-import fetch from 'node-fetch';
-
 const SENDGRID_API_KEY = process.env.SENDGRID_API_KEY;
 const LANDING_URL = 'https://5ducks.ai/unsubscribe';
 
