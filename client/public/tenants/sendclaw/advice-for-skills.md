@@ -4,32 +4,51 @@ Lessons learned from security scanners, skill registries, and real-world feedbac
 
 ---
 
-## Required Files
+## File Naming Convention
 
-Every skill should publish at minimum:
+Core skill files MUST be capitalized:
 
 | File | Purpose |
 |------|---------|
 | **SKILL.md** | Full API reference and setup instructions |
-| **skill.json** | Machine-readable metadata (credentials, files, version) |
 | **HEARTBEAT.md** | Periodic check-in routine (if applicable) |
+| **skill.json** | Machine-readable metadata (credentials, files, version) |
 
-### skill.json (package.json metadata)
+`skill.json` stays lowercase — it's a data file, not a documentation file.
 
-Skill registries and scanners look for a structured JSON file, not just YAML frontmatter. Always publish one.
+---
+
+## Metadata: What Goes Where
+
+Metadata lives in **skill.json** — it is the single source of truth for version, dates, homepage, API base, and credentials. The SKILL.md frontmatter should be minimal:
+
+### SKILL.md Frontmatter (minimal)
+
+```yaml
+---
+name: your-skill
+description: What the skill does.
+credentials: [YOUR_SKILL_API_KEY]
+---
+```
+
+Only `name`, `description`, and `credentials` belong in the frontmatter. Scanners read frontmatter for credentials, so it must be declared here too.
+
+### skill.json (full metadata)
 
 ```json
 {
   "name": "your-skill",
   "version": "1.0.0",
+  "updated": "2026-03-23",
   "description": "What the skill does in one sentence.",
   "author": "your-org",
   "homepage": "https://yourskill.com",
   "api_base": "https://yourskill.com/api",
   "credentials": ["YOUR_SKILL_API_KEY"],
   "files": {
-    "SKILL.md": "https://yourskill.com/skill.md",
-    "HEARTBEAT.md": "https://yourskill.com/heartbeat.md"
+    "SKILL.md": "https://yourskill.com/SKILL.md",
+    "HEARTBEAT.md": "https://yourskill.com/HEARTBEAT.md"
   }
 }
 ```
@@ -37,24 +56,8 @@ Skill registries and scanners look for a structured JSON file, not just YAML fro
 Key points:
 - `credentials` must be an **array**, even for a single key: `["KEY_NAME"]`
 - Every file listed in SKILL.md should also appear in the `files` object
-- Keep the JSON in sync with the SKILL.md frontmatter version
-
-### SKILL.md Frontmatter
-
-The YAML frontmatter at the top of SKILL.md must also declare credentials:
-
-```yaml
----
-name: your-skill
-version: 1.0.0
-description: What the skill does.
-homepage: https://yourskill.com
-api_base: https://yourskill.com/api
-credentials: [YOUR_SKILL_API_KEY]
----
-```
-
-Both the frontmatter AND skill.json must declare credentials. Scanners check both.
+- Version and date live only in skill.json, not in frontmatter
+- File URLs must match the actual capitalized filenames
 
 ---
 
@@ -67,16 +70,16 @@ Include a file listing table with local install commands:
 
 | File | URL | Purpose |
 |------|-----|---------|
-| **SKILL.md** (this file) | `https://yourskill.com/skill.md` | Full API reference |
-| **HEARTBEAT.md** | `https://yourskill.com/heartbeat.md` | Periodic check-in routine |
-| **package.json** (metadata) | `https://yourskill.com/skill.json` | Machine-readable metadata |
+| **SKILL.md** (this file) | `https://yourskill.com/SKILL.md` | Full API reference |
+| **HEARTBEAT.md** | `https://yourskill.com/HEARTBEAT.md` | Periodic check-in routine |
+| **skill.json** (metadata) | `https://yourskill.com/skill.json` | Machine-readable skill metadata |
 
 **Install locally:**
 \```bash
 mkdir -p ~/.yourskill/skills/yourskill
-curl -s https://yourskill.com/skill.md > ~/.yourskill/skills/yourskill/SKILL.md
-curl -s https://yourskill.com/heartbeat.md > ~/.yourskill/skills/yourskill/HEARTBEAT.md
-curl -s https://yourskill.com/skill.json > ~/.yourskill/skills/yourskill/package.json
+curl -s https://yourskill.com/SKILL.md > ~/.yourskill/skills/yourskill/SKILL.md
+curl -s https://yourskill.com/HEARTBEAT.md > ~/.yourskill/skills/yourskill/HEARTBEAT.md
+curl -s https://yourskill.com/skill.json > ~/.yourskill/skills/yourskill/skill.json
 \```
 
 **Or just read them from the URLs above!**
@@ -210,17 +213,18 @@ If your skill has a moderation/security system, document the escalation path so 
 ## Version Bumping
 
 When updating skill files:
-- Bump the version in BOTH `skill.json` and SKILL.md frontmatter
-- Keep them in sync
+- Bump the version in `skill.json`
+- Update the `updated` date in `skill.json`
 - Use semver: patch (1.7.0 → 1.7.1) for doc fixes, minor (1.7.0 → 1.8.0) for new features
 
 ---
 
 ## Checklist Before Publishing
 
-- [ ] SKILL.md frontmatter has `credentials: [KEY_NAME]`
-- [ ] skill.json exists and declares `credentials: ["KEY_NAME"]`
-- [ ] Versions match between SKILL.md frontmatter and skill.json
+- [ ] SKILL.md and HEARTBEAT.md filenames are capitalized
+- [ ] SKILL.md frontmatter has `name`, `description`, and `credentials: [KEY_NAME]`
+- [ ] skill.json exists with full metadata (version, updated, homepage, api_base, credentials, files)
+- [ ] File URLs in skill.json use capitalized filenames
 - [ ] Security warning block is present after auth requirement
 - [ ] Credential storage recommends secure secrets manager (not file paths)
 - [ ] All autonomous actions gated behind human approval
