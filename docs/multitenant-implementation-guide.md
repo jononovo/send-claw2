@@ -490,3 +490,243 @@ Step-by-step:
 6. **`guestLanding` is a component key, not a URL**: The value in `routes.guestLanding` (e.g. `"/lobster"`) is used to look up a React component in a static map, NOT as an actual URL that the user navigates to. The user always sees `/` in their browser — the landing page component is swapped behind the scenes.
 
 7. **Config caching**: Server-side configs are cached for the process lifetime (no invalidation). Client-side configs are cached per page load. Changes to `config.json` require a server restart (server) or hard refresh (client).
+
+---
+
+## 10. Recommendations for Next.js Implementation
+
+If porting this multitenant system to a Next.js (App Router) application, the framework's built-in primitives eliminate most of the complexity documented in Section 9. Here's how each piece maps across.
+
+### 10.1 Tenant Resolution: Use Middleware
+
+Replace the dual server/client resolution with a single `middleware.ts` at the project root. This runs on the edge before any page renders.
+
+```typescript
+// middleware.ts
+import { NextRequest, NextResponse } from 'next/server';
+import { getTenantByDomain } from '@/lib/tenants';
+
+export function middleware(request: NextRequest) {
+  const hostname = request.headers.get('host') || '';
+  const tenantId = getTenantByDomain(hostname);
+
+  // Forward tenant ID to Server Components via a request header
+  const response = NextResponse.next();
+  response.headers.set('x-tenant-id', tenantId);
+
+  // Also set a cookie so client components can access it without a prop drill
+  response.cookies.set('tenant-id', tenantId, { path: '/' });
+
+  return response;
+}
+```
+
+This eliminates the **dual resolution problem** entirely — one place resolves, everything downstream consumes.
+
+### 10.2 Tenant Config Loading: Server-Side Only
+
+Keep the same `config.json` files per tenant, but load them on the server using `fs.readFileSync` in a utility function. Since Server Components can read the filesystem directly, there's no need to fetch configs over HTTP.
+
+```typescript
+// lib/tenants/config.ts
+import fs from 'fs';
+import path from 'path';
+
+const cache = new Map<string, TenantConfig>();
+
+export function getTenantConfig(tenantId: string): TenantConfig {
+  if (cache.has(tenantId)) return cache.get(tenantId)!;
+
+  const configPath = path.join(process.cwd(), 'public', 'tenants', tenantId, 'config.json');
+  const config = JSON.parse(fs.readFileSync(configPath, 'utf-8'));
+  cache.set(tenantId, config);
+  return config;
+}
+```
+
+This eliminates the **async boot blocking** — no spinner, no client-side fetch. The config is available immediately during server rendering.
+
+### 10.3 Metadata: Use `generateMetadata`
+
+Replace the client-side `updateMetaTags()` DOM manipulation with Next.js's native metadata API. This runs on the server and bakes tags into the HTML response.
+
+```typescript
+// app/layout.tsx (or any page)
+import { headers } from 'next/headers';
+import { getTenantConfig } from '@/lib/tenants/config';
+
+export async function generateMetadata() {
+  const headersList = await headers();
+  const tenantId = headersList.get('x-tenant-id') || '5ducks';
+  const tenant = getTenantConfig(tenantId);
+
+  return {
+    title: tenant.meta.title,
+    description: tenant.meta.description,
+    icons: {
+      icon: `data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>${tenant.branding.logoEmoji}</text></svg>`,
+    },
+    openGraph: {
+      title: tenant.meta.title,
+      description: tenant.meta.description,
+      images: [tenant.meta.ogImage],
+      url: tenant.meta.url,
+      siteName: tenant.branding.name,
+    },
+    twitter: {
+      title: tenant.meta.title,
+      description: tenant.meta.description,
+      images: [tenant.meta.twitterImage],
+    },
+  };
+}
+```
+
+This eliminates the **meta tag lifecycle problem** — crawlers, social media link previews, and browsers all see correct tenant-specific tags on first response, with zero JavaScript execution required.
+
+### 10.4 Theming: Apply in the Root Layout
+
+Inject CSS custom properties in the root layout's Server Component, so the page arrives pre-themed.
+
+```typescript
+// app/layout.tsx
+import { headers } from 'next/headers';
+import { getTenantConfig } from '@/lib/tenants/config';
+
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const headersList = await headers();
+  const tenantId = headersList.get('x-tenant-id') || '5ducks';
+  const tenant = getTenantConfig(tenantId);
+
+  return (
+    <html
+      lang="en"
+      style={{
+        '--primary': tenant.theme.primaryColor,
+        '--primary-foreground': tenant.theme.primaryForeground,
+        '--accent': tenant.theme.accentColor,
+      } as React.CSSProperties}
+    >
+      <body>{children}</body>
+    </html>
+  );
+}
+```
+
+No flash of un-themed content. The CSS variables are in the HTML the server sends.
+
+### 10.5 Guest vs Auth Landing: Use the Root Page Server Component
+
+```typescript
+// app/page.tsx
+import { headers } from 'next/headers';
+import { redirect } from 'next/navigation';
+import { getTenantConfig } from '@/lib/tenants/config';
+import { getSession } from '@/lib/auth';
+
+export default async function RootPage() {
+  const headersList = await headers();
+  const tenantId = headersList.get('x-tenant-id') || '5ducks';
+  const tenant = getTenantConfig(tenantId);
+  const session = await getSession();
+
+  if (session?.user) {
+    redirect(tenant.routes.authLanding);
+  }
+
+  // Dynamically import the correct landing page
+  const landingComponents: Record<string, () => Promise<{ default: React.ComponentType }>> = {
+    '/lobster': () => import('@/components/landings/SendclawLanding'),
+    '/landing-simple3': () => import('@/components/landings/LandingSimple3'),
+  };
+
+  const loader = landingComponents[tenant.routes.guestLanding];
+  const LandingComponent = loader
+    ? (await loader()).default
+    : (await import('@/components/landings/SendclawLanding')).default;
+
+  return <LandingComponent />;
+}
+```
+
+The redirect happens server-side (HTTP 307) — authenticated users never download the landing page code. Unauthenticated users get the correct landing page in the initial response.
+
+### 10.6 SEO-SSR for Entity Pages: Just Use Server Components
+
+The custom Express middleware that reads HTML templates and does regex replacement becomes unnecessary. Entity pages are just normal Server Components:
+
+```typescript
+// app/company/[slug]/[id]/page.tsx
+import { getTenantConfig } from '@/lib/tenants/config';
+import { getCompany } from '@/lib/db';
+import { headers } from 'next/headers';
+import { notFound } from 'next/navigation';
+
+export async function generateMetadata({ params }: { params: { id: string } }) {
+  const company = await getCompany(parseInt(params.id));
+  if (!company) return {};
+
+  const headersList = await headers();
+  const tenantId = headersList.get('x-tenant-id') || '5ducks';
+  const tenant = getTenantConfig(tenantId);
+
+  return {
+    title: `${company.name} - Company Profile | ${tenant.branding.name}`,
+    description: `${company.name} company profile on ${tenant.branding.name}`,
+    openGraph: {
+      images: [tenant.meta.ogImage],
+    },
+  };
+}
+
+export default async function CompanyPage({ params }: { params: { id: string } }) {
+  const company = await getCompany(parseInt(params.id));
+  if (!company) notFound();
+
+  return <CompanyProfile company={company} />;
+}
+```
+
+No regex HTML manipulation. No in-memory cache. No hidden divs for crawlers. The framework handles everything.
+
+### 10.7 Client Components: Access Tenant via Cookie or Context
+
+For interactive client components that need tenant data, read the cookie set by middleware:
+
+```typescript
+// lib/tenants/use-tenant.ts (client hook)
+'use client';
+import { useMemo } from 'react';
+
+export function useTenantId(): string {
+  return useMemo(() => {
+    if (typeof document === 'undefined') return '5ducks';
+    const match = document.cookie.match(/tenant-id=([^;]+)/);
+    return match?.[1] || '5ducks';
+  }, []);
+}
+```
+
+Or pass tenant config as a serializable prop from a Server Component parent to a Client Component child — avoiding the need for a context provider entirely.
+
+### 10.8 What Stays the Same
+
+- **`config.json` schema and file structure** — identical, works as-is
+- **Asset directory layout** (`public/tenants/{id}/images/`) — identical
+- **Domain matching logic** (hostname normalization, www stripping, subdomain support) — identical algorithm
+- **HSL color format** for shadcn/Tailwind — identical
+- **Database `signup_tenant` column** — identical
+- **Feature flag pattern** (`tenant.features.showX`) — identical, just consumed differently
+
+### 10.9 What Gets Eliminated
+
+| React+Vite+Express Complexity | Next.js Equivalent |
+|---|---|
+| Dual server/client tenant resolution | Single middleware resolution |
+| Client-side async config fetching + spinner | Server-side `fs.readFileSync`, zero loading state |
+| `TenantProvider` React context | Props from Server Components or cookie |
+| `updateMetaTags()` DOM manipulation | `generateMetadata()` — native, server-rendered |
+| `updateFavicon()` DOM manipulation | `metadata.icons` in `generateMetadata()` |
+| Custom SEO-SSR Express middleware with regex | Normal Server Components with `generateMetadata()` |
+| `applyTenantTheme()` client-side CSS injection | Inline `style` on `<html>` in root layout |
+| `React.lazy` + `Suspense` for landing pages | Dynamic `import()` in Server Components |
