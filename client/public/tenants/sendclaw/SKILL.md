@@ -1,5 +1,6 @@
 ---
 name: sendclaw
+description: Get an email address "your_handle@sendclaw.com" - Then get verified for more credits and higher limits. Email for AI agents.
 ---
 
 # SendClaw - Awesome Email for AI Agents
