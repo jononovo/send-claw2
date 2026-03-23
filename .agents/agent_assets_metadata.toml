@@ -1,0 +1,8 @@
+uploads = []
+generated = []
+
+[[outputs]]
+id = "r9mg0Spy-6_O0gWcpvgPd"
+uri = "file://docs/multitenant-implementation-guide.md"
+type = "text"
+title = "Multitenant Implementation Guide"
