@@ -1,0 +1,67 @@
+Migration: 5ducks → SendClaw Database Merge
+Databases:
+
+Source: postgresql://neondb_owner:npg_yRmb5jH9pcDF@ep-hidden-mountain-a6v7mmrx.us-west-2.aws.neon.tech/neondb (5ducks prod)
+Target: postgresql://neondb_owner:npg_wNudr1ETD9tf@ep-silent-flower-ad9i2lck.c-2.us-east-1.aws.neon.tech/neondb (SendClaw prod)
+
+ID Strategy:
+
+SendClaw users offset by +1000 (now IDs 1016-1191)
+5ducks users imported with original IDs (1-85)
+4 5ducks users deleted before export (IDs 87-90)
+SendClaw Demo User (ID 1) deleted before import
+All 5ducks users tagged with signup_tenant = '5ducks'
+
+FK constraint handling:
+
+All 29 user FK constraints dropped before offset
+Child tables updated first, then users.id
+Tables daily_outreach_items, email_sequences, email_sequence_events, campaign_recipients don't have user_id column (skipped during offset)
+Constraints re-added with NOT VALID (enforces on new data, skips existing orphans)
+
+Successfully imported from 5ducks:
+
+users: 31
+companies: 3,436 (some duplicate key skips)
+contacts: 33,321 (imported in batches of 5,000)
+search_lists: 486 (required sed extraction due to multi-line values)
+campaigns: 59 (required CSV export with explicit column mapping — 5ducks has 36 cols, SendClaw has 35, different order)
+campaign_recipients: 540
+contact_list_members: 2,556 (12 skipped — referenced missing contacts)
+credit_transactions: 262
+search_jobs: 539
+daily_outreach_jobs: 4 (column mapped — 5ducks has 12 cols, SendClaw has 10)
+daily_outreach_batches: 180
+daily_outreach_items: 880 (column mapped — 5ducks has 14 cols, SendClaw has 12)
+daily_outreach_job_logs: 245
+communication_history: 26
+user_notifications: 17
+email_templates: 2 (8 duplicates)
+user_preferences: 1
+user_credits: 3 (duplicates on user_id unique constraint)
+user_outreach_preferences: 5 (column mapped — 5ducks has 16 cols, SendClaw has 17)
+
+ID-conflicted tables (0 new rows — existing SendClaw IDs overlap):
+
+sender_profiles: 0 of 20
+customer_profiles: 0 of 7
+strategic_profiles: 0 of 13
+
+Orphan cleanup performed:
+
+72 bots, 46 handles, 6 messages deleted (user_id not in users)
+49 sender_profiles deleted (after nulling campaign references)
+141 credit_transactions, 40 search_lists deleted
+Some contacts/companies with orphaned user_ids remain (NOT VALID constraints allow this)
+
+Schema differences found between 5ducks and SendClaw:
+
+users: SendClaw has extra cols (expires_at, is_claimed, ttl_expires_at, claimed_at, stripe fields, gmail tokens, role, firebase_uid)
+campaigns: different column count and order
+daily_outreach_jobs: 5ducks has nudge_streak_started_at, auto_disabled_at
+daily_outreach_items: 5ducks has email_generated, email_sent
+user_outreach_preferences: SendClaw has nudge_streak_started_at, auto_disabled_at; 5ducks has active_campaign_id
+sender_profiles, strategic_profiles: same column count but different order
+
+Sequences updated for all tables with serial/identity IDs.
+Not imported: user_sessions (25,946 rows — not needed)

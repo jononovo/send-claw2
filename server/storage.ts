@@ -224,7 +224,12 @@ export interface IStorage {
 class DatabaseStorage implements IStorage {
   // User Auth methods
   async getUserByEmail(email: string): Promise<User | undefined> {
-    const [user] = await db.select().from(users).where(eq(users.email, email));
+    const [user] = await db
+      .select()
+      .from(users)
+      .where(eq(users.email, email))
+      .orderBy(users.id)
+      .limit(1);
     return user;
   }
 

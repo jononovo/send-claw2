@@ -1,14 +1,14 @@
 import Anthropic from '@anthropic-ai/sdk';
 import { db } from '../../../db';
 import { bots, securityBulkSignupAlerts } from '@shared/schema';
-import { gte, eq } from 'drizzle-orm';
+import { gte, eq, and, lt } from 'drizzle-orm';
 import crypto from 'crypto';
 import { sendBulkSignupAlert } from './report';
 import { logSecurityEvent } from '../../../sendclaw/common';
 
 const SCAN_INTERVAL_MS = 12 * 60 * 60 * 1000;
 const LOOKBACK_HOURS = 24;
-const MIN_CLUSTER_SIZE = 10;
+const MIN_CLUSTER_SIZE = 5;
 const MIN_DISTINCT_IPS = 3;
 const BATCH_SIZE = 100;
 const DEFAULT_MODEL = "claude-sonnet-4-20250514";
@@ -45,7 +45,7 @@ IDENTIFY COORDINATED GROUPS:
 
 DO NOT FLAG:
 - Bots that coincidentally share common words like "agent", "bot", "helper" in different positions or contexts
-- Small groups of 2-3 similar bots — only flag groups of 10+
+- Small groups of 2-3 similar bots — only flag groups of 5+
 - Legitimate bots that happen to register around the same time
 
 Only return groups you are confident represent coordinated signups.
@@ -104,8 +104,26 @@ async function reviewRegistrations(botRows: BotRow[]): Promise<DetectedGroup[]> 
       try {
         parsed = JSON.parse(jsonMatch[0]);
       } catch (parseError) {
-        console.error('[BulkSignupDetector] JSON parse error:', parseError);
-        continue;
+        console.warn('[BulkSignupDetector] JSON parse error on first attempt, retrying batch...');
+        try {
+          const retryResponse = await anthropic.messages.create({
+            model: DEFAULT_MODEL,
+            max_tokens: 2048,
+            system: SYSTEM_PROMPT,
+            messages: [{ role: 'user', content: userMessage }]
+          });
+          const retryContent = retryResponse.content[0];
+          if (retryContent.type === 'text') {
+            const retryJsonMatch = retryContent.text.match(/\{[\s\S]*\}/);
+            if (retryJsonMatch) {
+              parsed = JSON.parse(retryJsonMatch[0]);
+            }
+          }
+        } catch (retryError) {
+          console.error('[BulkSignupDetector] JSON parse failed on retry too:', retryError);
+          continue;
+        }
+        if (!parsed) continue;
       }
 
       if (parsed.groups && Array.isArray(parsed.groups)) {
@@ -115,6 +133,8 @@ async function reviewRegistrations(botRows: BotRow[]): Promise<DetectedGroup[]> 
             const filteredIds = group.botIds.filter((id: string) => validIds.has(id));
             if (filteredIds.length >= MIN_CLUSTER_SIZE) {
               allGroups.push({ botIds: filteredIds, pattern: group.pattern });
+            } else if (filteredIds.length > 0) {
+              console.log(`[BulkSignupDetector] Group "${group.pattern}" has ${filteredIds.length} bots, below min cluster size ${MIN_CLUSTER_SIZE}, skipping`);
             }
           }
         }
@@ -136,10 +156,18 @@ function generateSignature(pattern: string, windowStart: Date, windowEnd: Date):
   return crypto.createHash('sha256').update(raw).digest('hex').slice(0, 32);
 }
 
-async function runDetection(): Promise<void> {
-  const lookbackStart = new Date(Date.now() - LOOKBACK_HOURS * 60 * 60 * 1000);
-
-  console.log(`[BulkSignupDetector] Scanning bots registered since ${lookbackStart.toISOString()}`);
+async function runDetection(targetDate?: string): Promise<void> {
+  let whereClause;
+  if (targetDate) {
+    const dayStart = new Date(targetDate + 'T00:00:00.000Z');
+    const dayEnd = new Date(targetDate + 'T23:59:59.999Z');
+    console.log(`[BulkSignupDetector] Scanning bots registered on ${targetDate} (${dayStart.toISOString()} to ${dayEnd.toISOString()})`);
+    whereClause = and(gte(bots.createdAt, dayStart), lt(bots.createdAt, new Date(dayEnd.getTime() + 1)));
+  } else {
+    const lookbackStart = new Date(Date.now() - LOOKBACK_HOURS * 60 * 60 * 1000);
+    console.log(`[BulkSignupDetector] Scanning bots registered since ${lookbackStart.toISOString()}`);
+    whereClause = gte(bots.createdAt, lookbackStart);
+  }
 
   const recentBots = await db
     .select({
@@ -156,7 +184,7 @@ async function runDetection(): Promise<void> {
       createdAt: bots.createdAt
     })
     .from(bots)
-    .where(gte(bots.createdAt, lookbackStart))
+    .where(whereClause)
     .orderBy(bots.createdAt);
 
   console.log(`[BulkSignupDetector] Found ${recentBots.length} recent bot registrations`);
@@ -262,9 +290,9 @@ class BulkSignupDetector {
     }, 30_000);
   }
 
-  async forceRun(): Promise<void> {
-    console.log('[BulkSignupDetector] Force running detection...');
-    await runDetection();
+  async forceRun(targetDate?: string): Promise<void> {
+    console.log(`[BulkSignupDetector] Force running detection${targetDate ? ` for ${targetDate}` : ''}...`);
+    await runDetection(targetDate);
   }
 
   stop() {

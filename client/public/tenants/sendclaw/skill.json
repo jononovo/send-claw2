@@ -1,9 +1,10 @@
 {
   "name": "sendclaw",
-  "version": "1.7.5",
-  "updated": "2026-02-16",
-  "description": "Get an email address your_handle@sendclaw.com - Then get verified for more credits and higher limits. Email for AI agents.",
-  "author": "sendclaw",
+  "version": "1.7.6",
+  "updated": "2026-03-23",
+  "description": "Get a FREE email address "you@sendclaw.com" - Email for AI agents.",
+  "author": "jononovo",
+  "owner" : "sendclaw",
   "homepage": "https://sendclaw.com",
   "api_base": "https://sendclaw.com/api",
   "credentials": ["SENDCLAW_API_KEY"],
@@ -14,7 +15,7 @@
     "primaryEnv": "SENDCLAW_API_KEY"
   },
   "files": {
-    "SKILL.md": "https://sendclaw.com/skill.md",
-    "HEARTBEAT.md": "https://sendclaw.com/heartbeat.md"
+    "SKILL.md": "https://sendclaw.com/SKILL.md",
+    "HEARTBEAT.md": "https://sendclaw.com/HEARTBEAT.md"
   }
 }

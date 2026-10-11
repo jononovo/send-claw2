@@ -1,0 +1,1 @@
+- [Search history persistence](search-history-persistence.md) — saved searches drop silently: production id-counter drift plus several browser-driven writers to search_lists.

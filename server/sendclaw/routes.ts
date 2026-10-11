@@ -11,6 +11,7 @@ import {
   sendGridService,
   getClientIP,
   checkRegistrationRateLimitInTx,
+  checkSecurityRules,
   logSecurityEvent,
   generateApiKey,
   generateClaimToken,
@@ -46,6 +47,19 @@ router.post('/bots/register', async (req: Request, res: Response) => {
     const normalizedHandle = handle.toLowerCase();
     attemptedHandle = normalizedHandle;
     const address = `${normalizedHandle}@${SENDCLAW_DOMAIN}`;
+
+    const ruleCheck = await checkSecurityRules(clientIP);
+    if (!ruleCheck.allowed) {
+      console.log(`[SendClaw] Registration blocked by rule for IP ${clientIP}: ${ruleCheck.reason}`);
+      await logSecurityEvent('rule_blocked', clientIP, normalizedHandle, null, {
+        reason: ruleCheck.reason,
+        ruleId: ruleCheck.ruleId,
+        ruleType: ruleCheck.ruleType,
+        name
+      });
+      res.status(403).json({ error: ruleCheck.reason });
+      return;
+    }
 
     const apiKey = generateApiKey();
     const claimToken = generateClaimToken();

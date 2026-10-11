@@ -1,0 +1,748 @@
+id,user_id,name,status,sender_profile_id,strategic_profile_id,target_customer_profile_id,start_date,end_date,duration_days,daily_lead_target,total_leads_generated,response_rate,created_at,updated_at,contact_list_id,subject,body,prompt,tone,offer_type,product_id,send_time_preference,schedule_date,schedule_time,timezone,autopilot_enabled,autopilot_settings,max_emails_per_day,delay_between_emails,track_emails,unsubscribe_link,requires_human_review,email_template_id,generation_type
+3,1,asdf,scheduled,,,,2025-10-29 17:50:43.289134+00,2025-11-05 17:50:43.289134+00,14,5,0,0,2025-10-29 17:48:36.63474+00,2025-10-29 17:48:36.63474+00,16,asdf,asdfsdaffasd,"",default,none,,scheduled,,,America/New_York,f,,20,30,t,f,t,,merge_field
+4,1,asdfasdfs ,scheduled,,,,2025-10-29 18:35:07.536+00,2025-11-05 18:35:07.536+00,14,5,0,0,2025-10-29 18:35:07.55407+00,2025-10-29 18:35:07.55407+00,17,asdfasdfs ,sadf sdaf sa asasdf ,"",default,none,,scheduled,,,America/New_York,f,,20,30,t,f,t,,merge_field
+5,1,tryout5,scheduled,,,,2025-10-29 18:36:00.818+00,2025-11-05 18:36:00.818+00,14,5,0,0,2025-10-29 18:36:00.833532+00,2025-10-29 18:36:00.833532+00,18,tryout5, asdf sadsa df sa asd,"",default,none,,scheduled,,,America/New_York,f,,20,30,t,f,t,,merge_field
+6,1,asdf adsfasdf sa df,scheduled,,,,2025-10-29 18:38:11.028+00,2025-11-05 18:38:11.028+00,14,5,0,0,2025-10-29 18:38:11.04344+00,2025-10-29 18:38:11.04344+00,19,asdf adsfasdf sa df,as dfsad fsa as f,"",default,none,,scheduled,,,America/New_York,f,,20,30,t,f,t,,merge_field
+7,1,asdfsdfa sadf asd saf,scheduled,,,,2025-10-29 18:58:11.104+00,2025-11-05 18:58:11.104+00,14,5,0,0,2025-10-29 18:58:11.123857+00,2025-10-29 18:58:11.123857+00,20,asdfsdfa sadf asd saf,as dfsadfsdaf as df,"",default,none,,scheduled,,,America/New_York,f,,20,30,t,f,t,,merge_field
+8,1,asdf fas dfasdf,scheduled,,,,2025-10-29 19:00:17.233+00,2025-11-05 19:00:17.233+00,14,5,0,0,2025-10-29 19:00:17.248766+00,2025-10-29 19:00:17.248766+00,21,asdf fas dfasdf,as dfas f f,"",default,none,,scheduled,,,America/New_York,f,,20,30,t,f,t,,merge_field
+32,1,asdf,scheduled,,,,2025-11-02 17:53:28.812+00,2025-11-16 17:53:28.812+00,14,5,0,0,2025-11-02 17:53:28.83172+00,2025-11-02 17:53:28.83172+00,43,asdf,asdf,"",default,none,,scheduled,,,America/New_York,f,,20,30,t,f,t,,merge_field
+33,1,asdf,scheduled,,,,2025-11-02 17:58:09.719+00,2025-11-16 17:58:09.719+00,14,5,0,0,2025-11-02 17:58:09.738696+00,2025-11-02 17:58:09.738696+00,44,asdf,asdf,"",default,none,,scheduled,,,America/New_York,f,,20,30,t,f,t,,merge_field
+34,1,asdf,scheduled,,,,2025-11-02 17:59:07.337+00,2025-11-16 17:59:07.337+00,14,5,0,0,2025-11-02 17:59:07.353281+00,2025-11-02 17:59:07.353281+00,34,asdf,sadf,"",default,none,,scheduled,,,America/New_York,f,,20,30,t,f,t,,merge_field
+35,1,asdf333,scheduled,,,,2025-11-02 18:09:51.149+00,2025-11-16 18:09:51.149+00,14,5,0,0,2025-11-02 18:09:51.165975+00,2025-11-02 18:09:51.165975+00,34,asdf333,asdf,"",default,none,,scheduled,,,America/New_York,f,,20,30,t,f,t,,merge_field
+36,1,asdf4444,scheduled,,,,2025-11-02 18:14:23.692+00,2025-11-16 18:14:23.692+00,14,5,0,0,2025-11-02 18:14:23.710449+00,2025-11-02 18:14:23.710449+00,46,asdf4444,asdf,"",default,none,,scheduled,,,America/New_York,f,,20,30,t,f,t,,merge_field
+37,1,Freshen Up {{contact_company_name}} with Premium Oranges,scheduled,,,,2025-11-02 18:39:27.028+00,2025-11-16 18:39:27.028+00,14,5,0,0,2025-11-02 18:39:27.049971+00,2025-11-02 18:39:27.049971+00,47,Freshen Up {{contact_company_name}} with Premium Oranges,"Hi {{first_name}},  
+
+I hope this email finds you well! I wanted to reach out because I believe that the vibrant community work you’re doing at {{contact_company_name}} aligns perfectly with our mission to provide fresh, high-quality oranges that can brighten up any organization’s day. 
+
+As the founder, I know you’re always looking for ways to enhance your offerings and support your team. Our oranges are not only delicious but also packed with nutrients that can boost morale and keep everyone healthy and energized. It sounds like a small thing, but the right snacks can really make a difference!
+
+If you’re interested, I’d love to discuss how we can partner up and bring some sunshine to {{contact_company_name}}. Let me know a good time for you, or feel free to reply right here!
+
+Looking forward to hearing from you!
+
+Best,  
+{{sender_full_name}}  
+{{sender_company_name}}",sell oranges,default,none,,scheduled,,,America/New_York,f,,20,30,t,f,t,,merge_field
+38,1,Elevate Student Success at {{contact_company_name}} with Our Grapes,scheduled,,,,2025-11-02 19:18:19.466+00,2025-11-16 19:18:19.466+00,14,5,0,0,2025-11-02 19:18:19.482765+00,2025-11-02 19:18:19.482765+00,48,Elevate Student Success at {{contact_company_name}} with Our Grapes,"Hi {{first_name}},
+
+I hope this email finds you well! I'm reaching out because I truly admire the work you're doing at {{contact_company_name}} as the Founder. Your commitment to closing the opportunity gap and preparing students for success is inspiring.
+
+I wanted to chat about how our premium grapes can add a fresh twist to your programs. They’re not just delicious, but they also promote healthy eating habits among students. I believe integrating them into your initiatives could enhance the overall experience you're providing.
+
+If you’re interested, I’d love to discuss how we can collaborate to bring this idea to life at {{contact_company_name}}. 
+
+Looking forward to hearing from you!
+
+Cheers,  
+{{sender_full_name}}  
+{{sender_company_name}}",sell grapes,default,none,,scheduled,,,America/New_York,f,,20,30,t,f,t,,merge_field
+39,1,Boost Student Engagement at {{contact_company_name}} with Fresh Mangos!,scheduled,,,,2025-11-02 19:42:02.777+00,2025-11-16 19:42:02.777+00,14,5,0,0,2025-11-02 19:42:02.795848+00,2025-11-02 19:42:02.795848+00,48,Boost Student Engagement at {{contact_company_name}} with Fresh Mangos!,"Hi {{first_name}},
+
+I hope this email finds you well! I wanted to reach out because I believe there’s a sweet opportunity for {{contact_company_name}} to enhance student engagement with something a little different – fresh mangos!
+
+As the Founder, your role in shaping innovative strategies for student success is evident, and I think adding a tropical twist to your programs could really spark interest and excitement. Imagine incorporating mangos into healthy snacks or even team-building activities! 
+
+If you're open to it, I'd love to chat about how we can bring this idea to life at {{contact_company_name}}. Let me know a good time for you, or feel free to drop me a line at {{contact_email}}.
+
+Looking forward to hearing from you!
+
+Best,  
+{{sender_full_name}}  
+{{sender_first_name}}  
+{{sender_company_name}}",sell mangos,default,none,,scheduled,,,America/New_York,f,,20,30,t,f,t,,merge_field
+40,1,Fresh Grapes for {{contact_company_name}}’s Success,scheduled,,,,2025-11-02 20:36:38.451+00,2025-11-16 20:36:38.451+00,14,5,0,0,2025-11-02 20:36:38.471578+00,2025-11-02 20:36:38.471578+00,48,Fresh Grapes for {{contact_company_name}}’s Success,"Hi {{first_name}}, 
+
+I hope this message finds you well! As the Vice President of Learning Products and Services at {{contact_company_name}}, I know you're always on the lookout for innovative ways to support your students. 
+
+I wanted to share some exciting news about our premium grapes that could be a great addition to your programs. They're not just tasty; they're perfect for healthy snacks during learning sessions, promoting better focus and engagement among students. 
+
+If you’re interested, I’d love to chat more about how our grapes could fit into your initiatives at {{contact_company_name}}. Just let me know a good time for you!
+
+Looking forward to hearing from you!
+
+Best,  
+{{sender_full_name}}  
+{{sender_company_name}}",sell grapes,default,none,,scheduled,,,America/New_York,f,,20,30,t,f,t,,merge_field
+41,1,Spreading Joy at {{contact_company_name}} with Our Mission,scheduled,,,,2025-11-02 21:06:09.187+00,2025-11-16 21:06:09.187+00,14,5,0,0,2025-11-02 21:06:09.211225+00,2025-11-02 21:06:09.211225+00,48,Spreading Joy at {{contact_company_name}} with Our Mission,"Hi {{first_name}},
+
+I hope this message finds you well! As the Vice President of Learning Products and Services at {{contact_company_name}}, you play a vital role in shaping the experiences of students, and that's something I truly admire.
+
+At {{sender_company_name}}, we believe in the transformative power of happiness and faith, especially through innovative teaching strategies. I’d love to chat about how we can collaborate to bring even more joy and success to the students you serve.
+
+If you're interested, let's find a time to connect. I’d be thrilled to hear your thoughts!
+
+Wishing you peace and positivity,
+
+{{sender_full_name}}  
+{{sender_company_name}}",sell happiness with Jesus,default,none,,scheduled,,,America/New_York,f,,20,30,t,f,t,,merge_field
+42,1,Hi,scheduled,,,,2025-11-02 21:33:38.172+00,2025-11-16 21:33:38.172+00,14,5,0,0,2025-11-02 21:33:38.189895+00,2025-11-02 21:33:38.189895+00,48,Hi,Go bulls,"",default,none,,scheduled,,,America/New_York,f,,20,30,t,f,t,,merge_field
+43,1,Hi,scheduled,,,,2025-11-02 21:42:50.752+00,2025-11-16 21:42:50.752+00,14,5,0,0,2025-11-02 21:42:50.771994+00,2025-11-02 21:42:50.771994+00,48,Hi,Joe,"",default,none,,scheduled,,,America/New_York,f,,20,30,t,f,t,,merge_field
+44,5,Dive into Adventure with Standup Paddle Boards for {{contact_company_name}},active,,,,2025-11-02 22:45:19.379+00,2025-11-16 22:45:00+00,14,5,0,0,2025-11-02 22:41:00.867752+00,2025-11-02 22:45:19.379+00,49,Dive into Adventure with Standup Paddle Boards for {{contact_company_name}},"Hi {{first_name}},  
+
+I hope this email finds you well! I’m reaching out because I think there’s an exciting opportunity for {{contact_company_name}} to engage your students in a whole new way. Standup paddle boarding is not just a fun activity; it’s a fantastic way to promote teamwork, fitness, and outdoor learning.  
+
+As a {{contact_role}}, I know you’re always looking for innovative ways to inspire the next generation. Our standup paddle boards offer a unique blend of adventure and education that could really resonate with your students. Imagine them learning about buoyancy, balance, and even teamwork while enjoying the great outdoors!  
+
+If this sounds interesting, I’d love to chat more about how we can work together to bring this experience to your programs. Let me know if you’re up for a quick call or if there’s a good time to connect.  
+
+Looking forward to hearing from you!  
+
+Best,  
+{{sender_full_name}}  
+{{sender_company_name}}",sell standup paddle boards,default,none,,scheduled,2025-11-02 22:45:00,17:45,America/New_York,t,"{""days"": {""friday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""monday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""sunday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""tuesday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""saturday"": {""enabled"": false, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""thursday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""wednesday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}}, ""enabled"": false, ""delayUnit"": ""minutes"", ""maxEmailsPerDay"": 300, ""delayBetweenEmails"": 3}",300,3,t,f,t,,merge_field
+45,5,Boost Engagement at {{contact_company_name}} with Our Carburators,active,,,,2025-11-02 23:19:07.429+00,2025-11-16 23:19:00+00,14,5,0,0,2025-11-02 23:17:16.771604+00,2025-11-02 23:19:07.429+00,49,Boost Engagement at {{contact_company_name}} with Our Carburators,"Hi {{first_name}},  
+
+I hope this email finds you well! I’m reaching out because I believe that the innovative work you’re doing at {{contact_company_name}} as the {{contact_role}} could really benefit from our high-quality carburators.  
+
+We’ve seen how effective our products can be in enhancing performance, and I think they could be a great fit for your projects aimed at inspiring young minds in STEM. If you're curious, I’d love to share some insights on how our carburators can help streamline your operations and engage students even more effectively.  
+
+Let me know if you’d like to chat or if there’s a convenient time for a quick call. Looking forward to hearing from you!  
+
+Best,  
+{{sender_full_name}}  
+{{sender_company_name}}",sell car carburators,default,none,,scheduled,2025-11-02 23:19:00,18:19,America/New_York,t,"{""days"": {""friday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""monday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""sunday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""tuesday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""saturday"": {""enabled"": false, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""thursday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""wednesday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}}, ""enabled"": false, ""delayUnit"": ""minutes"", ""maxEmailsPerDay"": 3, ""delayBetweenEmails"": 5}",3,5,t,t,t,,merge_field
+46,1,Elevate Student Success at {{contact_company_name}} with Our Clams,active,,,,2025-11-03 00:53:03.289+00,2025-11-17 00:53:00+00,14,5,0,0,2025-11-03 00:49:05.63948+00,2025-11-03 00:53:03.289+00,48,Elevate Student Success at {{contact_company_name}} with Our Clams,"Hi {{first_name}},  
+
+I hope this email finds you well! I'm reaching out to discuss an exciting opportunity for {{contact_company_name}} that can enhance your mission of closing the opportunity gap in education. As the Founder, your vision for innovative teaching strategies truly stands out, and I believe we have something that aligns perfectly with your goals.  
+
+At {{sender_company_name}}, we specialize in providing high-quality clams that can be incorporated into engaging educational programs. They not only promote healthy eating but also offer a unique way to teach students about sustainability and nutrition. It’s a fun and interactive way to get students involved!  
+
+I’d love to chat more about how our clams can support the valuable work you’re doing at {{contact_company_name}}. Would you be open to a quick call or meeting?  
+
+Looking forward to connecting!  
+
+Best,  
+{{sender_full_name}}  
+{{sender_company_name}}",sell clams,default,none,,scheduled,2025-11-03 00:53:00,19:53,America/New_York,t,"{""days"": {""friday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""monday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""sunday"": {""enabled"": true, ""endTime"": ""23:00"", ""startTime"": ""09:00""}, ""tuesday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""saturday"": {""enabled"": false, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""thursday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""wednesday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}}, ""enabled"": false, ""delayUnit"": ""minutes"", ""maxEmailsPerDay"": 30, ""delayBetweenEmails"": 4}",30,4,t,f,t,,merge_field
+47,1,Elevate {{contact_company_name}}'s Learning Experience,scheduled,,,,2025-11-03 01:12:04.734+00,2025-11-17 01:12:04.734+00,14,5,0,0,2025-11-03 01:12:04.754559+00,2025-11-03 01:12:04.754559+00,48,Elevate {{contact_company_name}}'s Learning Experience,"Hi {{first_name}},
+
+I hope this message finds you well! As the CEO of {{contact_company_name}}, I know you're always looking for innovative ways to enhance your K-12 STEM curriculum and support your teachers. 
+
+At Accelerate Learning, we specialize in providing whitelabel coding and educational platforms designed to engage students through hands-on, inquiry-based programs. I believe our solutions could really complement the fantastic work you're already doing.
+
+I’d love to chat about how we can help you take your offerings to the next level. Let me know a good time for you to connect, or feel free to reply to this email.
+
+Looking forward to hearing from you!
+
+Best,  
+{{sender_full_name}}  
+{{sender_company_name}}",sell whitelabel coding and edu platform,default,none,,scheduled,,,America/New_York,f,,20,30,t,f,t,,merge_field
+48,1,Elevate {{contact_company_name}}'s Learning Experience,active,,,,2025-11-03 01:15:36.163+00,2025-11-17 01:15:00+00,14,5,0,0,2025-11-03 01:12:50.589064+00,2025-11-03 01:15:36.163+00,50,Elevate {{contact_company_name}}'s Learning Experience,"Hi {{first_name}},
+
+I hope this message finds you well! As the CEO of {{contact_company_name}}, I know you're always looking for innovative ways to enhance your K-12 STEM curriculum and support your teachers. 
+
+At Accelerate Learning, we specialize in providing whitelabel coding and educational platforms designed to engage students through hands-on, inquiry-based programs. I believe our solutions could really complement the fantastic work you're already doing.
+
+I’d love to chat about how we can help you take your offerings to the next level. Let me know a good time for you to connect, or feel free to reply to this email.
+
+Looking forward to hearing from you!
+
+Best,  
+{{sender_full_name}}  
+{{sender_company_name}}","",default,none,,scheduled,2025-11-03 01:15:00,20:15,America/New_York,t,"{""days"": {""friday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""monday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""sunday"": {""enabled"": true, ""endTime"": ""22:00"", ""startTime"": ""09:00""}, ""tuesday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""saturday"": {""enabled"": false, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""thursday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""wednesday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}}, ""enabled"": false, ""delayUnit"": ""minutes"", ""maxEmailsPerDay"": 30, ""delayBetweenEmails"": 14}",30,14,t,f,t,,merge_field
+53,1,asdf,active,,37,,2025-11-04 05:48:17.643+00,2025-11-18 05:45:00+00,14,5,0,0,2025-11-04 05:47:44.454828+00,2025-11-04 05:48:17.643+00,48,asdf,asdf,"",silly,hormozi,37,scheduled,2025-11-04 05:45:00,00:45,America/New_York,t,"{""days"": {""friday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""monday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""sunday"": {""enabled"": false, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""tuesday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""00:12""}, ""saturday"": {""enabled"": false, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""thursday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""wednesday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}}, ""enabled"": false, ""delayUnit"": ""minutes"", ""maxEmailsPerDay"": 30, ""delayBetweenEmails"": 4}",30,4,f,t,t,,merge_field
+61,1,Hi Test9,completed,27,,,2025-11-08 23:33:13.207+00,,14,5,0,0,2025-11-08 17:09:16.093803+00,2025-11-08 23:37:29.718+00,48,Hi Test9,Hi there,"",silly,hormozi,,scheduled,2025-11-08 17:10:00,12:10,America/New_York,t,"{""days"": {""friday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""monday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""sunday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""tuesday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""saturday"": {""enabled"": true, ""endTime"": ""20:00"", ""startTime"": ""09:00""}, ""thursday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""wednesday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}}, ""enabled"": true, ""delayUnit"": ""minutes"", ""maxEmailsPerDay"": 3, ""delayBetweenEmails"": 2}",3,2,f,t,f,,merge_field
+87,5,"Hi {{first_name}}, Your own CS Edu Platform with our White-label Partnership ",completed,14,,,2025-11-19 15:28:00.843+00,,14,5,0,0,2025-11-13 00:45:31.567292+00,2025-11-19 16:18:56.427+00,51,"Hi {{first_name}}, Your own CS Edu Platform with our White-label Partnership ","Hi {{first_name}},
+
+I'm Jonathan, founder of Codetribe.
+I started a Codetribe to help nonprofits in Africa teach kids and teens how to code.
+
+Overtime this grew into a full-scale Computer Science learning platform with easy-to-use lesson-building.
+
+Two Reasons This May Interest You:
+
+1. In late 2024 we decided to white-label this and allow select organizations to use it.
+We’ve built a dashboard that allows each “tenant” to customize and launch their own platform in minutes - This means the entire platform on YOUR DOMAIN and with your logo.
+
+2. Use our Curriculum and Add Your Own:
+We’ve made it incredibly easy to add all types of coding lessons, as well as interactive and practical coding projects.
+
+a. We’re expanding AI Lesson Generation to assist you with this.
+b. Including an ultra-powerful “Display Engine” which allows anyone to build (with AI on Replit ) and integrate any type of learning environment in minutes - Hard to explain, but very cool! 
+
+
+PRICING:
+
+You may be thinking “That sounds too good to be true” or “Probably too expensive.” 
+
+Well, you’ll be pleased to know our focus is on empowering other organizations - Helping YOU grow and serve YOUR customers better.
+
+Our pricing packages are built for flexibility and scale, as you’ll see from just 3 of our CORE packages below:
+
+Monthly CORE Platform:
+
+1,000 users  |  $200 ( $0.20 per user)
+3,000 users  |  $480 ( $0.16 per user)
+10,000 users  | $960 ( $0.096 per user)
+
+
+OUR ROADMAP - EMPOWERING YOU WITH A.I.
+
+We’ve been experimenting with how to allow educators to build the CS and Coding Lessons they want in 10% of the time.
+
+
+We’ve focused on:
+1. Making it easier for the AI models by offering them simpler templates to build on. ( Doing all the fancy styling with templates and giving them the mission of core lesson-building.)
+
+2. Creating pre-built lesson environments ( Display Engines) for those templates to plug into.
+
+The result is incredibly fun and interactive lessons ( I will send some examples in my next email.)
+
+This structure allows teachers to easily iterate and tweak new courses with AI. 
+
+OTHER BENEFITS:
+
+A. On-boarding & LMS UI:
+The slick on-boarding UI for Teachers and learners is designed to accommodate multiple classes, topics and teachers.
+
+B. Manage Schools:
+This is by far the most insane part.
+We’ve built “Schools” into the white-label. This means you can sign-up dozens of schools and each school is segmented with its own name, roster and teachers.
+It comes OOTB ( out-of-the-box) with the White-label packages.
+
+
+C. 50% IMPACT DISCOUNT:
+For non-profits and also businesses in 121* developing  countries we offer a no-questions-asked 50% discount on core packages.
+
+*International Co-operative Alliance (ICA) List of developing countries 2024
+
+For state-level or large-scale roll-outs please get in touch.
+
+
+
+I’d also be happy to send you our updated price-list and demo video.
+
+Have an awesome day!
+
+Jonathan
+
+P.S.
+
+If you think someone you know may need this, please forward it to them (or shoot me a reply and I’ll reach out.) 
+","",default,none,,scheduled,2025-11-13 00:47:00,19:47,America/New_York,t,"{""days"": {""friday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""monday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""sunday"": {""enabled"": false, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""tuesday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""saturday"": {""enabled"": false, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""thursday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""wednesday"": {""enabled"": true, ""endTime"": ""23:00"", ""startTime"": ""09:00""}}, ""enabled"": true, ""delayUnit"": ""minutes"", ""maxEmailsPerDay"": 18, ""delayBetweenEmails"": 4}",28,5,f,f,t,,merge_field
+50,1,Uncorking Something Special for You,active,,,,2025-11-03 01:41:59.504+00,2025-11-17 01:41:00+00,14,5,0,0,2025-11-03 01:39:27.464254+00,2025-11-03 01:41:59.504+00,48,Uncorking Something Special for You,"Hi {{first_name}},
+
+I hope this email finds you well! 
+
+I wanted to reach out and share something that I think could add a delightful touch to your upcoming events at Accelerate Learning. As you know, Californian wines have a unique charm that can elevate any gathering, and I’d love to introduce you to some exquisite options that could resonate with your team and partners.
+
+Whether it's a casual get-together or a celebratory occasion, a well-selected wine can really enhance the experience. I'd be happy to chat about some fantastic varietals that would be perfect for your next event or even offer a tasting session to explore the possibilities together.
+
+Let me know if you’re interested, and we can set up a time to connect!
+
+Cheers to new experiences! 
+
+Best,  
+
+{{sender_first_name}}  
+{{sender_company_name}}",sell Californian wine ,default,none,,scheduled,2025-11-03 01:41:00,20:41,America/New_York,t,"{""days"": {""friday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""monday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""sunday"": {""enabled"": true, ""endTime"": ""22:00"", ""startTime"": ""09:00""}, ""tuesday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""saturday"": {""enabled"": false, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""thursday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""wednesday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}}, ""enabled"": false, ""delayUnit"": ""minutes"", ""maxEmailsPerDay"": 30, ""delayBetweenEmails"": 4}",30,4,t,f,t,,ai_unique
+51,1,asdf 9,active,,31,,2025-11-04 05:45:18.107+00,2025-11-18 05:45:00+00,14,5,0,0,2025-11-04 05:42:15.664114+00,2025-11-04 05:45:18.107+00,48,asdf 9,asdf 9,dog walking,silly,hormozi,31,scheduled,2025-11-04 05:45:00,00:45,America/New_York,t,"{""days"": {""friday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""monday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""sunday"": {""enabled"": false, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""tuesday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""00:12""}, ""saturday"": {""enabled"": false, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""thursday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""wednesday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}}, ""enabled"": false, ""delayUnit"": ""minutes"", ""maxEmailsPerDay"": 30, ""delayBetweenEmails"": 4}",30,4,f,t,t,,merge_field
+52,1,do it,active,,37,,2025-11-04 05:47:42.954+00,2025-11-18 05:45:00+00,14,5,0,0,2025-11-04 05:47:23.296856+00,2025-11-04 05:47:42.954+00,48,do it,for me,"",silly,hormozi,37,scheduled,2025-11-04 05:45:00,00:45,America/New_York,t,"{""days"": {""friday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""monday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""sunday"": {""enabled"": false, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""tuesday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""00:12""}, ""saturday"": {""enabled"": false, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""thursday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""wednesday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}}, ""enabled"": false, ""delayUnit"": ""minutes"", ""maxEmailsPerDay"": 30, ""delayBetweenEmails"": 4}",30,4,f,t,t,,merge_field
+81,1,"Hi {{first_name}}, Boost {{contact_company_name}}’s Offerings with Delicious Papayas",completed,27,,,2025-11-12 22:27:22.222+00,2025-11-26 22:27:00+00,14,5,0,0,2025-11-12 22:27:04.352538+00,2025-11-13 14:11:13.488+00,48,"Hi {{first_name}}, Boost {{contact_company_name}}’s Offerings with Delicious Papayas","Hi {{first_name}},
+
+I hope this message finds you well! I wanted to reach out because I think adding fresh papayas to {{contact_company_name}}’s inventory could really elevate your offerings. They’re not only a crowd favorite but also packed with health benefits that your customers will love.
+
+If you’re looking for a reliable source for high-quality papayas, I’d love to chat about how we can help. I’m sure they would make a great addition to your products!
+
+Let me know if you’re interested, and we can set up a time to discuss.
+
+Cheers,  
+Demo User",sell papayas,default,none,,scheduled,2025-11-12 22:27:00,17:27,America/New_York,t,"{""days"": {""friday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""monday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""sunday"": {""enabled"": false, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""tuesday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""saturday"": {""enabled"": false, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""thursday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""wednesday"": {""enabled"": true, ""endTime"": ""18:00"", ""startTime"": ""09:00""}}, ""enabled"": true, ""delayUnit"": ""minutes"", ""maxEmailsPerDay"": 3, ""delayBetweenEmails"": 5}",3,5,f,f,t,,merge_field
+55,1,Hi Test,active,,,,2025-11-07 18:58:28.426+00,2025-11-21 18:58:00+00,14,5,0,0,2025-11-07 18:55:47.727069+00,2025-11-07 18:58:28.426+00,48,Hi Test,First Good to see you.,"",silly,hormozi,,scheduled,2025-11-07 18:58:00,13:58,America/New_York,t,"{""days"": {""friday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""monday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""sunday"": {""enabled"": false, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""tuesday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""saturday"": {""enabled"": false, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""thursday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""wednesday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}}, ""enabled"": false, ""delayUnit"": ""minutes"", ""maxEmailsPerDay"": 300, ""delayBetweenEmails"": 4}",300,4,f,t,f,,merge_field
+54,5,"Hi {{first_name}}, Wanna use our $1 million edu-coding platform for your brand?  ",active,,,,2025-11-07 19:30:10.528+00,2025-11-21 19:30:00+00,14,5,0,0,2025-11-07 18:22:54.178516+00,2025-11-07 19:30:10.528+00,49,"Hi {{first_name}}, Wanna use our $1 million edu-coding platform for your brand?  ","Hi {{first_name}},
+I'm Jonathan, founder of Codetribe. I started it to help nonprofits in Africa teach kids and teens how to code.  
+
+Overtime this grew into a full-scale Computer Science learning platform with an easy-to-use lesson-building.  
+
+# Two Reasons This May Interest You:  
+1. In 2024 we decided to white-label this and have built an admin dashboard where you add your own brand and domain name  - This means the ENTIRE PLATFORM on your domain.  
+
+2. Use our Curriculum and Add Your Own: We’ve made it incredibly easy to add both simple coding lessons, as well as interactive and practical coding projects. 
+
+More about this later.  
+
+# PRICING:  
+You may be thinking “Probably too expensive.”   
+Well, you’ll be pleased to know our focus is on empowering other organizations - Helping YOU grow and serve YOUR customers better.  
+
+Our pricing is built for flexibility and scale, as you’ll see from just 3 of our CORE packages below:  
+
+# Monthly CORE Platform:
+
+1,000 users  |  $200 ( $0.20 per user) 
+3,000 users  |  $480 ( $0.16 per user)
+10,000 users  | $960 ( $0.096 per user)   
+
+# ROADMAP - EMPOWERING YOU WITH A.I.  
+
+Building curriculum and new lessons is hard!
+We want to enable educators to do this in 10% of the time.   
+
+So we focused on: 
+1. Making it easier for the AI models by offering them simpler templates to build on. ( Doing all the fancy styling with templates and giving them the mission of core lesson-building.)  
+
+2. Creating pre-built lesson environments ( Display Engines) for those templates to plug into.  The result is incredibly fun and interactive lessons ( I will send some examples in my next email.)  
+
+This structure allows teachers to easily iterate and tweak new courses with AI.   
+
+# OTHER BENEFITS:
+
+A. On-boarding & LMS UI: 
+The slick on-boarding UI for Teachers and learners is designed to accommodate multiple classes, topics and teachers.  
+
+B. Manage Schools:
+This is by far the most insane part. We’ve built “Schools” into the white-label. This means you can sign-up dozens of schools and each school is segmented with its own name, roster and teachers. It comes OOTB ( out-of-the-box) with the White-label packages.   
+
+C. 50% IMPACT DISCOUNT: 
+For non-profits and also businesses in 121* developing  countries we offer a no-questions-asked 50% discount on core packages.  *International Co-operative Alliance (ICA) List of developing countries 2024
+
+For state-level or large-scale roll-outs please get in touch.   
+
+Have an awesome day!  
+
+Jonathan    
+
+P.S.
+
+If you know someone who may need this, please forward it to them (or shoot me a reply and I’ll reach out.)   I’d also be happy to send you our full price-list and demo video. 
+","",default,none,,scheduled,2025-11-07 19:30:00,14:30,America/New_York,t,"{""days"": {""friday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""monday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""sunday"": {""enabled"": false, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""tuesday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""saturday"": {""enabled"": false, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""thursday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""wednesday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}}, ""enabled"": false, ""delayUnit"": ""minutes"", ""maxEmailsPerDay"": 30, ""delayBetweenEmails"": 4}",30,4,t,f,t,,merge_field
+56,1,Hi Test2,active,,,,2025-11-07 21:01:11.672+00,2025-11-21 21:01:00+00,14,5,0,0,2025-11-07 20:59:12.687639+00,2025-11-07 21:01:11.672+00,48,Hi Test2,"Make it work FAST {{first_name}}!
+","",silly,hormozi,,scheduled,2025-11-07 21:01:00,16:01,America/New_York,t,"{""days"": {""friday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""monday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""sunday"": {""enabled"": false, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""tuesday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""saturday"": {""enabled"": false, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""thursday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""wednesday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}}, ""enabled"": false, ""delayUnit"": ""minutes"", ""maxEmailsPerDay"": 300, ""delayBetweenEmails"": 2}",300,2,f,t,f,,merge_field
+57,1,Hi Test4,active,27,,,2025-11-07 22:05:00.248+00,2025-11-21 22:05:00+00,14,5,0,0,2025-11-07 22:02:19.81288+00,2025-11-07 22:05:00.248+00,48,Hi Test4,"This is the final moment First.
+",Happy people tans,silly,hormozi,,scheduled,2025-11-07 22:05:00,17:05,America/New_York,t,"{""days"": {""friday"": {""enabled"": true, ""endTime"": ""20:00"", ""startTime"": ""09:00""}, ""monday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""sunday"": {""enabled"": false, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""tuesday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""saturday"": {""enabled"": false, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""thursday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""wednesday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}}, ""enabled"": false, ""delayUnit"": ""minutes"", ""maxEmailsPerDay"": 300, ""delayBetweenEmails"": 2}",300,2,f,t,f,,merge_field
+60,1,HI Test8,completed,27,,,2025-11-08 16:56:17.307+00,2025-11-22 16:56:00+00,14,5,0,0,2025-11-08 16:54:33.640621+00,2025-11-08 23:01:44.368+00,48,HI Test8,Let's GOOOO First!!!,"",silly,hormozi,,scheduled,2025-11-08 16:56:00,11:56,America/New_York,t,"{""days"": {""friday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""monday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""sunday"": {""enabled"": false, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""tuesday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""saturday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""thursday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""wednesday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}}, ""enabled"": true, ""delayUnit"": ""minutes"", ""maxEmailsPerDay"": 3, ""delayBetweenEmails"": 2}",3,2,f,t,f,,merge_field
+62,1,Test Campaign for Add Contacts Feature,active,,,,2025-11-10 04:05:32.268388+00,,14,5,0,0,2025-11-10 04:05:32.268388+00,2025-11-10 04:05:32.268388+00,,Test Subject,Test email body,,,,,,,,America/New_York,f,,50,30,t,t,t,,merge_field
+82,1,Refresh {{contact_company_name}} with Delicious Watermelon Options,completed,27,,,2025-11-12 22:34:22.368+00,2025-11-26 22:34:00+00,14,5,0,0,2025-11-12 22:31:57.821585+00,2025-11-13 14:15:47.519+00,48,Refresh {{contact_company_name}} with Delicious Watermelon Options,"Hi {{first_name}},
+
+I hope this message finds you well! I wanted to reach out because I believe there’s a fantastic opportunity for {{contact_company_name}} to elevate your offerings with our premium watermelons. 
+
+Our watermelons are not only delicious but also sourced from the best farms, ensuring quality and freshness that your customers will love. Whether you're looking to enhance your product range or attract more customers, we’ve got you covered!
+
+If you’re open to it, I’d love to chat about how we can work together to bring some juicy goodness to your business.
+
+Looking forward to hearing from you!
+
+Best,  
+Demo User","sell watermelon
+",default,none,,scheduled,2025-11-12 22:34:00,17:34,America/New_York,t,"{""days"": {""friday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""monday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""sunday"": {""enabled"": false, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""tuesday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""saturday"": {""enabled"": false, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""thursday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""wednesday"": {""enabled"": true, ""endTime"": ""18:00"", ""startTime"": ""09:00""}}, ""enabled"": true, ""delayUnit"": ""minutes"", ""maxEmailsPerDay"": 2, ""delayBetweenEmails"": 4}",2,4,f,f,f,,merge_field
+63,1,Freshen Up {{contact_company_name}} with Juicy Oranges 🍊,completed,27,31,,2025-11-10 16:11:14.888+00,2025-11-22 16:12:00+00,14,5,0,0,2025-11-10 16:10:55.609151+00,2025-11-10 16:20:36.802+00,48,Freshen Up {{contact_company_name}} with Juicy Oranges 🍊,"Hey there {{first_name}}!
+
+Hope you’re having a zesty day over at {{contact_company_name}}! As the Executive Director, I bet you’re always looking for fresh ideas to keep things sweet and fruitful for your students. Well, have I got a juicy offer for you!
+
+Instead of the usual drab snacks, get these tangy benefits with our top-notch oranges:  
+- 🍊 **Vitamin C Boost**: Keep everyone energized and ready to tackle those STEM projects!  
+- 🍊 **Eco-Friendly Snacking**: No wrappers, just pure deliciousness! 🌍  
+- 🍊 **Smile Inducer**: Who doesn't love a good orange? Instant happiness! 😄  
+
+And here’s the cherry on top: we guarantee delivery within 48 hours, so you can keep your snack game strong without any fuss! 
+
+Let’s chat about how we can brighten up snack time at {{contact_company_name}}! Hit me up if you’re interested!
+
+Catch ya later!  
+Demo User",sell oranges,silly,hormozi,31,scheduled,2025-11-08 16:12:00,11:12,America/New_York,t,"{""days"": {""friday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""monday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""sunday"": {""enabled"": false, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""tuesday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""saturday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""thursday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""wednesday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}}, ""enabled"": true, ""delayUnit"": ""minutes"", ""maxEmailsPerDay"": 3, ""delayBetweenEmails"": 2}",3,2,f,t,t,,merge_field
+64,1,"Let's Code the Future Together, {{first_name}}!",completed,27,,,2025-11-10 17:52:29.114+00,2025-11-24 17:52:00+00,14,5,0,0,2025-11-10 17:50:41.574298+00,2025-11-10 18:07:30.927+00,48,"Let's Code the Future Together, {{first_name}}!","Hey there {{first_name}}!
+
+I hope your day is as bright as a freshly unwrapped coding textbook! 🌟 I wanted to share something super cool that I think could take {{contact_company_name}} to the next level—our whitelabel K12 coding and computer science education platform! 
+
+Instead of wrestling with outdated resources and boring curriculums, get:
+- 🎉 Engaging, interactive lessons that make coding feel like a game!
+- 🚀 Comprehensive support for teachers and students, transforming the classroom into a coding playground!
+- 💼 A fully customizable platform that fits seamlessly into {{contact_company_name}}’s vision!
+
+And the cherry on top? We guarantee you’ll see a boost in student engagement within just 30 days! 🍒 
+
+Let’s chat more about how we can sprinkle some coding magic into your educational offerings. 
+
+Catch ya later!
+
+Demo User",whitelabel k12 coding and CS edu platform,silly,hormozi,,scheduled,2025-11-10 17:52:00,12:52,America/New_York,t,"{""days"": {""friday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""monday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""sunday"": {""enabled"": false, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""tuesday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""saturday"": {""enabled"": false, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""thursday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""wednesday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}}, ""enabled"": true, ""delayUnit"": ""minutes"", ""maxEmailsPerDay"": 2, ""delayBetweenEmails"": 5}",2,5,f,t,t,,merge_field
+66,5," Hi First, Wanna to use our $1 million edu-coding platform for your brand?",paused,14,,,2025-11-11 06:17:34.753+00,2025-11-21 19:30:00+00,14,5,0,0,2025-11-11 06:17:08.575802+00,2025-11-11 13:15:45.234+00,51," Hi First, Wanna to use our $1 million edu-coding platform for your brand?","Hi {{first_name}},
+I'm Jonathan, founder of Codetribe. I started it to help nonprofits in Africa teach kids and teens how to code.
+
+Overtime this grew into a full-scale Computer Science learning platform with an easy-to-use lesson-building.
+
+# Two Reasons This May Interest You:
+
+1. In 2024 we decided to white-label this and have built an admin dashboard where you add your own brand and domain name  - This means the ENTIRE PLATFORM on your domain.
+
+2. Use our Curriculum and Add Your Own:
+We’ve made it incredibly easy to add both simple coding lessons, as well as interactive and practical coding projects.
+
+More about this later.
+
+
+
+# PRICING:
+
+You may be thinking “Probably too expensive.” 
+
+Well, you’ll be pleased to know our focus is on empowering other organizations - Helping YOU grow and serve YOUR customers better.
+
+Our pricing is built for flexibility and scale, as you’ll see from just 3 of our CORE packages below:
+
+# Monthly CORE Platform:
+
+1,000 users  |  $200 ( $0.20 per user)
+3,000 users  |  $480 ( $0.16 per user)
+10,000 users  | $960 ( $0.096 per user)
+
+
+# ROADMAP - EMPOWERING YOU WITH A.I.
+
+Building curriculum and new lessons is hard!
+We want to enable educators to do this in 10% of the time.
+
+So we focused on:
+
+1. Making it easier for the AI models by offering them simpler templates to build on. ( Doing all the fancy styling with templates and giving them the mission of core lesson-building.)
+
+2. Creating pre-built lesson environments ( Display Engines) for those templates to plug into.
+
+The result is incredibly fun and interactive lessons ( I will send some examples in my next email.)
+
+This structure allows teachers to easily iterate and tweak new courses with AI. 
+
+
+# OTHER BENEFITS:
+
+A. On-boarding & LMS UI:
+
+The slick on-boarding UI for Teachers and learners is designed to accommodate multiple classes, topics and teachers.
+
+
+
+B. Manage Schools:
+This is by far the most insane part.
+We’ve built “Schools” into the white-label. This means you can sign-up dozens of schools and each school is segmented with its own name, roster and teachers.
+It comes OOTB ( out-of-the-box) with the White-label packages.
+
+
+
+
+C. 50% IMPACT DISCOUNT:
+
+For non-profits and also businesses in 121* developing  countries we offer a no-questions-asked 50% discount on core packages.
+
+*International Co-operative Alliance (ICA) List of developing countries 2024
+
+For state-level or large-scale roll-outs please get in touch.
+
+
+Have an awesome day!
+
+Jonathan
+
+
+P.S.
+If you know someone who may need this, please forward it to them (or shoot me a reply and I’ll reach out.) 
+
+I’d also be happy to send you our full price-list and demo video.
+
+","",default,none,,scheduled,2025-11-07 19:30:00,14:30,America/New_York,t,"{""days"": {""friday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""monday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""sunday"": {""enabled"": false, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""tuesday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""08:00""}, ""saturday"": {""enabled"": false, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""thursday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""wednesday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}}, ""enabled"": true, ""delayUnit"": ""minutes"", ""maxEmailsPerDay"": 30, ""delayBetweenEmails"": 4}",30,4,t,f,t,,merge_field
+75,1,"Hi Larry, how are you?",completed,27,,,2025-11-12 20:05:20.8+00,2025-11-26 20:05:00+00,14,5,0,0,2025-11-12 20:02:51.870552+00,2025-11-12 20:14:42.944+00,48,"Hi Larry, how are you?","Can you, Larry, start the marketing flow again?
+
+Jon
+
+PS.
+thanks","",default,none,,scheduled,2025-11-12 20:05:00,15:05,America/New_York,t,"{""days"": {""friday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""monday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""sunday"": {""enabled"": false, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""tuesday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""saturday"": {""enabled"": false, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""thursday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""wednesday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}}, ""enabled"": true, ""delayUnit"": ""minutes"", ""maxEmailsPerDay"": 3, ""delayBetweenEmails"": 3}",3,3,t,f,t,,merge_field
+65,1,Freshen Up {{contact_company_name}} with Premium Oranges,completed,27,,,2025-11-10 18:50:22.483+00,2025-11-24 18:50:00+00,14,5,0,0,2025-11-10 18:48:35.580775+00,2025-11-11 14:20:33.113+00,47,Freshen Up {{contact_company_name}} with Premium Oranges,"Hi {{first_name}},  
+
+I hope this email finds you well! I wanted to reach out and share something that might add a zest to your day at {{contact_company_name}}. As the CEO, I know you’re always on the lookout for ways to enhance your offerings, and I believe our premium oranges could be a refreshing addition.
+
+Imagine how much your team and clients would appreciate the vibrant energy and health benefits that come from fresh oranges. Not only do they taste great, but they also promote wellness and productivity—something we can all use more of, right? 
+
+If you’re interested, I’d love to chat about how we can make this happen for {{contact_company_name}}. Let me know a good time for you, or feel free to drop me a line at {{contact_email}}.
+
+Looking forward to connecting!
+
+Best,  
+Demo User",sell oranges,default,none,,scheduled,2025-11-10 18:50:00,13:50,America/New_York,t,"{""days"": {""friday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""monday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""sunday"": {""enabled"": false, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""tuesday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""saturday"": {""enabled"": false, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""thursday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""wednesday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}}, ""enabled"": true, ""delayUnit"": ""minutes"", ""maxEmailsPerDay"": 30, ""delayBetweenEmails"": 3}",30,3,f,f,t,,merge_field
+83,1,"Hi {{first_name}}, Sweeten Up {{contact_company_name}} with Fresh Strawberries",completed,27,,,2025-11-12 23:26:33.61+00,,14,5,0,0,2025-11-12 23:11:11.628821+00,2025-11-14 14:06:04.473+00,48,"Hi {{first_name}}, Sweeten Up {{contact_company_name}} with Fresh Strawberries","Hi {{first_name}},
+
+I hope this email finds you well! I wanted to reach out because I believe that fresh strawberries could really add a delightful touch to your offerings at {{contact_company_name}}. Whether it's for a special event, a menu item, or just a treat for your team, these strawberries are sure to impress.
+
+If you’re looking for a reliable supplier who can provide top-quality strawberries, let’s chat! I’d love to discuss how we can help you sweeten things up at {{contact_company_name}}.
+
+Looking forward to hearing from you!
+
+Best,  
+Demo User",sell strawberries,default,none,,scheduled,2025-11-12 23:12:00,18:12,America/New_York,t,"{""days"": {""friday"": {""enabled"": true, ""endTime"": ""19:00"", ""startTime"": ""09:00""}, ""monday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""sunday"": {""enabled"": false, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""tuesday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""saturday"": {""enabled"": false, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""thursday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""wednesday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}}, ""enabled"": true, ""delayUnit"": ""minutes"", ""maxEmailsPerDay"": 2, ""delayBetweenEmails"": 4}",2,4,f,f,f,,merge_field
+68,5,"Hi First, Sweeten Up Company Name with Fresh Pineapples",active,14,,,2025-11-11 15:01:04.474+00,2025-11-25 15:01:00+00,14,5,0,0,2025-11-11 14:59:11.559196+00,2025-11-11 15:01:04.474+00,49,"Hi First, Sweeten Up Company Name with Fresh Pineapples","Hi {{first_name}},
+
+I hope this email finds you well! I wanted to reach out and share something that could really add a tropical twist to what you're doing over at {{contact_company_name}}. We’ve got a fantastic selection of premium pineapples that are perfect for enhancing menus or retail offerings.
+
+Whether you’re looking to impress customers with fresh flavors or just add a fun vibe to your products, pineapple is a great way to go. I’d love to chat about how we can help you incorporate these delicious fruits into your business. 
+
+Let me know if you’re interested, and we can set up a time to talk!
+
+Best,  
+Jonathan Novotny","sell pineapples
+",default,none,,scheduled,2025-11-11 15:01:00,10:01,America/New_York,t,"{""days"": {""friday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""monday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""sunday"": {""enabled"": false, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""tuesday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""saturday"": {""enabled"": false, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""thursday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""wednesday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}}, ""enabled"": true, ""delayUnit"": ""minutes"", ""maxEmailsPerDay"": 30, ""delayBetweenEmails"": 4}",30,4,f,f,t,,merge_field
+84,1,"Hi {{first_name}}, Boost {{contact_company_name}}'s Offerings with Delicious Pomegranates",completed,27,,,2025-11-13 00:08:07.209+00,2025-11-27 00:08:00+00,14,5,0,0,2025-11-13 00:07:05.120151+00,2025-11-14 14:10:09.003+00,48,"Hi {{first_name}}, Boost {{contact_company_name}}'s Offerings with Delicious Pomegranates","Hi {{first_name}},
+
+I hope this message finds you well! I wanted to reach out because I believe pomegranates could be a fantastic addition to {{contact_company_name}}'s lineup. Their unique flavor and health benefits are really making waves in the market right now.
+
+As a leader in your role as {{contact_role}}, I'm sure you're always on the lookout for new ways to enhance your offerings. Pomegranates could not only attract new customers but also create buzz around your brand. Plus, they’re super versatile—from fresh fruit to juice, the possibilities are endless!
+
+If you're interested, I’d love to discuss how we can collaborate to bring these vibrant fruits to your customers. Let me know a good time for you, and we can chat!
+
+Looking forward to hearing from you!
+
+Best,  
+Demo User",sell pomegranates ,default,none,,scheduled,2025-11-13 00:08:00,19:08,America/New_York,t,"{""days"": {""friday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""monday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""sunday"": {""enabled"": false, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""tuesday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""saturday"": {""enabled"": false, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""thursday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""wednesday"": {""enabled"": true, ""endTime"": ""20:00"", ""startTime"": ""09:00""}}, ""enabled"": true, ""delayUnit"": ""minutes"", ""maxEmailsPerDay"": 2, ""delayBetweenEmails"": 4}",2,4,f,f,f,,merge_field
+70,5,"Hi First, Let's build this business",active,14,,,2025-11-11 15:22:30.885+00,2025-11-25 15:22:00+00,14,5,0,0,2025-11-11 15:18:20.998772+00,2025-11-11 15:22:30.885+00,49,"Hi First, Let's build this business","Hi there First, 
+Please call me when you get the chance.
+Jon","",default,none,,scheduled,2025-11-11 15:22:00,10:22,America/New_York,t,"{""days"": {""friday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""monday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""sunday"": {""enabled"": false, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""tuesday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""saturday"": {""enabled"": false, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""thursday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""wednesday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}}, ""enabled"": true, ""delayUnit"": ""minutes"", ""maxEmailsPerDay"": 30, ""delayBetweenEmails"": 3}",30,3,f,f,t,,merge_field
+67,1,"Hey {{first_name}}, Let's Talk About Oranges at {{contact_company_name}}!",completed,27,,,2025-11-11 14:42:44.314+00,2025-11-25 14:42:00+00,14,5,0,0,2025-11-11 14:39:34.631258+00,2025-11-11 15:30:22.702+00,48,"Hey {{first_name}}, Let's Talk About Oranges at {{contact_company_name}}!","Hey there {{first_name}},
+
+I hope you're ready to get your zest on because we're about to make your life a whole lot sweeter! 🍊 Instead of dealing with the usual boring snacks, how about spicing things up with our fabulous, juicy oranges? Here’s what we bring to the table:
+
+- 🥳 **Health Benefits Galore**: Boost your team's immune system faster than they can say “Vitamin C”! 
+- 🎉 **Perfect for Every Occasion**: Whether it’s a team meeting or a midday pick-me-up, our oranges are the life of the party!
+- 🌟 **Guaranteed Freshness**: We promise you’ll get the freshest oranges delivered right to your door in just 48 hours. 
+
+Imagine the smiles on your team’s faces when they bite into a fresh orange instead of yet another sad granola bar! Let’s shake things up at {{contact_company_name}} and make snacking fun again!
+
+Can't wait to hear your thoughts!
+
+Cheers!  
+Demo User","sell oranges
+",silly,hormozi,,scheduled,2025-11-11 14:42:00,09:42,America/New_York,t,"{""days"": {""friday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""monday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""sunday"": {""enabled"": false, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""tuesday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""saturday"": {""enabled"": false, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""thursday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""wednesday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}}, ""enabled"": true, ""delayUnit"": ""minutes"", ""maxEmailsPerDay"": 3, ""delayBetweenEmails"": 3}",3,3,f,t,t,,merge_field
+72,5,First are you ready to go?,completed,14,,,2025-11-11 17:20:18.191+00,2025-11-25 17:20:00+00,14,5,0,0,2025-11-11 17:18:10.000982+00,2025-11-12 14:00:13.134+00,49,First are you ready to go?,"Hi First, 
+
+There is so much to tell you.
+Let's talk about.
+Jon","",default,none,,scheduled,2025-11-11 17:20:00,12:20,America/New_York,t,"{""days"": {""friday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""monday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""sunday"": {""enabled"": false, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""tuesday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""saturday"": {""enabled"": false, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""thursday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""wednesday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}}, ""enabled"": true, ""delayUnit"": ""minutes"", ""maxEmailsPerDay"": 3, ""delayBetweenEmails"": 3}",3,3,f,f,t,,merge_field
+73,1,"Hi First, Spice Up Company Name with Our Zesty Horse Radish!",active,27,,,2025-11-11 17:32:17.668+00,2025-11-25 17:32:00+00,14,5,0,0,2025-11-11 17:29:04.162968+00,2025-11-11 17:32:17.668+00,48,"Hi First, Spice Up Company Name with Our Zesty Horse Radish!","Hey there {{first_name}}!
+
+Hope your day is as bright as a unicorn wearing sunglasses! 🌈 I'm reaching out to sprinkle some flavor magic into {{contact_company_name}} with our fabulous horse radish. 🐴🔥
+
+Instead of boring condiments that make you yawn, get:
+- **A zesty kick** that’ll have your taste buds dancing! 💃
+- **All-natural goodness** that keeps your team buzzing with energy! ⚡
+- **Guaranteed freshness** delivered right to your door in just 3 days! 🚚
+
+Let’s chat about how we can turn those ordinary meals at {{contact_company_name}} into something that’ll make everyone say “YUM!” 🤤
+
+Catch ya later!
+
+Demo User",sell horse radish,silly,hormozi,,scheduled,2025-11-11 17:32:00,12:32,America/New_York,t,"{""days"": {""friday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""monday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""sunday"": {""enabled"": false, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""tuesday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""saturday"": {""enabled"": false, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""thursday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""wednesday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}}, ""enabled"": true, ""delayUnit"": ""minutes"", ""maxEmailsPerDay"": 3, ""delayBetweenEmails"": 3}",3,3,f,t,t,,merge_field
+71,5,Testing Line Spacing,completed,14,,,2025-11-11 17:18:17.626+00,2025-11-25 17:18:00+00,14,5,0,0,2025-11-11 17:16:28.37898+00,2025-11-12 14:00:08.604+00,49,Testing Line Spacing,"Dear Mr. Jon,
+I hope this message finds you well. I am reaching out on behalf of Rockrose Developers to discuss potential mortgage financing solutions for our upcoming residential development projects. Given your expertise in real estate finance, we believe a collaboration could be mutually beneficial.
+Rockrose has a strong track record of securing substantial mortgage loans for major developments, including recent financings with Wells Fargo and Equitable Financial Life Insurance Company for projects in Queens and Manhattan[1][2][3][4]. We are keen to explore tailored mortgage structures that align with our development goals and market conditions.
+Could we schedule a time to discuss how your team might support our financing needs?
+Best regards,  
+Jon
+
+",mortgage securing for developments ,default,none,,scheduled,2025-11-11 17:18:00,12:18,America/New_York,t,"{""days"": {""friday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""monday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""sunday"": {""enabled"": false, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""tuesday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""saturday"": {""enabled"": false, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""thursday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""wednesday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}}, ""enabled"": true, ""delayUnit"": ""minutes"", ""maxEmailsPerDay"": 3, ""delayBetweenEmails"": 3}",3,3,f,f,t,,merge_field
+89,50,November 2025,draft,,,,2025-11-26 21:39:35.166+00,2025-12-10 21:39:35.166+00,14,5,0,0,2025-11-26 21:39:35.188294+00,2025-11-26 21:39:35.188294+00,,,,,,,,,,,America/New_York,f,,20,30,t,t,t,,merge_field
+88,5,"Hi {{first_name}}, Ever wanted $1m to launch a new revenue stream - Enter our White-label.",completed,14,,,2025-12-09 00:22:05.926+00,,14,5,0,0,2025-11-19 23:01:58.146596+00,2025-12-09 15:27:36.636+00,55,"Hi {{first_name}}, Ever wanted $1m to launch a new revenue stream - Enter our White-label.","Hi {{first_name}}, 
+
+My team asked me to reach out to 20 organizations in India to do a private offer of our whitelabel plan.
+
+It's possible that we mis-judged and included you in this list erroneously. 
+
+If this is not a good fit for you and your don't have significant alumni ( previous customers) that are under-monetized, then please let me know, and I'll remove you from this offering.
+
+# What's this all about?
+
+We launched in private, a white-label version of our platform and the response has been incredible.
+
+Now, we wanted to open it up to a few more select organizations and:
+ - Waive the Setup Fee 
+ - Provide Signup at 30% our initial offering 
+ - Give you a simple and easy way to setup and test a ""NEW REVENUE STREAM""
+ - Join our invite-only “STEM Leaders Community”
+
+# What this means for you {{first_name}} :D
+
+With absolutely no upfront cost, you can test-launch a complete platform with our ""STARTER Package"" at only $200 per month.
+ 
+ This includes:
+
+A. The full, hyper-practical and efficient curriculum catalog we offer ( Game-Dev, Web-Dev & JS API/AI  Tracks.)
+B. Modern on-boarding & complete LMS for students, classes and yes, and unlimited number of schools.
+C. Auto-graded, custom curriculum is incredibly easy to build with our ""Lesson-Builder Suite"".
+So if you have a course or want to build one, both are easier than ever.
+D. And much more.
+
+It's hard to explain everything so I'm going to ask you to take two simple steps:
+
+1. Watch one of the youtube video links I've added below. 
+Decide if this is exact fit as a new revenue stream for your team.
+( 2-3 mins )
+
+2. Sign-up your org here ( No credit card required ) and reserve your brand handle: 
+https://app.codetribe.com/auth/org 
+( 2-3 mins )
+
+ # Ok. But what is CodeTribe? ( And a glimpse of the future.)
+ 
+ Right. Well,... until 2 months ago we would have told you we are a CS/Coding Edu Platform. 
+ Buuuut we are actually leveraging our code-focused platform and modern LMS to allow for an ULTRA-flexible platform where ANY type of simulation, quiz, learning environment can be auto-graded.
+ 
+ We've started running pilots to explore how far this LIMITLESS environment can go and we are super excited. Basically, virtually anything you can imagine teaching in an interactive form can be created seamlessly and auto-graded.
+ 
+ Sorry, went off on a tangent there.
+ 
+ At the moment, we're a CS and Coding platform ( with a full LMS) oriented around kids and teens, but are quickly adding new and novel tools.
+
+This is my PRIVATE email. Please respond to me directly here. I'll answer as soon as I can.
+
+Also would love to follow and learn more about your business and needs. So please connect with me on LinkedIn too. :)
+
+Till soon,
+
+Jonathan Novotny
+co-Founder: CodeTribe
+
+Linkedin: https://www.linkedin.com/in/jonathannovotny
+
+
+# Videos:
+
+ Admin Setup: Create Your White-label Platform in 3 Minutes
+https://youtu.be/w_oRDEVHxuo 
+
+Teacher Setup: 0-100 mph in 2 minutes. Setup your school, class and assignments in seconds. 
+https://youtu.be/J5paFsZmgvM  
+
+Create Lessons, Courses & Simulations:  Create INSANE Simulations & Lessons in Minutes | CodeTribe
+https://youtu.be/a6VS6y7WDY4 
+
+That's all for now folks!","",default,none,,scheduled,2025-11-19 23:03:00,18:03,America/New_York,t,"{""days"": {""friday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""monday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""sunday"": {""enabled"": false, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""tuesday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""10:00""}, ""saturday"": {""enabled"": false, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""thursday"": {""enabled"": true, ""endTime"": ""20:00"", ""startTime"": ""09:00""}, ""wednesday"": {""enabled"": true, ""endTime"": ""20:00"", ""startTime"": ""09:00""}}, ""enabled"": true, ""delayUnit"": ""minutes"", ""maxEmailsPerDay"": 15, ""delayBetweenEmails"": 5}",25,4,f,f,t,,merge_field
+74,5,"Hi First, Brighten Up Company Name with Our Juicy Grapefruit!, ",completed,14,,,2025-11-12 19:55:18.838+00,2025-11-26 19:55:00+00,14,5,0,0,2025-11-12 19:53:55.818733+00,2025-11-12 20:01:22.009+00,49,"Hi First, Brighten Up Company Name with Our Juicy Grapefruit!, ","Hi {{first_name}}, 
+
+I hope this email finds you well! I wanted to reach out because I believe that adding some fresh grapefruit to your offerings at {{contact_company_name}} could be a fantastic way to elevate your product line. 
+
+Grapefruit is not only delicious but also packed with health benefits that your customers will love. Whether you're looking to enhance a breakfast menu or create a refreshing beverage option, our premium grapefruits can make a real impact. 
+
+If you're interested, I’d love to chat about how we can bring some zesty goodness to your company. Let me know a good time for you, and we can explore some delicious possibilities!
+
+Looking forward to hearing from you.
+
+Best,  
+Jonathan Novotny",sell grapefruit,default,none,,scheduled,2025-11-12 19:55:00,14:55,America/New_York,t,"{""days"": {""friday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""monday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""sunday"": {""enabled"": false, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""tuesday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""saturday"": {""enabled"": false, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""thursday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""wednesday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}}, ""enabled"": true, ""delayUnit"": ""minutes"", ""maxEmailsPerDay"": 3, ""delayBetweenEmails"": 3}",3,3,f,f,f,,merge_field
+76,1,hi {{first_name}},completed,27,,,2025-11-12 21:10:21.436+00,2025-11-26 21:10:00+00,14,5,0,0,2025-11-12 21:08:16.032965+00,2025-11-12 21:19:23.269+00,48,hi {{first_name}},"Hi First,
+lets do this..
+
+Jon","",default,none,,scheduled,2025-11-12 21:10:00,16:10,America/New_York,t,"{""days"": {""friday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""monday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""sunday"": {""enabled"": false, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""tuesday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""saturday"": {""enabled"": false, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""thursday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""wednesday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}}, ""enabled"": true, ""delayUnit"": ""minutes"", ""maxEmailsPerDay"": 3, ""delayBetweenEmails"": 3}",3,3,t,f,t,,merge_field
+77,1,"Hi {{first_name}}, Freshen Up {{contact_company_name}} with Premium Commercial Orange Juicers",active,27,,,2025-11-12 21:35:21.731+00,2025-11-26 21:35:00+00,14,5,0,0,2025-11-12 21:34:15.864314+00,2025-11-12 21:35:21.731+00,47,"Hi {{first_name}}, Freshen Up {{contact_company_name}} with Premium Commercial Orange Juicers","Hi {{first_name}},
+
+I hope this email finds you well! I wanted to reach out and share some exciting opportunities that could benefit {{contact_company_name}}. Our premium commercial orange juicers can really elevate your fresh juice offerings, and I think they could resonate well with your customers.
+
+If you’re interested, I’d love to chat about how we can tailor our solutions to fit your needs and maybe even tackle any challenges you might be facing in your current operations. 
+
+Looking forward to hearing from you!
+
+Best,  
+Demo User",see tangerines,default,none,,scheduled,2025-11-12 21:35:00,16:35,America/New_York,t,"{""days"": {""friday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""monday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""sunday"": {""enabled"": false, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""tuesday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""saturday"": {""enabled"": false, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""thursday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""wednesday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}}, ""enabled"": true, ""delayUnit"": ""minutes"", ""maxEmailsPerDay"": 3, ""delayBetweenEmails"": 3}",3,3,f,f,t,,merge_field
+79,1,"Hi {{first_name}}, Sour-DOWN {{contact_company_name}} with Our Seedless Grapes",active,27,,,2025-11-12 21:40:21.786+00,2025-11-26 21:40:00+00,14,5,0,0,2025-11-12 21:39:44.312436+00,2025-11-12 21:40:21.786+00,47,"Hi {{first_name}}, Sour-DOWN {{contact_company_name}} with Our Seedless Grapes","Hi {{first_name}},
+
+SOUR DOWN - finds you well! I wanted to reach out because I believe that {{contact_company_name}} could really benefit from our premium seedless grapes. 
+
+These little gems not only offer a delightful taste but also present a fantastic opportunity for your customers. Whether it’s for snacking or incorporating into various dishes, they’re always a hit! Plus, they save time on prep—no more dealing with seeds.
+
+If you’re interested, I’d love to chat more about how we can partner to bring these to your market and boost your offerings. 
+
+Looking forward to hearing your thoughts!
+
+Cheers,  
+Demo User","",default,none,,scheduled,2025-11-12 21:40:00,16:40,America/New_York,t,"{""days"": {""friday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""monday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""sunday"": {""enabled"": false, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""tuesday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""saturday"": {""enabled"": false, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""thursday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""wednesday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}}, ""enabled"": true, ""delayUnit"": ""minutes"", ""maxEmailsPerDay"": 3, ""delayBetweenEmails"": 3}",3,3,f,f,t,,merge_field
+78,1,"Hi {{first_name}}, Sweeten Up {{contact_company_name}} with Our Seedless Grapes",active,27,,,2025-11-12 21:40:21.76+00,2025-11-26 21:40:00+00,14,5,0,0,2025-11-12 21:37:32.697695+00,2025-11-12 21:40:21.76+00,47,"Hi {{first_name}}, Sweeten Up {{contact_company_name}} with Our Seedless Grapes","Hi {{first_name}},
+
+I hope this message finds you well! I wanted to reach out because I believe that {{contact_company_name}} could really benefit from our premium seedless grapes. 
+
+These little gems not only offer a delightful taste but also present a fantastic opportunity for your customers. Whether it’s for snacking or incorporating into various dishes, they’re always a hit! Plus, they save time on prep—no more dealing with seeds.
+
+If you’re interested, I’d love to chat more about how we can partner to bring these to your market and boost your offerings. 
+
+Looking forward to hearing your thoughts!
+
+Cheers,  
+Demo User",sell seedless grapes,default,none,,scheduled,2025-11-12 21:40:00,16:40,America/New_York,t,"{""days"": {""friday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""monday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""sunday"": {""enabled"": false, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""tuesday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""saturday"": {""enabled"": false, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""thursday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""wednesday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}}, ""enabled"": true, ""delayUnit"": ""minutes"", ""maxEmailsPerDay"": 3, ""delayBetweenEmails"": 3}",3,3,f,f,t,,merge_field
+80,1,"Hi {{first_name}}, Freshen Up {{contact_company_name}} with Premium Commercial Oranges",completed,27,,,2025-11-12 21:52:21.886+00,2025-11-26 21:52:00+00,14,5,0,0,2025-11-12 21:50:55.323743+00,2025-11-12 22:02:04.296+00,48,"Hi {{first_name}}, Freshen Up {{contact_company_name}} with Premium Commercial Oranges","Hi {{first_name}},
+
+I hope this email finds you well! I wanted to reach out because I think our premium oranges could be a great fit for {{contact_company_name}}. Whether it's for enhancing your product offerings or adding a zesty touch to your operations, our oranges are top-notch and sure to impress.
+
+If you have a moment, I'd love to chat about how our oranges can bring some fresh flavor to your team and clients. Let me know if you're interested!
+
+Looking forward to hearing from you.
+
+Best,  
+Demo User",sell oranges,default,none,,scheduled,2025-11-12 21:52:00,16:52,America/New_York,t,"{""days"": {""friday"": {""enabled"": true, ""endTime"": ""18:00"", ""startTime"": ""09:00""}, ""monday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""sunday"": {""enabled"": false, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""tuesday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""saturday"": {""enabled"": false, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""thursday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""wednesday"": {""enabled"": true, ""endTime"": ""18:00"", ""startTime"": ""09:00""}}, ""enabled"": true, ""delayUnit"": ""minutes"", ""maxEmailsPerDay"": 3, ""delayBetweenEmails"": 3}",3,3,f,f,t,,merge_field
+86,5,"Hi {{first_name}}, Launch your own Edu Coding Platform with our White-label Partnership ",completed,14,,,2025-11-13 00:38:07.288+00,2025-11-27 00:38:00+00,14,5,0,0,2025-11-13 00:37:41.827753+00,2025-11-14 14:10:29.703+00,49,"Hi {{first_name}}, Launch your own Edu Coding Platform with our White-label Partnership ","Hi {{first_name}},
+
+I'm Jonathan, founder of Codetribe.
+I started a Codetribe to help nonprofits in Africa teach kids and teens how to code.
+
+Overtime this grew into a full-scale Computer Science learning platform with an easy-to-use lesson-building.
+
+Two Reasons This May Interest You:
+
+1. In late 2024 we decided to white-label this and allow select organizations to use it.
+We’ve built a dashboard that allows each “tenant” to customize and launch their own platform in minutes - This means the entire platform on YOUR DOMAIN and with your logo.
+
+2. Use our Curriculum and Add Your Own:
+We’ve made it incredibly easy to add all types of coding lessons, as well as interactive and practical coding projects.
+
+a. We’re expanding AI Lesson Generation to assist you with this.
+b. Including an ultra-powerful “Display Engine” which allows anyone to build (with AI on Replit ) and integrate any type of learning environment in minutes - Hard to explain, but very cool! 
+
+
+PRICING:
+
+You may be thinking “That sounds too good to be true” or “Probably too expensive.” 
+
+Well, you’ll be pleased to know our focus is on empowering other organizations - Helping YOU grow and serve YOUR customers better.
+
+Our pricing packages are built for flexibility and scale, as you’ll see from just 3 of our CORE packages below:
+
+Monthly CORE Platform:
+
+1,000 users  |  $200 ( $0.20 per user)
+3,000 users  |  $480 ( $0.16 per user)
+10,000 users  | $960 ( $0.096 per user)
+
+
+OUR ROADMAP - EMPOWERING YOU WITH A.I.
+
+We’ve been experimenting with how to allow educators to build the CS and Coding Lessons they want in 10% of the time.
+
+
+We’ve focused on:
+1. Making it easier for the AI models by offering them simpler templates to build on. ( Doing all the fancy styling with templates and giving them the mission of core lesson-building.)
+
+2. Creating pre-built lesson environments ( Display Engines) for those templates to plug into.
+
+The result is incredibly fun and interactive lessons ( I will send some examples in my next email.)
+
+This structure allows teachers to easily iterate and tweak new courses with AI. 
+
+OTHER BENEFITS:
+
+A. On-boarding & LMS UI:
+The slick on-boarding UI for Teachers and learners is designed to accommodate multiple classes, topics and teachers.
+
+B. Manage Schools:
+This is by far the most insane part.
+We’ve built “Schools” into the white-label. This means you can sign-up dozens of schools and each school is segmented with its own name, roster and teachers.
+It comes OOTB ( out-of-the-box) with the White-label packages.
+
+
+C. 50% IMPACT DISCOUNT:
+For non-profits and also businesses in 121* developing  countries we offer a no-questions-asked 50% discount on core packages.
+
+*International Co-operative Alliance (ICA) List of developing countries 2024
+
+For state-level or large-scale roll-outs please get in touch.
+
+
+If you think someone you know may need this, please forward it to them (or shoot me a reply and I’ll reach out.) 
+
+I’d also be happy to send you our updated price-list and demo video.
+
+Have an awesome day!
+
+Jonathan
+","",default,none,,scheduled,2025-11-13 00:38:00,19:38,America/New_York,t,"{""days"": {""friday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""monday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""sunday"": {""enabled"": false, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""tuesday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""saturday"": {""enabled"": false, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""thursday"": {""enabled"": true, ""endTime"": ""17:00"", ""startTime"": ""09:00""}, ""wednesday"": {""enabled"": true, ""endTime"": ""20:00"", ""startTime"": ""09:00""}}, ""enabled"": true, ""delayUnit"": ""minutes"", ""maxEmailsPerDay"": 3, ""delayBetweenEmails"": 1}",3,1,f,f,t,,merge_field

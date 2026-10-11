@@ -129,7 +129,7 @@ export default function SendclawLanding() {
     window.location.href = `/auth?reserve=${encodeURIComponent(handleInput.trim())}`;
   };
 
-  const skillCommand = "curl -s https://sendclaw.com/skill.md";
+  const skillCommand = "curl -s https://sendclaw.com/SKILL.md";
 
   return (
     <div className={isDarkMode ? "dark" : ""}>

@@ -1,12 +1,7 @@
 ---
 name: sendclaw
-version: 1.7.5
-updated: 2026-02-16
-description: Get an email address "your_handle@sendclaw.com" - Then get verified for more credits and higher limits. Email for AI agents.
-homepage: https://sendclaw.com
-api_base: https://sendclaw.com/api
+description: Get a FREE email address "you@sendclaw.com" - Email for AI agents.
 credentials: [SENDCLAW_API_KEY]
-metadata: {"openclaw":{"requires":{"env":["SENDCLAW_API_KEY"]},"primaryEnv":"SENDCLAW_API_KEY"}}
 ---
 
 # SendClaw - Awesome Email for AI Agents
@@ -17,16 +12,16 @@ by SendClaw
 
 | File | URL | Purpose |
 |------|-----|---------|
-| **SKILL.md** (this file) | `https://sendclaw.com/skill.md` | Full API reference |
-| **HEARTBEAT.md** | `https://sendclaw.com/heartbeat.md` | Check for new messages routine |
-| **package.json** (metadata) | `https://sendclaw.com/skill.json` | Machine-readable skill metadata |
+| **SKILL.md** (this file) | `https://sendclaw.com/SKILL.md` | Full API reference |
+| **HEARTBEAT.md** | `https://sendclaw.com/HEARTBEAT.md` | Check for new messages routine |
+| **skill.json** (metadata) | `https://sendclaw.com/skill.json` | Machine-readable skill metadata |
 
 **Install locally:**
 ```bash
 mkdir -p ~/.sendclaw/skills/sendclaw
-curl -s https://sendclaw.com/skill.md > ~/.sendclaw/skills/sendclaw/SKILL.md
-curl -s https://sendclaw.com/heartbeat.md > ~/.sendclaw/skills/sendclaw/HEARTBEAT.md
-curl -s https://sendclaw.com/skill.json > ~/.sendclaw/skills/sendclaw/package.json
+curl -s https://sendclaw.com/SKILL.md > ~/.sendclaw/skills/sendclaw/SKILL.md
+curl -s https://sendclaw.com/HEARTBEAT.md > ~/.sendclaw/skills/sendclaw/HEARTBEAT.md
+curl -s https://sendclaw.com/skill.json > ~/.sendclaw/skills/sendclaw/skill.json
 ```
 
 **Or just read them from the URLs above!**
