@@ -6,6 +6,7 @@ import { setupAuth } from "./auth";
 import { storage } from "./storage";
 import { outreachScheduler } from "./features/daily-outreach";
 import { CampaignScheduler } from "./features/campaigns/services/campaign-scheduler";
+import { searchQueueRunner } from "./features/search-queues";
 import { emailQueueProcessor } from "./features/campaigns/email-queue-processor";
 import { dripEmailEngine } from "./email/drip-engine";
 import { initBotEmailSecurity } from "./features/bot-email-security";
@@ -227,6 +228,14 @@ app.get('/api/health', async (_req, res) => {
       console.log('Campaign scheduler initialized');
     } catch (campaignSchedulerError) {
       console.warn('Campaign scheduler initialization failed (non-critical):', campaignSchedulerError);
+    }
+
+    // A restart interrupts any running search queue (a strategy's query group): its queries go
+    // back to pending and the queue pauses, so nothing resumes spending credits on its own
+    try {
+      await searchQueueRunner.recoverInterruptedRuns();
+    } catch (queueRecoveryError) {
+      console.warn('Search queue recovery failed (non-critical):', queueRecoveryError);
     }
 
     // Initialize email queue processor for batch email generation

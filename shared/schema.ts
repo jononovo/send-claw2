@@ -1442,12 +1442,14 @@ export const searchQueues = pgTable("search_queues", {
   id: serial("id").primaryKey(),
   userId: integer("user_id").notNull().references(() => users.id, { onDelete: 'cascade' }),
   name: text("name").notNull(),
+  strategyId: integer("strategy_id").references(() => strategicProfiles.id, { onDelete: 'set null' }), // the strategy this query group belongs to
+  contactListId: integer("contact_list_id").references(() => contactLists.id, { onDelete: 'set null' }), // the sending list the group's searches fill
+  searchType: text("search_type").notNull().default('emails').$type<'companies' | 'contacts' | 'emails'>(), // what each query searches for; only contacts with emails join a list
   campaignId: integer("campaign_id").references(() => campaigns.id, { onDelete: 'set null' }),
   status: text("status").notNull().default('paused'), // 'active', 'paused', 'completed'
   autoRunEnabled: boolean("auto_run_enabled").default(false),
   autoRunThreshold: integer("auto_run_threshold").default(50), // Run when campaign has < X contacts
   delayBetweenSearches: integer("delay_between_searches").default(30), // Seconds between searches
-  resultsPerSearch: integer("results_per_search").default(100),
   continueOnFailure: boolean("continue_on_failure").default(true),
   removeCompletedSearches: boolean("remove_completed_searches").default(false),
   notifyOnComplete: boolean("notify_on_complete").default(false),
@@ -1456,6 +1458,7 @@ export const searchQueues = pgTable("search_queues", {
   updatedAt: timestamp("updated_at").defaultNow()
 }, (table) => [
   index('idx_search_queues_user_id').on(table.userId),
+  index('idx_search_queues_strategy_id').on(table.strategyId),
   index('idx_search_queues_campaign_id').on(table.campaignId),
   index('idx_search_queues_status').on(table.status)
 ]);
@@ -1539,12 +1542,14 @@ export type InsertSearchJob = z.infer<typeof searchJobSchema> & { userId: number
 // Search queue schemas
 const searchQueueSchema = z.object({
   name: z.string().min(1, "Queue name is required"),
+  strategyId: z.number().optional().nullable(),
+  contactListId: z.number().optional().nullable(),
+  searchType: z.enum(['companies', 'contacts', 'emails']).default('emails'),
   campaignId: z.number().optional().nullable(),
   status: z.enum(['active', 'paused', 'completed']).default('paused'),
   autoRunEnabled: z.boolean().default(false),
   autoRunThreshold: z.number().default(50),
   delayBetweenSearches: z.number().default(30),
-  resultsPerSearch: z.number().default(100),
   continueOnFailure: z.boolean().default(true),
   removeCompletedSearches: z.boolean().default(false),
   notifyOnComplete: z.boolean().default(false),

@@ -352,9 +352,6 @@ export function registerRoutes(app: Express) {
   // Register attribution tracking routes
   app.use('/api/attribution', requireAuth, attributionRoutes);
 
-  // Register campaigns module (includes sender profiles, customer profiles, and products)
-  registerCampaignsRoutes(app, requireAuth);
-  
   // Register search queue routes
   registerSearchQueueRoutes(app, requireAuth);
   
