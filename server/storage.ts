@@ -67,6 +67,7 @@ export interface IStorage {
 
   // Contacts
   listContactsByCompany(companyId: number, userId: number): Promise<Contact[]>;
+  listContactsByCompanyIds(companyIds: number[], userId: number): Promise<Contact[]>;
   listContactsByCompanyPublic(companyId: number): Promise<Contact[]>;
   listContacts(userId: number): Promise<Contact[]>;
   listContactsWithCompanies(userId: number): Promise<(Contact & { companyName?: string })[]>;
@@ -343,17 +344,27 @@ class DatabaseStorage implements IStorage {
       .where(eq(companies.listId, listId));
   }
 
+  private searchListNumberSequenceSeeded: Promise<void> | null = null;
+
+  /**
+   * Saved-search numbers come from the `search_list_number_seq` sequence, so searches that run in
+   * parallel never receive the same number. The first call in a process moves the sequence past the
+   * highest number already in `search_lists`, which covers databases that predate the sequence.
+   */
   async getNextSearchListId(): Promise<number> {
-    const allLists = await db.select().from(searchLists);
-    let maxId = 1000;
-    
-    for (const list of allLists) {
-      if (list.listId > maxId) {
-        maxId = list.listId;
-      }
+    if (!this.searchListNumberSequenceSeeded) {
+      this.searchListNumberSequenceSeeded = db
+        .execute(sql`SELECT setval('search_list_number_seq', GREATEST(COALESCE((SELECT MAX(list_id) FROM search_lists), 1000), (SELECT last_value FROM search_list_number_seq)))`)
+        .then(() => undefined)
+        .catch((error) => {
+          this.searchListNumberSequenceSeeded = null;
+          throw error;
+        });
     }
-    
-    return maxId + 1;
+    await this.searchListNumberSequenceSeeded;
+
+    const result = await db.execute(sql`SELECT nextval('search_list_number_seq')::int AS next_list_id`);
+    return Number((result.rows[0] as { next_list_id: number | string }).next_list_id);
   }
 
   async createSearchList(data: InsertSearchList): Promise<SearchList> {
@@ -443,6 +454,13 @@ class DatabaseStorage implements IStorage {
       console.error('Error fetching contacts by company:', error);
       return [];
     }
+  }
+
+  async listContactsByCompanyIds(companyIds: number[], userId: number): Promise<Contact[]> {
+    if (companyIds.length === 0) return [];
+    return db.select()
+      .from(contacts)
+      .where(and(inArray(contacts.companyId, companyIds), eq(contacts.userId, userId)));
   }
 
   async listContactsByCompanyPublic(companyId: number): Promise<Contact[]> {

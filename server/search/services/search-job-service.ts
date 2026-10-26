@@ -6,13 +6,14 @@ import { CREDIT_COSTS, type SearchType } from "../../features/billing/credits/ty
 import type { InsertSearchJob, SearchJob } from "@shared/schema";
 import type { ContactSearchConfig } from "../types";
 import { fetchRandomJoke, delay, type Joke } from "./joke-service";
+import { SearchListsService } from "../../features/lists/service";
 
 export interface CreateJobParams {
   userId: number;
   query: string;
   searchType: 'companies' | 'contacts' | 'emails' | 'contact-only' | 'email-single' | 'individual_search';
   contactSearchConfig?: ContactSearchConfig;
-  source: 'frontend' | 'api' | 'cron';
+  source: 'frontend' | 'api' | 'cron' | 'strategy';
   metadata?: Record<string, any>;
   priority?: number;
 }
@@ -32,16 +33,25 @@ export class SearchJobService {
     // Map 'contact-only' to 'contacts' for database storage
     const searchType = params.searchType === 'contact-only' ? 'contacts' : params.searchType;
     
+    const metadata: Record<string, any> = {
+      ...params.metadata,
+      isContactOnly: params.searchType === 'contact-only'  // Store flag in metadata
+    };
+
+    // A job that saves its results as a saved search takes its list number now, so the companies
+    // are linked to the list as they are saved ('Saving companies' in executeJob). Extension jobs
+    // arrive with the number of the list they extend and keep it.
+    if (metadata.saveResultsAsSearchList && !metadata.listId) {
+      metadata.listId = await storage.getNextSearchListId();
+    }
+
     const jobData: InsertSearchJob = {
       userId: params.userId,
       query: params.query,
       searchType: searchType || 'companies',
       contactSearchConfig: params.contactSearchConfig || {},
       source: params.source,
-      metadata: {
-        ...params.metadata,
-        isContactOnly: params.searchType === 'contact-only'  // Store flag in metadata
-      },
+      metadata,
       priority: params.priority || 0,
       maxRetries: 3
     };
@@ -167,8 +177,10 @@ export class SearchJobService {
       }
       
       // Regular flow: Fast company discovery with parallel enrichment
-      // Fetch a joke at the start of the search (runs in parallel with initialization)
-      const joke = await fetchRandomJoke();
+      // Jokes and display pauses are for a person watching the progress bar; jobs started by the
+      // agent API, a strategy run or cron skip them.
+      const isWatchedFromBrowser = job.source === 'frontend';
+      const joke = isWatchedFromBrowser ? await fetchRandomJoke() : null;
       const hasJoke = joke !== null;
       const isContactSearch = job.searchType === 'contacts';
       const isEmailSearch = job.searchType === 'emails';
@@ -268,7 +280,7 @@ export class SearchJobService {
         parallelTasks.push(contactTask);
         
         // Wait for "Companies ready!" to display (work is running in parallel)
-        await delay(2000);
+        if (isWatchedFromBrowser) await delay(2000);
         
         // Show joke setup followed immediately by punchline (if available)
         if (hasJoke && joke) {
@@ -412,6 +424,18 @@ export class SearchJobService {
       // Include sourceBreakdown if email search was performed
       if (sourceBreakdown) {
         results.sourceBreakdown = sourceBreakdown;
+      }
+
+      // Jobs flagged by their creator (the agent API, a strategy run) save their results as a saved
+      // search here; browser searches still do it from the client. A failure must not fail the job:
+      // credits are already charged, and a retry would charge them again.
+      if ((job.metadata as any)?.saveResultsAsSearchList) {
+        try {
+          const savedSearch = await SearchListsService.createSearchListFromCompletedJob(job, results);
+          results.savedSearchId = savedSearch.listId;
+        } catch (error) {
+          console.error(`[SearchJobService] Job ${jobId} completed, but its saved search could not be created:`, error);
+        }
       }
 
       await storage.updateSearchJob(job.id, {

@@ -1,5 +1,6 @@
 import { storage } from '../../storage';
-import { SearchListRequest, SearchListResponse, UpdateSearchListRequest } from './types';
+import type { SearchJob, SearchList } from '@shared/schema';
+import { CompletedSearchJobResults, SearchListRequest, SearchListResponse, UpdateSearchListRequest } from './types';
 
 export class SearchListsService {
   /**
@@ -55,6 +56,58 @@ export class SearchListsService {
       }
     }
     return customSearchTargets;
+  }
+
+  /**
+   * Builds the saved search for a job that completed with `metadata.saveResultsAsSearchList` set
+   * (agent API searches, strategy runs). The job has already saved its companies and contacts.
+   * When `SearchJobService.createJob` reserved the number into `metadata.listId`, the companies were
+   * linked to it as they were saved; otherwise they are linked here. The strategy tag comes from
+   * `metadata.strategyId` and records where the search was run; it is never changed afterwards.
+   * Browser searches still create their saved search from the client through `createSearchList`.
+   */
+  static async createSearchListFromCompletedJob(job: SearchJob, results: CompletedSearchJobResults): Promise<SearchList> {
+    const metadata = (job.metadata ?? {}) as { listId?: number; strategyId?: number };
+    const companies = results.companies ?? [];
+
+    let listId = metadata.listId;
+    if (!listId) {
+      listId = await storage.getNextSearchListId();
+      for (const company of companies) {
+        await storage.updateCompanySearchList(company.id, listId);
+      }
+    }
+
+    const contacts = companies.flatMap(company => company.contacts ?? []);
+    const startedAt = job.startedAt ?? job.createdAt;
+    const customSearchTargets = this.extractCustomSearchTargets(job.contactSearchConfig as SearchListRequest['contactSearchConfig']);
+
+    const savedSearch = await storage.createSearchList({
+      listId,
+      userId: job.userId,
+      prompt: job.query,
+      resultCount: results.totalCompanies ?? companies.length,
+      customSearchTargets: customSearchTargets.length > 0 ? customSearchTargets : null,
+      totalContacts: results.totalContacts ?? contacts.length,
+      totalEmails: contacts.filter(contact => contact.email).length,
+      searchDurationSeconds: startedAt ? Math.round((Date.now() - new Date(startedAt).getTime()) / 1000) : null,
+      sourceBreakdown: results.sourceBreakdown ?? null,
+      reportCompanies: companies.map(company => ({
+        id: company.id,
+        name: company.name,
+        contacts: (company.contacts ?? []).map(contact => ({
+          id: contact.id,
+          name: contact.name ?? undefined,
+          role: contact.role ?? undefined,
+          email: contact.email ?? undefined,
+          probability: contact.probability ?? undefined
+        }))
+      })),
+      strategyId: metadata.strategyId ?? null
+    });
+
+    console.log(`[SearchLists] Saved search ${listId} created from job ${job.jobId} (${companies.length} companies, ${contacts.length} contacts, strategy ${metadata.strategyId ?? 'none'})`);
+    return savedSearch;
   }
 
   static async getSearchLists(userId: number, isAuthenticated: boolean) {
