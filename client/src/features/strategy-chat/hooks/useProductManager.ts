@@ -12,7 +12,7 @@ export function useProductManager() {
 
   // Query for fetching all profiles
   const profilesQuery = useQuery({
-    queryKey: ['/api/products'],
+    queryKey: ['/api/strategies'],
     queryFn: strategicProfilesService.getProfiles
   });
 
@@ -20,7 +20,7 @@ export function useProductManager() {
   const createProfileMutation = useMutation({
     mutationFn: strategicProfilesService.createProfile,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/products'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/strategies'] });
       toast({
         title: "Success",
         description: "Strategic profile created successfully"
@@ -40,7 +40,7 @@ export function useProductManager() {
     mutationFn: ({ id, data }: { id: number; data: Partial<StrategicProfile> }) =>
       strategicProfilesService.updateProfile(id, data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/products'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/strategies'] });
       toast({
         title: "Success",
         description: "Strategic profile updated successfully"
@@ -59,7 +59,7 @@ export function useProductManager() {
   const deleteProfileMutation = useMutation({
     mutationFn: strategicProfilesService.deleteProfile,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/products'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/strategies'] });
       toast({
         title: "Success",
         description: "Strategic profile deleted successfully"
@@ -74,26 +74,6 @@ export function useProductManager() {
     }
   });
 
-  // Mutation for saving product offers
-  const saveOffersMutation = useMutation({
-    mutationFn: ({ productId, offers }: { productId: number; offers: any }) =>
-      strategicProfilesService.saveProductOffers(productId, offers),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/products'] });
-      toast({
-        title: "Success",
-        description: "Product offers saved successfully"
-      });
-    },
-    onError: (error) => {
-      toast({
-        title: "Error",
-        description: "Failed to save product offers",
-        variant: "destructive"
-      });
-    }
-  });
-
   return {
     profiles: profilesQuery.data,
     isLoading: profilesQuery.isLoading,
@@ -101,10 +81,8 @@ export function useProductManager() {
     createProfile: createProfileMutation.mutate,
     updateProfile: updateProfileMutation.mutate,
     deleteProfile: deleteProfileMutation.mutate,
-    saveOffers: saveOffersMutation.mutate,
     isCreating: createProfileMutation.isPending,
     isUpdating: updateProfileMutation.isPending,
-    isDeleting: deleteProfileMutation.isPending,
-    isSavingOffers: saveOffersMutation.isPending
+    isDeleting: deleteProfileMutation.isPending
   };
 }

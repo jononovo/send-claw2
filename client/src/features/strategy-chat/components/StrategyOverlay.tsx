@@ -69,7 +69,7 @@ export function StrategyOverlay({ state, onStateChange }: StrategyOverlayProps) 
   // Save strategy mutation
   const saveStrategyMutation = useMutation({
     mutationFn: async (strategyData: any) => {
-      const res = await apiRequest("POST", "/api/strategic-profiles/save-from-chat", strategyData);
+      const res = await apiRequest("POST", "/api/strategies/save-from-chat", strategyData);
       return res.json();
     },
     onSuccess: () => {
@@ -78,7 +78,7 @@ export function StrategyOverlay({ state, onStateChange }: StrategyOverlayProps) 
         description: "Your strategy has been saved as a product on your dashboard.",
       });
       // Invalidate products query to refresh dashboard
-      queryClient.invalidateQueries({ queryKey: ['/api/products'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/strategies'] });
       // Reset overlay state and close
       handleRestart();
       onStateChange('hidden');
@@ -105,7 +105,7 @@ export function StrategyOverlay({ state, onStateChange }: StrategyOverlayProps) 
       const currentFormData = prepareFormData();
       
       // Get user's profiles to find matching in-progress profile
-      const response = await apiRequest("GET", "/api/products");
+      const response = await apiRequest("GET", "/api/strategies");
       const profiles = await response.json();
       
       // Find matching in-progress profile
@@ -118,9 +118,9 @@ export function StrategyOverlay({ state, onStateChange }: StrategyOverlayProps) 
       
       // Delete the matching profile if found
       if (matchingProfile) {
-        await apiRequest("DELETE", `/api/strategic-profiles/${matchingProfile.id}`);
+        await apiRequest("DELETE", `/api/strategies/${matchingProfile.id}`);
         // Invalidate products query to refresh dashboard
-        queryClient.invalidateQueries({ queryKey: ['/api/products'] });
+        queryClient.invalidateQueries({ queryKey: ['/api/strategies'] });
       }
     } catch (error) {
       console.error('Error cleaning up strategy profile:', error);

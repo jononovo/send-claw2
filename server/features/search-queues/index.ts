@@ -10,4 +10,5 @@ export const searchQueueService = new SearchQueueService(db as any);
 export const searchQueueRunner = new SearchQueueRunner(searchQueueService);
 
 export { SearchQueueService } from "./service";
+export type { SearchQueueWithItems, SearchQueueItemWithSavedSearch } from "./service";
 export { SearchQueueRunner } from "./queue-runner";

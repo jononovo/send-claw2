@@ -16,6 +16,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { PanelLeft, Plus, Users, Send, Zap, Pencil, Sparkles, Inbox } from "lucide-react";
 import type { SearchList } from "@shared/schema";
 import { generateListPromptOnly } from "@/lib/list-utils";
@@ -40,6 +41,15 @@ export function LeftMenuDrawer({ open, onOpenChange, onLoadSearch, onNewSearch, 
     queryKey: ["/api/lists"],
     enabled: open,
   });
+  // Saved searches run by a strategy carry its id; the names come from the strategies list
+  const { data: strategies = [] } = useQuery<Array<{ id: number; name: string }>>({
+    queryKey: ["/api/strategies"],
+    enabled: open,
+  });
+  const [strategyFilter, setStrategyFilter] = useState<string>("all");
+  const strategyNameById = new Map(strategies.map((strategy) => [strategy.id, strategy.name]));
+  const hasStrategySearches = lists.some((list) => list.strategyId);
+  const visibleLists = strategyFilter === "all" ? lists : lists.filter((list) => String(list.strategyId ?? "") === strategyFilter);
   
   const [clickedId, setClickedId] = useState<number | null>(null);
   const [, setLocation] = useLocation();
@@ -150,6 +160,22 @@ export function LeftMenuDrawer({ open, onOpenChange, onLoadSearch, onNewSearch, 
             </Link>
           </div>
           
+          {hasStrategySearches && strategies.length > 0 && (
+            <div className="px-3 pt-2">
+              <Select value={strategyFilter} onValueChange={setStrategyFilter}>
+                <SelectTrigger className="h-8 text-xs" data-testid="saved-search-strategy-filter">
+                  <SelectValue placeholder="All strategies" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All strategies</SelectItem>
+                  {strategies.map((strategy) => (
+                    <SelectItem key={strategy.id} value={String(strategy.id)}>{strategy.name}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
+
           <div className="bg-muted mt-2 rounded-lg mx-2">
           <Table>
             <TableHeader>
@@ -159,7 +185,7 @@ export function LeftMenuDrawer({ open, onOpenChange, onLoadSearch, onNewSearch, 
               </TableRow>
             </TableHeader>
             <TableBody>
-              {lists.map((list: SearchList) => (
+              {visibleLists.map((list: SearchList) => (
                 <TableRow 
                   key={list.id}
                   className={`cursor-pointer hover:bg-muted-hover border-0 ${clickedId === list.id ? 'bg-blue-100 dark:bg-blue-900/30' : ''}`}
@@ -189,11 +215,16 @@ export function LeftMenuDrawer({ open, onOpenChange, onLoadSearch, onNewSearch, 
                         </TooltipContent>
                       </Tooltip>
                     </TooltipProvider>
+                    {list.strategyId && strategyNameById.get(list.strategyId) && (
+                      <span className="block text-[10px] text-muted-foreground/80 truncate" data-testid={`saved-search-strategy-${list.id}`}>
+                        {strategyNameById.get(list.strategyId)}
+                      </span>
+                    )}
                   </TableCell>
                   <TableCell className="text-right text-sm font-medium text-foreground py-3 pr-3">{list.resultCount}</TableCell>
                 </TableRow>
               ))}
-              {lists.length === 0 && (
+              {visibleLists.length === 0 && (
                 <TableRow>
                   <TableCell colSpan={2} className="text-center text-muted-foreground py-8">
                     No saved searches yet. Complete a search to create your first saved search.

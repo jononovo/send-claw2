@@ -104,8 +104,8 @@ const profileConfigs: Record<ProfileType, {
   },
   product: {
     title: 'Product',
-    apiEndpoint: '/api/products',
-    queryKey: ['/api/strategic-profiles'],
+    apiEndpoint: '/api/strategies',
+    queryKey: ['/api/strategies'],
     fields: [
       {
         name: 'title',

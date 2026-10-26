@@ -139,7 +139,7 @@ export default function StreakPage() {
 
   // Fetch user's products
   const { data: products, isLoading: productsLoading } = useQuery<Product[]>({
-    queryKey: ['/api/products'],
+    queryKey: ['/api/strategies'],
     enabled: !!user
   });
 

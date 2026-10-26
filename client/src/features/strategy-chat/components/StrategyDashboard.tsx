@@ -64,7 +64,7 @@ export default function StrategyDashboard() {
   }, [user, openForProtectedRoute]);
 
   const { data: products = [], isLoading, error } = useQuery<StrategicProfile[]>({
-    queryKey: ['/api/products'],
+    queryKey: ['/api/strategies'],
     enabled: !!user,
   });
 
@@ -81,7 +81,7 @@ export default function StrategyDashboard() {
   // Delete mutation
   const deleteMutation = useMutation({
     mutationFn: async (productId: number) => {
-      const res = await apiRequest("DELETE", `/api/strategic-profiles/${productId}`);
+      const res = await apiRequest("DELETE", `/api/strategies/${productId}`);
       return res.json();
     },
     onSuccess: () => {
@@ -90,7 +90,7 @@ export default function StrategyDashboard() {
         description: "The strategy has been permanently deleted.",
       });
       // Invalidate products query to refresh the list
-      queryClient.invalidateQueries({ queryKey: ['/api/products'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/strategies'] });
       setProductToDelete(null);
     },
     onError: (error: Error) => {

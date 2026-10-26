@@ -1233,7 +1233,8 @@ export const strategicProfileSchema = z.object({
   dailySearchQueries: z.string().optional(),
   strategicPlan: z.record(z.unknown()).optional(),
   searchPrompts: z.array(z.string()).optional(),
-  status: z.enum(["in_progress", "completed"]).default("in_progress")
+  status: z.enum(["in_progress", "completed"]).default("in_progress"),
+  isDefault: z.boolean().optional()
 });
 
 export const onboardingChatSchema = z.object({

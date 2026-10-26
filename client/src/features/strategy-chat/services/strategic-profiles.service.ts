@@ -11,7 +11,7 @@ export const strategicProfilesService = {
    * Get all strategic profiles for the user
    */
   async getProfiles(): Promise<StrategicProfile[]> {
-    const res = await apiRequest("GET", "/api/products");
+    const res = await apiRequest("GET", "/api/strategies");
     return await res.json();
   },
 
@@ -19,7 +19,7 @@ export const strategicProfilesService = {
    * Get a single strategic profile by ID
    */
   async getProfile(id: number): Promise<StrategicProfile> {
-    const res = await apiRequest("GET", `/api/products/${id}`);
+    const res = await apiRequest("GET", `/api/strategies/${id}`);
     return await res.json();
   },
 
@@ -27,7 +27,7 @@ export const strategicProfilesService = {
    * Create a new strategic profile
    */
   async createProfile(data: Partial<StrategicProfile>): Promise<StrategicProfile> {
-    const res = await apiRequest("POST", "/api/products", data);
+    const res = await apiRequest("POST", "/api/strategies", data);
     return await res.json();
   },
 
@@ -35,7 +35,7 @@ export const strategicProfilesService = {
    * Update an existing strategic profile
    */
   async updateProfile(id: number, data: Partial<StrategicProfile>): Promise<StrategicProfile> {
-    const res = await apiRequest("PATCH", `/api/products/${id}`, data);
+    const res = await apiRequest("PATCH", `/api/strategies/${id}`, data);
     return await res.json();
   },
 
@@ -43,14 +43,6 @@ export const strategicProfilesService = {
    * Delete a strategic profile
    */
   async deleteProfile(id: number): Promise<void> {
-    await apiRequest("DELETE", `/api/products/${id}`);
-  },
-
-  /**
-   * Save generated product offers
-   */
-  async saveProductOffers(productId: number, offers: any) {
-    const res = await apiRequest("POST", "/api/products/offers", { productId, offers });
-    return await res.json();
+    await apiRequest("DELETE", `/api/strategies/${id}`);
   }
 };

@@ -451,7 +451,7 @@ export default function LandingSimple3() {
       
       // Create strategic profile (product/service info) - derived data, can be edited
       if (data.productDescription || data.offeringType) {
-        await fetch('/api/products', {
+        await fetch('/api/strategies', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           credentials: 'include',

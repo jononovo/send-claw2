@@ -39,7 +39,7 @@ export const chatService = {
    * Save strategic profile from chat
    */
   async saveStrategicProfile(data: SaveFromChatRequest): Promise<SaveFromChatResponse> {
-    return apiRequest("/api/strategic-profiles/save-from-chat", {
+    return apiRequest("/api/strategies/save-from-chat", {
       method: "POST",
       body: JSON.stringify(data)
     });

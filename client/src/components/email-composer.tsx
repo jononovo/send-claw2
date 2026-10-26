@@ -254,7 +254,7 @@ export function EmailComposer({
   
   // Queries - moved here to be available for restoration logic
   const { data: products = [] } = useQuery<StrategicProfile[]>({
-    queryKey: ['/api/strategic-profiles']
+    queryKey: ['/api/strategies']
   });
   
   const { restoreState, clearState } = useEmailComposerPersistence(composerState);
