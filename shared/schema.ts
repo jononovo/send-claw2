@@ -1013,7 +1013,6 @@ export const campaigns = pgTable("campaigns", {
   // Email generation settings
   tone: text("tone"),
   offerType: text("offer_type"),
-  productId: integer("product_id"),
   // Scheduling settings
   sendTimePreference: text("send_time_preference"), // immediate, scheduled, draft
   scheduleDate: timestamp("schedule_date"),
@@ -1289,7 +1288,6 @@ export const campaignSchema = z.object({
   prompt: z.string().optional(),
   contactListId: z.number().optional(),
   senderProfileId: z.number().optional(),
-  productId: z.number().optional(),
   strategicProfileId: z.number().optional(),
   targetCustomerProfileId: z.number().optional(),
   // Email generation settings
