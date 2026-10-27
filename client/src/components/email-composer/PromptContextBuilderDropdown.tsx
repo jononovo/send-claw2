@@ -103,8 +103,8 @@ const contextConfigs: Record<ContextType, {
     deleteErrorMessage: 'Failed to delete customer profile'
   },
   product: {
-    apiEndpoint: '/api/strategic-profiles',
-    queryKey: ['/api/strategic-profiles'],
+    apiEndpoint: '/api/strategies',
+    queryKey: ['/api/strategies'],
     deleteSuccessMessage: 'Product deleted successfully',
     deleteErrorMessage: 'Failed to delete product'
   }

@@ -254,7 +254,7 @@ export function EmailComposer({
   
   // Queries - moved here to be available for restoration logic
   const { data: products = [] } = useQuery<StrategicProfile[]>({
-    queryKey: ['/api/strategic-profiles']
+    queryKey: ['/api/strategies']
   });
   
   const { restoreState, clearState } = useEmailComposerPersistence(composerState);
@@ -614,10 +614,9 @@ export function EmailComposer({
         senderProfileId: selectedSenderProfileId
       };
       
-      // Only include productId and strategicProfileId if they have valid values
+      // Only include strategicProfileId if it has a valid value
       if (selectedProduct) {
-        campaignData.productId = selectedProduct;
-        campaignData.strategicProfileId = selectedProduct; // Use the same product ID for strategic profile
+        campaignData.strategicProfileId = selectedProduct;
       }
       
       const campaignRes = await apiRequest("POST", '/api/campaigns', campaignData);

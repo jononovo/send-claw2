@@ -599,8 +599,7 @@ export class TestRunner {
         body: JSON.stringify({
           prompt: "Test email generation",
           tone: "professional",
-          offerStrategy: "limited_time",
-          productId: 1
+          offerStrategy: "limited_time"
         })
       });
 

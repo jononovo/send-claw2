@@ -42,7 +42,7 @@ export function ProductOnboardingForm({ open, onClose, onComplete }: ProductOnbo
   // Save product profile mutation using strategic profiles
   const saveProduct = useMutation({
     mutationFn: async (data: FormData) => {
-      const res = await apiRequest('POST', '/api/strategic-profiles/quick-setup', {
+      const res = await apiRequest('POST', '/api/strategies/quick-setup', {
         businessType: data.businessType,
         productService: data.productService,
         customerFeedback: data.customerFeedback,
@@ -66,7 +66,7 @@ export function ProductOnboardingForm({ open, onClose, onComplete }: ProductOnbo
       });
       
       // Refresh the products list (which is actually strategic profiles) and related data
-      queryClient.invalidateQueries({ queryKey: ['/api/products'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/strategies'] });
       queryClient.invalidateQueries({ queryKey: ['/api/daily-outreach/preferences'] });
       queryClient.invalidateQueries({ queryKey: ['/api/daily-outreach/streak-stats'] });
       

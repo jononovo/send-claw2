@@ -23,7 +23,7 @@ interface SearchTypeSelectorProps {
   disabled?: boolean;
 }
 
-const searchTypeConfigs: SearchTypeConfig[] = [
+export const searchTypeConfigs: SearchTypeConfig[] = [
   {
     type: "companies",
     label: "Only Companies",

@@ -1,15 +1,14 @@
 import { Express, Request, Response } from "express";
 import { z } from "zod";
-import { db } from "../../db";
-import { insertSearchQueueSchema, insertSearchQueueItemSchema } from "@shared/schema";
-import { searchQueues, searchQueueItems } from "@shared/schema";
-import { eq, and, sql } from "drizzle-orm";
 import { getUserId } from "../../utils/auth";
-import { SearchQueueService } from "./service";
+import { searchQueueService, searchQueueRunner } from "./index";
 
 // Request validation schemas
 const createQueueSchema = z.object({
   name: z.string().min(1, "Queue name is required"),
+  strategyId: z.number().optional().nullable(),
+  contactListId: z.number().optional().nullable(),
+  searchType: z.enum(['companies', 'contacts', 'emails']).optional(),
   campaignId: z.number().optional().nullable()
 });
 
@@ -19,12 +18,14 @@ const addQueueItemSchema = z.object({
 
 const updateQueueSchema = z.object({
   name: z.string().optional(),
+  strategyId: z.number().optional().nullable(),
+  contactListId: z.number().optional().nullable(),
+  searchType: z.enum(['companies', 'contacts', 'emails']).optional(),
   campaignId: z.number().optional().nullable(),
   status: z.enum(['active', 'paused', 'completed']).optional(),
   autoRunEnabled: z.boolean().optional(),
   autoRunThreshold: z.number().optional(),
   delayBetweenSearches: z.number().optional(),
-  resultsPerSearch: z.number().optional(),
   continueOnFailure: z.boolean().optional(),
   removeCompletedSearches: z.boolean().optional(),
   notifyOnComplete: z.boolean().optional()
@@ -38,7 +39,7 @@ const reorderItemsSchema = z.object({
 });
 
 export function registerSearchQueueRoutes(app: Express, requireAuth: any) {
-  const service = new SearchQueueService(db);
+  const service = searchQueueService;
 
   // Get all search queues for the current user
   app.get("/api/search-queues", requireAuth, async (req: Request, res: Response) => {
@@ -227,10 +228,13 @@ export function registerSearchQueueRoutes(app: Express, requireAuth: any) {
         return res.status(404).json({ error: "Search queue not found" });
       }
       
-      // Start the queue execution
-      await service.executeQueue(queueId, userId);
-      
-      res.json({ success: true, message: "Queue execution started" });
+      // Start the queue run in the background; the runner reports progress on the items
+      const start = await searchQueueRunner.start(queueId, userId);
+      if (!start.started) {
+        return res.status(400).json({ error: start.reason });
+      }
+
+      res.json({ success: true, message: start.reason === "Already running" ? "Queue is already running" : "Queue execution started" });
     } catch (error) {
       console.error("Error executing search queue:", error);
       res.status(500).json({ error: "Failed to execute search queue" });

@@ -1,13 +1,12 @@
 /**
  * Campaigns Module
  * Professional campaigns module structure that manages all campaign-related functionality
- * including sender profiles, customer profiles, and products (strategic profiles)
+ * including sender profiles and customer profiles. Strategies live in features/strategies.
  */
 
 import { Application } from 'express';
 import { registerSenderProfilesRoutes } from './sender-profiles';
 import { registerCustomerProfilesRoutes } from './customer-profiles';
-import { registerStrategicProfilesRoutes } from './products';
 import { registerCampaignsRoutes as registerCampaignsCRUDRoutes } from './campaigns/routes';
 
 /**
@@ -22,9 +21,6 @@ export function registerCampaignsRoutes(app: Application, requireAuth: any) {
   // Register customer profiles routes  
   registerCustomerProfilesRoutes(app, requireAuth);
   
-  // Register products/strategic profiles routes
-  registerStrategicProfilesRoutes(app, requireAuth);
-  
   // Register campaigns CRUD routes
   registerCampaignsCRUDRoutes(app, requireAuth);
 }
@@ -32,5 +28,4 @@ export function registerCampaignsRoutes(app: Application, requireAuth: any) {
 // Also export individual route registration functions for flexibility
 export { registerSenderProfilesRoutes } from './sender-profiles';
 export { registerCustomerProfilesRoutes } from './customer-profiles';
-export { registerStrategicProfilesRoutes } from './products';
 export { registerCampaignsRoutes as registerCampaignsCRUDRoutes } from './campaigns/routes';

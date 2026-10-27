@@ -52,6 +52,7 @@ import { registerReactChatRoutes } from "./user-chatbox/react";
 import { registerUserAccountSettingsRoutes } from "./user-account-settings";
 import { dailyOutreachRoutes } from "./features/daily-outreach";
 import { registerCampaignsRoutes } from "./features/campaigns";
+import { registerStrategiesRoutes } from "./features/strategies";
 import { registerAdminRoutes } from "./features/admin/routes";
 import { registerContactListRoutes } from "./features/contact-lists/routes";
 import { registerOnboardingRoutes } from "./features/onboarding/routes";
@@ -161,8 +162,11 @@ export function registerRoutes(app: Express) {
     }, 5000);
   }
   
-  // Register campaigns module (includes sender profiles, customer profiles, and products)
+  // Register campaigns module (sender profiles, customer profiles, campaigns)
   registerCampaignsRoutes(app, requireAuth);
+
+  // Register strategies (strategy records and their query groups)
+  registerStrategiesRoutes(app, requireAuth);
   
   // Register onboarding flow routes
   registerOnboardingRoutes(app, requireAuth);
@@ -353,9 +357,6 @@ export function registerRoutes(app: Express) {
   // Register attribution tracking routes
   app.use('/api/attribution', requireAuth, attributionRoutes);
 
-  // Register campaigns module (includes sender profiles, customer profiles, and products)
-  registerCampaignsRoutes(app, requireAuth);
-  
   // Register search queue routes
   registerSearchQueueRoutes(app, requireAuth);
   

@@ -1,24 +1,66 @@
-import { eq, and, sql, desc, asc } from "drizzle-orm";
+import { eq, and, sql, desc, asc, inArray } from "drizzle-orm";
 import type { PostgresJsDatabase } from "drizzle-orm/postgres-js";
 import { 
   searchQueues, 
   searchQueueItems,
+  searchLists,
   SearchQueue, 
   SearchQueueItem,
   InsertSearchQueue,
   InsertSearchQueueItem 
 } from "@shared/schema";
 
+/** A queue item plus the public number of the saved search it produced (`search_lists.list_id`). */
+export type SearchQueueItemWithSavedSearch = SearchQueueItem & { savedSearchNumber: number | null };
+export type SearchQueueWithItems = SearchQueue & { items: SearchQueueItemWithSavedSearch[] };
+
 export class SearchQueueService {
   constructor(private db: PostgresJsDatabase) {}
 
-  // Get all queues for a user
-  async getUserQueues(userId: number): Promise<SearchQueue[]> {
-    return await this.db
+  // Get all queues for a user, each with its items in order
+  async getUserQueues(userId: number): Promise<SearchQueueWithItems[]> {
+    const queues = await this.db
       .select()
       .from(searchQueues)
       .where(eq(searchQueues.userId, userId))
       .orderBy(desc(searchQueues.updatedAt));
+    return this.attachItems(queues);
+  }
+
+  // Get a strategy's query groups, each with its items in order
+  async getQueuesForStrategy(strategyId: number, userId: number): Promise<SearchQueueWithItems[]> {
+    const queues = await this.db
+      .select()
+      .from(searchQueues)
+      .where(and(eq(searchQueues.strategyId, strategyId), eq(searchQueues.userId, userId)))
+      .orderBy(asc(searchQueues.createdAt));
+    return this.attachItems(queues);
+  }
+
+  private async attachItems(queues: SearchQueue[]): Promise<SearchQueueWithItems[]> {
+    if (queues.length === 0) return [];
+    const items = await this.db
+      .select()
+      .from(searchQueueItems)
+      .where(inArray(searchQueueItems.queueId, queues.map(queue => queue.id)))
+      .orderBy(asc(searchQueueItems.queueId), asc(searchQueueItems.order));
+
+    const savedSearchIds = items.map(item => item.listId).filter((id): id is number => id !== null);
+    const savedSearchNumbers = new Map<number, number>();
+    if (savedSearchIds.length > 0) {
+      const rows = await this.db
+        .select({ id: searchLists.id, listId: searchLists.listId })
+        .from(searchLists)
+        .where(inArray(searchLists.id, savedSearchIds));
+      rows.forEach(row => savedSearchNumbers.set(row.id, row.listId));
+    }
+
+    return queues.map(queue => ({
+      ...queue,
+      items: items
+        .filter(item => item.queueId === queue.id)
+        .map(item => ({ ...item, savedSearchNumber: item.listId ? savedSearchNumbers.get(item.listId) ?? null : null }))
+    }));
   }
 
   // Get a single queue
@@ -36,25 +78,15 @@ export class SearchQueueService {
   }
 
   // Get queue with all its items
-  async getQueueWithItems(queueId: number, userId: number) {
+  async getQueueWithItems(queueId: number, userId: number): Promise<SearchQueueWithItems | null> {
     const queue = await this.getQueue(queueId, userId);
-    
     if (!queue) return null;
-    
-    const items = await this.db
-      .select()
-      .from(searchQueueItems)
-      .where(eq(searchQueueItems.queueId, queueId))
-      .orderBy(asc(searchQueueItems.order));
-    
-    return {
-      ...queue,
-      items
-    };
+    const [withItems] = await this.attachItems([queue]);
+    return withItems;
   }
 
-  // Create a new queue
-  async createQueue(data: Omit<InsertSearchQueue, 'id' | 'createdAt' | 'updatedAt'>): Promise<SearchQueue> {
+  // Create a new queue; anything not given takes the column default (search type emails, 30-second delay, continue on failure)
+  async createQueue(data: Pick<InsertSearchQueue, 'userId' | 'name'> & Partial<Omit<InsertSearchQueue, 'userId' | 'name'>>): Promise<SearchQueue> {
     const [queue] = await this.db
       .insert(searchQueues)
       .values({
@@ -130,6 +162,40 @@ export class SearchQueueService {
     return item;
   }
 
+  // Add several items to a queue in the order given (a strategy's query group arrives as a list)
+  async addItemsToQueue(queueId: number, prompts: string[]): Promise<SearchQueueItem[]> {
+    const cleaned = prompts.map(prompt => prompt.trim()).filter(prompt => prompt.length > 0);
+    if (cleaned.length === 0) return [];
+
+    const [maxOrderResult] = await this.db
+      .select({ maxOrder: sql<number>`COALESCE(MAX(${searchQueueItems.order}), 0)` })
+      .from(searchQueueItems)
+      .where(eq(searchQueueItems.queueId, queueId));
+    const firstOrder = (maxOrderResult?.maxOrder || 0) + 1;
+
+    const items = await this.db
+      .insert(searchQueueItems)
+      .values(cleaned.map((prompt, index) => ({ queueId, prompt, order: firstOrder + index, status: 'pending' as const, metadata: {} })))
+      .returning();
+
+    await this.db
+      .update(searchQueues)
+      .set({ updatedAt: new Date() })
+      .where(eq(searchQueues.id, queueId));
+
+    return items;
+  }
+
+  // Whether the queue still has queries to run
+  async hasPendingItems(queueId: number): Promise<boolean> {
+    const [pending] = await this.db
+      .select({ id: searchQueueItems.id })
+      .from(searchQueueItems)
+      .where(and(eq(searchQueueItems.queueId, queueId), eq(searchQueueItems.status, 'pending')))
+      .limit(1);
+    return !!pending;
+  }
+
   // Delete item from queue
   async deleteItemFromQueue(itemId: number, queueId: number): Promise<boolean> {
     // Get the item's order first
@@ -189,40 +255,6 @@ export class SearchQueueService {
         .set({ updatedAt: new Date() })
         .where(eq(searchQueues.id, queueId));
     });
-  }
-
-  // Execute queue (start processing)
-  async executeQueue(queueId: number, userId: number) {
-    // Update queue status to active
-    await this.updateQueue(queueId, userId, { status: 'active' });
-    
-    // Get the first pending item
-    const [nextItem] = await this.db
-      .select()
-      .from(searchQueueItems)
-      .where(and(
-        eq(searchQueueItems.queueId, queueId),
-        eq(searchQueueItems.status, 'pending')
-      ))
-      .orderBy(asc(searchQueueItems.order))
-      .limit(1);
-    
-    if (nextItem) {
-      // Mark item as running
-      await this.updateQueueItem(nextItem.id, { 
-        status: 'running',
-        startedAt: new Date()
-      });
-      
-      // TODO: Trigger actual search job
-      // This will be integrated with the existing search job system
-      // For now, we'll just mark the queue as active
-      
-      console.log(`[SearchQueue] Starting execution of queue ${queueId}, first item: ${nextItem.prompt}`);
-    } else {
-      // No pending items, mark queue as completed
-      await this.updateQueue(queueId, userId, { status: 'completed' });
-    }
   }
 
   // Pause queue execution
@@ -345,17 +377,20 @@ export class SearchQueueService {
     return nextItem;
   }
 
-  // Mark item as completed
+  // Mark item as completed; `listId` is the saved search's row id, `metadata` what the run recorded (contacts added, reuse)
   async markItemCompleted(
     itemId: number, 
     resultCount: number, 
-    listId?: number
+    listId?: number,
+    metadata?: Record<string, unknown>
   ) {
     await this.updateQueueItem(itemId, {
       status: 'completed',
       completedAt: new Date(),
+      errorMessage: null,
       resultCount,
-      listId
+      listId,
+      ...(metadata ? { metadata } : {})
     });
   }
 

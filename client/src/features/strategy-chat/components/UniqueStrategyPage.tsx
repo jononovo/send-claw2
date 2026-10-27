@@ -30,6 +30,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useLocation } from "wouter";
 
 import type { StrategicProfile } from '../types';
+import { StrategyQueryGroupsCard } from './StrategyQueryGroupsCard';
 
 interface UniqueStrategyPageProps {
   product: StrategicProfile;
@@ -463,7 +464,9 @@ export function UniqueStrategyPage({ product, onClose }: UniqueStrategyPageProps
 
           {/* Implementation Tab (formerly Daily Queries) */}
           <TabsContent value="implementation" className="mt-3 sm:mt-6">
-            <Card>
+            <StrategyQueryGroupsCard strategyId={product.id} dailyQueries={dailyQueries} />
+
+            <Card className="mt-6">
               <CardHeader className="px-3 py-6 sm:px-6">
                 <CardTitle className="flex items-center gap-2">
                   <Search className="h-5 w-5" />
