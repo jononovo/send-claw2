@@ -84,11 +84,16 @@ export async function createStrategyQueryGroup(strategy: StrategicProfile, input
   return loadStrategyQueryGroup(strategy, queue.id);
 }
 
-export async function addQueriesToStrategyQueryGroup(strategy: StrategicProfile, queueId: number, queries: string[]): Promise<StrategyQueryGroup> {
+export async function addQueriesToStrategyQueryGroup(
+  strategy: StrategicProfile,
+  queueId: number,
+  queries: string[],
+  itemMetadata: Record<string, unknown> = {},
+): Promise<StrategyQueryGroup> {
   const queue = await searchQueueService.getQueue(queueId, strategy.userId);
   if (!queue || queue.strategyId !== strategy.id) throw new StrategyQueryGroupError(404, "Query group not found");
 
-  await searchQueueService.addItemsToQueue(queueId, queries);
+  await searchQueueService.addItemsToQueue(queueId, queries, itemMetadata);
   if (queue.status === "completed") {
     // A finished group with new queries can be run again
     await searchQueueService.updateQueue(queueId, strategy.userId, { status: "paused" });

@@ -10,6 +10,7 @@ import type {
   SearchList,
   StrategicProfile,
 } from "@shared/schema";
+import { strategyDisplayName, type StrategyQueryGroup } from "../strategies";
 
 /**
  * Every response shape the agent API returns is defined here, so internal columns never leak
@@ -120,10 +121,29 @@ export function serializeCampaignForAgent(campaign: Campaign) {
   };
 }
 
-export function serializeStrategyForAgent(strategy: StrategicProfile, campaigns: Campaign[]) {
+export function serializeQueryGroupForAgent(group: StrategyQueryGroup) {
+  return {
+    id: group.id,
+    name: group.name,
+    status: group.status,
+    searchType: group.searchType,
+    isRunning: group.isRunning,
+    sendingList: group.contactList,
+    queries: group.items.map((item) => ({
+      id: item.id,
+      query: item.prompt,
+      status: item.status,
+      savedSearchId: item.savedSearchNumber,
+      resultCount: item.resultCount,
+      error: item.errorMessage,
+    })),
+  };
+}
+
+export function serializeStrategyForAgent(strategy: StrategicProfile, queryGroups: StrategyQueryGroup[]) {
   return {
     id: strategy.id,
-    title: strategy.title,
+    name: strategyDisplayName(strategy),
     businessType: strategy.businessType,
     productService: strategy.productService,
     targetCustomers: strategy.targetCustomers,
@@ -131,7 +151,7 @@ export function serializeStrategyForAgent(strategy: StrategicProfile, campaigns:
     suggestedDailyQueries: parseJsonStringArray(strategy.dailySearchQueries),
     searchPrompts: strategy.searchPrompts ?? [],
     status: strategy.status,
-    campaigns: campaigns.map(serializeCampaignForAgent),
+    queryGroups: queryGroups.map(serializeQueryGroupForAgent),
   };
 }
 

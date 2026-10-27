@@ -53,12 +53,9 @@ agentSearchRoutes.post("/searches", agentRoute(async (req, res) => {
   const { query, type, strategyId } = parsedBody.data;
   const ownerUserId = getAgentOwnerUserId(req);
 
-  if (strategyId) {
-    const strategies = await storage.getStrategicProfiles(ownerUserId);
-    if (!strategies.some((strategy) => strategy.id === strategyId)) {
-      res.status(404).json({ error: "Strategy not found" });
-      return;
-    }
+  if (strategyId && !(await storage.getStrategicProfile(strategyId, ownerUserId))) {
+    res.status(404).json({ error: "Strategy not found" });
+    return;
   }
 
   // Same 90-day reuse rule as the web app, so a repeat costs nothing

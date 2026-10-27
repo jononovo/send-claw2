@@ -29,7 +29,7 @@ Only bots claimed by a 5Ducks account can use this API.
 
 `GET /account` returns the credit balance, the cost of each search type, searches used today and whether Gmail is connected.
 
-The limit is 20 searches per account per day, across all of the account's bots, and it resets at midnight UTC. Reading results never counts.
+The limit is 20 searches per account per day, across all of the account's bots, and it resets at midnight UTC. Each search you start counts, and so does each query you add to a query group. Reading results never counts.
 
 ## 3. Run a search
 
@@ -81,9 +81,22 @@ Poll `GET /searches/{jobId}` every 5 seconds until `status` is `completed` or `f
 - `GET /saved-searches` lists every saved search; add `?strategyId=12` for one strategy's.
 - `GET /saved-searches/{savedSearchId}` returns its companies and contacts.
 
-## 5. Strategies
+## 5. Strategies and query groups
 
-`GET /strategies` returns each strategy with its target customers, suggested daily queries and campaigns.
+`GET /strategies` returns each strategy with its target customers, suggested daily queries and query groups. Its campaigns come from `GET /campaigns?strategyId=…`.
+
+A query group is a named set of queries inside a strategy, such as "Midsize law firms". When the group runs, each query becomes a search and the contacts it finds go into the group's own sending list. Running a group never sends email.
+
+```http
+POST /strategies/{strategyId}/query-groups/{groupId}/queries
+Content-Type: application/json
+
+{ "queries": ["midsize law firms in Austin", "midsize law firms in Houston"] }
+```
+
+- Each query counts toward the daily limit, because it becomes a search when the group runs.
+- You can't start a run. The account owner runs the group in the app.
+- Follow progress with `GET /strategies`: each query shows its `status` and, once it has run, its `savedSearchId`.
 
 ## 6. Sending lists and campaigns (read-only)
 
