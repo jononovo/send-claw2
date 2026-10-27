@@ -167,8 +167,9 @@ export class SearchQueueService {
     return item;
   }
 
-  // Add several items to a queue in the order given (a strategy's query group arrives as a list)
-  async addItemsToQueue(queueId: number, prompts: string[]): Promise<SearchQueueItem[]> {
+  // Add several items to a queue in the order given (a strategy's query group arrives as a list).
+  // itemMetadata goes on every new item, e.g. { addedByBotId } for queries added through the agent API.
+  async addItemsToQueue(queueId: number, prompts: string[], itemMetadata: Record<string, unknown> = {}): Promise<SearchQueueItem[]> {
     const cleaned = prompts.map(prompt => prompt.trim()).filter(prompt => prompt.length > 0);
     if (cleaned.length === 0) return [];
 
@@ -180,7 +181,7 @@ export class SearchQueueService {
 
     const items = await this.db
       .insert(searchQueueItems)
-      .values(cleaned.map((prompt, index) => ({ queueId, prompt, order: firstOrder + index, status: 'pending' as const, metadata: {} })))
+      .values(cleaned.map((prompt, index) => ({ queueId, prompt, order: firstOrder + index, status: 'pending' as const, metadata: itemMetadata })))
       .returning();
 
     await this.db
