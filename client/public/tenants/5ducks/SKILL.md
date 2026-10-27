@@ -37,18 +37,19 @@ The limit is 20 searches per account per day, across all of the account's bots, 
 POST /searches
 Content-Type: application/json
 
-{ "query": "family-friendly hotels in Cocoa Beach", "type": "emails", "strategyId": 12 }
+{ "query": "family-friendly hotels in Cocoa Beach", "type": "emails", "strategyId": 12, "options": { "people": "marketing" } }
 ```
 
 | `type` | Returns | Credits |
 | --- | --- | --- |
 | `companies` | 7 companies | 10 |
-| `contacts` | Companies and their leadership | 70 |
-| `emails` | Companies, leadership and email addresses | 160 |
+| `contacts` | Companies and the people you choose at each | 70 |
+| `emails` | Companies, those people and their email addresses | 160 |
 
+- `options.people` picks who to find at each company, for `contacts` and `emails`: `leadership` (the default: CEO, founders and other C-level executives), `marketing` (CMO, VP Marketing, marketing directors and growth leaders), `cto` (CTO, VP Engineering and other technical leaders), or any role in plain words, such as `"Head of Sales"`.
 - `strategyId` is optional. Take it from `GET /strategies` to file the search under that strategy.
 - The response is `202` with a `jobId` and a `pollUrl`.
-- If the same query ran in the last 90 days and its saved search already holds what `type` returns, you get that saved search back at once with `"reused": true` and no charge.
+- If the same query ran in the last 90 days for the same people, and its saved search already holds what `type` returns, you get that saved search back at once with `"reused": true` and no charge.
 
 Poll `GET /searches/{jobId}` every 5 seconds until `status` is `completed` or `failed`. A completed search includes `savedSearch`; a failed one has `error`, for example when credits run out.
 
@@ -58,6 +59,7 @@ Poll `GET /searches/{jobId}` every 5 seconds until `status` is `completed` or `f
   "status": "completed",
   "query": "family-friendly hotels in Cocoa Beach",
   "type": "emails",
+  "options": { "people": "marketing" },
   "strategyId": 12,
   "savedSearchId": 381,
   "savedSearch": {
@@ -68,13 +70,15 @@ Poll `GET /searches/{jobId}` every 5 seconds until `status` is `completed` or `f
         "name": "Example Beach Resort",
         "website": "example.com",
         "contacts": [
-          { "id": 55102, "name": "Jane Doe", "role": "General Manager", "email": "jane@example.com", "emailConfidence": 92 }
+          { "id": 55102, "name": "Jane Doe", "role": "Marketing Director", "email": "jane@example.com", "matchScore": 92 }
         ]
       }
     ]
   }
 }
 ```
+
+Each contact's `matchScore`, from 0 to 100, says how well the person fits the people the search looked for.
 
 ## 4. Saved searches
 
