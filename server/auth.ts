@@ -115,6 +115,11 @@ async function verifyFirebaseToken(req: Request): Promise<SelectUser | null> {
     token = req.headers['x-auth-token'] as string;
   }
 
+  // SendClaw and agent API keys (sk_...) are checked by their own routes, never by Firebase
+  if (token?.startsWith('sk_')) {
+    return null;
+  }
+
   if (!token || !admin.apps.length) {
     // Only log when Firebase is misconfigured (actual error)
     // Don't log "missing credentials" - expected for public routes

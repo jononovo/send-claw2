@@ -842,11 +842,15 @@ export class EmailQueueProcessor {
               
               // Use recipient.userId if userIdNum is somehow undefined
               const effectiveUserId = userIdNum || recipient.userId;
-              
+
+              const [recipientContact] = recipient.contactId
+                ? await db.select({ companyId: contacts.companyId }).from(contacts).where(eq(contacts.id, recipient.contactId)).limit(1)
+                : [];
+
               await db.insert(communicationHistory).values({
                 userId: effectiveUserId,
                 contactId: recipient.contactId || 1,  // Default to 1 if no contactId (temporary workaround)
-                companyId: 1,  // Default to 1 (temporary workaround)
+                companyId: recipientContact?.companyId ?? 1,  // 1 only when the recipient has no contact or company (column is NOT NULL)
                 campaignId: recipient.campaignId,
                 channel: 'email',
                 direction: 'outbound',
