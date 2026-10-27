@@ -1,9 +1,17 @@
 import { Router } from "express";
 import { z } from "zod";
+import type { SearchList } from "@shared/schema";
 import { storage } from "../../storage";
 import { SearchJobService } from "../../search/services/search-job-service";
 import { jobProcessor } from "../../search/services/job-processor";
-import { ContactSearchService } from "../../search/services/contact-search-service";
+import {
+  contactSearchConfigFor,
+  normalizeSearchOptions,
+  sameSearchOptions,
+  searchOptionsSchema,
+  type NormalizedSearchOptions,
+  type SearchOptions,
+} from "../../search/search-options";
 import { SearchListsService } from "../lists/service";
 import { agentRoute, parsePositiveIntParam } from "./agent-route-handler";
 import { getAgentOwnerUserId } from "./require-claimed-five-ducks-bot";
@@ -23,14 +31,21 @@ const startSearchBodySchema = z.object({
   query: z.string().trim().min(1),
   type: z.enum(["companies", "contacts", "emails"]),
   strategyId: z.number().int().positive().optional(),
+  options: searchOptionsSchema.default({}),
+}).refine((body) => body.type !== "companies" || body.options.people === undefined, {
+  message: "options.people applies to contacts and emails searches",
+  path: ["options", "people"],
 });
 
 type AgentSearchType = z.infer<typeof startSearchBodySchema>["type"];
 
 async function loadSavedSearchForAgent(savedSearchId: number, ownerUserId: number): Promise<AgentSavedSearch | null> {
   const savedSearch = await storage.getSearchList(savedSearchId, ownerUserId);
-  if (!savedSearch) return null;
-  const companies = await storage.listCompaniesBySearchList(savedSearchId, ownerUserId);
+  return savedSearch ? loadSavedSearchResultsForAgent(savedSearch, ownerUserId) : null;
+}
+
+async function loadSavedSearchResultsForAgent(savedSearch: SearchList, ownerUserId: number): Promise<AgentSavedSearch> {
+  const companies = await storage.listCompaniesBySearchList(savedSearch.listId, ownerUserId);
   const contacts = await storage.listContactsByCompanyIds(companies.map((company) => company.id), ownerUserId);
   return serializeSavedSearchForAgent(savedSearch, companies, contacts);
 }
@@ -42,6 +57,37 @@ function savedSearchCoversType(savedSearch: AgentSavedSearch, type: AgentSearchT
   return type === "contacts" ? contacts.length > 0 : contacts.some((contact) => contact.email);
 }
 
+/**
+ * How a saved search was run: the options its agent search recorded, else the web app's custom role, else
+ * the defaults. The web app doesn't record its other people buttons, so its saved searches count as leadership.
+ */
+async function searchOptionsOfSavedSearch(savedSearch: SearchList, ownerUserId: number): Promise<NormalizedSearchOptions> {
+  const job = await storage.getSearchJobForSavedSearch(savedSearch.listId, ownerUserId);
+  const recordedOptions = (job?.metadata as { searchOptions?: SearchOptions | null } | null)?.searchOptions;
+  const [customRole] = (savedSearch.customSearchTargets as string[] | null) ?? [];
+  return normalizeSearchOptions(recordedOptions ?? { people: customRole });
+}
+
+/**
+ * The web app's 90-day reuse rule, so a repeat costs nothing: the latest saved search with the same query,
+ * if it looked for the same people and already holds what the requested type returns.
+ */
+async function findReusableSavedSearch(
+  query: string,
+  type: AgentSearchType,
+  searchOptions: NormalizedSearchOptions,
+  ownerUserId: number,
+): Promise<AgentSavedSearch | null> {
+  const recentSearch = await SearchListsService.findRecentSearchByPrompt(query, ownerUserId, true);
+  const recentSavedSearch = recentSearch ? await storage.getSearchList(recentSearch.listId, ownerUserId) : undefined;
+  if (!recentSavedSearch) return null;
+  if (type !== "companies" && !sameSearchOptions(searchOptions, await searchOptionsOfSavedSearch(recentSavedSearch, ownerUserId))) {
+    return null;
+  }
+  const savedSearch = await loadSavedSearchResultsForAgent(recentSavedSearch, ownerUserId);
+  return savedSearchCoversType(savedSearch, type) ? savedSearch : null;
+}
+
 export const agentSearchRoutes = Router();
 
 agentSearchRoutes.post("/searches", agentRoute(async (req, res) => {
@@ -50,7 +96,8 @@ agentSearchRoutes.post("/searches", agentRoute(async (req, res) => {
     res.status(400).json({ error: "Invalid request", details: parsedBody.error.errors });
     return;
   }
-  const { query, type, strategyId } = parsedBody.data;
+  const { query, type, strategyId, options } = parsedBody.data;
+  const searchOptions = normalizeSearchOptions(options);
   const ownerUserId = getAgentOwnerUserId(req);
 
   if (strategyId && !(await storage.getStrategicProfile(strategyId, ownerUserId))) {
@@ -58,14 +105,16 @@ agentSearchRoutes.post("/searches", agentRoute(async (req, res) => {
     return;
   }
 
-  // Same 90-day reuse rule as the web app, so a repeat costs nothing
-  const recentSavedSearch = await SearchListsService.findRecentSearchByPrompt(query, ownerUserId, true);
-  if (recentSavedSearch) {
-    const savedSearch = await loadSavedSearchForAgent(recentSavedSearch.listId, ownerUserId);
-    if (savedSearch && savedSearchCoversType(savedSearch, type)) {
-      res.json({ jobId: null, status: "completed", reused: true, savedSearchId: savedSearch.savedSearchId, savedSearch });
-      return;
-    }
+  const reusableSavedSearch = await findReusableSavedSearch(query, type, searchOptions, ownerUserId);
+  if (reusableSavedSearch) {
+    res.json({
+      jobId: null,
+      status: "completed",
+      reused: true,
+      savedSearchId: reusableSavedSearch.savedSearchId,
+      savedSearch: reusableSavedSearch,
+    });
+    return;
   }
 
   const searchesUsedToday = await countAgentSearchesToday(ownerUserId);
@@ -82,12 +131,14 @@ agentSearchRoutes.post("/searches", agentRoute(async (req, res) => {
     userId: ownerUserId,
     query,
     searchType: type,
-    contactSearchConfig: ContactSearchService.getDefaultConfig(),
+    contactSearchConfig: contactSearchConfigFor(searchOptions),
     source: "api",
     metadata: {
       botId: req.agentContext!.botId,
       strategyId: strategyId ?? null,
       saveResultsAsSearchList: true,
+      // Recorded only where the options change the results: a companies search finds no people
+      searchOptions: type === "companies" ? null : searchOptions,
     },
     priority: 1,
   });

@@ -136,6 +136,7 @@ export interface IStorage {
   // Search Jobs
   createSearchJob(data: InsertSearchJob): Promise<SearchJob>;
   getSearchJobByJobId(jobId: string): Promise<SearchJob | undefined>;
+  getSearchJobForSavedSearch(savedSearchId: number, userId: number): Promise<SearchJob | undefined>;
   updateSearchJob(id: number, data: Partial<SearchJob>): Promise<SearchJob | undefined>;
   listSearchJobs(userId: number, limit?: number): Promise<SearchJob[]>;
   getPendingSearchJobs(limit?: number): Promise<SearchJob[]>;
@@ -1095,6 +1096,15 @@ class DatabaseStorage implements IStorage {
     const [job] = await db.select()
       .from(searchJobs)
       .where(eq(searchJobs.jobId, jobId));
+    return job;
+  }
+
+  /** The job that saved a saved search. Only agent and strategy searches have one: the web app saves its searches from the browser. */
+  async getSearchJobForSavedSearch(savedSearchId: number, userId: number): Promise<SearchJob | undefined> {
+    const [job] = await db.select()
+      .from(searchJobs)
+      .where(and(eq(searchJobs.userId, userId), sql`${searchJobs.metadata} ->> 'listId' = ${String(savedSearchId)}`))
+      .limit(1);
     return job;
   }
 
