@@ -1347,6 +1347,7 @@ export type DailyOutreachBatch = typeof dailyOutreachBatches.$inferSelect;
 export type InsertDailyOutreachBatch = z.infer<typeof insertDailyOutreachBatchSchema>;
 export type DailyOutreachItem = typeof dailyOutreachItems.$inferSelect;
 export type InsertDailyOutreachItem = z.infer<typeof insertDailyOutreachItemSchema>;
+export type CommunicationHistory = typeof communicationHistory.$inferSelect;
 export type UserOutreachPreferences = typeof userOutreachPreferences.$inferSelect;
 export type InsertUserOutreachPreferences = z.infer<typeof insertUserOutreachPreferencesSchema>;
 

@@ -6,7 +6,8 @@ import {
   userCredits, creditTransactions, subscriptions, userNotifications,
   campaignRecipients, userGuidanceProgress, userProgress, accessApplications,
   emailSequences, emailSequenceEvents, emailSends, guidanceVideos,
-  userOnboardingSnapshot,
+  userOnboardingSnapshot, dailyOutreachBatches, dailyOutreachItems, communicationHistory,
+  type DailyOutreachBatch, type DailyOutreachItem, type CommunicationHistory,
   type UserPreferences, type InsertUserPreferences,
   type UserEmailPreferences, type InsertUserEmailPreferences,
   type SearchList, type InsertSearchList,
@@ -159,6 +160,10 @@ export interface IStorage {
   removeContactsFromList(listId: number, contactIds: number[]): Promise<void>;
   isContactInList(listId: number, contactId: number): Promise<boolean>;
   getListMemberCount(listId: number): Promise<number>;
+
+  // Sending history
+  listRecentDailyOutreachBatches(userId: number, limit: number): Promise<Array<{ batch: DailyOutreachBatch; items: DailyOutreachItem[] }>>;
+  listCommunicationHistoryForContact(contactId: number, userId: number): Promise<CommunicationHistory[]>;
 
   // OAuth Tokens
   getOAuthToken(userId: number, service: string): Promise<{ accessToken: string; refreshToken?: string; expiresAt?: Date; email?: string } | null>;
@@ -880,6 +885,7 @@ class DatabaseStorage implements IStorage {
       repliedAt: campaignRecipients.repliedAt,
       bouncedAt: campaignRecipients.bouncedAt,
       unsubscribedAt: campaignRecipients.unsubscribedAt,
+      errorMessage: campaignRecipients.errorMessage,
       emailSubject: campaignRecipients.emailSubject,
       emailContent: campaignRecipients.emailContent,
       openCount: campaignRecipients.openCount,
@@ -1246,7 +1252,10 @@ class DatabaseStorage implements IStorage {
       totalReplies: contacts.totalReplies,
       lastThreadId: contacts.lastThreadId,
       companyName: companies.name,
-      companyWebsite: companies.website
+      companyWebsite: companies.website,
+      source: contactListMembers.source,
+      sourceMetadata: contactListMembers.sourceMetadata,
+      addedAt: contactListMembers.addedAt
     })
       .from(contactListMembers)
       .innerJoin(contacts, eq(contactListMembers.contactId, contacts.id))
@@ -2018,6 +2027,28 @@ class DatabaseStorage implements IStorage {
       .orderBy(desc(userOnboardingSnapshot.capturedAt))
       .limit(1);
     return snapshot;
+  }
+
+  // Sending history
+  async listRecentDailyOutreachBatches(userId: number, limit: number): Promise<Array<{ batch: DailyOutreachBatch; items: DailyOutreachItem[] }>> {
+    const batches = await db.select()
+      .from(dailyOutreachBatches)
+      .where(eq(dailyOutreachBatches.userId, userId))
+      .orderBy(desc(dailyOutreachBatches.batchDate))
+      .limit(limit);
+    if (batches.length === 0) return [];
+
+    const items = await db.select()
+      .from(dailyOutreachItems)
+      .where(inArray(dailyOutreachItems.batchId, batches.map(batch => batch.id)));
+    return batches.map(batch => ({ batch, items: items.filter(item => item.batchId === batch.id) }));
+  }
+
+  async listCommunicationHistoryForContact(contactId: number, userId: number): Promise<CommunicationHistory[]> {
+    return db.select()
+      .from(communicationHistory)
+      .where(and(eq(communicationHistory.contactId, contactId), eq(communicationHistory.userId, userId)))
+      .orderBy(desc(communicationHistory.createdAt));
   }
 }
 
