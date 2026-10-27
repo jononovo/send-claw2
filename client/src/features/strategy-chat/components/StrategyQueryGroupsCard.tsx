@@ -25,6 +25,7 @@ import { apiRequest, queryClient } from "@/lib/queryClient";
 import { generateSearchUrl } from "@/lib/url-utils";
 import { searchTypeConfigs } from "@/components/search-type-selector";
 import type { SearchQueue, SearchQueueItem } from "@shared/schema";
+import { describeApiError } from "../lib/describe-api-error";
 
 /**
  * A strategy's query groups: each group is a list of search queries that run in order and fill
@@ -54,10 +55,6 @@ const GROUP_SEARCH_TYPES: GroupSearchType[] = ["emails", "contacts", "companies"
 
 function splitQueries(text: string): string[] {
   return text.split("\n").map((line) => line.trim()).filter((line) => line.length > 0);
-}
-
-function describeError(error: unknown): string {
-  return error instanceof Error ? error.message : "Something went wrong";
 }
 
 function searchTypeLabel(type: GroupSearchType): string {
@@ -90,7 +87,7 @@ export function StrategyQueryGroupsCard({ strategyId, dailyQueries }: StrategyQu
     queryClient.invalidateQueries({ queryKey: ["/api/lists"] });
   };
   const reportError = (title: string) => (error: unknown) =>
-    toast({ title, description: describeError(error), variant: "destructive" });
+    toast({ title, description: describeApiError(error), variant: "destructive" });
 
   const createGroup = useMutation({
     mutationFn: async (input: { name: string; queries: string[]; searchType: GroupSearchType; start: boolean }) => {
@@ -363,6 +360,9 @@ export function StrategyQueryGroupsCard({ strategyId, dailyQueries }: StrategyQu
                             </Button>
                           )}
                         </div>
+                        {typeof (item.metadata as { reason?: unknown } | null)?.reason === "string" && (
+                          <p className="ml-5 text-xs text-slate-500">Why: {(item.metadata as { reason: string }).reason}</p>
+                        )}
                         {item.errorMessage && (
                           <p className={`ml-5 text-xs ${item.status === "failed" ? "text-red-600" : "text-amber-700"}`}>{item.errorMessage}</p>
                         )}

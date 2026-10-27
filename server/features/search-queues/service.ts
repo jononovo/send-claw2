@@ -10,6 +10,11 @@ import {
   InsertSearchQueueItem 
 } from "@shared/schema";
 
+/** Adds keys to an item's metadata in the same statement, keeping keys other writers put there. */
+function mergedItemMetadata(metadata: Record<string, unknown>) {
+  return sql`coalesce(${searchQueueItems.metadata}, '{}'::jsonb) || ${JSON.stringify(metadata)}::jsonb`;
+}
+
 /** A queue item plus the public number of the saved search it produced (`search_lists.list_id`). */
 export type SearchQueueItemWithSavedSearch = SearchQueueItem & { savedSearchNumber: number | null };
 export type SearchQueueWithItems = SearchQueue & { items: SearchQueueItemWithSavedSearch[] };
@@ -377,21 +382,34 @@ export class SearchQueueService {
     return nextItem;
   }
 
-  // Mark item as completed; `listId` is the saved search's row id, `metadata` what the run recorded (contacts added, reuse)
+  // Mark item as completed; `listId` is the saved search's row id, `metadata` what the run recorded
+  // (contacts added, reuse), merged into the item's metadata so tags such as who added it survive
   async markItemCompleted(
     itemId: number, 
     resultCount: number, 
     listId?: number,
     metadata?: Record<string, unknown>
   ) {
-    await this.updateQueueItem(itemId, {
-      status: 'completed',
-      completedAt: new Date(),
-      errorMessage: null,
-      resultCount,
-      listId,
-      ...(metadata ? { metadata } : {})
-    });
+    await this.db
+      .update(searchQueueItems)
+      .set({
+        status: 'completed',
+        completedAt: new Date(),
+        errorMessage: null,
+        resultCount,
+        listId,
+        updatedAt: new Date(),
+        ...(metadata ? { metadata: mergedItemMetadata(metadata) } : {})
+      })
+      .where(eq(searchQueueItems.id, itemId));
+  }
+
+  // Add keys to an item's metadata, keeping the keys already there
+  async mergeItemMetadata(itemId: number, metadata: Record<string, unknown>) {
+    await this.db
+      .update(searchQueueItems)
+      .set({ metadata: mergedItemMetadata(metadata), updatedAt: new Date() })
+      .where(eq(searchQueueItems.id, itemId));
   }
 
   // Mark item as failed

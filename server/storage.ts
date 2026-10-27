@@ -1298,21 +1298,34 @@ class DatabaseStorage implements IStorage {
     const contactsWithEmail = contactDetails.filter(c => c.email);
     const contactIdsWithEmail = contactsWithEmail.map(c => c.id);
     
-    // 2. Check which contacts are already in the list (duplicates)
+    // 2. Contacts already in the list: the same contact, or another contact row with the same email.
+    //    Every search saves new company and contact rows, so one person found by two searches has
+    //    two rows with one email; a list keeps one of them.
     const existingMembers = await db.select({
-      contactId: contactListMembers.contactId
+      contactId: contactListMembers.contactId,
+      email: contacts.email
     })
       .from(contactListMembers)
-      .where(and(
-        eq(contactListMembers.listId, listId),
-        inArray(contactListMembers.contactId, contactIdsWithEmail)
-      ));
+      .innerJoin(contacts, eq(contactListMembers.contactId, contacts.id))
+      .where(eq(contactListMembers.listId, listId));
     
     const existingContactIds = new Set(existingMembers.map(m => m.contactId));
-    const duplicateCount = existingContactIds.size;
+    const emailsInList = new Set(
+      existingMembers.map(m => m.email?.toLowerCase()).filter((email): email is string => !!email)
+    );
     
-    // 3. Filter out duplicates
-    let newContactIds = contactIdsWithEmail.filter(id => !existingContactIds.has(id));
+    // 3. Filter out duplicates, including a second contact with the same email in this batch
+    let newContactIds: number[] = [];
+    let duplicateCount = 0;
+    for (const contact of contactsWithEmail) {
+      const email = contact.email!.toLowerCase();
+      if (existingContactIds.has(contact.id) || emailsInList.has(email)) {
+        duplicateCount++;
+        continue;
+      }
+      emailsInList.add(email);
+      newContactIds.push(contact.id);
+    }
     let otherListDuplicateCount = 0;
     
     // 4. Check for cross-list duplicates if the setting is enabled

@@ -15,6 +15,8 @@ if (!["localhost", "127.0.0.1", "[::1]"].includes(host)) {
   console.error(`Refusing to run: DATABASE_URL must point at a local database (host is "${host || "unset"}")`);
   process.exit(1);
 }
+// Paid providers stay unreachable from this script, whatever .env holds
+for (const key of ["PERPLEXITY_API_KEY", "APOLLO_API_KEY", "HUNTER_API_KEY", "OPENAI_API_KEY", "ANTHROPIC_API_KEY"]) delete process.env[key];
 
 const { db, pool } = await import("../server/db");
 const { storage } = await import("../server/storage");
@@ -86,6 +88,16 @@ async function sharedPieces() {
     let duplicateRejected = false;
     try { await storage.createSearchList({ listId: reserved, userId, prompt: "dup", resultCount: 0, customSearchTargets: null }); } catch { duplicateRejected = true; }
     check("a duplicate list number is rejected by the unique index", duplicateRejected);
+
+    // One person found by two searches is two contact rows with one email; a list keeps one
+    const list = await storage.createContactList({ userId, name: "Verify dedup", contactCount: 0, isDefault: false });
+    const sameA = await storage.createContact({ name: "Sam Same", email: "sam@same.test", companyId: c1.id, userId } as any);
+    const sameB = await storage.createContact({ name: "Sam Same", email: "sam@same.test", companyId: c2.id, userId } as any);
+    const first = await storage.addContactsToList(list.id, [sameA.id, sameB.id], "search_list", userId);
+    check("a list takes one of two contacts that share an email", first.addedCount === 1 && first.duplicateCount === 1, first);
+    const sameC = await storage.createContact({ name: "Sam Same", email: "SAM@same.test", companyId: c2.id, userId } as any);
+    const second = await storage.addContactsToList(list.id, [sameC.id], "search_list", userId);
+    check("a later contact with that email, in other case, is skipped too", second.addedCount === 0 && second.duplicateCount === 1, second);
   });
 }
 
@@ -143,6 +155,13 @@ async function queueRunner() {
     check("recovery: running items go back to pending and active queues pause", recovered.items >= 1 && recovered.queues >= 1 && after3.status === "paused" && after3.items[0].status === "pending");
     check("getUserQueues returns queues with their items", (await searchQueueService.getUserQueues(userId)).find((q) => q.id === queue.id)!.items.length === 3);
     check("getQueuesForStrategy returns the strategy's two groups", (await searchQueueService.getQueuesForStrategy(strategyId, userId)).length === 2);
+
+    // Completing a query adds the run's counts to its metadata and keeps what was there
+    const [tagged] = await searchQueueService.addItemsToQueue(queue2.id, ["verify tagged query"]);
+    await searchQueueService.mergeItemMetadata(tagged.id, { addedByBotId: 7 });
+    await searchQueueService.markItemCompleted(tagged.id, 1, undefined, { addedCount: 2 });
+    const taggedAfter = (await searchQueueService.getQueueWithItems(queue2.id, userId))!.items.find((i) => i.id === tagged.id)!;
+    check("completing a query merges into its metadata instead of replacing it", (taggedAfter.metadata as any)?.addedByBotId === 7 && (taggedAfter.metadata as any)?.addedCount === 2, taggedAfter.metadata);
   });
 }
 
