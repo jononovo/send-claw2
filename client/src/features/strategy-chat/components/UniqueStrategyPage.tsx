@@ -31,6 +31,7 @@ import { useLocation } from "wouter";
 
 import type { StrategicProfile } from '../types';
 import { StrategyQueryGroupsCard } from './StrategyQueryGroupsCard';
+import { StrategyAgentCard } from './StrategyAgentCard';
 
 interface UniqueStrategyPageProps {
   product: StrategicProfile;
@@ -464,7 +465,11 @@ export function UniqueStrategyPage({ product, onClose }: UniqueStrategyPageProps
 
           {/* Implementation Tab (formerly Daily Queries) */}
           <TabsContent value="implementation" className="mt-3 sm:mt-6">
-            <StrategyQueryGroupsCard strategyId={product.id} dailyQueries={dailyQueries} />
+            <StrategyAgentCard strategyId={product.id} />
+
+            <div className="mt-6">
+              <StrategyQueryGroupsCard strategyId={product.id} dailyQueries={dailyQueries} />
+            </div>
 
             <Card className="mt-6">
               <CardHeader className="px-3 py-6 sm:px-6">

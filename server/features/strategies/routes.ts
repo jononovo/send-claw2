@@ -16,6 +16,7 @@ import {
   strategyDisplayName,
   suggestQueriesForStrategyQueryGroup,
 } from "./strategy-query-groups";
+import { STRATEGY_AGENT_LIMITS, StrategyAgentRunError, strategyAgentRunner } from "./strategy-agent-runner";
 
 /** The shape the client reads: the profile plus the display name it has always derived. */
 function withDisplayName(profile: StrategicProfile) {
@@ -35,6 +36,11 @@ const addQueriesSchema = z.object({
 const suggestQueriesSchema = z.object({
   description: z.string().trim().min(3, "Describe who this group should find"),
 });
+const startAgentRunSchema = z.object({
+  brief: z.string().trim().min(10, "Tell the agent who to look for").max(2000),
+  targetContactsPerGroup: z.number().int().min(1).max(STRATEGY_AGENT_LIMITS.maxTargetContactsPerGroup).optional(),
+  maxSearches: z.number().int().min(1).max(STRATEGY_AGENT_LIMITS.maxSearchesPerRun).optional(),
+});
 
 export function registerStrategiesRoutes(app: Application, requireAuth: any) {
   // Loads the strategy in the URL when it belongs to the signed-in user; otherwise answers the request itself
@@ -53,7 +59,7 @@ export function registerStrategiesRoutes(app: Application, requireAuth: any) {
   }
 
   function answerError(res: Response, error: unknown, fallback: string) {
-    if (error instanceof StrategyQueryGroupError) {
+    if (error instanceof StrategyQueryGroupError || error instanceof StrategyAgentRunError) {
       return res.status(error.status).json({ message: error.message });
     }
     console.error(fallback, error);
@@ -257,6 +263,46 @@ export function registerStrategiesRoutes(app: Application, requireAuth: any) {
       res.json(await addQueriesToStrategyQueryGroup(strategy, queueId, input.data.queries));
     } catch (error) {
       answerError(res, error, "Failed to add queries");
+    }
+  });
+
+  // The agent's recent runs for this strategy, newest first, each with its trace
+  app.get("/api/strategies/:id/agent-runs", requireAuth, async (req, res) => {
+    try {
+      const strategy = await loadOwnedStrategy(req, res);
+      if (!strategy) return;
+      res.json(await strategyAgentRunner.listRuns(strategy.id, strategy.userId));
+    } catch (error) {
+      answerError(res, error, "Failed to fetch agent runs");
+    }
+  });
+
+  // Start the agent on a brief; it creates groups and runs searches in the background
+  app.post("/api/strategies/:id/agent-runs", requireAuth, async (req, res) => {
+    try {
+      const strategy = await loadOwnedStrategy(req, res);
+      if (!strategy) return;
+      const input = startAgentRunSchema.safeParse(req.body);
+      if (!input.success) {
+        return res.status(400).json({ message: "Validation failed", errors: input.error.flatten() });
+      }
+      res.status(201).json(await strategyAgentRunner.start(strategy, input.data));
+    } catch (error) {
+      answerError(res, error, "Failed to start the agent");
+    }
+  });
+
+  // Stop a running agent: it starts no further search and ends after its current step
+  app.post("/api/strategies/:id/agent-runs/:runId/stop", requireAuth, async (req, res) => {
+    try {
+      const strategy = await loadOwnedStrategy(req, res);
+      if (!strategy) return;
+      const runId = parseInt(req.params.runId);
+      if (isNaN(runId)) return res.status(400).json({ message: "Invalid agent run ID" });
+      const stopping = await strategyAgentRunner.requestStop(runId, strategy.id, strategy.userId);
+      res.json({ stopping });
+    } catch (error) {
+      answerError(res, error, "Failed to stop the agent");
     }
   });
 }

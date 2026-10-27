@@ -1485,6 +1485,40 @@ export const searchQueueItems = pgTable("search_queue_items", {
   uniqueIndex('idx_search_queue_item_order').on(table.queueId, table.order)
 ]);
 
+// One run of the strategy agent (plans/261026_strategies.md, Phase 2): Claude reads a strategy and a
+// brief, creates query groups and runs searches in them until each group's list reaches the target.
+export type StrategyAgentRunStatus = 'running' | 'completed' | 'stopped' | 'failed' | 'interrupted';
+export type StrategyAgentRunStep =
+  | { kind: 'group'; at: string; groupId: number; groupName: string; whoToFind: string; listName: string | null }
+  | {
+      kind: 'search'; at: string; groupId: number; groupName: string; query: string; reason: string;
+      outcome: 'searched' | 'reused' | 'failed' | 'held';
+      companies?: number; addedToList?: number; alreadyOnList?: number; groupListSize?: number; error?: string;
+    }
+  | { kind: 'note'; at: string; text: string };
+export type StrategyAgentModelUsage = {
+  requests: number; inputTokens: number; outputTokens: number; cacheReadInputTokens: number; cacheCreationInputTokens: number;
+};
+
+export const strategyAgentRuns = pgTable("strategy_agent_runs", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull().references(() => users.id, { onDelete: 'cascade' }),
+  strategyId: integer("strategy_id").notNull().references(() => strategicProfiles.id, { onDelete: 'cascade' }),
+  status: text("status").notNull().default('running').$type<StrategyAgentRunStatus>(),
+  brief: text("brief").notNull(), // what the user asked the agent to find
+  targetContactsPerGroup: integer("target_contacts_per_group").notNull(), // contacts with an email per group list
+  maxSearches: integer("max_searches").notNull(), // searches the run may start; credits = searches x search cost
+  searchesRun: integer("searches_run").notNull().default(0),
+  steps: jsonb("steps").$type<StrategyAgentRunStep[]>().notNull().default([]), // the trace shown on the strategy page
+  summary: text("summary"), // the agent's closing summary
+  error: text("error"),
+  modelUsage: jsonb("model_usage").$type<StrategyAgentModelUsage>(),
+  createdAt: timestamp("created_at").defaultNow(),
+  finishedAt: timestamp("finished_at"),
+}, (table) => [
+  index('idx_strategy_agent_runs_strategy_id').on(table.strategyId),
+]);
+
 // Contact list schemas
 const contactListSchema = z.object({
   name: z.string().min(1, "List name is required"),
@@ -1581,6 +1615,7 @@ export type SearchQueue = typeof searchQueues.$inferSelect;
 export type InsertSearchQueue = z.infer<typeof insertSearchQueueSchema>;
 export type SearchQueueItem = typeof searchQueueItems.$inferSelect;
 export type InsertSearchQueueItem = z.infer<typeof insertSearchQueueItemSchema>;
+export type StrategyAgentRun = typeof strategyAgentRuns.$inferSelect;
 
 // OAuth token schemas and types
 export const insertOAuthTokenSchema = z.object({

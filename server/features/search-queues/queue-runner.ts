@@ -20,7 +20,7 @@ import { SearchListsService } from "../lists/service";
 import type { CompletedSearchJobResults } from "../lists/types";
 import { CreditService } from "../billing/credits/service";
 import { CREDIT_COSTS, type SearchType as CreditSearchType } from "../billing/credits/types";
-import { SearchQueueService } from "./service";
+import { SearchQueueService, type SearchQueueItemWithSavedSearch } from "./service";
 
 /** The credit charge a queue's search type incurs (the same charge `executeJob` applies). */
 const CREDIT_TYPE_BY_SEARCH_TYPE: Record<SearchQueue["searchType"], CreditSearchType> = {
@@ -66,6 +66,34 @@ export class SearchQueueRunner {
 
   isRunning(queueId: number): boolean {
     return this.runningQueueIds.has(queueId);
+  }
+
+  /**
+   * Runs one pending query of a queue now, outside the queue's own run; the strategy agent searches
+   * this way. Returns the item as it ended: completed, failed, or pending again when the balance
+   * could not cover it (the queue is then paused, as in a normal run).
+   */
+  async runSingleItem(queueId: number, itemId: number, userId: number): Promise<SearchQueueItemWithSavedSearch> {
+    const queue = await this.queues.getQueue(queueId, userId);
+    if (!queue) throw new Error("Query group not found");
+    if (this.runningQueueIds.has(queueId)) throw new Error("This query group is already running");
+    const item = (await this.queues.getQueueWithItems(queueId, userId))?.items.find((candidate) => candidate.id === itemId);
+    if (!item || item.status !== "pending") throw new Error("Query not found or not pending");
+
+    this.runningQueueIds.add(queueId);
+    try {
+      await this.queues.updateQueueItem(itemId, { status: "running", startedAt: new Date() });
+      await this.runItem({ ...queue, continueOnFailure: true }, item);
+      if (!(await this.queues.hasPendingItems(queueId))) {
+        await this.queues.updateQueue(queueId, userId, { status: "completed" });
+      }
+    } finally {
+      this.runningQueueIds.delete(queueId);
+    }
+
+    const finished = (await this.queues.getQueueWithItems(queueId, userId))?.items.find((candidate) => candidate.id === itemId);
+    if (!finished) throw new Error("Query disappeared while it ran");
+    return finished;
   }
 
   /**
