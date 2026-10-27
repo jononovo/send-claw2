@@ -6,7 +6,8 @@ import {
   userCredits, creditTransactions, subscriptions, userNotifications,
   campaignRecipients, userGuidanceProgress, userProgress, accessApplications,
   emailSequences, emailSequenceEvents, emailSends, guidanceVideos,
-  userOnboardingSnapshot,
+  userOnboardingSnapshot, dailyOutreachBatches, dailyOutreachItems, communicationHistory,
+  type DailyOutreachBatch, type DailyOutreachItem, type CommunicationHistory,
   type UserPreferences, type InsertUserPreferences,
   type UserEmailPreferences, type InsertUserEmailPreferences,
   type SearchList, type InsertSearchList,
@@ -67,6 +68,7 @@ export interface IStorage {
 
   // Contacts
   listContactsByCompany(companyId: number, userId: number): Promise<Contact[]>;
+  listContactsByCompanyIds(companyIds: number[], userId: number): Promise<Contact[]>;
   listContactsByCompanyPublic(companyId: number): Promise<Contact[]>;
   listContacts(userId: number): Promise<Contact[]>;
   listContactsWithCompanies(userId: number): Promise<(Contact & { companyName?: string })[]>;
@@ -157,6 +159,10 @@ export interface IStorage {
   removeContactsFromList(listId: number, contactIds: number[]): Promise<void>;
   isContactInList(listId: number, contactId: number): Promise<boolean>;
   getListMemberCount(listId: number): Promise<number>;
+
+  // Sending history
+  listRecentDailyOutreachBatches(userId: number, limit: number): Promise<Array<{ batch: DailyOutreachBatch; items: DailyOutreachItem[] }>>;
+  listCommunicationHistoryForContact(contactId: number, userId: number): Promise<CommunicationHistory[]>;
 
   // OAuth Tokens
   getOAuthToken(userId: number, service: string): Promise<{ accessToken: string; refreshToken?: string; expiresAt?: Date; email?: string } | null>;
@@ -343,17 +349,27 @@ class DatabaseStorage implements IStorage {
       .where(eq(companies.listId, listId));
   }
 
+  private searchListNumberSequenceSeeded: Promise<void> | null = null;
+
+  /**
+   * Saved-search numbers come from the `search_list_number_seq` sequence, so searches that run in
+   * parallel never receive the same number. The first call in a process moves the sequence past the
+   * highest number already in `search_lists`, which covers databases that predate the sequence.
+   */
   async getNextSearchListId(): Promise<number> {
-    const allLists = await db.select().from(searchLists);
-    let maxId = 1000;
-    
-    for (const list of allLists) {
-      if (list.listId > maxId) {
-        maxId = list.listId;
-      }
+    if (!this.searchListNumberSequenceSeeded) {
+      this.searchListNumberSequenceSeeded = db
+        .execute(sql`SELECT setval('search_list_number_seq', GREATEST(COALESCE((SELECT MAX(list_id) FROM search_lists), 1000), (SELECT last_value FROM search_list_number_seq)))`)
+        .then(() => undefined)
+        .catch((error) => {
+          this.searchListNumberSequenceSeeded = null;
+          throw error;
+        });
     }
-    
-    return maxId + 1;
+    await this.searchListNumberSequenceSeeded;
+
+    const result = await db.execute(sql`SELECT nextval('search_list_number_seq')::int AS next_list_id`);
+    return Number((result.rows[0] as { next_list_id: number | string }).next_list_id);
   }
 
   async createSearchList(data: InsertSearchList): Promise<SearchList> {
@@ -443,6 +459,13 @@ class DatabaseStorage implements IStorage {
       console.error('Error fetching contacts by company:', error);
       return [];
     }
+  }
+
+  async listContactsByCompanyIds(companyIds: number[], userId: number): Promise<Contact[]> {
+    if (companyIds.length === 0) return [];
+    return db.select()
+      .from(contacts)
+      .where(and(inArray(contacts.companyId, companyIds), eq(contacts.userId, userId)));
   }
 
   async listContactsByCompanyPublic(companyId: number): Promise<Contact[]> {
@@ -853,6 +876,7 @@ class DatabaseStorage implements IStorage {
       repliedAt: campaignRecipients.repliedAt,
       bouncedAt: campaignRecipients.bouncedAt,
       unsubscribedAt: campaignRecipients.unsubscribedAt,
+      errorMessage: campaignRecipients.errorMessage,
       emailSubject: campaignRecipients.emailSubject,
       emailContent: campaignRecipients.emailContent,
       openCount: campaignRecipients.openCount,
@@ -1219,7 +1243,10 @@ class DatabaseStorage implements IStorage {
       totalReplies: contacts.totalReplies,
       lastThreadId: contacts.lastThreadId,
       companyName: companies.name,
-      companyWebsite: companies.website
+      companyWebsite: companies.website,
+      source: contactListMembers.source,
+      sourceMetadata: contactListMembers.sourceMetadata,
+      addedAt: contactListMembers.addedAt
     })
       .from(contactListMembers)
       .innerJoin(contacts, eq(contactListMembers.contactId, contacts.id))
@@ -1991,6 +2018,28 @@ class DatabaseStorage implements IStorage {
       .orderBy(desc(userOnboardingSnapshot.capturedAt))
       .limit(1);
     return snapshot;
+  }
+
+  // Sending history
+  async listRecentDailyOutreachBatches(userId: number, limit: number): Promise<Array<{ batch: DailyOutreachBatch; items: DailyOutreachItem[] }>> {
+    const batches = await db.select()
+      .from(dailyOutreachBatches)
+      .where(eq(dailyOutreachBatches.userId, userId))
+      .orderBy(desc(dailyOutreachBatches.batchDate))
+      .limit(limit);
+    if (batches.length === 0) return [];
+
+    const items = await db.select()
+      .from(dailyOutreachItems)
+      .where(inArray(dailyOutreachItems.batchId, batches.map(batch => batch.id)));
+    return batches.map(batch => ({ batch, items: items.filter(item => item.batchId === batch.id) }));
+  }
+
+  async listCommunicationHistoryForContact(contactId: number, userId: number): Promise<CommunicationHistory[]> {
+    return db.select()
+      .from(communicationHistory)
+      .where(and(eq(communicationHistory.contactId, contactId), eq(communicationHistory.userId, userId)))
+      .orderBy(desc(communicationHistory.createdAt));
   }
 }
 

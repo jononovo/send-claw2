@@ -70,6 +70,7 @@ import { registerSuperSearchRoutes } from "./search/super-search";
 import { registerSmartSuggestionsRoutes } from "./features/smart-suggestions";
 import { registerAssistantChatRoutes } from "./features/assistant-chat";
 import { registerSendClawRoutes } from "./sendclaw/routes";
+import { registerAgentApiRoutes } from "./features/agent-api";
 import { registerTenantRoutes } from "./tenants/routes";
 
 // Import centralized auth utilities
@@ -485,7 +486,9 @@ Respond in this exact JSON format:
   registerAssistantChatRoutes(app);
   // Register SendClaw routes (email service for AI bots)
   registerSendClawRoutes(app);
-  
+  // Register the external agent API (claimed 5Ducks bots, /api/agent/v1)
+  registerAgentApiRoutes(app);
+
   // Register tenant-specific routes (skill.md, etc.)
   registerTenantRoutes(app);
 

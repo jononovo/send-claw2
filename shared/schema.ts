@@ -1,4 +1,4 @@
-import { pgTable, text, serial, integer, jsonb, timestamp, boolean, uuid, index, uniqueIndex, real } from "drizzle-orm/pg-core";
+import { pgTable, pgSequence, text, serial, integer, jsonb, timestamp, boolean, uuid, index, uniqueIndex, real } from "drizzle-orm/pg-core";
 import { z } from "zod";
 
 export const users = pgTable("users", {
@@ -255,6 +255,11 @@ export const oauthTokens = pgTable("oauth_tokens", {
   index('idx_oauth_tokens_service').on(table.service),
 ]);
 
+// Saved-search numbers (`search_lists.list_id`, the number users see, also stored on `companies.list_id`).
+// A sequence hands distinct numbers to searches that run in parallel; `storage.getNextSearchListId`
+// moves it past the highest existing number the first time it is used on a database.
+export const searchListNumberSequence = pgSequence("search_list_number_seq", { startWith: 1001, minValue: 1001 });
+
 export const searchLists = pgTable("search_lists", {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
   userId: integer("user_id").notNull().references(() => users.id, { onDelete: 'cascade' }),  
@@ -268,6 +273,7 @@ export const searchLists = pgTable("search_lists", {
   sourceBreakdown: jsonb("source_breakdown").$type<{ Perplexity: number; Apollo: number; Hunter: number }>(),
   reportCompanies: jsonb("report_companies").$type<Array<{ id: number; name: string; contacts?: Array<{ id: number; name?: string; role?: string; email?: string; probability?: number }> }>>(),
   searchType: text("search_type").default('normal').$type<'normal' | 'super'>(),
+  strategyId: integer("strategy_id").references(() => strategicProfiles.id, { onDelete: 'set null' }), // the strategy the search was run under; never re-tagged
   superSearchData: jsonb("super_search_data").$type<{
     plan: {
       queryType: 'company' | 'contact';
@@ -285,7 +291,8 @@ export const searchLists = pgTable("search_lists", {
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow()
 }, (table) => [
   index('idx_search_lists_user_id').on(table.userId),
-  index('idx_search_lists_list_id').on(table.listId),
+  uniqueIndex('idx_search_lists_list_id').on(table.listId),
+  index('idx_search_lists_strategy_id').on(table.strategyId),
 ]);
 
 export const companies = pgTable("companies", {
@@ -450,7 +457,7 @@ export const searchJobs = pgTable("search_jobs", {
   results: jsonb("results"), // companies and contacts data
   resultCount: integer("result_count").default(0),
   error: text("error"),
-  source: text("source").notNull().default('frontend'), // 'frontend', 'api', 'cron'
+  source: text("source").notNull().default('frontend'), // 'frontend', 'api', 'cron', 'strategy'
   metadata: jsonb("metadata").default('{}'), // additional data like sessionId, listId
   priority: integer("priority").default(0), // higher priority jobs get processed first
   retryCount: integer("retry_count").default(0),
@@ -483,7 +490,19 @@ const searchListSchema = z.object({
     Perplexity: z.number(),
     Apollo: z.number(),
     Hunter: z.number()
-  }).nullable().optional()
+  }).nullable().optional(),
+  reportCompanies: z.array(z.object({
+    id: z.number(),
+    name: z.string(),
+    contacts: z.array(z.object({
+      id: z.number(),
+      name: z.string().optional(),
+      role: z.string().optional(),
+      email: z.string().optional(),
+      probability: z.number().optional()
+    })).optional()
+  })).nullable().optional(),
+  strategyId: z.number().nullable().optional()
 });
 
 const companySchema = z.object({
@@ -588,7 +607,7 @@ const searchJobSchema = z.object({
   query: z.string().min(1, "Search query is required"),
   searchType: z.enum(['companies', 'contacts', 'emails', 'email-single', 'individual', 'individual_search']).default('companies'),
   contactSearchConfig: z.record(z.any()).optional(),
-  source: z.enum(['frontend', 'api', 'cron']).default('frontend'),
+  source: z.enum(['frontend', 'api', 'cron', 'strategy']).default('frontend'),
   metadata: z.record(z.any()).optional(),
   priority: z.number().int().min(0).default(0),
   maxRetries: z.number().int().min(0).default(3)
@@ -1329,6 +1348,7 @@ export type DailyOutreachBatch = typeof dailyOutreachBatches.$inferSelect;
 export type InsertDailyOutreachBatch = z.infer<typeof insertDailyOutreachBatchSchema>;
 export type DailyOutreachItem = typeof dailyOutreachItems.$inferSelect;
 export type InsertDailyOutreachItem = z.infer<typeof insertDailyOutreachItemSchema>;
+export type CommunicationHistory = typeof communicationHistory.$inferSelect;
 export type UserOutreachPreferences = typeof userOutreachPreferences.$inferSelect;
 export type InsertUserOutreachPreferences = z.infer<typeof insertUserOutreachPreferencesSchema>;
 

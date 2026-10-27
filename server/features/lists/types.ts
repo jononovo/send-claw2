@@ -47,3 +47,22 @@ export interface SearchListWithCompanies extends SearchListResponse {
     createdAt?: Date;
   }>;
 }
+
+/** The `results` a standard search job stores when it completes (see `SearchJobService.executeJob`). */
+export interface CompletedSearchJobResults {
+  companies: Array<{
+    id: number;
+    name: string;
+    contacts?: Array<{
+      id: number;
+      name?: string | null;
+      role?: string | null;
+      email?: string | null;
+      probability?: number | null;
+    }>;
+  }>;
+  totalCompanies?: number;
+  totalContacts?: number;
+  sourceBreakdown?: { Perplexity: number; Apollo: number; Hunter: number } | null;
+  savedSearchId?: number;
+}
