@@ -22,8 +22,8 @@ import { listStrategyQueryGroups } from "./strategy-query-groups";
 import { STRATEGY_AGENT_SYSTEM_PROMPT, buildStrategyAgentOpeningMessage } from "./strategy-agent-prompt";
 import { buildStrategyAgentTools, type StrategyAgentToolState } from "./strategy-agent-tools";
 
-/** The model the agent runs on. Thinking is always on for it; `effort` sets how hard it thinks. */
-const STRATEGY_AGENT_MODEL = "claude-opus-5-5";
+/** The model the agent runs on. Thinking is on by default for it; `effort` sets how hard it thinks (high is its default). */
+const STRATEGY_AGENT_MODEL = "claude-sonnet-5-5";
 const STRATEGY_AGENT_EFFORT = "high" as const;
 const STRATEGY_AGENT_MAX_TOKENS = 16000;
 /** On a safety decline the API retries on the model Anthropic recommends for that category. */
