@@ -9,6 +9,7 @@ import { nanoid } from "nanoid";
 import { db } from "./db";
 import { companies, contacts, searchLists } from "@shared/schema";
 import { eq } from "drizzle-orm";
+import { applyTenantPageTags } from "./tenants/tenant-page-tags";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -161,7 +162,7 @@ export async function setupVite(app: Express, server: Server) {
         `src="/src/main.tsx?v=${nanoid()}"`
       );
 
-      let page = await vite.transformIndexHtml(url, template);
+      let page = applyTenantPageTags(await vite.transformIndexHtml(url, template), req.hostname);
 
       // Inject canonical tag for SEO pages
       const canonicalUrl = await getCanonicalUrl(url);
@@ -186,12 +187,13 @@ export function serveStatic(app: Express) {
     );
   }
 
-  app.use(express.static(distPath));
+  // index: false sends "/" to the handler below, so the home page gets its tenant's tags too
+  app.use(express.static(distPath, { index: false }));
 
   // Fall through to index.html if the file doesn't exist
   app.use("*", async (req, res) => {
     try {
-      let html = await fs.promises.readFile(path.resolve(distPath, "index.html"), "utf-8");
+      let html = applyTenantPageTags(await fs.promises.readFile(path.resolve(distPath, "index.html"), "utf-8"), req.hostname);
 
       // Inject canonical tag for SEO pages
       const canonicalUrl = await getCanonicalUrl(req.originalUrl);
