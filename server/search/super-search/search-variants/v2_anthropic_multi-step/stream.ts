@@ -1,4 +1,4 @@
-import Anthropic from '@anthropic-ai/sdk';
+import { CLAUDE_OPUS_MODEL, requestClaudeText } from '../../../../lib/claude-request';
 import type { SearchPlan, SuperSearchResult, StreamEvent } from '../../types';
 
 const ANALYSIS_PROMPT = `You are a research assistant that extracts structured data from search results.
@@ -69,10 +69,6 @@ For contacts:
 Be accurate. Use null for unknown values. Do not fabricate data.
 Only include standard fields that were requested.`;
 
-const anthropic = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY,
-});
-
 async function perplexitySearch(query: string): Promise<string> {
   const apiKey = process.env.PERPLEXITY_API_KEY;
   if (!apiKey) {
@@ -106,24 +102,16 @@ async function claudeAnalyze(
   query: string, 
   perplexityResults: string
 ): Promise<{ plan: SearchPlan; entities: string[] }> {
-  const message = await anthropic.messages.create({
-    model: 'claude-opus-4-20250514',
-    max_tokens: 2000,
+  const responseText = await requestClaudeText({
+    model: CLAUDE_OPUS_MODEL,
     system: ANALYSIS_PROMPT,
-    messages: [
-      {
-        role: 'user',
-        content: `User Query: "${query}"
+    prompt: `User Query: "${query}"
 
 Raw Search Results:
 ${perplexityResults}
 
 Extract entities and create a research plan.`
-      }
-    ]
   });
-
-  const responseText = message.content[0].type === 'text' ? message.content[0].text : '';
   const jsonMatch = responseText.match(/\{[\s\S]*\}/);
   if (!jsonMatch) {
     throw new Error('Claude did not return valid JSON');
@@ -151,14 +139,9 @@ async function claudeExtractEntity(
   const standardFieldsList = plan.standardFields.join(', ');
   const customFieldsList = plan.customFields.map(f => `- ${f.key}: ${f.label}`).join('\n');
 
-  const message = await anthropic.messages.create({
-    model: 'claude-sonnet-4-20250514',
-    max_tokens: 1000,
+  const responseText = await requestClaudeText({
     system: EXTRACTION_PROMPT,
-    messages: [
-      {
-        role: 'user',
-        content: `Entity: "${entity}"
+    prompt: `Entity: "${entity}"
 Query Context: "${query}"
 Entity Type: ${plan.queryType}
 
@@ -171,11 +154,7 @@ Research Data:
 ${perplexityData}
 
 Extract structured data for this entity.`
-      }
-    ]
   });
-
-  const responseText = message.content[0].type === 'text' ? message.content[0].text : '';
   const jsonMatch = responseText.match(/\{[\s\S]*\}/);
   
   if (!jsonMatch) {

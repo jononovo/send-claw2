@@ -1,5 +1,5 @@
-import Anthropic from '@anthropic-ai/sdk';
 import { z } from 'zod';
+import { requestClaudeText } from '../../lib/claude-request';
 import { EmailForReview, AIReviewResult, FlaggedEmail } from './types';
 
 const FlaggedEmailSchema = z.object({
@@ -11,8 +11,6 @@ const FlaggedEmailSchema = z.object({
 const AIResponseSchema = z.object({
   flagged: z.array(FlaggedEmailSchema)
 });
-
-const DEFAULT_MODEL = "claude-sonnet-4-20250514";
 
 const SYSTEM_PROMPT = `You are a security reviewer for SendClaw, an email service used by AI bots.
 Your job is to identify OUTBOUND emails that attempt to SCAM or HARM external recipients.
@@ -56,12 +54,8 @@ Return JSON format:
 
 export async function reviewEmails(emails: EmailForReview[]): Promise<AIReviewResult> {
   if (emails.length === 0) {
-    return { flagged: [] };
+    return { flagged: [], reviewFailed: false };
   }
-
-  const anthropic = new Anthropic({
-    apiKey: process.env.ANTHROPIC_API_KEY,
-  });
 
   const emailsForReview = emails.map(e => ({
     id: e.id,
@@ -74,23 +68,12 @@ export async function reviewEmails(emails: EmailForReview[]): Promise<AIReviewRe
   const userMessage = `Review these ${emails.length} outbound emails from bot accounts:\n\n${JSON.stringify(emailsForReview, null, 2)}`;
 
   try {
-    const response = await anthropic.messages.create({
-      model: DEFAULT_MODEL,
-      max_tokens: 2048,
-      system: SYSTEM_PROMPT,
-      messages: [{ role: 'user', content: userMessage }]
-    });
+    const reply = await requestClaudeText({ system: SYSTEM_PROMPT, prompt: userMessage });
 
-    const content = response.content[0];
-    if (content.type !== 'text') {
-      console.error('[BotEmailSecurity] Unexpected response type:', content.type);
-      return { flagged: [] };
-    }
-
-    const jsonMatch = content.text.match(/\{[\s\S]*\}/);
+    const jsonMatch = reply.match(/\{[\s\S]*\}/);
     if (!jsonMatch) {
-      console.error('[BotEmailSecurity] Could not parse JSON from response:', content.text.slice(0, 500));
-      return { flagged: [] };
+      console.error('[BotEmailSecurity] Could not parse JSON from response:', reply.slice(0, 500));
+      return { flagged: [], reviewFailed: true };
     }
 
     let parsed: unknown;
@@ -98,13 +81,13 @@ export async function reviewEmails(emails: EmailForReview[]): Promise<AIReviewRe
       parsed = JSON.parse(jsonMatch[0]);
     } catch (parseError) {
       console.error('[BotEmailSecurity] JSON parse error:', parseError);
-      return { flagged: [] };
+      return { flagged: [], reviewFailed: true };
     }
 
     const validated = AIResponseSchema.safeParse(parsed);
     if (!validated.success) {
       console.error('[BotEmailSecurity] Response validation failed:', validated.error.errors);
-      return { flagged: [] };
+      return { flagged: [], reviewFailed: true };
     }
 
     const result = validated.data;
@@ -113,10 +96,10 @@ export async function reviewEmails(emails: EmailForReview[]): Promise<AIReviewRe
     result.flagged = result.flagged.filter((f: FlaggedEmail) => validEmailIds.has(f.id));
 
     console.log(`[BotEmailSecurity] AI review complete: ${result.flagged.length} emails flagged out of ${emails.length}`);
-    return result;
+    return { flagged: result.flagged, reviewFailed: false };
 
   } catch (error) {
     console.error('[BotEmailSecurity] AI review error:', error);
-    return { flagged: [] };
+    return { flagged: [], reviewFailed: true };
   }
 }

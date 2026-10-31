@@ -1,11 +1,5 @@
-import Anthropic from "@anthropic-ai/sdk";
+import { requestClaudeText } from "../../lib/claude-request";
 import type { Suggestion, SearchContext, SuggestionType } from "./types";
-
-const anthropic = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY,
-});
-
-const DEFAULT_MODEL = "claude-sonnet-4-20250514";
 
 interface ClaudeSuggestion {
   type: SuggestionType;
@@ -49,22 +43,8 @@ Generate exactly 4 suggestions that would help the user get better results.
 Return only a JSON array of suggestion objects.`;
 
   try {
-    const message = await anthropic.messages.create({
-      model: DEFAULT_MODEL,
-      max_tokens: 1024,
-      messages: [
-        { role: "user", content: userPrompt }
-      ],
-      system: systemPrompt,
-    });
-
-    const content = message.content[0];
-    if (content.type !== "text") {
-      console.error("Unexpected response type from Claude:", content.type);
-      return getDefaultSuggestions(context);
-    }
-
-    const parsed = JSON.parse(content.text) as ClaudeSuggestion[];
+    const reply = await requestClaudeText({ system: systemPrompt, prompt: userPrompt });
+    const parsed = JSON.parse(reply) as ClaudeSuggestion[];
     
     return parsed.map((s, index): Suggestion => ({
       id: `ai-${s.type}-${index}`,

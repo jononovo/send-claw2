@@ -1,12 +1,8 @@
 import type { Express, Request, Response } from "express";
-import Anthropic from "@anthropic-ai/sdk";
+import type Anthropic from "@anthropic-ai/sdk";
+import { claude, CLAUDE_REQUEST_DEFAULTS, CLAUDE_SONNET_MODEL } from "../../lib/claude-request";
 
-// The newest Anthropic model is "claude-sonnet-4-20250514"
-const DEFAULT_MODEL = "claude-sonnet-4-20250514";
-
-const anthropic = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY,
-});
+const REFUSAL_REPLY = "I can't help with that request.";
 
 interface SearchContext {
   query: string;
@@ -151,9 +147,9 @@ export function registerAssistantChatRoutes(app: Express) {
       res.setHeader("Cache-Control", "no-cache");
       res.setHeader("Connection", "keep-alive");
 
-      const stream = anthropic.messages.stream({
-        model: DEFAULT_MODEL,
-        max_tokens: 1024,
+      const stream = claude.beta.messages.stream({
+        ...CLAUDE_REQUEST_DEFAULTS,
+        model: CLAUDE_SONNET_MODEL,
         system: systemPrompt,
         messages: messages.map(m => ({
           role: m.role as "user" | "assistant",
@@ -168,7 +164,7 @@ export function registerAssistantChatRoutes(app: Express) {
         res.write(`data: ${JSON.stringify({ type: "text", content: text })}\n\n`);
       });
 
-      stream.on("contentBlock", (contentBlock: Anthropic.ContentBlock) => {
+      stream.on("contentBlock", (contentBlock) => {
         if (contentBlock.type === "tool_use") {
           toolCalls.push({
             toolName: contentBlock.name,
@@ -177,7 +173,10 @@ export function registerAssistantChatRoutes(app: Express) {
         }
       });
 
-      stream.on("message", () => {
+      stream.on("message", (message) => {
+        if (message.stop_reason === "refusal") {
+          res.write(`data: ${JSON.stringify({ type: "text", content: REFUSAL_REPLY })}\n\n`);
+        }
         if (toolCalls.length > 0) {
           res.write(`data: ${JSON.stringify({ type: "tool_calls", calls: toolCalls })}\n\n`);
         }

@@ -2,11 +2,10 @@ import express, { type Express } from "express";
 import { storage } from "../../storage";
 import { getUserId } from "../../utils/auth";
 import { CreditRewardService } from "../billing/rewards/service";
-import Anthropic from "@anthropic-ai/sdk";
+import { requestClaudeText } from "../../lib/claude-request";
 import * as fs from "fs";
 import * as path from "path";
 
-const anthropic = new Anthropic();
 
 const QUEST_FILE_MANIFEST: Record<string, { file: string; exportName: string }> = {
   "finding-customers": { file: "quest-1.ts", exportName: "quest1" },
@@ -249,20 +248,7 @@ Respond ONLY with valid JSON in this exact format:
   "completionMessage": "Great job! You've learned..."
 }`;
 
-      const response = await anthropic.messages.create({
-        model: "claude-sonnet-4-20250514",
-        max_tokens: 2000,
-        messages: [
-          { role: "user", content: prompt }
-        ]
-      });
-
-      const textContent = response.content.find(block => block.type === 'text');
-      if (!textContent || textContent.type !== 'text') {
-        throw new Error("No text response from AI");
-      }
-
-      let jsonStr = textContent.text.trim();
+      let jsonStr = await requestClaudeText({ prompt });
       const jsonMatch = jsonStr.match(/\{[\s\S]*\}/);
       if (jsonMatch) {
         jsonStr = jsonMatch[0];

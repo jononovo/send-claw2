@@ -13,7 +13,7 @@ class BotEmailSecurityEngine {
   private isProcessing = false;
 
   async initialize() {
-    if (!process.env.REPL_DEPLOYMENT) {
+    if (!process.env.REPLIT_DEPLOYMENT) {
       console.log('[BotEmailSecurity] Skipping in development — security reports only run in production');
       return;
     }
@@ -205,7 +205,7 @@ class BotEmailSecurityEngine {
     }
 
     console.log(`[BotEmailSecurity] STEP-4: Gathering stats...`);
-    const stats = await this.gatherStats(reviewStart, reviewEnd);
+    const stats = { ...(await this.gatherStats(reviewStart, reviewEnd)), aiReviewFailed: reviewResult.reviewFailed };
     console.log(`[BotEmailSecurity] STEP-4: Stats gathered`);
     
     const allSubjectLines = outboundEmails
