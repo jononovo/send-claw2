@@ -1,4 +1,4 @@
-import { pgTable, pgSequence, text, serial, integer, jsonb, timestamp, boolean, uuid, index, uniqueIndex, real } from "drizzle-orm/pg-core";
+import { pgTable, pgSequence, text, varchar, serial, integer, json, jsonb, timestamp, boolean, uuid, index, uniqueIndex, real } from "drizzle-orm/pg-core";
 import { z } from "zod";
 
 export const users = pgTable("users", {
@@ -11,6 +11,27 @@ export const users = pgTable("users", {
   createdAt: timestamp("created_at").defaultNow(),
   isGuest: boolean("is_guest").default(false),
   isAdmin: boolean("is_admin").default(false)
+});
+
+// Tables the app creates and writes outside Drizzle. They are defined here because `drizzle-kit push`
+// drops any table this file doesn't define.
+
+// Login sessions, created by connect-pg-simple (server/auth.ts)
+export const userSessions = pgTable("user_sessions", {
+  sid: varchar("sid").primaryKey(),
+  sess: json("sess").notNull(),
+  expire: timestamp("expire", { precision: 6 }).notNull()
+}, (table) => [
+  index("IDX_session_expire").on(table.expire)
+]);
+
+// Debug log of automatic sends, created by AutoSendLogger (server/features/campaigns/services/auto-send-logger.ts)
+export const autoSendLogs = pgTable("auto_send_logs", {
+  id: serial("id").primaryKey(),
+  timestamp: timestamp("timestamp").notNull().defaultNow(),
+  method: varchar("method", { length: 255 }).notNull(),
+  details: jsonb("details"),
+  createdAt: timestamp("created_at").notNull().defaultNow()
 });
 
 // User credits table (migrated from KV)
