@@ -35,6 +35,18 @@ interface TenantPricingConfig {
 interface TenantConfig {
   id: string;
   domains: string[];
+  branding: {
+    name: string;
+    logo: string;
+    favicon: string;
+  };
+  meta: {
+    title: string;
+    description: string;
+    ogImage: string;
+    twitterImage: string;
+    url: string;
+  };
   pricing?: TenantPricingConfig;
 }
 
@@ -51,7 +63,7 @@ function loadTenantConfigs(): TenantConfig[] {
     const configPath = path.join(TENANTS_DIR, id, "config.json");
     const raw = fs.readFileSync(configPath, "utf-8");
     const config = JSON.parse(raw);
-    return { id: config.id, domains: config.domains, pricing: config.pricing };
+    return { id: config.id, domains: config.domains, branding: config.branding, meta: config.meta, pricing: config.pricing };
   });
 
   return tenantConfigs;
@@ -71,6 +83,11 @@ export function getTenantFromHost(hostname: string): string {
   }
 
   return DEFAULT_TENANT;
+}
+
+export function getTenantConfigFromHost(hostname: string): TenantConfig {
+  const tenantId = getTenantFromHost(hostname);
+  return loadTenantConfigs().find(t => t.id === tenantId)!;
 }
 
 export function getTenantPricing(tenantId: string): TenantPricingConfig | undefined {
