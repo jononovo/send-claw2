@@ -1,3 +1,5 @@
+// First import: the modules below read environment variables as they load
+import "dotenv/config";
 import express, { type Request, Response, NextFunction } from "express";
 import compression from "compression";
 import { registerRoutes } from "./routes";
@@ -13,10 +15,6 @@ import { dripEmailEngine } from "./email/drip-engine";
 import { initBotEmailSecurity } from "./features/bot-email-security";
 import { registerSEOSSRMiddleware } from "./features/seo-ssr";
 import { sql } from "drizzle-orm";
-import dotenv from "dotenv";
-
-// Load environment variables from .env file
-dotenv.config();
 
 // =============================================================================
 // GLOBAL ERROR HANDLERS - Safety net for unhandled errors
