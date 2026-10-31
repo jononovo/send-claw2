@@ -1,5 +1,5 @@
 import type { Contact } from "@shared/schema";
-import type { EnhancedContactFinderOptions } from "./enhanced-contact-finder";
+import type { EnhancedContactFinderOptions } from "./finder";
 
 export interface FallbackAnalysis {
   currentContactCount: number;

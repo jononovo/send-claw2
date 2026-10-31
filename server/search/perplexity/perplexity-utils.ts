@@ -2,7 +2,6 @@ import type { Company, Contact } from "@shared/schema";
 import { queryPerplexity } from "./perplexity-client";
 import type { PerplexityMessage } from "./perplexity-types";
 import { validateEmailPattern, isValidBusinessEmail, isPlaceholderEmail } from "../analysis/email-analysis";
-import type { ValidationOptions } from "../analysis/contact-validation";
 
 /**
  * Core Perplexity AI interaction module
