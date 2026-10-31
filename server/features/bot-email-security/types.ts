@@ -8,6 +8,7 @@ export interface FlaggedEmail {
 
 export interface AIReviewResult {
   flagged: FlaggedEmail[];
+  reviewFailed: boolean;
 }
 
 export interface EmailForReview {
@@ -26,6 +27,7 @@ export interface DailyStats {
   emailsOutbound: number;
   newBots: number;
   botsClaimed: number;
+  aiReviewFailed?: boolean;
 }
 
 export interface FlaggedEmailReport {

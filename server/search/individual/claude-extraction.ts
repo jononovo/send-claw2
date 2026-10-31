@@ -1,4 +1,4 @@
-import Anthropic from '@anthropic-ai/sdk';
+import { requestClaudeText } from '../../lib/claude-request';
 import type { SearchResult, StructuredSearchData } from './perplexity-search-api';
 import type { CandidateResult } from './types';
 
@@ -11,8 +11,6 @@ export interface ExtractionResult {
   };
   candidates: CandidateResult[];
 }
-
-const DEFAULT_MODEL = "claude-sonnet-4-20250514";
 
 function buildStructuredPrompt(structuredSearch: StructuredSearchData, searchResultsText: string): string {
   const nameParts = structuredSearch.fullName.split(' ');
@@ -83,13 +81,10 @@ export async function extractCandidatesWithClaude(
   searchResults: SearchResult[],
   structuredSearch?: StructuredSearchData
 ): Promise<ExtractionResult> {
-  const apiKey = process.env.ANTHROPIC_API_KEY;
-  if (!apiKey) {
+  if (!process.env.ANTHROPIC_API_KEY) {
     console.error('[ClaudeExtraction] Anthropic API key is not configured');
     throw new Error('Anthropic API key is not configured. Please add ANTHROPIC_API_KEY to enable individual search extraction.');
   }
-
-  const anthropic = new Anthropic({ apiKey });
 
   console.log(`[ClaudeExtraction] Extracting candidates from ${searchResults.length} search results`);
   if (structuredSearch) {
@@ -162,29 +157,20 @@ Return ONLY valid JSON in this exact format:
 }`;
 
   try {
-    const response = await anthropic.messages.create({
-      model: DEFAULT_MODEL,
-      max_tokens: 2000,
-      temperature: 0.1,
-      messages: [
-        {
-          role: 'user',
-          content: prompt
-        }
-      ],
-      system: 'You are a professional researcher extracting candidate information from search results. Always return valid JSON only, with no additional text or explanation.'
+    const reply = await requestClaudeText({
+      system: 'You are a professional researcher extracting candidate information from search results. Always return valid JSON only, with no additional text or explanation.',
+      prompt
     });
 
-    const content = response.content[0];
-    if (content.type !== 'text' || !content.text) {
+    if (!reply) {
       console.error('[ClaudeExtraction] No text content in response');
       return getDefaultResult(originalQuery);
     }
 
-    console.log(`[ClaudeExtraction] Raw response length: ${content.text.length} chars`);
+    console.log(`[ClaudeExtraction] Raw response length: ${reply.length} chars`);
 
     try {
-      const jsonMatch = content.text.match(/\{[\s\S]*\}/);
+      const jsonMatch = reply.match(/\{[\s\S]*\}/);
       if (!jsonMatch) {
         console.error('[ClaudeExtraction] No JSON found in response');
         return getDefaultResult(originalQuery);

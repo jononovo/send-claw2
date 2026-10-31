@@ -1,4 +1,4 @@
-import Anthropic from '@anthropic-ai/sdk';
+import { requestClaudeText } from '../../../../lib/claude-request';
 import type { SearchPlan, SuperSearchResult, StreamEvent, CustomField } from '../../types';
 
 const QUERY_ANALYSIS_PROMPT = `You analyze user queries for a B2B lead generation search system.
@@ -193,10 +193,6 @@ QUALITY STANDARDS:
 
 If you cannot find person-specific data for a contact search, indicate this clearly rather than returning company data in contact fields.`;
 
-const anthropic = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY,
-});
-
 interface QueryAnalysis {
   intent: string;
   entityType: 'company' | 'contact';
@@ -215,16 +211,10 @@ interface ResearchPlan {
 }
 
 async function analyzeQuery(query: string): Promise<QueryAnalysis> {
-  const message = await anthropic.messages.create({
-    model: 'claude-sonnet-4-20250514',
-    max_tokens: 1500,
+  const responseText = await requestClaudeText({
     system: QUERY_ANALYSIS_PROMPT,
-    messages: [
-      { role: 'user', content: query }
-    ]
+    prompt: query
   });
-
-  const responseText = message.content[0].type === 'text' ? message.content[0].text : '';
   const jsonMatch = responseText.match(/\{[\s\S]*\}/);
   
   if (!jsonMatch) {
@@ -268,14 +258,9 @@ async function planResearch(
   analysis: QueryAnalysis,
   cursoryResults: string
 ): Promise<ResearchPlan> {
-  const message = await anthropic.messages.create({
-    model: 'claude-sonnet-4-20250514',
-    max_tokens: 2000,
+  const responseText = await requestClaudeText({
     system: RESEARCH_PLANNING_PROMPT,
-    messages: [
-      {
-        role: 'user',
-        content: `Original Query: "${query}"
+    prompt: `Original Query: "${query}"
 
 Query Analysis:
 ${JSON.stringify(analysis, null, 2)}
@@ -284,11 +269,7 @@ Cursory Search Results:
 ${cursoryResults}
 
 Based on what we now know, create the final research plan.`
-      }
-    ]
   });
-
-  const responseText = message.content[0].type === 'text' ? message.content[0].text : '';
   const jsonMatch = responseText.match(/\{[\s\S]*\}/);
   
   if (!jsonMatch) {
@@ -344,14 +325,9 @@ async function extractResults(
   for (let i = 0; i < entities.length; i += batchSize) {
     const batch = entities.slice(i, i + batchSize);
     
-    const message = await anthropic.messages.create({
-      model: 'claude-sonnet-4-20250514',
-      max_tokens: 3000,
+    const responseText = await requestClaudeText({
       system: EXTRACTION_PROMPT,
-      messages: [
-        {
-          role: 'user',
-          content: `Query: "${query}"
+      prompt: `Query: "${query}"
 Entity Type: ${plan.queryType}
 Standard Fields: ${plan.standardFields.join(', ')}
 Custom Fields: ${plan.customFields.map(f => `${f.key}: ${f.label}`).join(', ')}
@@ -362,11 +338,7 @@ Research Data:
 ${allResearchData}
 
 Extract structured data for each entity. Return a JSON array.`
-        }
-      ]
     });
-
-    const responseText = message.content[0].type === 'text' ? message.content[0].text : '';
     const jsonMatch = responseText.match(/\[[\s\S]*\]/);
     
     if (jsonMatch) {

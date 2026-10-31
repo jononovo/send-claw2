@@ -3,6 +3,7 @@ import { SecurityReportData, FlaggedEmailReport } from './types';
 
 const ADMIN_EMAIL = 'jon@5ducks.ai';
 const SECURITY_EMAIL = 'security@sendclaw.com';
+const AI_REVIEW_FAILED_NOTICE = "The AI review failed, so this day's emails were not checked.";
 
 function formatEmailBody(report: SecurityReportData): { html: string; text: string } {
   const { stats, flaggedEmails, allSubjectLines } = report;
@@ -33,7 +34,7 @@ Date: ${report.date}
 - Bots Claimed: ${stats.botsClaimed}
 
 🚩 FLAGGED EMAILS (${flaggedEmails.length})
-${flaggedSection}
+${stats.aiReviewFailed ? `⚠️ ${AI_REVIEW_FAILED_NOTICE}\n` : ''}${flaggedSection}
 
 📝 ALL SUBJECT LINES SENT TODAY (${allSubjectLines.length})
 ${subjectsSection}
@@ -87,7 +88,8 @@ This is an automated report from SendClaw Bot Email Security.
   </div>
 
   <h2>🚩 Flagged Emails (${flaggedEmails.length})</h2>
-  ${flaggedEmails.length === 0 ? '<p>No suspicious emails detected today.</p>' : 
+  ${stats.aiReviewFailed ? `<p><strong>⚠️ ${AI_REVIEW_FAILED_NOTICE}</strong></p>` : ''}
+  ${flaggedEmails.length === 0 ? (stats.aiReviewFailed ? '' : '<p>No suspicious emails detected today.</p>') : 
     flaggedEmails.map(e => `
     <div class="flagged-email ${e.suggestedStatus}">
       <strong>Bot:</strong> ${e.botName} (${e.botAddress})<br>
@@ -118,7 +120,7 @@ This is an automated report from SendClaw Bot Email Security.
 export async function sendDailyReport(report: SecurityReportData): Promise<boolean> {
   const { html, text } = formatEmailBody(report);
   
-  const subject = `[SendClaw] Daily Security Report - ${report.date}${report.flaggedEmails.length > 0 ? ` (${report.flaggedEmails.length} flagged)` : ''}`;
+  const subject = `[SendClaw] Daily Security Report - ${report.date}${report.stats.aiReviewFailed ? ' (AI REVIEW FAILED)' : ''}${report.flaggedEmails.length > 0 ? ` (${report.flaggedEmails.length} flagged)` : ''}`;
 
   try {
     await sendEmail({

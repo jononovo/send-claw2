@@ -4,10 +4,10 @@
  * each group's list reaches its target or the run's searches are used up. One run per strategy at a
  * time, in the background; the user can stop it, and the page reads its trace from the run record.
  */
-import Anthropic from "@anthropic-ai/sdk";
 import type { BetaMessage } from "@anthropic-ai/sdk/resources/beta/messages/messages";
 import { and, desc, eq, sql } from "drizzle-orm";
 import { db } from "../../db";
+import { claude, claudeMessageText, CLAUDE_REFUSAL_FALLBACK_BETA, CLAUDE_SONNET_MODEL } from "../../lib/claude-request";
 import {
   strategyAgentRuns,
   type StrategicProfile,
@@ -23,11 +23,9 @@ import { STRATEGY_AGENT_SYSTEM_PROMPT, buildStrategyAgentOpeningMessage } from "
 import { buildStrategyAgentTools, type StrategyAgentToolState } from "./strategy-agent-tools";
 
 /** The model the agent runs on. Thinking is on by default for it; `effort` sets how hard it thinks (high is its default). */
-const STRATEGY_AGENT_MODEL = "claude-sonnet-5-5";
+const STRATEGY_AGENT_MODEL = CLAUDE_SONNET_MODEL;
 const STRATEGY_AGENT_EFFORT = "high" as const;
 const STRATEGY_AGENT_MAX_TOKENS = 16000;
-/** On a safety decline the API retries on the model Anthropic recommends for that category. */
-const REFUSAL_FALLBACK_BETA = "server-side-fallback-2026-07-01";
 /** Agent searches use the emails search: only contacts with an email address can join a list. */
 const CREDITS_PER_AGENT_SEARCH = CREDIT_COSTS.email_search;
 
@@ -57,14 +55,6 @@ export type StrategyAgentRunView = StrategyAgentRun & { isRunning: boolean };
 interface ActiveRun {
   strategyId: number;
   stopRequested: boolean;
-}
-
-function textOf(message: BetaMessage): string {
-  return message.content
-    .filter((block): block is Extract<typeof block, { type: "text" }> => block.type === "text")
-    .map((block) => block.text.trim())
-    .filter((text) => text.length > 0)
-    .join("\n\n");
 }
 
 export class StrategyAgentRunner {
@@ -168,7 +158,6 @@ export class StrategyAgentRunner {
   private async execute(run: StrategyAgentRun, strategy: StrategicProfile, active: ActiveRun, creditBalance: number): Promise<void> {
     const usage: StrategyAgentModelUsage = { requests: 0, inputTokens: 0, outputTokens: 0, cacheReadInputTokens: 0, cacheCreationInputTokens: 0 };
     try {
-      const anthropic = new Anthropic(); // reads ANTHROPIC_API_KEY
       const groups = await listStrategyQueryGroups(strategy);
 
       const toolState: StrategyAgentToolState = {
@@ -185,7 +174,7 @@ export class StrategyAgentRunner {
         recordStep: (step) => this.appendStep(run.id, step),
       };
 
-      const runner = anthropic.beta.messages.toolRunner({
+      const runner = claude.beta.messages.toolRunner({
         model: STRATEGY_AGENT_MODEL,
         max_tokens: STRATEGY_AGENT_MAX_TOKENS,
         system: STRATEGY_AGENT_SYSTEM_PROMPT,
@@ -208,7 +197,7 @@ export class StrategyAgentRunner {
         // One request per search and per group, plus room to plan and to summarise
         max_iterations: run.maxSearches + STRATEGY_AGENT_LIMITS.maxNewGroupsPerRun + 4,
         output_config: { effort: STRATEGY_AGENT_EFFORT },
-        betas: [REFUSAL_FALLBACK_BETA],
+        betas: [CLAUDE_REFUSAL_FALLBACK_BETA],
         // Accepted by the API but missing from this SDK version's types: refusal fallback, and
         // automatic prompt caching of the growing conversation
         ...({ fallbacks: "default", cache_control: { type: "ephemeral" } } as {}),
@@ -224,14 +213,14 @@ export class StrategyAgentRunner {
         usage.cacheCreationInputTokens += message.usage.cache_creation_input_tokens ?? 0;
 
         if (message.stop_reason === "tool_use") {
-          const note = textOf(message);
+          const note = claudeMessageText(message);
           if (note) await this.appendStep(run.id, { kind: "note", at: new Date().toISOString(), text: note });
         }
         if (active.stopRequested) break; // the tools of this turn do not run
       }
 
       if (active.stopRequested) {
-        await this.finish(run.id, "stopped", { summary: lastMessage && lastMessage.stop_reason !== "tool_use" ? textOf(lastMessage) : null, modelUsage: usage });
+        await this.finish(run.id, "stopped", { summary: lastMessage && lastMessage.stop_reason !== "tool_use" ? claudeMessageText(lastMessage) : null, modelUsage: usage });
         return;
       }
       if (!lastMessage) {
@@ -245,7 +234,7 @@ export class StrategyAgentRunner {
       }
       const summary = lastMessage.stop_reason === "tool_use"
         ? "The agent reached its turn limit before writing a summary. The groups and their lists below show what it did."
-        : textOf(lastMessage) || null;
+        : claudeMessageText(lastMessage) || null;
       await this.finish(run.id, "completed", { summary, error: toolState.haltReason, modelUsage: usage });
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);

@@ -1,17 +1,16 @@
-import Anthropic from '@anthropic-ai/sdk';
 import { db } from '../../../db';
 import { bots, securityBulkSignupAlerts } from '@shared/schema';
 import { gte, eq, and, lt } from 'drizzle-orm';
 import crypto from 'crypto';
 import { sendBulkSignupAlert } from './report';
 import { logSecurityEvent } from '../../../sendclaw/common';
+import { requestClaudeText } from '../../../lib/claude-request';
 
 const SCAN_INTERVAL_MS = 12 * 60 * 60 * 1000;
 const LOOKBACK_HOURS = 24;
 const MIN_CLUSTER_SIZE = 5;
 const MIN_DISTINCT_IPS = 3;
 const BATCH_SIZE = 100;
-const DEFAULT_MODEL = "claude-sonnet-4-20250514";
 
 interface BotRow {
   id: string;
@@ -59,10 +58,6 @@ Return JSON format:
 }`;
 
 async function reviewRegistrations(botRows: BotRow[]): Promise<DetectedGroup[]> {
-  const anthropic = new Anthropic({
-    apiKey: process.env.ANTHROPIC_API_KEY,
-  });
-
   const allGroups: DetectedGroup[] = [];
 
   for (let i = 0; i < botRows.length; i += BATCH_SIZE) {
@@ -81,22 +76,11 @@ async function reviewRegistrations(botRows: BotRow[]): Promise<DetectedGroup[]> 
     const userMessage = `Analyze these ${batch.length} recent bot registrations for coordinated bulk signup patterns:\n\n${JSON.stringify(dataForReview, null, 2)}`;
 
     try {
-      const response = await anthropic.messages.create({
-        model: DEFAULT_MODEL,
-        max_tokens: 2048,
-        system: SYSTEM_PROMPT,
-        messages: [{ role: 'user', content: userMessage }]
-      });
+      const reply = await requestClaudeText({ system: SYSTEM_PROMPT, prompt: userMessage });
 
-      const content = response.content[0];
-      if (content.type !== 'text') {
-        console.error('[BulkSignupDetector] Unexpected response type:', content.type);
-        continue;
-      }
-
-      const jsonMatch = content.text.match(/\{[\s\S]*\}/);
+      const jsonMatch = reply.match(/\{[\s\S]*\}/);
       if (!jsonMatch) {
-        console.error('[BulkSignupDetector] Could not parse JSON from response:', content.text.slice(0, 500));
+        console.error('[BulkSignupDetector] Could not parse JSON from response:', reply.slice(0, 500));
         continue;
       }
 
@@ -106,18 +90,10 @@ async function reviewRegistrations(botRows: BotRow[]): Promise<DetectedGroup[]> 
       } catch (parseError) {
         console.warn('[BulkSignupDetector] JSON parse error on first attempt, retrying batch...');
         try {
-          const retryResponse = await anthropic.messages.create({
-            model: DEFAULT_MODEL,
-            max_tokens: 2048,
-            system: SYSTEM_PROMPT,
-            messages: [{ role: 'user', content: userMessage }]
-          });
-          const retryContent = retryResponse.content[0];
-          if (retryContent.type === 'text') {
-            const retryJsonMatch = retryContent.text.match(/\{[\s\S]*\}/);
-            if (retryJsonMatch) {
-              parsed = JSON.parse(retryJsonMatch[0]);
-            }
+          const retryReply = await requestClaudeText({ system: SYSTEM_PROMPT, prompt: userMessage });
+          const retryJsonMatch = retryReply.match(/\{[\s\S]*\}/);
+          if (retryJsonMatch) {
+            parsed = JSON.parse(retryJsonMatch[0]);
           }
         } catch (retryError) {
           console.error('[BulkSignupDetector] JSON parse failed on retry too:', retryError);
@@ -271,7 +247,7 @@ class BulkSignupDetector {
   private intervalId: NodeJS.Timeout | null = null;
 
   initialize() {
-    if (!process.env.REPL_DEPLOYMENT) {
+    if (!process.env.REPLIT_DEPLOYMENT) {
       console.log('[BulkSignupDetector] Skipping in development — bulk signup detection only runs in production');
       return;
     }
